@@ -5,6 +5,7 @@ import * as cheerio from 'cheerio';
 import { Text } from 'domhandler';
 import { spawn } from 'child_process';
 import fs from 'fs';
+import process from 'process';
 
 export default class BojView {
   private view: WebContentsView;
@@ -145,28 +146,23 @@ export default class BojView {
       for (let i = 0; i < this.inputs.length; i += 1) {
         let error = '';
 
-        const isCorrect = await new Promise((resolve) => {
-          const inputProcess = spawn(`echo ${this.inputs[i]}`, {
-            cwd: basePath,
-            shell: true,
-          });
-          /*
-          const process = spawn(
-            'sh',
-            ['-c', `echo ${this.inputs[i]} | node ${fileName}`],
-            {
-              cwd: basePath,
-              shell: true,
-            },
-          );
-          */
+        // [ ]: 최적화 필요
+        fs.writeFileSync(`${basePath}/input`, this.inputs[i]);
 
+        const isCorrect = await new Promise((resolve) => {
           const outputProcess = spawn(`node ${fileName}`, {
             cwd: basePath,
             shell: true,
           });
 
-          inputProcess.stdout.pipe(outputProcess.stdin);
+          if (process.platform === 'linux') {
+            const inputProcess = spawn(`echo ${this.inputs[i]}`, {
+              cwd: basePath,
+              shell: true,
+            });
+
+            inputProcess.stdout.pipe(outputProcess.stdin);
+          }
 
           outputProcess.stdout.on('data', (buf) => {
             const cleanText = buf
