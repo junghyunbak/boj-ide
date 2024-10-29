@@ -6,6 +6,7 @@ import { Text } from 'domhandler';
 import { spawn } from 'child_process';
 import fs from 'fs';
 import process from 'process';
+import path from 'path';
 
 export default class BojView {
   private view: WebContentsView;
@@ -128,17 +129,23 @@ export default class BojView {
       this.updateWidth(arg);
     });
 
+    // [ ]: 파일 생성, 채점 과정 모두에서 에러가 발생했을 때 처리 필요
     ipcMain.on('judge-start', async (e, code, ext) => {
-      // [ ]: 파일 생성, 채점 과정 모두에서 에러가 발생했을 때 처리 필요
-
       const basePath = app.getPath('userData');
+
+      const nodeBinPath =
+        process.env.NODE_ENV === 'development'
+          ? path.join(__dirname, '..', '..', 'assets', 'node.exe')
+          : path.join(process.resourcesPath, 'assets', 'node.exe');
 
       /**
        * 파일 생성
        */
       const fileName = `${this.problemNumber}.${ext}`;
 
-      fs.writeFileSync(`${basePath}/${fileName}`, code);
+      const codePath = `${basePath}/${fileName}`;
+
+      fs.writeFileSync(codePath, code);
 
       /**
        * 채점
@@ -149,41 +156,41 @@ export default class BojView {
         // [ ]: 최적화 필요
         fs.writeFileSync(`${basePath}/input`, this.inputs[i]);
 
-        const isCorrect = await new Promise((resolve) => {
-          const outputProcess = spawn(`node ${fileName}`, {
+        const result = await new Promise((resolve) => {
+          const outputProcess = spawn(`${nodeBinPath} ${codePath}`, {
             cwd: basePath,
             shell: true,
+            timeout: 5000,
           });
-
-          if (process.platform === 'linux') {
-            const inputProcess = spawn(`echo ${this.inputs[i]}`, {
-              cwd: basePath,
-              shell: true,
-            });
-
-            inputProcess.stdout.pipe(outputProcess.stdin);
-          }
 
           outputProcess.stdout.on('data', (buf) => {
             const cleanText = buf
               .toString()
               .replace(/\x1B\[[0-?]*[ -/]*[@-~]/g, '');
 
-            resolve(cleanText === this.outputs[i]);
+            resolve(cleanText === this.outputs[i] ? '성공' : '실패');
           });
 
           outputProcess.stderr.on('data', (buf) => {
             error = buf.toString();
 
-            resolve(false);
+            resolve('에러 발생');
           });
 
-          outputProcess.on('close', () => {
-            resolve(false);
+          outputProcess.on('close', (code) => {
+            /**
+             * code 0 : 정상종료
+             * code null : 비정상종료(timeout 에 의한 종료)
+             */
+            if (code === null) {
+              resolve('시간 초과');
+            }
+
+            resolve('실패');
           });
         });
 
-        e.reply('judge-result', i, isCorrect ? '성공' : '실패');
+        e.reply('judge-result', i, result, error);
       }
     });
   }
