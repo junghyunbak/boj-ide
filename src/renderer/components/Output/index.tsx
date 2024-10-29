@@ -7,6 +7,13 @@ type Example = {
   output: string;
 };
 
+type Result = {
+  result: string;
+  error: string;
+  elapsed: number;
+  output: string;
+};
+
 interface OutputProps {}
 
 export function Output({}: OutputProps) {
@@ -24,18 +31,25 @@ export function Output({}: OutputProps) {
 
   const { isJudging, setIsJudging } = useContext(judgeContext) || {};
 
-  const [judgeResult, setJudgeResult] = useState(Array(n).fill(null));
+  const [judgeResult, setJudgeResult] = useState<(Result | null)[]>(
+    Array(n).fill(null),
+  );
+
+  console.log(judgeResult);
 
   useEffect(() => {
-    window.electron.ipcRenderer.on('judge-result', (i, result) => {
-      setJudgeResult((prev) => {
-        const next = [...prev];
+    window.electron.ipcRenderer.on(
+      'judge-result',
+      (i, result, error, output, elapsed) => {
+        setJudgeResult((prev) => {
+          const next = [...prev];
 
-        next[i] = result;
+          next[i] = { result, error, output, elapsed };
 
-        return next;
-      });
-    });
+          return next;
+        });
+      },
+    );
   }, []);
 
   useEffect(() => {
@@ -115,8 +129,25 @@ export function Output({}: OutputProps) {
 
             <div>
               <p>
-                결과: {judgeResult[i] === null ? '채점중...' : judgeResult[i]}
+                결과:{' '}
+                {!judgeResult[i] && !isJudging
+                  ? ''
+                  : !judgeResult[i]
+                    ? '채점중...'
+                    : `${judgeResult[i].result} (${judgeResult[i].elapsed}ms)`}
               </p>
+              {judgeResult[i] && (
+                <div>
+                  <p>표준 출력</p>
+                  <pre>{judgeResult[i].output}</pre>
+                </div>
+              )}
+              {judgeResult[i] && (
+                <div>
+                  <p>에러</p>
+                  <pre>{judgeResult[i].error}</pre>
+                </div>
+              )}
             </div>
           </li>
         );

@@ -153,6 +153,10 @@ export default class BojView {
       for (let i = 0; i < this.inputs.length; i += 1) {
         let error = '';
 
+        let output = '';
+
+        let start = Date.now();
+
         // [ ]: 최적화 필요
         fs.writeFileSync(`${basePath}/input`, this.inputs[i]);
 
@@ -167,6 +171,8 @@ export default class BojView {
             const cleanText = buf
               .toString()
               .replace(/\x1B\[[0-?]*[ -/]*[@-~]/g, '');
+
+            output = cleanText;
 
             resolve(cleanText === this.outputs[i] ? '성공' : '실패');
           });
@@ -190,7 +196,11 @@ export default class BojView {
           });
         });
 
-        e.reply('judge-result', i, result, error);
+        const end = Date.now();
+
+        const elapsed = end - start;
+
+        e.reply('judge-result', i, result, error, output, elapsed);
       }
     });
   }
