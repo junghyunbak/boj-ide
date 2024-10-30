@@ -2,9 +2,13 @@ import React, { createContext, useEffect, useState } from 'react';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 
 import { Layout } from './components/Layout';
+import { Output } from './components/Output';
+import { vim } from '@replit/codemirror-vim';
+import { javascript } from '@codemirror/lang-javascript';
+
+import ReactCodeMirror from '@uiw/react-codemirror';
 
 import './App.css';
-import { Output } from './components/Output';
 
 type ProblemData = {
   problemNumber: number;
@@ -107,10 +111,13 @@ function Hello() {
               </button>
             </div>
 
-            <textarea
-              style={{ height: '50%', width: '100%' }}
+            <ReactCodeMirror
+              extensions={[javascript(), vim()]}
+              height="200px"
               value={code}
-              onChange={(e) => setCode(e.target.value)}
+              onChange={(v) => {
+                setCode(v);
+              }}
             />
 
             <Output />
