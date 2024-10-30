@@ -46,6 +46,28 @@ function Hello() {
     );
   }, []);
 
+  useEffect(() => {
+    if (!problemData) {
+      return;
+    }
+
+    window.electron.ipcRenderer.sendMessage(
+      'load-code',
+      problemData.problemNumber,
+      ext,
+    );
+  }, [problemData]);
+
+  useEffect(() => {
+    window.electron.ipcRenderer.on('load-code-result', (code) => {
+      setCode(code);
+    });
+
+    window.electron.ipcRenderer.on('save-code-result', (isSaved) => {
+      alert(isSaved ? '저장이 완료되었습니다.' : '저장에 실패하였습니다.');
+    });
+  }, []);
+
   return (
     <codeContext.Provider value={{ code, setCode, ext, setExt }}>
       <problemContext.Provider value={problemData}>
@@ -60,6 +82,20 @@ function Hello() {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <p>{problemData?.problemNumber || '문제 페이지로 이동하세요.'}</p>
+              <button
+                type="button"
+                onClick={() => {
+                  window.electron.ipcRenderer.sendMessage(
+                    'save-code',
+                    problemData.problemNumber,
+                    ext,
+                    code,
+                  );
+                }}
+              >
+                저장하기
+              </button>
+
               <button
                 type="button"
                 disabled={isJudging}

@@ -203,6 +203,39 @@ export default class BojView {
         e.reply('judge-result', i, result, error, output, elapsed);
       }
     });
+
+    ipcMain.on('save-code', (e, problemNumber, ext, code) => {
+      const basePath = app.getPath('userData');
+
+      const filePath = path.join(basePath, `${problemNumber}.${ext}`);
+
+      let isSaved;
+
+      try {
+        fs.writeFileSync(filePath, code, {
+          encoding: 'utf-8',
+        });
+
+        isSaved = true;
+      } catch (e) {
+        isSaved = false;
+      }
+
+      e.reply('save-code-result', isSaved);
+    });
+
+    ipcMain.on('load-code', (e, problemNumber, ext) => {
+      const basePath = app.getPath('userData');
+
+      const code = fs.readFileSync(
+        path.join(basePath, `${problemNumber}.${ext}`),
+        {
+          encoding: 'utf-8',
+        },
+      );
+
+      e.reply('load-code-result', code);
+    });
   }
 
   updateHeight(height: number) {

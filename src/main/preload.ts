@@ -2,8 +2,18 @@
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
-type ClientChannels = 'init-width-ratio' | 'load-problem-data' | 'judge-result';
-type ElectronChannels = 'change-boj-view-ratio' | 'judge-start';
+type ClientChannels =
+  | 'init-width-ratio'
+  | 'load-problem-data'
+  | 'judge-result'
+  | 'load-code-result'
+  | 'save-code-result';
+
+type ElectronChannels =
+  | 'change-boj-view-ratio'
+  | 'judge-start'
+  | 'save-code'
+  | 'load-code';
 
 export type Channels = 'ipc-example' | ClientChannels | ElectronChannels;
 
