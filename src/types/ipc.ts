@@ -1,3 +1,5 @@
+import { type BrowserWindow } from 'electron';
+
 type ElectronChannels = 'change-boj-view-ratio' | 'judge-start' | 'save-code' | 'load-code';
 
 export const ElECTRON_CHANNELS: {
@@ -65,31 +67,56 @@ declare global {
     isSaved: boolean;
   };
 
-  interface IpcWrapper {
+  class Ipc {
     on(
       channel: (typeof ElECTRON_CHANNELS)['load-code'],
       listener: (e: Electron.IpcMainEvent, message: MessageTemplate<Omit<CodeInfo, 'code'>>) => void,
     ): void;
+
     on(
       channel: (typeof ElECTRON_CHANNELS)['save-code'],
       listener: (e: Electron.IpcMainEvent, message: MessageTemplate<CodeInfo>) => void,
     ): void;
+
     on(
       channel: (typeof ElECTRON_CHANNELS)['change-boj-view-ratio'],
       listener: (e: Electron.IpcMainEvent, message: MessageTemplate<Pick<Ratio, 'widthRatio'>>) => void,
     ): void;
+
     on(
       channel: (typeof ElECTRON_CHANNELS)['judge-start'],
       listener: (e: Electron.IpcMainEvent, message: MessageTemplate<Omit<CodeInfo, 'number'>>) => void,
     ): void;
+
     send(
+      browserWindow: BrowserWindow,
       channel: (typeof CLIENT_CHANNELS)['init-width-ratio'],
       message: MessageTemplate<Pick<Ratio, 'widthRatio'>>,
     ): void;
-    send(channel: (typeof CLIENT_CHANNELS)['load-code-result'], message: MessageTemplate<Pick<CodeInfo, 'code'>>): void;
-    send(channel: (typeof CLIENT_CHANNELS)['load-problem-data'], message: MessageTemplate<ProblemInfo | null>): void;
-    send(channel: (typeof CLIENT_CHANNELS)['save-code-result'], message: MessageTemplate<SaveResult>): void;
-    send(channel: (typeof CLIENT_CHANNELS)['judge-result'], message: MessageTemplate<JudgeResult>): void;
+
+    send(
+      browserWindow: BrowserWindow,
+      channel: (typeof CLIENT_CHANNELS)['load-code-result'],
+      message: MessageTemplate<Pick<CodeInfo, 'code'>>,
+    ): void;
+
+    send(
+      browserWindow: BrowserWindow,
+      channel: (typeof CLIENT_CHANNELS)['load-problem-data'],
+      message: MessageTemplate<ProblemInfo | null>,
+    ): void;
+
+    send(
+      browserWindow: BrowserWindow,
+      channel: (typeof CLIENT_CHANNELS)['save-code-result'],
+      message: MessageTemplate<SaveResult>,
+    ): void;
+
+    send(
+      browserWindow: BrowserWindow,
+      channel: (typeof CLIENT_CHANNELS)['judge-result'],
+      message: MessageTemplate<JudgeResult>,
+    ): void;
   }
 
   interface Window {

@@ -18,7 +18,7 @@ import pie from 'puppeteer-in-electron';
 
 import BojView from './bojView';
 
-import { Ipc, resolveHtmlPath } from './util';
+import { ipc, resolveHtmlPath } from './util';
 
 (async () => {
   await pie.initialize(app);
@@ -89,9 +89,8 @@ const createWindow = async () => {
   });
 
   const bojView = new BojView(mainWindow);
-  await bojView.build();
 
-  const ipc = new Ipc(mainWindow);
+  await bojView.build();
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
@@ -108,7 +107,7 @@ const createWindow = async () => {
       mainWindow.show();
     }
 
-    ipc.send('init-width-ratio', { data: { widthRatio: 50 } });
+    ipc.send(mainWindow, 'init-width-ratio', { data: { widthRatio: 50 } });
   });
 
   mainWindow.on('resize', () => {

@@ -10,7 +10,7 @@ import process from 'process';
 import fs from 'fs';
 import path from 'path';
 
-import { Ipc } from './util';
+import { ipc } from './util';
 
 export default class BojView {
   private view: WebContentsView;
@@ -27,18 +27,12 @@ export default class BojView {
 
   private outputs: string[] = [];
 
-  private code: string = '';
-
-  private ipc: Ipc;
-
   constructor(mainWindow: BrowserWindow, widthRatio = 50) {
     this.mainWindow = mainWindow;
 
     this.view = new WebContentsView();
 
     this.widthRatio = widthRatio;
-
-    this.ipc = new Ipc(mainWindow);
   }
 
   async build() {
@@ -116,7 +110,7 @@ export default class BojView {
         this.inputs = inputs;
         this.outputs = outputs;
 
-        this.ipc.send('load-problem-data', {
+        ipc.send(this.mainWindow, 'load-problem-data', {
           data: {
             number: problemNumber,
             testCase: {
@@ -129,15 +123,15 @@ export default class BojView {
         return;
       }
 
-      this.ipc.send('load-problem-data', { data: null });
+      ipc.send(this.mainWindow, 'load-problem-data', { data: null });
     });
 
-    this.ipc.on('change-boj-view-ratio', (e, { data: { widthRatio } }) => {
+    ipc.on('change-boj-view-ratio', (e, { data: { widthRatio } }) => {
       this.updateWidth(widthRatio);
     });
 
     // [ ]: 파일 생성, 채점 과정 모두에서 에러가 발생했을 때 처리 필요
-    this.ipc.on('judge-start', async (e, { data: { code, ext } }) => {
+    ipc.on('judge-start', async (e, { data: { code, ext } }) => {
       const basePath = app.getPath('userData');
 
       const nodeBinPath =
@@ -212,11 +206,13 @@ export default class BojView {
 
         const elapsed = end - start;
 
-        this.ipc.send('judge-result', { data: { index: i, stderr: error, stdout: output, elapsed, result } });
+        ipc.send(this.mainWindow, 'judge-result', {
+          data: { index: i, stderr: error, stdout: output, elapsed, result },
+        });
       }
     });
 
-    this.ipc.on('save-code', (e, { data: { number, ext, code } }) => {
+    ipc.on('save-code', (e, { data: { number, ext, code } }) => {
       const basePath = app.getPath('userData');
 
       const filePath = path.join(basePath, `${number}.${ext}`);
@@ -233,17 +229,17 @@ export default class BojView {
         isSaved = false;
       }
 
-      this.ipc.send('save-code-result', { data: { isSaved } });
+      ipc.send(this.mainWindow, 'save-code-result', { data: { isSaved } });
     });
 
-    this.ipc.on('load-code', (e, { data: { number, ext } }) => {
+    ipc.on('load-code', (e, { data: { number, ext } }) => {
       const basePath = app.getPath('userData');
 
       const code = fs.readFileSync(path.join(basePath, `${number}.${ext}`), {
         encoding: 'utf-8',
       });
 
-      this.ipc.send('load-code-result', { data: { code } });
+      ipc.send(this.mainWindow, 'load-code-result', { data: { code } });
     });
   }
 
