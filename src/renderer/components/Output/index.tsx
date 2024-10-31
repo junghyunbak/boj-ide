@@ -2,71 +2,65 @@ import { useContext, useEffect, useState } from 'react';
 
 import { codeContext, judgeContext, problemContext } from '../../App';
 
-type Example = {
+type TestCase = {
   input: string;
   output: string;
 };
 
-type Result = {
-  result: string;
-  error: string;
-  elapsed: number;
-  output: string;
-};
-
-interface OutputProps {}
-
-export function Output({}: OutputProps) {
+export function Output() {
   const problemData = useContext(problemContext);
 
   const codeData = useContext(codeContext);
+
+  const { isJudging, setIsJudging } = useContext(judgeContext) || {};
 
   const n = (() => {
     if (!problemData) {
       return 0;
     }
 
-    return problemData.inputs.length;
+    return problemData.testCase.inputs.length;
   })();
 
-  const { isJudging, setIsJudging } = useContext(judgeContext) || {};
-
-  const [judgeResult, setJudgeResult] = useState<(Result | null)[]>(
-    Array(n).fill(null),
-  );
-
-  console.log(judgeResult);
+  const [judgeResult, setJudgeResult] = useState<(Omit<JudgeResult, 'index'> | null)[]>(Array(n).fill(null));
 
   useEffect(() => {
-    window.electron.ipcRenderer.on(
-      'judge-result',
-      (i, result, error, output, elapsed) => {
-        setJudgeResult((prev) => {
-          const next = [...prev];
+    window.electron.ipcRenderer.on('judge-result', ({ data }) => {
+      const { index, ...other } = data;
 
-          next[i] = { result, error, output, elapsed };
+      setJudgeResult((prev) => {
+        const next = [...prev];
 
-          return next;
-        });
-      },
-    );
+        next[index] = other;
+
+        return next;
+      });
+    });
   }, []);
 
+  /**
+   * 채점이 시작될 때(isJudging === true) electron으로 채점 시작 메세지를 보내도록 함
+   */
   useEffect(() => {
     if (isJudging) {
       // [ ]: judge result가 빈 배열로 초기화도기 전에 judge-result가 돌아오는 경우에 대한 대비 필요 (동기화 작업)
       setJudgeResult(Array(n).fill(null));
 
-      window.electron.ipcRenderer.sendMessage(
-        'judge-start',
-        codeData?.code || '',
-        'js',
-      );
+      // [ ]: undefind값 갖지 않도록 할 것
+      window.electron.ipcRenderer.sendMessage('judge-start', {
+        data: {
+          code: codeData?.code || '',
+          ext: codeData?.ext || 'js',
+        },
+      });
     }
-  }, [isJudging, setJudgeResult, n]);
+  }, [isJudging, setJudgeResult, n, codeData?.code, codeData?.ext]);
 
+  /**
+   * 채점 결과가 도착할 때 마다, 채점 결과 배열을 검사하여 채점이 종료되었는지를 판단
+   */
   useEffect(() => {
-    // [ ]: 초기값 null이 아니도록 하여 제거할 로직
+    // [ ]: judge result가 빈 배열로 초기화도기 전에 judge-result가 돌아오는 경우에 대한 대비 필요 (동기화 작업)
     if (!setIsJudging) {
       return;
     }
@@ -76,8 +70,8 @@ export function Output({}: OutputProps) {
     }
   }, [judgeResult, setIsJudging]);
 
-  const examples = ((): Example[] => {
-    const ret: Example[] = [];
+  const testCases = ((): TestCase[] => {
+    const ret: TestCase[] = [];
 
     if (!problemData) {
       return ret;
@@ -85,8 +79,8 @@ export function Output({}: OutputProps) {
 
     for (let i = 0; i < n; i += 1) {
       ret.push({
-        input: problemData.inputs[i],
-        output: problemData.outputs[i],
+        input: problemData.testCase.inputs[i],
+        output: problemData.testCase.outputs[i],
       });
     }
 
@@ -102,7 +96,7 @@ export function Output({}: OutputProps) {
         margin: 0,
       }}
     >
-      {examples.map(({ input, output }, i) => {
+      {testCases.map(({ input, output }, i) => {
         return (
           <li key={i} style={{ color: 'black' }}>
             <p>예제{i + 1}</p>
@@ -139,13 +133,13 @@ export function Output({}: OutputProps) {
               {judgeResult[i] && (
                 <div>
                   <p>표준 출력</p>
-                  <pre>{judgeResult[i].output}</pre>
+                  <pre>{judgeResult[i].stdout}</pre>
                 </div>
               )}
               {judgeResult[i] && (
                 <div>
                   <p>에러</p>
-                  <pre>{judgeResult[i].error}</pre>
+                  <pre>{judgeResult[i].stderr}</pre>
                 </div>
               )}
             </div>

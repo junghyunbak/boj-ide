@@ -7,9 +7,7 @@ interface LayoutProps {
 }
 
 export function Layout({ children }: LayoutProps) {
-  const [initialBojAreaWidthRatio, setInitialBojAreaWidthRatio] = useState<
-    number | null
-  >(null);
+  const [initialBojAreaWidthRatio, setInitialBojAreaWidthRatio] = useState<number | null>(null);
 
   const bojAreaRef = useRef<HTMLDivElement | null>(null);
 
@@ -20,11 +18,7 @@ export function Layout({ children }: LayoutProps) {
    * : 마지막 비율을 기억한 후 다음 실행에도 유지하기 위함
    */
   useEffect(() => {
-    window.electron.ipcRenderer.on('init-width-ratio', (widthRatio) => {
-      if (typeof widthRatio !== 'number') {
-        return;
-      }
-
+    window.electron.ipcRenderer.on('init-width-ratio', ({ data: { widthRatio } }) => {
       setInitialBojAreaWidthRatio(widthRatio);
     });
   }, []);
@@ -65,14 +59,11 @@ export function Layout({ children }: LayoutProps) {
 
       const maxRatio = ((window.innerWidth - 20) / window.innerWidth) * 100;
 
-      const ratio = Math.min(
-        ((leftWidth + deltaX) / window.innerWidth) * 100,
-        maxRatio,
-      );
+      const ratio = Math.min(((leftWidth + deltaX) / window.innerWidth) * 100, maxRatio);
 
       bojArea.style.width = `${ratio}%`;
 
-      window.electron.ipcRenderer.sendMessage('change-boj-view-ratio', ratio);
+      window.electron.ipcRenderer.sendMessage('change-boj-view-ratio', { data: { widthRatio: ratio } });
     };
 
     const handleResizerMouseUp = () => {

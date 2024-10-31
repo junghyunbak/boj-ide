@@ -1,24 +1,16 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 
-import { Layout } from './components/Layout';
-import { Output } from './components/Output';
 import { vim } from '@replit/codemirror-vim';
 import { javascript } from '@codemirror/lang-javascript';
-
 import ReactCodeMirror from '@uiw/react-codemirror';
+
+import { Output } from './components/Output';
+import { Layout } from './components/Layout';
 
 import './App.css';
 
-type ProblemData = {
-  problemNumber: number;
-  inputs: string[];
-  outputs: string[];
-};
-
-type Ext = 'js' | 'cpp';
-
-export const problemContext = createContext<ProblemData | null>(null);
+export const problemContext = createContext<ProblemInfo | null>(null);
 
 export const judgeContext = createContext<{
   isJudging: boolean;
@@ -28,53 +20,60 @@ export const judgeContext = createContext<{
 export const codeContext = createContext<{
   code: string;
   setCode: React.Dispatch<React.SetStateAction<string>>;
-  ext: Ext;
+  ext: CodeInfo['ext'];
   setExt: React.Dispatch<React.SetStateAction<string>>;
 } | null>(null);
 
 function Hello() {
-  const [problemData, setProblemData] = useState<ProblemData | null>(null);
+  const [problemInfo, setProblemInfo] = useState<ProblemInfo | null>(null);
 
   const [isJudging, setIsJudging] = useState(false);
 
   const [code, setCode] = useState('');
 
-  const [ext, setExt] = useState<Ext>('js');
+  const [ext, setExt] = useState<CodeInfo['ext']>('js');
 
   useEffect(() => {
-    window.electron.ipcRenderer.on(
-      'load-problem-data',
-      (problemData: ProblemData) => {
-        setProblemData(problemData);
-      },
-    );
-  }, []);
-
-  useEffect(() => {
-    if (!problemData) {
-      return;
-    }
-
-    window.electron.ipcRenderer.sendMessage(
-      'load-code',
-      problemData.problemNumber,
-      ext,
-    );
-  }, [problemData]);
-
-  useEffect(() => {
-    window.electron.ipcRenderer.on('load-code-result', (code) => {
-      setCode(code);
+    window.electron.ipcRenderer.on('load-problem-data', ({ data }) => {
+      setProblemInfo(data);
     });
 
-    window.electron.ipcRenderer.on('save-code-result', (isSaved) => {
+    window.electron.ipcRenderer.on('load-code-result', ({ data }) => {
+      setCode(data.code);
+    });
+
+    window.electron.ipcRenderer.on('save-code-result', ({ data: { isSaved } }) => {
       alert(isSaved ? '저장이 완료되었습니다.' : '저장에 실패하였습니다.');
     });
   }, []);
 
+  /**
+   * 문제 정보가 변경되면 소스코드를 로딩
+   */
+  useEffect(() => {
+    // [ ]: context가 null값을 가지지 않도록 처리?
+    if (!problemInfo) {
+      return;
+    }
+
+    window.electron.ipcRenderer.sendMessage('load-code', { data: { number: problemInfo.number, ext } });
+  }, [problemInfo, ext]);
+
+  const handleSaveButtonClick = () => {
+    if (!problemInfo) {
+      return;
+    }
+
+    window.electron.ipcRenderer.sendMessage('save-code', { data: { number: problemInfo.number, ext, code } });
+  };
+
+  const handleSubmitButtonClick = () => {
+    setIsJudging(true);
+  };
+
   return (
     <codeContext.Provider value={{ code, setCode, ext, setExt }}>
-      <problemContext.Provider value={problemData}>
+      <problemContext.Provider value={problemInfo}>
         <judgeContext.Provider value={{ isJudging, setIsJudging }}>
           <div
             style={{
@@ -85,40 +84,33 @@ function Hello() {
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <p>{problemData?.problemNumber || '문제 페이지로 이동하세요.'}</p>
-              <button
-                type="button"
-                onClick={() => {
-                  window.electron.ipcRenderer.sendMessage(
-                    'save-code',
-                    problemData.problemNumber,
-                    ext,
-                    code,
-                  );
-                }}
-              >
+              <p>{problemInfo?.number || '문제 페이지로 이동하세요.'}</p>
+
+              <button type="button" onClick={handleSaveButtonClick}>
                 저장하기
               </button>
 
-              <button
-                type="button"
-                disabled={isJudging}
-                onClick={() => {
-                  setIsJudging(true);
-                }}
-              >
+              <button type="button" onClick={handleSubmitButtonClick} disabled={isJudging}>
                 제출하기
               </button>
             </div>
 
-            <ReactCodeMirror
-              extensions={[javascript(), vim()]}
-              height="200px"
-              value={code}
-              onChange={(v) => {
-                setCode(v);
+            <div
+              style={{
+                width: '100%',
+                height: '50%',
+                background: 'white',
+                overflow: 'hidden',
               }}
-            />
+            >
+              <ReactCodeMirror
+                extensions={[javascript(), vim()]}
+                value={code}
+                onChange={(v) => {
+                  setCode(v);
+                }}
+              />
+            </div>
 
             <Output />
           </div>

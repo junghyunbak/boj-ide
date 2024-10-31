@@ -1,21 +1,22 @@
-import { BrowserWindow, WebContentsView, ipcMain, app } from 'electron';
-import pie from 'puppeteer-in-electron';
+import { BrowserWindow, WebContentsView, app } from 'electron';
+
 import puppeteer from 'puppeteer-core';
+import pie from 'puppeteer-in-electron';
 import * as cheerio from 'cheerio';
+
 import { Text } from 'domhandler';
 import { spawn } from 'child_process';
-import fs from 'fs';
 import process from 'process';
+import fs from 'fs';
 import path from 'path';
+
+import { Ipc } from './util';
 
 export default class BojView {
   private view: WebContentsView;
 
   private mainWindow: BrowserWindow;
 
-  /**
-   * 1~100
-   */
   private widthRatio: number;
 
   private puppeteerBroswer: import('puppeteer-core').Browser;
@@ -28,12 +29,16 @@ export default class BojView {
 
   private code: string = '';
 
+  private ipc: Ipc;
+
   constructor(mainWindow: BrowserWindow, widthRatio = 50) {
     this.mainWindow = mainWindow;
 
     this.view = new WebContentsView();
 
     this.widthRatio = widthRatio;
+
+    this.ipc = new Ipc(mainWindow);
   }
 
   async build() {
@@ -58,12 +63,12 @@ export default class BojView {
 
       if (!url.startsWith(`https://${BOJ_DOMAIN}`)) {
         this.view.webContents.loadURL(`https://${BOJ_DOMAIN}`);
+
+        return;
       }
 
       if (url.startsWith(`https://${BOJ_DOMAIN}/problem`)) {
-        const result = new RegExp(
-          `https://${BOJ_DOMAIN}/problem/([0-9]+)`,
-        ).exec(url);
+        const result = new RegExp(`https://${BOJ_DOMAIN}/problem/([0-9]+)`).exec(url);
 
         if (!result) {
           return;
@@ -111,26 +116,28 @@ export default class BojView {
         this.inputs = inputs;
         this.outputs = outputs;
 
-        this.mainWindow.webContents.send('load-problem-data', {
-          problemNumber,
-          inputs,
-          outputs,
+        this.ipc.send('load-problem-data', {
+          data: {
+            number: problemNumber,
+            testCase: {
+              inputs,
+              outputs,
+            },
+          },
         });
-      }
-    });
 
-    ipcMain.on('change-boj-view-ratio', (e, arg) => {
-      const ratio = parseFloat(arg);
-
-      if (Number.isNaN(ratio)) {
         return;
       }
 
-      this.updateWidth(arg);
+      this.ipc.send('load-problem-data', { data: null });
+    });
+
+    this.ipc.on('change-boj-view-ratio', (e, { data: { widthRatio } }) => {
+      this.updateWidth(widthRatio);
     });
 
     // [ ]: 파일 생성, 채점 과정 모두에서 에러가 발생했을 때 처리 필요
-    ipcMain.on('judge-start', async (e, code, ext) => {
+    this.ipc.on('judge-start', async (e, { data: { code, ext } }) => {
       const basePath = app.getPath('userData');
 
       const nodeBinPath =
@@ -155,12 +162,12 @@ export default class BojView {
 
         let output = '';
 
-        let start = Date.now();
+        const start = Date.now();
 
         // [ ]: 최적화 필요
         fs.writeFileSync(`${basePath}/input`, this.inputs[i]);
 
-        const result = await new Promise((resolve) => {
+        const result = await new Promise<JudgeResult['result']>((resolve) => {
           const outputProcess = spawn(`${nodeBinPath} ${codePath}`, {
             cwd: basePath,
             shell: true,
@@ -168,9 +175,14 @@ export default class BojView {
           });
 
           outputProcess.stdout.on('data', (buf) => {
-            const cleanText = buf
-              .toString()
-              .replace(/\x1B\[[0-?]*[ -/]*[@-~]/g, '');
+            /**
+             * 자주 사용되지 않는 정규식이라고 에러를 발생시킴.
+             * 비활성화해도 상관없는 eslint rule
+             *
+             * https://stackoverflow.com/questions/49743842/javascript-unexpected-control-characters-in-regular-expression
+             */
+            // eslint-disable-next-line no-control-regex
+            const cleanText = buf.toString().replace(/\x1B\[[0-?]*[ -/]*[@-~]/g, '');
 
             output = cleanText;
 
@@ -183,12 +195,12 @@ export default class BojView {
             resolve('에러 발생');
           });
 
-          outputProcess.on('close', (code) => {
+          outputProcess.on('close', (endCode) => {
             /**
              * code 0 : 정상종료
              * code null : 비정상종료(timeout 에 의한 종료)
              */
-            if (code === null) {
+            if (endCode === null) {
               resolve('시간 초과');
             }
 
@@ -200,14 +212,14 @@ export default class BojView {
 
         const elapsed = end - start;
 
-        e.reply('judge-result', i, result, error, output, elapsed);
+        this.ipc.send('judge-result', { data: { index: i, stderr: error, stdout: output, elapsed, result } });
       }
     });
 
-    ipcMain.on('save-code', (e, problemNumber, ext, code) => {
+    this.ipc.on('save-code', (e, { data: { number, ext, code } }) => {
       const basePath = app.getPath('userData');
 
-      const filePath = path.join(basePath, `${problemNumber}.${ext}`);
+      const filePath = path.join(basePath, `${number}.${ext}`);
 
       let isSaved;
 
@@ -217,24 +229,21 @@ export default class BojView {
         });
 
         isSaved = true;
-      } catch (e) {
+      } catch (_) {
         isSaved = false;
       }
 
-      e.reply('save-code-result', isSaved);
+      this.ipc.send('save-code-result', { data: { isSaved } });
     });
 
-    ipcMain.on('load-code', (e, problemNumber, ext) => {
+    this.ipc.on('load-code', (e, { data: { number, ext } }) => {
       const basePath = app.getPath('userData');
 
-      const code = fs.readFileSync(
-        path.join(basePath, `${problemNumber}.${ext}`),
-        {
-          encoding: 'utf-8',
-        },
-      );
+      const code = fs.readFileSync(path.join(basePath, `${number}.${ext}`), {
+        encoding: 'utf-8',
+      });
 
-      e.reply('load-code-result', code);
+      this.ipc.send('load-code-result', { data: { code } });
     });
   }
 
