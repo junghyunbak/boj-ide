@@ -12,7 +12,9 @@ type ProblemInfo = {
     inputs: string[];
     outputs: string[];
   };
-};
+} | null;
+
+type EditorMode = 'vim' | 'normal';
 
 type CodeInfo = {
   code: string;

@@ -1,13 +1,20 @@
 import { type BrowserWindow } from 'electron';
 
 type ChannelToMessage = {
+  /**
+   * electron
+   */
   'load-code': MessageTemplate<MyOmit<CodeInfo, 'code'>>;
   'save-code': MessageTemplate<CodeInfo>;
   'change-boj-view-ratio': MessageTemplate<Pick<Ratio, 'widthRatio'>>;
   'judge-start': MessageTemplate<Omit<CodeInfo, 'number'>>;
+
+  /**
+   * client
+   */
   'init-width-ratio': MessageTemplate<Pick<Ratio, 'widthRatio'>>;
   'load-code-result': MessageTemplate<Pick<CodeInfo, 'code'>>;
-  'load-problem-data': MessageTemplate<ProblemInfo | null>;
+  'load-problem-data': MessageTemplate<ProblemInfo>;
   'save-code-result': MessageTemplate<SaveResult>;
   'judge-result': MessageTemplate<JudgeResult>;
 };

@@ -115,7 +115,8 @@
     "puppeteer-in-electron": "^3.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.16.0"
+    "react-router-dom": "^6.16.0",
+    "zustand": "^5.0.1"
   },
   "devDependencies": {
     "@electron/rebuild": "^3.3.0",

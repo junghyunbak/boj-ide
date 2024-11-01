@@ -1,6 +1,8 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
-import { codeContext, judgeContext, problemContext } from '../../App';
+import { useShallow } from 'zustand/shallow';
+
+import { useStore } from '../../store';
 
 type TestCase = {
   input: string;
@@ -8,83 +10,71 @@ type TestCase = {
 };
 
 export function Output() {
-  const problemData = useContext(problemContext);
+  const [problem] = useStore(useShallow((s) => [s.problem]));
 
-  const codeData = useContext(codeContext);
+  const [isJudging, setIsJudging] = useStore(useShallow((s) => [s.isJudging, s.setIsJudging]));
 
-  const { isJudging, setIsJudging } = useContext(judgeContext) || {};
+  const [judgeResult, setJudgeResult] = useStore(useShallow((s) => [s.judgeResult, s.setJudgeResult]));
 
-  const n = (() => {
-    if (!problemData) {
+  const N = (() => {
+    if (!problem) {
       return 0;
     }
 
-    return problemData.testCase.inputs.length;
+    return problem.testCase.inputs.length;
   })();
 
-  const [judgeResult, setJudgeResult] = useState<(Omit<JudgeResult, 'index'> | null)[]>(Array(n).fill(null));
-
+  /**
+   * 채점 결과가 도착하는 ipc 이벤트 리스너 초기화
+   */
   useEffect(() => {
     window.electron.ipcRenderer.on('judge-result', ({ data }) => {
-      const { index, ...other } = data;
-
       setJudgeResult((prev) => {
         const next = [...prev];
 
-        next[index] = other;
+        next[data.index] = data;
 
         return next;
       });
     });
-  }, []);
-
-  /**
-   * 채점이 시작될 때(isJudging === true) electron으로 채점 시작 메세지를 보내도록 함
-   */
-  useEffect(() => {
-    if (isJudging) {
-      // [ ]: judge result가 빈 배열로 초기화도기 전에 judge-result가 돌아오는 경우에 대한 대비 필요 (동기화 작업)
-      setJudgeResult(Array(n).fill(null));
-
-      // [ ]: undefind값 갖지 않도록 할 것
-      window.electron.ipcRenderer.sendMessage('judge-start', {
-        data: {
-          code: codeData?.code || '',
-          ext: codeData?.ext || 'js',
-        },
-      });
-    }
-  }, [isJudging, setJudgeResult, n, codeData?.code, codeData?.ext]);
+  }, [setJudgeResult]);
 
   /**
    * 채점 결과가 도착할 때 마다, 채점 결과 배열을 검사하여 채점이 종료되었는지를 판단
    */
   useEffect(() => {
-    // [ ]: judge result가 빈 배열로 초기화도기 전에 judge-result가 돌아오는 경우에 대한 대비 필요 (동기화 작업)
-    if (!setIsJudging) {
+    const isEnd = (() => {
+      for (let i = 0; i < N; i += 1) {
+        if (judgeResult[i] === undefined) {
+          return false;
+        }
+      }
+
+      return true;
+    })();
+
+    if (!isEnd) {
       return;
     }
 
-    if (judgeResult.every((v) => v !== null)) {
-      setIsJudging(false);
-    }
-  }, [judgeResult, setIsJudging]);
+    setIsJudging(false);
+  }, [judgeResult, setIsJudging, N]);
 
   const testCases = ((): TestCase[] => {
-    const ret: TestCase[] = [];
-
-    if (!problemData) {
-      return ret;
+    if (!problem) {
+      return [];
     }
 
-    for (let i = 0; i < n; i += 1) {
-      ret.push({
-        input: problemData.testCase.inputs[i],
-        output: problemData.testCase.outputs[i],
+    const tmp: TestCase[] = [];
+
+    for (let i = 0; i < N; i += 1) {
+      tmp.push({
+        input: problem.testCase.inputs[i],
+        output: problem.testCase.outputs[i],
       });
     }
 
-    return ret;
+    return tmp;
   })();
 
   return (
