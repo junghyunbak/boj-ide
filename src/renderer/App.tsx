@@ -13,11 +13,14 @@ import './App.css';
 export default function App() {
   const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
 
+  const [setJudgeResult] = useStore(useShallow((s) => [s.setJudgeResult]));
+
   useEffect(() => {
     window.electron.ipcRenderer.on('load-problem-data', ({ data }) => {
       setProblem(data);
+      setJudgeResult(() => []);
     });
-  }, [setProblem]);
+  }, [setProblem, setJudgeResult]);
 
   return (
     <Layout>
