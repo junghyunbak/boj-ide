@@ -11,6 +11,8 @@ export function Header() {
 
   const [ext] = useStore(useShallow((s) => [s.ext]));
 
+  const [setMode] = useStore(useShallow((s) => [s.setMode]));
+
   const [isJudging, setIsJudging] = useStore(useShallow((s) => [s.isJudging, s.setIsJudging]));
 
   const [setJudgeResult] = useStore(useShallow((s) => [s.setJudgeResult]));
@@ -48,6 +50,25 @@ export function Header() {
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
       <p>{problem === null ? '문제 페이지로 이동하세요.' : problem.number}</p>
+
+      <div>
+        <button
+          type="button"
+          onClick={() => {
+            setMode('normal');
+          }}
+        >
+          normal
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setMode('vim');
+          }}
+        >
+          vim
+        </button>
+      </div>
 
       <button type="button" onClick={handleSaveButtonClick}>
         저장하기

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { vim } from '@replit/codemirror-vim';
 import { javascript } from '@codemirror/lang-javascript';
-import ReactCodeMirror from '@uiw/react-codemirror';
+import ReactCodeMirror, { type Extension } from '@uiw/react-codemirror';
 
 import { useShallow } from 'zustand/shallow';
 
@@ -14,6 +14,8 @@ export function Editor() {
   const [ext] = useStore(useShallow((s) => [s.ext]));
 
   const [code, setCode] = useStore(useShallow((s) => [s.code, s.setCode]));
+
+  const [mode] = useStore(useShallow((s) => [s.mode]));
 
   /**
    * 문제, 확장자가 변경되면 소스코드를 로딩
@@ -35,9 +37,23 @@ export function Editor() {
     });
   }, [setCode]);
 
+  const extensions = (() => {
+    const tmp: Extension[] = [];
+
+    if (ext === 'js') {
+      tmp.push(javascript());
+    }
+
+    if (mode === 'vim') {
+      tmp.push(vim());
+    }
+
+    return tmp;
+  })();
+
   return (
     <ReactCodeMirror
-      extensions={[javascript(), vim()]}
+      extensions={extensions}
       value={code}
       height="200px"
       onChange={(v) => {

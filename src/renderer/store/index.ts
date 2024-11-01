@@ -18,7 +18,11 @@ export const useStore = create<StoreState>()(
     }),
     {
       name: 'zustandStore',
-      partialize: () => ({}),
+      partialize: (s) => {
+        const { ext, mode } = s;
+
+        return { ext, mode };
+      },
     },
   ),
 );
