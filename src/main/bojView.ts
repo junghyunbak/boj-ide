@@ -235,9 +235,13 @@ export default class BojView {
     ipc.on('load-code', (e, { data: { number, ext } }) => {
       const basePath = app.getPath('userData');
 
-      const code = fs.readFileSync(path.join(basePath, `${number}.${ext}`), {
-        encoding: 'utf-8',
-      });
+      const filePath = path.join(basePath, `${number}.${ext}`);
+
+      const code = fs.existsSync(filePath)
+        ? fs.readFileSync(filePath, {
+            encoding: 'utf-8',
+          })
+        : '';
 
       ipc.send(this.mainWindow, 'load-code-result', { data: { code } });
     });
