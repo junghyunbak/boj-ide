@@ -10,7 +10,7 @@ import process from 'process';
 import fs from 'fs';
 import path from 'path';
 
-import { ipc } from './util';
+import { ipc, normalizeOutput } from './util';
 
 export default class BojView {
   private view: WebContentsView;
@@ -170,8 +170,9 @@ export default class BojView {
 
           outputProcess.stdout.on('data', (buf) => {
             /**
-             * 자주 사용되지 않는 정규식이라고 에러를 발생시킴.
-             * 비활성화해도 상관없는 eslint rule
+             * ANSI 색상 코드를 제거하는 코드.
+             *
+             * 자주 사용되지 않는 정규식이라고 에러를 발생시키는 것이므로 비활성화해도 상관없다고 판단.
              *
              * https://stackoverflow.com/questions/49743842/javascript-unexpected-control-characters-in-regular-expression
              */
@@ -180,7 +181,7 @@ export default class BojView {
 
             output = cleanText;
 
-            resolve(cleanText === this.outputs[i] ? '성공' : '실패');
+            resolve(normalizeOutput(output) === normalizeOutput(this.outputs[i]) ? '성공' : '실패');
           });
 
           outputProcess.stderr.on('data', (buf) => {

@@ -24,3 +24,11 @@ export class IpcImpl {
 }
 
 export const ipc: Ipc = new IpcImpl();
+
+export function normalizeOutput(output: string) {
+  return output
+    .trim()
+    .split('\n')
+    .map((line: string) => line.trim())
+    .join('\n');
+}
