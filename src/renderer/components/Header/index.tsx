@@ -22,7 +22,7 @@ export function Header() {
    */
   useEffect(() => {
     window.electron.ipcRenderer.on('save-code-result', ({ data: { isSaved } }) => {
-      alert(isSaved ? '저장이 완료되었습니다.' : '저장에 실패하였습니다.');
+      console.log(isSaved ? '저장이 완료되었습니다.' : '저장에 실패하였습니다.');
     });
   }, []);
 

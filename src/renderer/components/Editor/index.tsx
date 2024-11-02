@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { vim } from '@replit/codemirror-vim';
+import { vim, Vim } from '@replit/codemirror-vim';
 import { javascript } from '@codemirror/lang-javascript';
 import ReactCodeMirror, { type Extension } from '@uiw/react-codemirror';
 
@@ -36,6 +36,35 @@ export function Editor() {
       setCode(data.code);
     });
   }, [setCode]);
+
+  /**
+   * 저장 이벤트 등록
+   */
+  useEffect(() => {
+    const saveCode = () => {
+      if (!problem) {
+        return;
+      }
+
+      window.electron.ipcRenderer.sendMessage('save-code', { data: { number: problem.number, ext, code } });
+    };
+
+    Vim.defineEx('write', 'w', saveCode);
+
+    const handleSaveCode = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+
+        saveCode();
+      }
+    };
+
+    window.addEventListener('keydown', handleSaveCode);
+
+    return () => {
+      window.removeEventListener('keydown', handleSaveCode);
+    };
+  }, [code, ext, problem]);
 
   const extensions = (() => {
     const tmp: Extension[] = [];
