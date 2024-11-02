@@ -6,13 +6,12 @@ type ChannelToMessage = {
    */
   'load-code': MessageTemplate<MyOmit<CodeInfo, 'code'>>;
   'save-code': MessageTemplate<CodeInfo>;
-  'change-boj-view-ratio': MessageTemplate<Pick<Ratio, 'widthRatio'>>;
+  'change-boj-view-width': MessageTemplate<{ nextWidth: number }>;
   'judge-start': MessageTemplate<Omit<CodeInfo, 'number'>>;
 
   /**
    * client
    */
-  'init-width-ratio': MessageTemplate<Pick<Ratio, 'widthRatio'>>;
   'load-code-result': MessageTemplate<Pick<CodeInfo, 'code'>>;
   'load-problem-data': MessageTemplate<ProblemInfo>;
   'save-code-result': MessageTemplate<SaveResult>;
@@ -21,18 +20,18 @@ type ChannelToMessage = {
 
 type ElectronChannels = keyof Pick<
   ChannelToMessage,
-  'change-boj-view-ratio' | 'judge-start' | 'save-code' | 'load-code'
+  'change-boj-view-width' | 'judge-start' | 'save-code' | 'load-code'
 >;
 
 type ClientChannels = keyof Pick<
   ChannelToMessage,
-  'init-width-ratio' | 'load-problem-data' | 'judge-result' | 'load-code-result' | 'save-code-result'
+  'load-problem-data' | 'judge-result' | 'load-code-result' | 'save-code-result'
 >;
 
 export const ElECTRON_CHANNELS: {
   [P in ElectronChannels]: P;
 } = {
-  'change-boj-view-ratio': 'change-boj-view-ratio',
+  'change-boj-view-width': 'change-boj-view-width',
   'judge-start': 'judge-start',
   'save-code': 'save-code',
   'load-code': 'load-code',
@@ -41,7 +40,6 @@ export const ElECTRON_CHANNELS: {
 export const CLIENT_CHANNELS: {
   [P in ClientChannels]: P;
 } = {
-  'init-width-ratio': 'init-width-ratio',
   'load-code-result': 'load-code-result',
   'judge-result': 'judge-result',
   'load-problem-data': 'load-problem-data',
@@ -61,19 +59,13 @@ declare global {
     ): void;
 
     on(
-      channel: (typeof ElECTRON_CHANNELS)['change-boj-view-ratio'],
-      listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['change-boj-view-ratio']) => void,
+      channel: (typeof ElECTRON_CHANNELS)['change-boj-view-width'],
+      listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['change-boj-view-width']) => void,
     ): void;
 
     on(
       channel: (typeof ElECTRON_CHANNELS)['judge-start'],
       listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['judge-start']) => void,
-    ): void;
-
-    send(
-      browserWindow: BrowserWindow,
-      channel: (typeof CLIENT_CHANNELS)['init-width-ratio'],
-      message: ChannelToMessage['init-width-ratio'],
     ): void;
 
     send(
@@ -105,10 +97,6 @@ declare global {
     electron: {
       ipcRenderer: {
         on(
-          channel: (typeof CLIENT_CHANNELS)['init-width-ratio'],
-          func: (message: ChannelToMessage['init-width-ratio']) => void,
-        ): () => void;
-        on(
           channel: (typeof CLIENT_CHANNELS)['load-code-result'],
           func: (message: ChannelToMessage['load-code-result']) => void,
         ): () => void;
@@ -128,8 +116,8 @@ declare global {
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['load-code'], message: ChannelToMessage['load-code']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['save-code'], message: ChannelToMessage['save-code']): void;
         sendMessage(
-          channel: (typeof ElECTRON_CHANNELS)['change-boj-view-ratio'],
-          message: ChannelToMessage['change-boj-view-ratio'],
+          channel: (typeof ElECTRON_CHANNELS)['change-boj-view-width'],
+          message: ChannelToMessage['change-boj-view-width'],
         ): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['judge-start'], message: ChannelToMessage['judge-start']): void;
       };

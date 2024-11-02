@@ -1,0 +1,1 @@
+export const BOJ_VIEW_NAVIGATION_HEIGHT = 40;

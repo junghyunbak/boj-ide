@@ -11,13 +11,12 @@ import fs from 'fs';
 import path from 'path';
 
 import { ipc, normalizeOutput } from './util';
+import { size } from '../styles';
 
 export default class BojView {
   private view: WebContentsView;
 
   private mainWindow: BrowserWindow;
-
-  private widthRatio: number;
 
   private puppeteerBroswer: import('puppeteer-core').Browser;
 
@@ -27,12 +26,10 @@ export default class BojView {
 
   private outputs: string[] = [];
 
-  constructor(mainWindow: BrowserWindow, widthRatio = 50) {
+  constructor(mainWindow: BrowserWindow) {
     this.mainWindow = mainWindow;
 
     this.view = new WebContentsView();
-
-    this.widthRatio = widthRatio;
   }
 
   async build() {
@@ -42,7 +39,7 @@ export default class BojView {
 
     this.attachEvent();
 
-    this.updateWidth(this.widthRatio);
+    this.updateWidth();
 
     this.puppeteerBroswer = await pie.connect(app, puppeteer);
   }
@@ -126,8 +123,8 @@ export default class BojView {
       ipc.send(this.mainWindow, 'load-problem-data', { data: null });
     });
 
-    ipc.on('change-boj-view-ratio', (e, { data: { widthRatio } }) => {
-      this.updateWidth(widthRatio);
+    ipc.on('change-boj-view-width', (e, { data: { nextWidth } }) => {
+      this.updateWidth(nextWidth);
     });
 
     // [ ]: 파일 생성, 채점 과정 모두에서 에러가 발생했을 때 처리 필요
@@ -254,16 +251,14 @@ export default class BojView {
     this.view.setBounds({ ...bounds, height });
   }
 
-  updateWidth(widthRatio: number = this.widthRatio) {
-    this.widthRatio = widthRatio;
-
-    const { width, height } = this.mainWindow.getBounds();
+  updateWidth(width: number = 0) {
+    const { height } = this.mainWindow.getBounds();
 
     this.view.setBounds({
       x: 0,
-      y: 0,
-      width: (width * this.widthRatio) / 100,
-      height,
+      y: size.BOJ_VIEW_NAVIGATION_HEIGHT,
+      width,
+      height: height - size.BOJ_VIEW_NAVIGATION_HEIGHT,
     });
   }
 

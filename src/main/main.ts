@@ -18,7 +18,7 @@ import pie from 'puppeteer-in-electron';
 
 import BojView from './bojView';
 
-import { ipc, resolveHtmlPath } from './util';
+import { resolveHtmlPath } from './util';
 
 (async () => {
   await pie.initialize(app);
@@ -79,6 +79,7 @@ const createWindow = async () => {
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: app.isPackaged ? path.join(__dirname, 'preload.js') : path.join(__dirname, '../../.erb/dll/preload.js'),
+      devTools: false,
     },
   });
 
@@ -100,8 +101,6 @@ const createWindow = async () => {
     } else {
       mainWindow.show();
     }
-
-    ipc.send(mainWindow, 'init-width-ratio', { data: { widthRatio: 50 } });
   });
 
   mainWindow.on('resize', () => {

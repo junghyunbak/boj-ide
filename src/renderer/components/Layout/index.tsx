@@ -1,4 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { css } from '@emotion/css';
+
+import React, { useEffect, useRef } from 'react';
+
+import { size } from '../../../styles';
 
 import './index.css';
 
@@ -7,27 +11,11 @@ interface LayoutProps {
 }
 
 export function Layout({ children }: LayoutProps) {
-  const [initialBojAreaWidthRatio, setInitialBojAreaWidthRatio] = useState<number | null>(null);
-
   const bojAreaRef = useRef<HTMLDivElement | null>(null);
 
   const resizerRef = useRef<HTMLDivElement | null>(null);
 
-  /**
-   * boj 뷰 크기 비율 초기화
-   * : 마지막 비율을 기억한 후 다음 실행에도 유지하기 위함
-   */
   useEffect(() => {
-    window.electron.ipcRenderer.on('init-width-ratio', ({ data: { widthRatio } }) => {
-      setInitialBojAreaWidthRatio(widthRatio);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (initialBojAreaWidthRatio === null) {
-      return () => {};
-    }
-
     const resizer = resizerRef.current;
 
     const bojArea = bojAreaRef.current;
@@ -57,45 +45,72 @@ export function Layout({ children }: LayoutProps) {
 
       const deltaX = e.clientX - startX;
 
-      const maxRatio = ((window.innerWidth - 20) / window.innerWidth) * 100;
+      const maxRatio = ((window.outerWidth - 20) / window.outerWidth) * 100;
 
-      const ratio = Math.min(((leftWidth + deltaX) / window.innerWidth) * 100, maxRatio);
+      const ratio = Math.min(((leftWidth + deltaX) / window.outerWidth) * 100, maxRatio);
 
       bojArea.style.width = `${ratio}%`;
 
-      window.electron.ipcRenderer.sendMessage('change-boj-view-ratio', { data: { widthRatio: ratio } });
+      window.electron.ipcRenderer.sendMessage('change-boj-view-width', {
+        data: { nextWidth: bojArea.getBoundingClientRect().width },
+      });
     };
 
-    const handleResizerMouseUp = () => {
+    window.addEventListener('resize', () => {
+      window.electron.ipcRenderer.sendMessage('change-boj-view-width', {
+        data: { nextWidth: bojArea.getBoundingClientRect().width },
+      });
+    });
+
+    window.electron.ipcRenderer.sendMessage('change-boj-view-width', {
+      data: { nextWidth: bojArea.getBoundingClientRect().width },
+    });
+
+    const handleMouseUp = () => {
       isDragging = false;
     };
 
     resizer.addEventListener('mousedown', handleResizerMouseDown);
-    resizer.addEventListener('mouseup', handleResizerMouseUp);
 
+    window.addEventListener('mouseup', handleMouseUp);
     window.addEventListener('mousemove', handleMouseMove);
 
     return () => {
       resizer.removeEventListener('mousedown', handleResizerMouseDown);
-      resizer.removeEventListener('mouseup', handleResizerMouseUp);
 
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [initialBojAreaWidthRatio]);
-
-  if (initialBojAreaWidthRatio === null) {
-    return null;
-  }
+  }, []);
 
   return (
     <div
-      style={{
-        display: 'flex',
-        height: '100%',
-        justifyContent: 'end',
-      }}
+      className={css`
+        display: flex;
+        height: 100%;
+        justify-content: end;
+      `}
     >
-      <div ref={bojAreaRef} style={{ width: `${initialBojAreaWidthRatio}%` }} />
+      <div
+        className={css`
+          display: flex;
+          flex-direction: column;
+          width: 50%;
+        `}
+        ref={bojAreaRef}
+      >
+        <div
+          className={css`
+            width: 100%;
+            height: ${size.BOJ_VIEW_NAVIGATION_HEIGHT}px;
+            box-sizing: border-box;
+            border: 1px solid black;
+            background-color: white;
+          `}
+        >
+          네비게이션
+        </div>
+      </div>
 
       <div ref={resizerRef} className="resizer" />
 
