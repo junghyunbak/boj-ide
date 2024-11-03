@@ -56,9 +56,9 @@ export function Layout({ children }: LayoutProps) {
 
       const deltaX = e.clientX - startX;
 
-      const maxRatio = ((window.outerWidth - 20) / window.outerWidth) * 100;
+      const maxRatio = ((window.innerWidth - 20) / window.innerWidth) * 100;
 
-      const ratio = Math.min(((leftWidth + deltaX) / window.outerWidth) * 100, maxRatio);
+      const ratio = Math.min(((leftWidth + deltaX) / window.innerWidth) * 100, maxRatio);
 
       left.style.width = `${ratio}%`;
 
