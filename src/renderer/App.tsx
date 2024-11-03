@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { css } from '@emotion/css';
 
@@ -9,6 +9,8 @@ import { Output } from './components/Output';
 import { Layout } from './components/Layout';
 import { Editor } from './components/Editor';
 import { Header } from './components/Header';
+
+import './App.css';
 
 interface VerticalResizerLayoutProps {
   Up: typeof Editor;
@@ -151,6 +153,8 @@ export default function App() {
       setProblem(data);
       setJudgeResult(() => []);
     });
+
+    window.electron.ipcRenderer.sendMessage('ready-editor');
   }, [setProblem, setJudgeResult]);
 
   return (

@@ -111,9 +111,24 @@ export function Layout({ children }: LayoutProps) {
         <div
           className={css`
             flex: 1;
+            padding: 10%;
           `}
           ref={bojAreaRef}
-        />
+        >
+          <div
+            className={css`
+              width: 100%;
+              height: 100%;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              border: 4px dotted gray;
+              border-radius: 10px;
+            `}
+          >
+            loading...
+          </div>
+        </div>
       </div>
 
       <div ref={resizerRef} className="resizer" />

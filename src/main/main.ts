@@ -18,7 +18,7 @@ import pie from 'puppeteer-in-electron';
 
 import BojView from './bojView';
 
-import { resolveHtmlPath } from './util';
+import { ipc, resolveHtmlPath } from './util';
 
 (async () => {
   await pie.initialize(app);
@@ -82,10 +82,6 @@ const createWindow = async () => {
     },
   });
 
-  const bojView = new BojView(mainWindow);
-
-  await bojView.build();
-
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
   mainWindow.setMenu(null);
@@ -102,7 +98,15 @@ const createWindow = async () => {
     }
   });
 
-  console.log('test');
+  ipc.on('ready-editor', async () => {
+    if (!mainWindow) {
+      throw new Error('"mainWindow" is not defined');
+    }
+
+    const bojView = new BojView(mainWindow);
+
+    await bojView.build();
+  });
 
   mainWindow.on('closed', () => {
     mainWindow = null;
