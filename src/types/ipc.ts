@@ -8,6 +8,8 @@ type ChannelToMessage = {
   'save-code': MessageTemplate<CodeInfo>;
   'change-boj-view-width': MessageTemplate<Rect>;
   'judge-start': MessageTemplate<Omit<CodeInfo, 'number'>>;
+  'go-back-boj-view': undefined;
+  'go-front-boj-view': undefined;
 
   /**
    * client
@@ -20,7 +22,7 @@ type ChannelToMessage = {
 
 type ElectronChannels = keyof Pick<
   ChannelToMessage,
-  'change-boj-view-width' | 'judge-start' | 'save-code' | 'load-code'
+  'change-boj-view-width' | 'judge-start' | 'save-code' | 'load-code' | 'go-back-boj-view' | 'go-front-boj-view'
 >;
 
 type ClientChannels = keyof Pick<
@@ -35,6 +37,9 @@ export const ElECTRON_CHANNELS: {
   'judge-start': 'judge-start',
   'save-code': 'save-code',
   'load-code': 'load-code',
+
+  'go-back-boj-view': 'go-back-boj-view',
+  'go-front-boj-view': 'go-front-boj-view',
 };
 
 export const CLIENT_CHANNELS: {
@@ -67,6 +72,10 @@ declare global {
       channel: (typeof ElECTRON_CHANNELS)['judge-start'],
       listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['judge-start']) => void,
     ): void;
+
+    on(channel: (typeof ElECTRON_CHANNELS)['go-back-boj-view'], listener: (e: Electron.IpcMainEvent) => void): void;
+
+    on(channel: (typeof ElECTRON_CHANNELS)['go-front-boj-view'], listener: (e: Electron.IpcMainEvent) => void): void;
 
     send(
       browserWindow: BrowserWindow,
@@ -120,6 +129,8 @@ declare global {
           message: ChannelToMessage['change-boj-view-width'],
         ): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['judge-start'], message: ChannelToMessage['judge-start']): void;
+        sendMessage(channel: (typeof ElECTRON_CHANNELS)['go-back-boj-view']): void;
+        sendMessage(channel: (typeof ElECTRON_CHANNELS)['go-front-boj-view']): void;
       };
     };
   }

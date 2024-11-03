@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 
+import { css } from '@emotion/css';
+
 import { useShallow } from 'zustand/shallow';
 import { useStore } from './store';
 
@@ -7,8 +9,6 @@ import { Output } from './components/Output';
 import { Layout } from './components/Layout';
 import { Editor } from './components/Editor';
 import { Header } from './components/Header';
-
-import './App.css';
 
 export default function App() {
   const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
@@ -25,12 +25,12 @@ export default function App() {
   return (
     <Layout>
       <div
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
+        className={css`
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+        `}
       >
         <Header />
 

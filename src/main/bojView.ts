@@ -120,6 +120,14 @@ export default class BojView {
       ipc.send(this.mainWindow, 'load-problem-data', { data: null });
     });
 
+    ipc.on('go-back-boj-view', () => {
+      this.view.webContents.goBack();
+    });
+
+    ipc.on('go-front-boj-view', () => {
+      this.view.webContents.goForward();
+    });
+
     ipc.on('change-boj-view-width', (e, { data: { x, y, width, height } }) => {
       this.view.setBounds({
         x,

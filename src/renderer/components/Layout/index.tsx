@@ -2,9 +2,8 @@ import { css } from '@emotion/css';
 
 import React, { useEffect, useRef } from 'react';
 
-import { size } from '../../../styles';
-
 import './index.css';
+import { BrowserNavigation } from '../BrowserNavigation';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -90,9 +89,9 @@ export function Layout({ children }: LayoutProps) {
   return (
     <div
       className={css`
+        position: fixed;
+        inset: 0;
         display: flex;
-        height: 100%;
-        justify-content: end;
       `}
     >
       <div
@@ -103,17 +102,7 @@ export function Layout({ children }: LayoutProps) {
         `}
         ref={leftRef}
       >
-        <div
-          className={css`
-            width: 100%;
-            height: ${size.BOJ_VIEW_NAVIGATION_HEIGHT}px;
-            box-sizing: border-box;
-            border-bottom: 1px solid black;
-            background-color: white;
-          `}
-        >
-          네비게이션
-        </div>
+        <BrowserNavigation />
 
         <div
           className={css`
