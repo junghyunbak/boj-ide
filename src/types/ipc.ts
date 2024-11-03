@@ -6,7 +6,7 @@ type ChannelToMessage = {
    */
   'load-code': MessageTemplate<MyOmit<CodeInfo, 'code'>>;
   'save-code': MessageTemplate<CodeInfo>;
-  'change-boj-view-width': MessageTemplate<{ nextWidth: number }>;
+  'change-boj-view-width': MessageTemplate<Rect>;
   'judge-start': MessageTemplate<Omit<CodeInfo, 'number'>>;
 
   /**

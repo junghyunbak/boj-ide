@@ -11,7 +11,6 @@ import fs from 'fs';
 import path from 'path';
 
 import { ipc, normalizeOutput } from './util';
-import { size } from '../styles';
 
 export default class BojView {
   private view: WebContentsView;
@@ -38,8 +37,6 @@ export default class BojView {
     this.attachView();
 
     this.attachEvent();
-
-    this.updateWidth();
 
     this.puppeteerBroswer = await pie.connect(app, puppeteer);
   }
@@ -123,8 +120,13 @@ export default class BojView {
       ipc.send(this.mainWindow, 'load-problem-data', { data: null });
     });
 
-    ipc.on('change-boj-view-width', (e, { data: { nextWidth } }) => {
-      this.updateWidth(nextWidth);
+    ipc.on('change-boj-view-width', (e, { data: { x, y, width, height } }) => {
+      this.view.setBounds({
+        x,
+        y,
+        width,
+        height,
+      });
     });
 
     // [ ]: 파일 생성, 채점 과정 모두에서 에러가 발생했을 때 처리 필요
@@ -242,23 +244,6 @@ export default class BojView {
         : '';
 
       ipc.send(this.mainWindow, 'load-code-result', { data: { code } });
-    });
-  }
-
-  updateHeight(height: number) {
-    const bounds = this.view.getBounds();
-
-    this.view.setBounds({ ...bounds, height });
-  }
-
-  updateWidth(width: number = 0) {
-    const { height } = this.mainWindow.getBounds();
-
-    this.view.setBounds({
-      x: 0,
-      y: size.BOJ_VIEW_NAVIGATION_HEIGHT,
-      width,
-      height: height - size.BOJ_VIEW_NAVIGATION_HEIGHT,
     });
   }
 

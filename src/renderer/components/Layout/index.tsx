@@ -11,16 +11,18 @@ interface LayoutProps {
 }
 
 export function Layout({ children }: LayoutProps) {
+  const leftRef = useRef<HTMLDivElement | null>(null);
+
   const bojAreaRef = useRef<HTMLDivElement | null>(null);
 
   const resizerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    const left = leftRef.current;
+    const bojArea = bojAreaRef.current;
     const resizer = resizerRef.current;
 
-    const bojArea = bojAreaRef.current;
-
-    if (!resizer || !bojArea) {
+    if (!left || !bojArea || !resizer) {
       return () => {};
     }
 
@@ -30,12 +32,20 @@ export function Layout({ children }: LayoutProps) {
 
     let leftWidth = 0;
 
+    const sendResizingResult = () => {
+      const { x, y, width, height } = bojArea.getBoundingClientRect();
+
+      window.electron.ipcRenderer.sendMessage('change-boj-view-width', {
+        data: { x, y, width, height },
+      });
+    };
+
     const handleResizerMouseDown = (e: MouseEvent) => {
       isDragging = true;
 
       startX = e.clientX;
 
-      leftWidth = bojArea.getBoundingClientRect().width;
+      leftWidth = left.getBoundingClientRect().width;
     };
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -49,22 +59,16 @@ export function Layout({ children }: LayoutProps) {
 
       const ratio = Math.min(((leftWidth + deltaX) / window.outerWidth) * 100, maxRatio);
 
-      bojArea.style.width = `${ratio}%`;
+      left.style.width = `${ratio}%`;
 
-      window.electron.ipcRenderer.sendMessage('change-boj-view-width', {
-        data: { nextWidth: bojArea.getBoundingClientRect().width },
-      });
+      sendResizingResult();
     };
 
     window.addEventListener('resize', () => {
-      window.electron.ipcRenderer.sendMessage('change-boj-view-width', {
-        data: { nextWidth: bojArea.getBoundingClientRect().width },
-      });
+      sendResizingResult();
     });
 
-    window.electron.ipcRenderer.sendMessage('change-boj-view-width', {
-      data: { nextWidth: bojArea.getBoundingClientRect().width },
-    });
+    sendResizingResult();
 
     const handleMouseUp = () => {
       isDragging = false;
@@ -97,19 +101,26 @@ export function Layout({ children }: LayoutProps) {
           flex-direction: column;
           width: 50%;
         `}
-        ref={bojAreaRef}
+        ref={leftRef}
       >
         <div
           className={css`
             width: 100%;
             height: ${size.BOJ_VIEW_NAVIGATION_HEIGHT}px;
             box-sizing: border-box;
-            border: 1px solid black;
+            border-bottom: 1px solid black;
             background-color: white;
           `}
         >
           네비게이션
         </div>
+
+        <div
+          className={css`
+            flex: 1;
+          `}
+          ref={bojAreaRef}
+        />
       </div>
 
       <div ref={resizerRef} className="resizer" />

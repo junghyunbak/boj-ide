@@ -33,3 +33,10 @@ type JudgeResult = {
 type SaveResult = {
   isSaved: boolean;
 };
+
+type Rect = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};

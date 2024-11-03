@@ -79,7 +79,6 @@ const createWindow = async () => {
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: app.isPackaged ? path.join(__dirname, 'preload.js') : path.join(__dirname, '../../.erb/dll/preload.js'),
-      devTools: false,
     },
   });
 
@@ -103,17 +102,7 @@ const createWindow = async () => {
     }
   });
 
-  mainWindow.on('resize', () => {
-    if (!mainWindow) {
-      return;
-    }
-
-    const { height } = mainWindow.getBounds();
-
-    bojView.updateHeight(height);
-
-    bojView.updateWidth();
-  });
+  console.log('test');
 
   mainWindow.on('closed', () => {
     mainWindow = null;
