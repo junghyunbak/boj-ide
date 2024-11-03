@@ -55,7 +55,7 @@ export default class BojView {
         return;
       }
 
-      if (url.startsWith(`https://${BOJ_DOMAIN}/problem`)) {
+      if (url.startsWith(`https://${BOJ_DOMAIN}/problem/`)) {
         const result = new RegExp(`https://${BOJ_DOMAIN}/problem/([0-9]+)`).exec(url);
 
         if (!result) {
