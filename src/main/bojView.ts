@@ -60,6 +60,8 @@ export default class BojView {
     this.attachEvent();
 
     this.puppeteerBroswer = await pie.connect(app, puppeteer);
+
+    ipc.send(this.mainWindow, 'call-boj-view-rect');
   }
 
   attachView() {

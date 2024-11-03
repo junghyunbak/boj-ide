@@ -19,6 +19,7 @@ type ChannelToMessage = {
   'load-problem-data': MessageTemplate<ProblemInfo>;
   'save-code-result': MessageTemplate<SaveResult>;
   'judge-result': MessageTemplate<JudgeResult>;
+  'call-boj-view-rect': undefined;
 };
 
 type ElectronChannels = keyof Pick<
@@ -34,7 +35,7 @@ type ElectronChannels = keyof Pick<
 
 type ClientChannels = keyof Pick<
   ChannelToMessage,
-  'load-problem-data' | 'judge-result' | 'load-code-result' | 'save-code-result'
+  'load-problem-data' | 'judge-result' | 'load-code-result' | 'save-code-result' | 'call-boj-view-rect'
 >;
 
 export const ElECTRON_CHANNELS: {
@@ -56,6 +57,7 @@ export const CLIENT_CHANNELS: {
   'judge-result': 'judge-result',
   'load-problem-data': 'load-problem-data',
   'save-code-result': 'save-code-result',
+  'call-boj-view-rect': 'call-boj-view-rect',
 };
 
 declare global {
@@ -109,6 +111,8 @@ declare global {
       channel: (typeof CLIENT_CHANNELS)['judge-result'],
       message: ChannelToMessage['judge-result'],
     ): void;
+
+    send(browserWindow: BrowserWindow, channel: (typeof CLIENT_CHANNELS)['call-boj-view-rect']): void;
   }
 
   interface Window {
@@ -130,6 +134,7 @@ declare global {
           channel: (typeof CLIENT_CHANNELS)['judge-result'],
           func: (message: ChannelToMessage['judge-result']) => void,
         ): () => void;
+        on(channel: (typeof CLIENT_CHANNELS)['call-boj-view-rect'], func: () => void): () => void;
 
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['load-code'], message: ChannelToMessage['load-code']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['save-code'], message: ChannelToMessage['save-code']): void;

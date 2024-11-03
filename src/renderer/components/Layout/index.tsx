@@ -17,6 +17,24 @@ export function Layout({ children }: LayoutProps) {
 
   const resizerRef = useRef<HTMLDivElement | null>(null);
 
+  const sendResizingResult = () => {
+    if (!bojAreaRef.current) {
+      return;
+    }
+
+    const { x, y, width, height } = bojAreaRef.current.getBoundingClientRect();
+
+    window.electron.ipcRenderer.sendMessage('change-boj-view-width', {
+      data: { x, y, width, height },
+    });
+  };
+
+  useEffect(() => {
+    window.electron.ipcRenderer.on('call-boj-view-rect', () => {
+      sendResizingResult();
+    });
+  }, []);
+
   useEffect(() => {
     const left = leftRef.current;
     const bojArea = bojAreaRef.current;
@@ -31,14 +49,6 @@ export function Layout({ children }: LayoutProps) {
     let startX = 0;
 
     let leftWidth = 0;
-
-    const sendResizingResult = () => {
-      const { x, y, width, height } = bojArea.getBoundingClientRect();
-
-      window.electron.ipcRenderer.sendMessage('change-boj-view-width', {
-        data: { x, y, width, height },
-      });
-    };
 
     const handleResizerMouseDown = (e: MouseEvent) => {
       isDragging = true;
