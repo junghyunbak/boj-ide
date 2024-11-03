@@ -121,11 +121,17 @@ export function Layout({ children }: LayoutProps) {
               display: flex;
               justify-content: center;
               align-items: center;
-              border: 4px dotted gray;
+              border: 4px dotted lightgray;
               border-radius: 10px;
             `}
           >
-            loading...
+            <p
+              className={css`
+                color: gray;
+              `}
+            >
+              로딩 중...
+            </p>
           </div>
         </div>
       </div>
