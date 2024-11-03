@@ -131,9 +131,9 @@ export default class BojView {
     ipc.on('change-boj-view-width', (e, { data: { x, y, width, height } }) => {
       this.view.setBounds({
         x,
-        y,
-        width,
-        height,
+        y: y + 1,
+        width: width - 1,
+        height: height - 1,
       });
     });
 
