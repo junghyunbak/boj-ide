@@ -159,6 +159,11 @@ export const Output = memo(() => {
                             }
                           }
                         }
+
+                        pre {
+                          margin: 0;
+                          font-size: 1rem;
+                        }
                       `}
                     >
                       <tbody>
@@ -182,14 +187,18 @@ export const Output = memo(() => {
                         <tr>
                           <td>출력</td>
 
-                          <td>{judgeResult[i]?.stdout}</td>
+                          <td>
+                            <pre>{judgeResult[i]?.stdout}</pre>
+                          </td>
                         </tr>
 
                         {judgeResult[i]?.stderr && (
                           <tr>
                             <td>에러</td>
 
-                            <td>{judgeResult[i].stderr}</td>
+                            <td>
+                              <pre>{judgeResult[i].stderr}</pre>
+                            </td>
                           </tr>
                         )}
                       </tbody>
