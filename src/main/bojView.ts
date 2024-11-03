@@ -12,6 +12,27 @@ import path from 'path';
 
 import { ipc, normalizeOutput } from './util';
 
+const JS_INPUT_TEMPLATE = `const fs = require('fs');
+
+const stdin = fs.readFileSync('input', 'utf-8').split('\\n');
+
+const input = (() => {
+  let i = -1;
+
+  return () => stdin[++i];
+})();
+
+// [javascript input template]
+//
+// input 함수를 사용하면 표준 입력을 한줄씩 읽어올 수 있습니다.
+//
+// 예제 - A+B (https://www.acmicpc.net/problem/1000)
+//
+// const [a, b] = input().split(' ').map(Number);
+// 
+// console.log(a + b);
+`;
+
 export default class BojView {
   private view: WebContentsView;
 
@@ -245,11 +266,15 @@ export default class BojView {
 
       const filePath = path.join(basePath, `${number}.${ext}`);
 
-      const code = fs.existsSync(filePath)
-        ? fs.readFileSync(filePath, {
-            encoding: 'utf-8',
-          })
-        : '';
+      if (!fs.existsSync(filePath)) {
+        ipc.send(this.mainWindow, 'load-code-result', { data: { code: JS_INPUT_TEMPLATE } });
+
+        return;
+      }
+
+      const code = fs.readFileSync(filePath, {
+        encoding: 'utf-8',
+      });
 
       ipc.send(this.mainWindow, 'load-code-result', { data: { code } });
     });
