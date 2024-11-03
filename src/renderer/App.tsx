@@ -125,18 +125,27 @@ function VerticalResizerLayout({ Up, Down }: VerticalResizerLayoutProps) {
 
       <div
         className={css`
-          height: 20px;
+          height: 15px;
           width: 100%;
-          background: black;
+          background: white;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-top: 1px solid lightgray;
+          border-bottom: 1px solid lightgray;
           &:hover {
-            cursor: grab;
-          }
-          &:active {
-            cursor: grabbing;
+            cursor: row-resize;
           }
         `}
         ref={resizerRef}
-      />
+      >
+        <div
+          className={css`
+            border-top: 5px dotted lightgray;
+            width: 50px;
+          `}
+        />
+      </div>
 
       <Down />
     </div>

@@ -2,7 +2,6 @@ import { css } from '@emotion/css';
 
 import React, { useEffect, useRef } from 'react';
 
-import './index.css';
 import { BrowserNavigation } from '../BrowserNavigation';
 
 import { useStore } from '../../store';
@@ -131,9 +130,37 @@ export function Layout({ children }: LayoutProps) {
         </div>
       </div>
 
-      <div ref={resizerRef} className="resizer" />
+      <div
+        ref={resizerRef}
+        className={css`
+          width: 15px;
+          height: 100%;
+          background-color: white;
+          &:hover {
+            cursor: col-resize;
+          }
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-left: 1px solid lightgray;
+          border-right: 1px solid lightgray;
+        `}
+      >
+        <div
+          className={css`
+            height: 50px;
+            border-left: 5px dotted lightgray;
+          `}
+        />
+      </div>
 
-      <div className="right">{children}</div>
+      <div
+        className={css`
+          flex: 1;
+        `}
+      >
+        {children}
+      </div>
     </div>
   );
 }
