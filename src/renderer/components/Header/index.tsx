@@ -1,6 +1,6 @@
 import { css } from '@emotion/css';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useShallow } from 'zustand/shallow';
 
@@ -19,12 +19,20 @@ export function Header() {
 
   const [setJudgeResult] = useStore(useShallow((s) => [s.setJudgeResult]));
 
+  const [isStale, setIsStale] = useState(false);
+
+  useEffect(() => {
+    setIsStale(true);
+  }, [code]);
+
   /**
    * 코드 저장 시 완료 여부를 전달받는 ipc 이벤트 초기화
    */
   useEffect(() => {
     window.electron.ipcRenderer.on('save-code-result', ({ data: { isSaved } }) => {
       console.log(isSaved ? '저장이 완료되었습니다.' : '저장에 실패하였습니다.');
+
+      setIsStale(false);
     });
   }, []);
 
@@ -155,7 +163,7 @@ export function Header() {
             }
           `}
         >
-          <button type="button" onClick={handleSaveButtonClick}>
+          <button type="button" onClick={handleSaveButtonClick} disabled={!isStale}>
             저장하기
           </button>
 
