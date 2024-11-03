@@ -97,9 +97,8 @@ export const Output = memo(() => {
       >
         {testCases.map(({ input, output }, i, arr) => {
           return (
-            <>
+            <div key={i}>
               <li
-                key={i}
                 className={css`
                   padding: 1rem;
 
@@ -152,8 +151,10 @@ export const Output = memo(() => {
                             text-align: right;
                             vertical-align: top;
 
+                            color: gray;
+
                             &::after {
-                              content: '|';
+                              content: '>';
                               padding: 0 0.5rem;
                             }
                           }
@@ -204,7 +205,7 @@ export const Output = memo(() => {
                   `}
                 />
               )}
-            </>
+            </div>
           );
         })}
       </ul>
