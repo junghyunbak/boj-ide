@@ -73,7 +73,7 @@ export function Header() {
           margin: 0;
         `}
       >
-        {problem === null ? '문제 페이지로 이동하세요.' : `${problem.number}.${ext}`}
+        {problem && `${problem.number}.${ext}`}
       </p>
 
       <div
@@ -163,11 +163,11 @@ export function Header() {
             }
           `}
         >
-          <button type="button" onClick={handleSaveButtonClick} disabled={!isStale}>
+          <button type="button" onClick={handleSaveButtonClick} disabled={!problem || !isStale}>
             저장하기
           </button>
 
-          <button type="button" onClick={handleSubmitButtonClick} disabled={isJudging}>
+          <button type="button" onClick={handleSubmitButtonClick} disabled={!problem || isJudging}>
             제출하기
           </button>
         </div>

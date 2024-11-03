@@ -1,3 +1,4 @@
+import { css } from '@emotion/css';
 import { useEffect } from 'react';
 
 import { vim, Vim } from '@replit/codemirror-vim';
@@ -83,6 +84,29 @@ export function Editor({ height }: EditorProps) {
 
     return tmp;
   })();
+
+  if (!problem) {
+    return (
+      <div
+        className={css`
+          height: ${height}px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+        `}
+      >
+        <h1
+          className={css`
+            color: #428bca;
+          `}
+        >
+          {'</>'}
+        </h1>
+        <p>왼쪽 브라우저에서 문제 페이지로 이동하세요.</p>
+      </div>
+    );
+  }
 
   return (
     <ReactCodeMirror
