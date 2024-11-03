@@ -56,7 +56,9 @@ function VerticalResizerLayout({ Up, Down }: VerticalResizerLayoutProps) {
 
       const deltaY = e.clientY - startY;
 
-      const ratio = ((upHeight + deltaY) / container.getBoundingClientRect().height) * 100;
+      const minRatio = 10;
+
+      const ratio = Math.max(minRatio, ((upHeight + deltaY) / container.getBoundingClientRect().height) * 100);
 
       up.style.height = `${ratio}%`;
 
