@@ -163,6 +163,7 @@ export const Output = memo(() => {
                         pre {
                           margin: 0;
                           font-size: 1rem;
+                          white-space: pre-wrap;
                         }
                       `}
                     >
