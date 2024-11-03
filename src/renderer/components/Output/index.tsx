@@ -1,3 +1,5 @@
+import { css } from '@emotion/css';
+
 import { memo, useEffect } from 'react';
 
 import { useShallow } from 'zustand/shallow';
@@ -78,64 +80,134 @@ export const Output = memo(() => {
   })();
 
   return (
-    <ul
-      style={{
-        flex: 1,
-        overflowY: 'scroll',
-        overflowX: 'hidden',
-        margin: 0,
-      }}
+    <div
+      className={css`
+        flex: 1;
+        overflow: hidden;
+      `}
     >
-      {testCases.map(({ input, output }, i) => {
-        return (
-          <li key={i} style={{ color: 'black' }}>
-            <p>예제{i + 1}</p>
-            <div style={{ display: 'flex' }}>
-              <pre
-                style={{
-                  border: '1px solid black',
-                  width: '50%',
-                  padding: '8px',
-                }}
-              >
-                {input}
-              </pre>
-              <pre
-                style={{
-                  border: '1px solid black',
-                  width: '50%',
-                  padding: '8px',
-                }}
-              >
-                {output}
-              </pre>
-            </div>
+      <ul
+        className={css`
+          width: 100%;
+          height: 100%;
+          overflow-y: scroll;
+          padding: 0;
+          margin: 0;
+        `}
+      >
+        {testCases.map(({ input, output }, i, arr) => {
+          return (
+            <>
+              <li
+                key={i}
+                className={css`
+                  padding: 1rem;
 
-            <div>
-              <p>
-                결과:{' '}
-                {!judgeResult[i] && !isJudging
-                  ? ''
-                  : !judgeResult[i]
-                    ? '채점중...'
-                    : `${judgeResult[i].result} (${judgeResult[i].elapsed}ms)`}
-              </p>
-              {judgeResult[i] && (
-                <div>
-                  <p>표준 출력</p>
-                  <pre>{judgeResult[i].stdout}</pre>
+                  p {
+                    margin: 0;
+                  }
+                `}
+              >
+                <p className={css``}>예제 입력 {i + 1}</p>
+
+                <div
+                  className={css`
+                    display: flex;
+                    gap: 0.5rem;
+
+                    pre {
+                      background-color: #f7f7f9;
+
+                      border: 1px solid lightgray;
+                    }
+                  `}
+                >
+                  <pre
+                    style={{
+                      width: '50%',
+                      padding: '8px',
+                    }}
+                  >
+                    {input}
+                  </pre>
+                  <pre
+                    style={{
+                      width: '50%',
+                      padding: '8px',
+                    }}
+                  >
+                    {output}
+                  </pre>
                 </div>
+
+                {isJudging ? (
+                  <p>채점중...</p>
+                ) : (
+                  judgeResult[i] && (
+                    <table
+                      className={css`
+                        tr {
+                          td:first-of-type {
+                            white-space: nowrap;
+                            text-align: right;
+                            vertical-align: top;
+
+                            &::after {
+                              content: '|';
+                              padding: 0 0.5rem;
+                            }
+                          }
+                        }
+                      `}
+                    >
+                      <tbody>
+                        <tr>
+                          <td>결과</td>
+
+                          <td
+                            className={css`
+                              color: ${judgeResult[i]?.result === '성공' ? 'green' : 'red'};
+                            `}
+                          >
+                            {judgeResult[i]?.result}
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>실행 시간</td>
+                          <td>{`${judgeResult[i]?.elapsed}ms`}</td>
+                        </tr>
+
+                        <tr>
+                          <td>출력</td>
+
+                          <td>{judgeResult[i]?.stdout}</td>
+                        </tr>
+
+                        {judgeResult[i]?.stderr && (
+                          <tr>
+                            <td>에러</td>
+
+                            <td>{judgeResult[i].stderr}</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  )
+                )}
+              </li>
+
+              {i !== arr.length - 1 && (
+                <div
+                  className={css`
+                    border-bottom: 1px solid lightgray;
+                  `}
+                />
               )}
-              {judgeResult[i] && (
-                <div>
-                  <p>에러</p>
-                  <pre>{judgeResult[i].stderr}</pre>
-                </div>
-              )}
-            </div>
-          </li>
-        );
-      })}
-    </ul>
+            </>
+          );
+        })}
+      </ul>
+    </div>
   );
 });
