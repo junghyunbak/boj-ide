@@ -5,6 +5,8 @@ import React, { useEffect, useRef } from 'react';
 import './index.css';
 import { BrowserNavigation } from '../BrowserNavigation';
 
+import { useStore } from '../../store';
+
 interface LayoutProps {
   children: React.ReactNode;
 }
@@ -60,6 +62,8 @@ export function Layout({ children }: LayoutProps) {
 
       left.style.width = `${ratio}%`;
 
+      useStore.getState().setLeftRatio(ratio);
+
       sendResizingResult();
     };
 
@@ -98,7 +102,7 @@ export function Layout({ children }: LayoutProps) {
         className={css`
           display: flex;
           flex-direction: column;
-          width: 50%;
+          width: ${useStore.getState().leftRatio}%;
         `}
         ref={leftRef}
       >

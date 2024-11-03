@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 
 import { css } from '@emotion/css';
 
@@ -20,7 +20,7 @@ function VerticalResizerLayout({ Up, Down }: VerticalResizerLayoutProps) {
   const upRef = useRef<HTMLDivElement | null>(null);
   const resizerRef = useRef<HTMLDivElement | null>(null);
 
-  const [heightRatio, setHeightRatio] = useState(50);
+  const [upRatio, setUpRatio] = useStore(useShallow((s) => [s.upRatio, s.setUpRatio]));
 
   const [upHeight, setUpHeight] = useState(0);
 
@@ -58,7 +58,7 @@ function VerticalResizerLayout({ Up, Down }: VerticalResizerLayoutProps) {
 
       up.style.height = `${ratio}%`;
 
-      setHeightRatio(ratio);
+      setUpRatio(ratio);
     };
 
     const handleMouseUp = () => {
@@ -76,7 +76,7 @@ function VerticalResizerLayout({ Up, Down }: VerticalResizerLayoutProps) {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [setHeightRatio]);
+  }, [setUpRatio]);
 
   /**
    * 윈도우 사이즈가 변경되었을 때, 현재 비율에 맞춰 에디터의 height 픽셀값을 재설정
@@ -89,7 +89,7 @@ function VerticalResizerLayout({ Up, Down }: VerticalResizerLayoutProps) {
         return;
       }
 
-      setUpHeight((containerRef.current.getBoundingClientRect().height * heightRatio) / 100);
+      setUpHeight((containerRef.current.getBoundingClientRect().height * upRatio) / 100);
     };
 
     window.addEventListener('resize', handleResizeUpHeight);
@@ -97,7 +97,7 @@ function VerticalResizerLayout({ Up, Down }: VerticalResizerLayoutProps) {
     return () => {
       window.removeEventListener('resize', handleResizeUpHeight);
     };
-  }, [heightRatio, setUpHeight]);
+  }, [upRatio, setUpHeight]);
 
   /**
    * resizer에 의해 현재 비율이 변경되었을 경우, 에디터의 height 픽셀값을 재설정
@@ -107,8 +107,8 @@ function VerticalResizerLayout({ Up, Down }: VerticalResizerLayoutProps) {
       return;
     }
 
-    setUpHeight((containerRef.current.getBoundingClientRect().height * heightRatio) / 100);
-  }, [heightRatio]);
+    setUpHeight((containerRef.current.getBoundingClientRect().height * upRatio) / 100);
+  }, [upRatio]);
 
   return (
     <div
