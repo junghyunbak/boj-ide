@@ -16,16 +16,20 @@ interface VerticalResizerLayoutProps {
 }
 
 function VerticalResizerLayout({ Up, Down }: VerticalResizerLayoutProps) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const upRef = useRef<HTMLDivElement | null>(null);
   const resizerRef = useRef<HTMLDivElement | null>(null);
 
-  const [height, setHeight] = useState(200);
+  const [heightRatio, setHeightRatio] = useState(50);
+
+  const [upHeight, setUpHeight] = useState(0);
 
   useEffect(() => {
     const up = upRef.current;
     const resizer = resizerRef.current;
+    const container = containerRef.current;
 
-    if (!up || !resizer) {
+    if (!up || !resizer || !container) {
       return () => {};
     }
 
@@ -50,7 +54,11 @@ function VerticalResizerLayout({ Up, Down }: VerticalResizerLayoutProps) {
 
       const deltaY = e.clientY - startY;
 
-      setHeight(upHeight + deltaY);
+      const ratio = ((upHeight + deltaY) / container.getBoundingClientRect().height) * 100;
+
+      up.style.height = `${ratio}%`;
+
+      setHeightRatio(ratio);
     };
 
     const handleMouseUp = () => {
@@ -68,12 +76,49 @@ function VerticalResizerLayout({ Up, Down }: VerticalResizerLayoutProps) {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [setHeight]);
+  }, [setHeightRatio]);
+
+  /**
+   * 윈도우 사이즈가 변경되었을 때, 현재 비율에 맞춰 에디터의 height 픽셀값을 재설정
+   *
+   * // [ ]: 비율이 변경될 때 마다 이벤트가 재등록/해제 되는 이슈가 있음.
+   */
+  useEffect(() => {
+    const handleResizeUpHeight = () => {
+      if (!containerRef.current) {
+        return;
+      }
+
+      setUpHeight((containerRef.current.getBoundingClientRect().height * heightRatio) / 100);
+    };
+
+    window.addEventListener('resize', handleResizeUpHeight);
+
+    return () => {
+      window.removeEventListener('resize', handleResizeUpHeight);
+    };
+  }, [heightRatio, setUpHeight]);
+
+  /**
+   * resizer에 의해 현재 비율이 변경되었을 경우, 에디터의 height 픽셀값을 재설정
+   */
+  useEffect(() => {
+    if (!containerRef.current) {
+      return;
+    }
+
+    setUpHeight((containerRef.current.getBoundingClientRect().height * heightRatio) / 100);
+  }, [heightRatio]);
 
   return (
-    <div>
+    <div
+      ref={containerRef}
+      className={css`
+        flex: 1;
+      `}
+    >
       <div ref={upRef}>
-        <Up height={height} />
+        <Up height={upHeight} />
       </div>
 
       <div
