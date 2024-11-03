@@ -8,7 +8,11 @@ import { useShallow } from 'zustand/shallow';
 
 import { useStore } from '../../store';
 
-export function Editor() {
+interface EditorProps {
+  height: number;
+}
+
+export function Editor({ height }: EditorProps) {
   const [problem] = useStore(useShallow((s) => [s.problem]));
 
   const [ext] = useStore(useShallow((s) => [s.ext]));
@@ -84,7 +88,7 @@ export function Editor() {
     <ReactCodeMirror
       extensions={extensions}
       value={code}
-      height="200px"
+      height={`${height || 500}px`}
       onChange={(v) => {
         setCode(v);
       }}

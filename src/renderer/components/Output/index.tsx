@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 
 import { useShallow } from 'zustand/shallow';
 
@@ -9,7 +9,7 @@ type TestCase = {
   output: string;
 };
 
-export function Output() {
+export const Output = memo(() => {
   const [problem] = useStore(useShallow((s) => [s.problem]));
 
   const [isJudging, setIsJudging] = useStore(useShallow((s) => [s.isJudging, s.setIsJudging]));
@@ -138,4 +138,4 @@ export function Output() {
       })}
     </ul>
   );
-}
+});
