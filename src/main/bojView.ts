@@ -209,8 +209,10 @@ export default class BojView {
             // eslint-disable-next-line no-control-regex
             const cleanText = buf.toString().replace(/\x1B\[[0-?]*[ -/]*[@-~]/g, '');
 
-            output = cleanText;
+            output += cleanText;
+          });
 
+          outputProcess.stdout.on('end', () => {
             resolve(normalizeOutput(output) === normalizeOutput(this.outputs[i]) ? '성공' : '실패');
           });
 
