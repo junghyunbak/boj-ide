@@ -48,7 +48,6 @@ export class Judge {
   }
 
   async codeBuild(ext: Ext, problemNumber: string, code: string): Promise<BuildFileName> {
-    // [ ]: 빌드 가능한지 체크
     switch (ext) {
       case 'cpp': {
         const fileName = `${problemNumber}.cc`;

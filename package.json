@@ -105,6 +105,7 @@
   "dependencies": {
     "@codemirror/lang-cpp": "^6.0.2",
     "@codemirror/lang-javascript": "^6.2.2",
+    "@codemirror/lang-python": "^6.1.6",
     "@electron/notarize": "^2.3.2",
     "@emotion/css": "^11.13.4",
     "@replit/codemirror-vim": "^6.2.1",

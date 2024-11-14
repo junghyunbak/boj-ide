@@ -3,12 +3,13 @@ import { useEffect } from 'react';
 
 import { vim, Vim } from '@replit/codemirror-vim';
 import { javascript } from '@codemirror/lang-javascript';
+import { cpp } from '@codemirror/lang-cpp';
+import { python } from '@codemirror/lang-python';
 import ReactCodeMirror, { type Extension } from '@uiw/react-codemirror';
 
 import { useShallow } from 'zustand/shallow';
 
 import { useStore } from '../../store';
-import { cpp } from '@codemirror/lang-cpp';
 
 interface EditorProps {
   height: number;
@@ -81,6 +82,8 @@ export function Editor({ height }: EditorProps) {
       tmp.push(javascript());
     } else if (ext === 'cpp') {
       tmp.push(cpp());
+    } else if (ext === 'py') {
+      tmp.push(python());
     }
 
     if (mode === 'vim') {
