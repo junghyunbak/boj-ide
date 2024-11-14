@@ -11,6 +11,8 @@ import { Editor } from './components/Editor';
 import { Header } from './components/Header';
 
 import './App.css';
+import './assets/fonts.css';
+
 import { AlertModal } from './components/AlertModal';
 
 interface VerticalResizerLayoutProps {

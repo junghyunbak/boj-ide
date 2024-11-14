@@ -5,7 +5,7 @@ import { vim, Vim } from '@replit/codemirror-vim';
 import { javascript } from '@codemirror/lang-javascript';
 import { cpp } from '@codemirror/lang-cpp';
 import { python } from '@codemirror/lang-python';
-import ReactCodeMirror, { type Extension } from '@uiw/react-codemirror';
+import ReactCodeMirror, { EditorView, type Extension } from '@uiw/react-codemirror';
 
 import { useShallow } from 'zustand/shallow';
 
@@ -77,6 +77,19 @@ export function Editor({ height }: EditorProps) {
 
   const extensions = (() => {
     const tmp: Extension[] = [];
+
+    const FontTheme = EditorView.theme({
+      '.cm-content': {
+        fontSize: '16px',
+        fontFamily: 'hack',
+      },
+      '.cm-gutters': {
+        fontSize: '16px',
+        fontFamily: 'hack',
+      },
+    });
+
+    tmp.push(FontTheme);
 
     if (ext === 'js') {
       tmp.push(javascript());
