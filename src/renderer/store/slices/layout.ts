@@ -1,11 +1,19 @@
 import { type StateCreator } from 'zustand';
 
 type LayoutSlice = {
+  /**
+   * main window
+   * ┌─────────┬─────────┐
+   * │         │   top   │
+   * │  left   ├─────────┤
+   * │         │         │
+   * └─────────┴─────────┘
+   */
   leftRatio: number;
   setLeftRatio: (leftRatio: number) => void;
 
-  upRatio: number;
-  setUpRatio: (upRatio: number) => void;
+  topRatio: number;
+  setTopRatio: (topRatio: number) => void;
 };
 
 export const createLayoutSlice: StateCreator<LayoutSlice> = (set): LayoutSlice => ({
@@ -14,10 +22,10 @@ export const createLayoutSlice: StateCreator<LayoutSlice> = (set): LayoutSlice =
     set(() => ({ leftRatio }));
   },
 
-  upRatio: 50,
-  setUpRatio(upRatio) {
+  topRatio: 50,
+  setTopRatio(topRatio) {
     set(() => ({
-      upRatio,
+      topRatio,
     }));
   },
 });

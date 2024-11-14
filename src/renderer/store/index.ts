@@ -25,9 +25,9 @@ export const useStore = create<StoreState>()(
     {
       name: 'zustandStore',
       partialize: (s) => {
-        const { ext, mode, leftRatio, upRatio } = s;
+        const { ext, mode, leftRatio, topRatio } = s;
 
-        return { ext, mode, leftRatio, upRatio };
+        return { ext, mode, leftRatio, topRatio };
       },
     },
   ),

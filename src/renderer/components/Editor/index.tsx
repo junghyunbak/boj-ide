@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { vim, Vim } from '@replit/codemirror-vim';
 import { javascript } from '@codemirror/lang-javascript';
@@ -11,20 +11,16 @@ import { useShallow } from 'zustand/shallow';
 
 import { useStore } from '../../store';
 
-interface EditorProps {
-  height: number;
-}
-
-export function Editor({ height }: EditorProps) {
+export function Editor() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
-
   const [ext] = useStore(useShallow((s) => [s.ext]));
-
   const [code, setCode] = useStore(useShallow((s) => [s.code, s.setCode]));
-
   const [mode] = useStore(useShallow((s) => [s.mode]));
 
-  const [leftRatio] = useStore(useShallow((s) => [s.leftRatio]));
+  const [editorHeight, setEditorHeight] = useState(0);
+  const [editorWidth, setEditorWidth] = useState(0);
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   /**
    * 문제, 확장자가 변경되면 소스코드를 로딩
@@ -75,6 +71,53 @@ export function Editor({ height }: EditorProps) {
     };
   }, [code, ext, problem]);
 
+  /**
+   * - vertical resizer에 의한 에디터 영역 너비, 높이 변경
+   * - 윈도우 크기 조절에 의한 에디터 영역 너비, 높이 변경
+   *
+   * 에 반응하기 위한 이벤트 등록
+   */
+  useEffect(() => {
+    const resizeEditorHeight = () => {
+      if (!containerRef.current) {
+        return;
+      }
+
+      setEditorHeight(containerRef.current.getBoundingClientRect().height);
+    };
+
+    const resizeEditorWidth = () => {
+      if (!containerRef.current) {
+        return;
+      }
+
+      setEditorWidth(containerRef.current.getBoundingClientRect().width);
+    };
+
+    useStore.subscribe((s, prev) => {
+      if (s.topRatio !== prev.topRatio) {
+        resizeEditorHeight();
+      }
+
+      if (s.leftRatio !== prev.leftRatio) {
+        resizeEditorWidth();
+      }
+    });
+
+    const handleResizeEditor = () => {
+      resizeEditorHeight();
+      resizeEditorWidth();
+    };
+
+    handleResizeEditor();
+
+    window.addEventListener('resize', handleResizeEditor);
+
+    return () => {
+      window.removeEventListener('resize', handleResizeEditor);
+    };
+  }, []);
+
   const extensions = (() => {
     const tmp: Extension[] = [];
 
@@ -106,39 +149,46 @@ export function Editor({ height }: EditorProps) {
     return tmp;
   })();
 
-  if (!problem) {
-    return (
-      <div
-        className={css`
-          height: ${height}px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-direction: column;
-        `}
-      >
-        <h1
+  return (
+    <div
+      ref={containerRef}
+      className={css`
+        width: 100%;
+        height: 100%;
+      `}
+    >
+      {!problem ? (
+        <div
           className={css`
-            color: #428bca;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
           `}
         >
-          {'</>'}
-        </h1>
-        <p>왼쪽 브라우저에서 문제 페이지로 이동하세요.</p>
-      </div>
-    );
-  }
-
-  return (
-    <ReactCodeMirror
-      extensions={extensions}
-      value={code}
-      width={`${(window.innerWidth * (100 - leftRatio)) / 100 - 15}px`}
-      height={`${height || 500}px`}
-      basicSetup={{ autocompletion: false }}
-      onChange={(v) => {
-        setCode(v);
-      }}
-    />
+          <h1
+            className={css`
+              color: #428bca;
+            `}
+          >
+            {'/<>'}
+          </h1>
+          <p>왼쪽 브라우저에서 문제 페이지로 이동하세요.</p>
+        </div>
+      ) : (
+        <ReactCodeMirror
+          extensions={extensions}
+          value={code}
+          width={`${editorWidth}px`}
+          height={`${editorHeight}px`}
+          basicSetup={{ autocompletion: false }}
+          onChange={(v) => {
+            setCode(v);
+          }}
+        />
+      )}
+    </div>
   );
 }
