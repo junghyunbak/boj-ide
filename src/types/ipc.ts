@@ -8,7 +8,7 @@ type ChannelToMessage = {
   'load-code': MessageTemplate<MyOmit<CodeInfo, 'code'>>;
   'save-code': MessageTemplate<CodeInfo>;
   'change-boj-view-width': MessageTemplate<Rect>;
-  'judge-start': MessageTemplate<Omit<CodeInfo, 'number'>>;
+  'judge-start': MessageTemplate<CodeInfo & ProblemInfo>;
   'go-back-boj-view': undefined;
   'go-front-boj-view': undefined;
   'ready-editor': undefined;
@@ -107,15 +107,17 @@ class Ipc {
           await result;
         }
       } catch (err) {
-        if (err instanceof IpcError) {
-          switch (err.errorType) {
-            case 'build-error':
-              this.send(e.sender, 'reset-judge');
+        if (err instanceof Error) {
+          if (err instanceof IpcError) {
+            switch (err.errorType) {
+              case 'build-error':
+                this.send(e.sender, 'reset-judge');
 
-              break;
+                break;
 
-            default:
-              break;
+              default:
+                break;
+            }
           }
 
           this.send(e.sender, 'occur-error', { data: { message: err.message } });

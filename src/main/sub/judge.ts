@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, WebContents } from 'electron';
 
 import fs from 'fs';
 
@@ -6,10 +6,11 @@ import { spawn } from 'child_process';
 
 import path from 'path';
 
-import { normalizeOutput } from './util';
+import { normalizeOutput } from '../util';
 
-import { ipc } from '../types/ipc';
-import { IpcError } from '../error';
+import { ipc } from '../../types/ipc';
+
+import { IpcError } from '../../error';
 
 const EXIT_CODE = {
   TIMEOUT: null,
@@ -22,35 +23,29 @@ type BuildFileName = string;
 export class Judge {
   private basePath: string;
 
-  private mainWindow: BrowserWindow;
+  private webContents: WebContents;
 
-  constructor(mainWindow: BrowserWindow) {
+  constructor(webContents: WebContents) {
     this.basePath = app.getPath('userData');
 
-    this.mainWindow = mainWindow;
+    this.webContents = webContents;
   }
 
-  async execute({
-    problemNumber,
-    code,
-    ext,
-    inputs,
-    outputs,
-  }: {
-    problemNumber: string;
-    code: string;
-    ext: Ext;
-    inputs: string[];
-    outputs: string[];
-  }) {
-    const buildFileName = await this.build(ext, problemNumber, code);
+  build() {
+    ipc.on('judge-start', async (e, { data }) => {
+      await this.execute(data);
+    });
+  }
+
+  async execute({ number, code, ext, testCase: { inputs, outputs } }: CodeInfo & ProblemInfo) {
+    const buildFileName = await this.codeBuild(ext, number, code);
 
     const executeCommand = this.createExecuteCommand(buildFileName, ext);
 
     await this.run(executeCommand, inputs, outputs);
   }
 
-  async build(ext: Ext, problemNumber: string, code: string): Promise<BuildFileName> {
+  async codeBuild(ext: Ext, problemNumber: string, code: string): Promise<BuildFileName> {
     // [ ]: 빌드 가능한지 체크
 
     switch (ext) {
@@ -107,6 +102,7 @@ export class Judge {
   }
 
   async run(cmd: string, inputs: string[], outputs: string[]) {
+    console.log('[테스트]', cmd, inputs, outputs);
     for (let i = 0; i < inputs.length; i += 1) {
       let error = '';
       let output = '';
@@ -159,7 +155,7 @@ export class Judge {
 
       const elapsed = end - start;
 
-      ipc.send(this.mainWindow.webContents, 'judge-result', {
+      ipc.send(this.webContents, 'judge-result', {
         data: { index: i, stderr: error, stdout: output, elapsed, result },
       });
     }

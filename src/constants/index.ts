@@ -1,3 +1,5 @@
+export const BOJ_DOMAIN = 'www.acmicpc.net';
+
 export const JS_INPUT_TEMPLATE = `const fs = require('fs');
 
 const stdin = fs.readFileSync(process.platform === 'linux' ? 0 : 'input', 'utf-8').split('\\n');

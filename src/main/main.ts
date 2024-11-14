@@ -12,13 +12,16 @@ import path from 'path';
 
 import { app, BrowserWindow, shell } from 'electron';
 
+import puppeteer, { type Browser } from 'puppeteer-core';
 import pie from 'puppeteer-in-electron';
-
-import BojView from './bojView';
 
 import { resolveHtmlPath } from './util';
 
 import { ipc } from '../types/ipc';
+
+import { BojView } from './sub/bojView';
+import { Code } from './sub/code';
+import { Judge } from './sub/judge';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -46,7 +49,7 @@ const installExtensions = async () => {
     .catch(console.log);
 };
 
-const createWindow = async () => {
+const createWindow = async (puppeteerBroswer: Browser) => {
   if (isDebug) {
     await installExtensions();
   }
@@ -91,9 +94,12 @@ const createWindow = async () => {
       throw new Error('"mainWindow" is not defined');
     }
 
-    const bojView = new BojView(mainWindow);
-
-    await bojView.build();
+    /**
+     * BojView가 제일 나중에 빌드되어야 함.
+     */
+    new Code(mainWindow.webContents).build();
+    new Judge(mainWindow.webContents).build();
+    new BojView(mainWindow, puppeteerBroswer).build();
   });
 
   mainWindow.on('closed', () => {
@@ -124,12 +130,21 @@ app.on('window-all-closed', () => {
 
   app
     .whenReady()
-    .then(() => {
-      createWindow();
+    .then(async () => {
+      /**
+       * [pie 라이브러리 유지보수 이슈]
+       *
+       * pie와 최신 puppeteer-core 타입과 일치하지 않음
+       */
+      // @ts-expect-error
+      const puppeteerBroswer = await pie.connect(app, puppeteer);
+
+      createWindow(puppeteerBroswer);
+
       app.on('activate', () => {
         // On macOS it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.
-        if (mainWindow === null) createWindow();
+        if (mainWindow === null) createWindow(puppeteerBroswer);
       });
     })
     .catch(console.log);

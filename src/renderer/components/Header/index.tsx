@@ -60,6 +60,10 @@ export function Header() {
   };
 
   const handleSubmitButtonClick = () => {
+    if (!problem) {
+      return;
+    }
+
     setIsJudging(true);
 
     setJudgeResult(() => []);
@@ -68,6 +72,7 @@ export function Header() {
       data: {
         code,
         ext,
+        ...problem,
       },
     });
   };
