@@ -122,6 +122,7 @@ export function Editor({ height }: EditorProps) {
       value={code}
       width={`${(window.innerWidth * (100 - leftRatio)) / 100 - 15}px`}
       height={`${height || 500}px`}
+      basicSetup={{ autocompletion: false }}
       onChange={(v) => {
         setCode(v);
       }}
