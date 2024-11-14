@@ -72,10 +72,7 @@ export function Editor() {
   }, [code, ext, problem]);
 
   /**
-   * - vertical resizer에 의한 에디터 영역 너비, 높이 변경
-   * - 윈도우 크기 조절에 의한 에디터 영역 너비, 높이 변경
-   *
-   * 에 반응하기 위한 이벤트 등록
+   * 레이아웃이 달라졌을경우, 에디터의 크기 갱신을 위한 이벤트 등록
    */
   useEffect(() => {
     const resizeEditorHeight = () => {
@@ -95,11 +92,8 @@ export function Editor() {
     };
 
     useStore.subscribe((s, prev) => {
-      if (s.topRatio !== prev.topRatio) {
+      if (s.topRatio !== prev.topRatio || s.leftRatio !== prev.leftRatio) {
         resizeEditorHeight();
-      }
-
-      if (s.leftRatio !== prev.leftRatio) {
         resizeEditorWidth();
       }
     });
@@ -118,6 +112,9 @@ export function Editor() {
     };
   }, []);
 
+  /**
+   * 현재 언어와 모드에 따른 에디터 확장 프로그램 계산
+   */
   const extensions = (() => {
     const tmp: Extension[] = [];
 
