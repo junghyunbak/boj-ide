@@ -38,6 +38,8 @@ export class Judge {
   }
 
   async execute({ number, code, ext, testCase: { inputs, outputs } }: CodeInfo & ProblemInfo) {
+    await this.checkProgram(ext);
+
     const buildFileName = await this.codeBuild(ext, number, code);
 
     const executeCommand = this.createExecuteCommand(buildFileName, ext);
@@ -47,7 +49,6 @@ export class Judge {
 
   async codeBuild(ext: Ext, problemNumber: string, code: string): Promise<BuildFileName> {
     // [ ]: 빌드 가능한지 체크
-
     switch (ext) {
       case 'cpp': {
         const fileName = `${problemNumber}.cc`;
@@ -82,13 +83,17 @@ export class Judge {
         return `${outFileName}.exe`;
       }
 
+      /**
+       * 파이썬도 컴파일이 필요?
+       */
+      case 'py':
       case 'js':
       default:
         return `${problemNumber}.${ext}`;
     }
   }
 
-  createExecuteCommand(buildFileName: string, ext: string): string {
+  createExecuteCommand(buildFileName: string, ext: Ext): string {
     switch (ext) {
       case 'cpp':
         return `${process.platform === 'win32' ? '' : './'}${buildFileName}`;
@@ -96,20 +101,60 @@ export class Judge {
       case 'js':
         return `node ${buildFileName}`;
 
+      case 'py':
+        return `python3 -W ignore ${buildFileName}`;
+
       default:
         return '';
     }
   }
 
+  async checkProgram(ext: Ext) {
+    const program = (() => {
+      switch (ext) {
+        case 'py':
+          return 'python3';
+
+        case 'cpp':
+          return 'g++';
+
+        case 'js':
+          return 'node';
+
+        default:
+          return '';
+      }
+    })();
+
+    let output = '';
+
+    const isInstalled = await new Promise((resolve) => {
+      const process = spawn(`${program} --version`, {
+        shell: true,
+      });
+
+      process.stdout.on('data', (buf) => {
+        output += buf.toString();
+      });
+
+      process.on('close', () => {
+        resolve(/[0-9]+\.[0-9]+\.[0-9]+/.test(output));
+      });
+    });
+
+    if (!isInstalled) {
+      throw new IpcError('프로그램이 설치되어 있지 않습니다.', 'build-error');
+    }
+  }
+
   async run(cmd: string, inputs: string[], outputs: string[]) {
-    console.log('[테스트]', cmd, inputs, outputs);
     for (let i = 0; i < inputs.length; i += 1) {
       let error = '';
       let output = '';
 
       fs.writeFileSync(path.join(this.basePath, 'input'), inputs[i]);
 
-      let start: number = Date.now();
+      const start: number = Date.now();
       let end: number = Date.now();
 
       const result = await new Promise<JudgeResult['result']>((resolve) => {
@@ -125,8 +170,6 @@ export class Judge {
         });
 
         inputProcess.stdout.pipe(outputProcess.stdin);
-
-        start = Date.now();
 
         outputProcess.stdout.on('data', (buf) => {
           output += this.removeAnsiText(buf.toString());

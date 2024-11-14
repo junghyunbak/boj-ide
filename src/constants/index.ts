@@ -39,3 +39,7 @@ int main() {
   return 0;
 }
 `;
+
+export const PY_INPUT_TEMPLATE = `a, b = map(int, input().split())
+print(a+b)
+`;

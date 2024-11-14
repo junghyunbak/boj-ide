@@ -5,7 +5,7 @@ import path from 'path';
 import { ipc } from '../../types/ipc';
 import { IpcError } from '../../error';
 
-import { JS_INPUT_TEMPLATE, CPP_INPUT_TEMPLATE } from '../../constants';
+import { JS_INPUT_TEMPLATE, CPP_INPUT_TEMPLATE, PY_INPUT_TEMPLATE } from '../../constants';
 
 export class Code {
   private basePath: string;
@@ -32,22 +32,26 @@ export class Code {
     ipc.on('load-code', (e, { data: { number, ext } }) => {
       const filePath = path.join(this.basePath, `${number}.${ext}`);
 
-      const code = (() => {
-        if (!fs.existsSync(filePath)) {
+      if (!fs.existsSync(filePath)) {
+        const code = (() => {
           switch (ext) {
             case 'cpp':
               return CPP_INPUT_TEMPLATE;
             case 'js':
               return JS_INPUT_TEMPLATE;
+            case 'py':
+              return PY_INPUT_TEMPLATE;
             default:
               return '';
           }
-        }
+        })();
 
-        return fs.readFileSync(filePath, {
-          encoding: 'utf-8',
-        });
-      })();
+        fs.writeFileSync(filePath, code, { encoding: 'utf-8' });
+      }
+
+      const code = fs.readFileSync(filePath, {
+        encoding: 'utf-8',
+      });
 
       ipc.send(this.webContents, 'load-code-result', { data: { code } });
     });

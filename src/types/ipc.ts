@@ -120,6 +120,7 @@ class Ipc {
             }
           }
 
+          this.send(e.sender, 'reset-judge');
           this.send(e.sender, 'occur-error', { data: { message: err.message } });
         }
       }
