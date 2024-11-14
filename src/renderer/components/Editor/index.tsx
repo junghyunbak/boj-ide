@@ -8,6 +8,7 @@ import ReactCodeMirror, { type Extension } from '@uiw/react-codemirror';
 import { useShallow } from 'zustand/shallow';
 
 import { useStore } from '../../store';
+import { cpp } from '@codemirror/lang-cpp';
 
 interface EditorProps {
   height: number;
@@ -21,6 +22,8 @@ export function Editor({ height }: EditorProps) {
   const [code, setCode] = useStore(useShallow((s) => [s.code, s.setCode]));
 
   const [mode] = useStore(useShallow((s) => [s.mode]));
+
+  const [leftRatio] = useStore(useShallow((s) => [s.leftRatio]));
 
   /**
    * 문제, 확장자가 변경되면 소스코드를 로딩
@@ -76,6 +79,8 @@ export function Editor({ height }: EditorProps) {
 
     if (ext === 'js') {
       tmp.push(javascript());
+    } else if (ext === 'cpp') {
+      tmp.push(cpp());
     }
 
     if (mode === 'vim') {
@@ -112,6 +117,7 @@ export function Editor({ height }: EditorProps) {
     <ReactCodeMirror
       extensions={extensions}
       value={code}
+      width={`${(window.innerWidth * (100 - leftRatio)) / 100 - 15}px`}
       height={`${height || 500}px`}
       onChange={(v) => {
         setCode(v);

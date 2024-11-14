@@ -22,6 +22,8 @@ type CodeInfo = {
   ext: 'js' | 'cpp';
 };
 
+type Ext = CodeInfo['ext'];
+
 type JudgeResult = {
   index: number;
   result: '성공' | '시간 초과' | '에러 발생' | '실패';

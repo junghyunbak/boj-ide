@@ -11,26 +11,14 @@
 import path from 'path';
 
 import { app, BrowserWindow, shell } from 'electron';
-import { autoUpdater } from 'electron-updater';
-import log from 'electron-log';
 
 import pie from 'puppeteer-in-electron';
 
 import BojView from './bojView';
 
-import { ipc, resolveHtmlPath } from './util';
+import { resolveHtmlPath } from './util';
 
-(async () => {
-  await pie.initialize(app);
-})();
-
-class AppUpdater {
-  constructor() {
-    log.transports.file.level = 'info';
-    autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
-  }
-}
+import { ipc } from '../types/ipc';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -117,10 +105,6 @@ const createWindow = async () => {
     shell.openExternal(edata.url);
     return { action: 'deny' };
   });
-
-  // Remove this if your app does not use auto updates
-  // eslint-disable-next-line
-  //new AppUpdater();
 };
 
 /**
@@ -135,14 +119,18 @@ app.on('window-all-closed', () => {
   }
 });
 
-app
-  .whenReady()
-  .then(() => {
-    createWindow();
-    app.on('activate', () => {
-      // On macOS it's common to re-create a window in the app when the
-      // dock icon is clicked and there are no other windows open.
-      if (mainWindow === null) createWindow();
-    });
-  })
-  .catch(console.log);
+(async () => {
+  await pie.initialize(app);
+
+  app
+    .whenReady()
+    .then(() => {
+      createWindow();
+      app.on('activate', () => {
+        // On macOS it's common to re-create a window in the app when the
+        // dock icon is clicked and there are no other windows open.
+        if (mainWindow === null) createWindow();
+      });
+    })
+    .catch(console.log);
+})();

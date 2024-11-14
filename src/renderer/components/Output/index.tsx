@@ -139,72 +139,70 @@ export const Output = memo(() => {
                   </pre>
                 </div>
 
-                {isJudging ? (
-                  <p>채점중...</p>
-                ) : (
-                  judgeResult[i] && (
-                    <table
-                      className={css`
-                        tr {
-                          td:first-of-type {
-                            white-space: nowrap;
-                            text-align: right;
-                            vertical-align: top;
+                {isJudging && !judgeResult[i] && <p>채점중...</p>}
 
-                            color: gray;
+                {judgeResult[i] && (
+                  <table
+                    className={css`
+                      tr {
+                        td:first-of-type {
+                          white-space: nowrap;
+                          text-align: right;
+                          vertical-align: top;
 
-                            &::after {
-                              content: '>';
-                              padding: 0 0.5rem;
-                            }
+                          color: gray;
+
+                          &::after {
+                            content: '>';
+                            padding: 0 0.5rem;
                           }
                         }
+                      }
 
-                        pre {
-                          margin: 0;
-                          font-size: 1rem;
-                          white-space: pre-wrap;
-                        }
-                      `}
-                    >
-                      <tbody>
+                      pre {
+                        margin: 0;
+                        font-size: 1rem;
+                        white-space: pre-wrap;
+                      }
+                    `}
+                  >
+                    <tbody>
+                      <tr>
+                        <td>결과</td>
+
+                        <td
+                          className={css`
+                            color: ${judgeResult[i]?.result === '성공' ? 'green' : 'red'};
+                          `}
+                        >
+                          {judgeResult[i]?.result}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>실행 시간</td>
+                        <td>{`${judgeResult[i]?.elapsed}ms`}</td>
+                      </tr>
+
+                      <tr>
+                        <td>출력</td>
+
+                        <td>
+                          <pre>{judgeResult[i]?.stdout}</pre>
+                        </td>
+                      </tr>
+
+                      {judgeResult[i]?.stderr && (
                         <tr>
-                          <td>결과</td>
-
-                          <td
-                            className={css`
-                              color: ${judgeResult[i]?.result === '성공' ? 'green' : 'red'};
-                            `}
-                          >
-                            {judgeResult[i]?.result}
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <td>실행 시간</td>
-                          <td>{`${judgeResult[i]?.elapsed}ms`}</td>
-                        </tr>
-
-                        <tr>
-                          <td>출력</td>
+                          <td>에러</td>
 
                           <td>
-                            <pre>{judgeResult[i]?.stdout}</pre>
+                            <pre>{judgeResult[i].stderr}</pre>
                           </td>
                         </tr>
-
-                        {judgeResult[i]?.stderr && (
-                          <tr>
-                            <td>에러</td>
-
-                            <td>
-                              <pre>{judgeResult[i].stderr}</pre>
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  )
+                      )}
+                    </tbody>
+                  </table>
                 )}
               </li>
 

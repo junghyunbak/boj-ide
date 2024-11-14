@@ -1,4 +1,5 @@
-import { type BrowserWindow } from 'electron';
+import { ipcMain, type WebContents } from 'electron';
+import { IpcError } from '../error';
 
 type ChannelToMessage = {
   /**
@@ -19,6 +20,7 @@ type ChannelToMessage = {
   'load-problem-data': MessageTemplate<ProblemInfo>;
   'save-code-result': MessageTemplate<SaveResult>;
   'judge-result': MessageTemplate<JudgeResult>;
+  'reset-judge': undefined;
   'call-boj-view-rect': undefined;
 };
 
@@ -35,7 +37,7 @@ type ElectronChannels = keyof Pick<
 
 type ClientChannels = keyof Pick<
   ChannelToMessage,
-  'load-problem-data' | 'judge-result' | 'load-code-result' | 'save-code-result' | 'call-boj-view-rect'
+  'load-problem-data' | 'judge-result' | 'load-code-result' | 'save-code-result' | 'call-boj-view-rect' | 'reset-judge'
 >;
 
 export const ElECTRON_CHANNELS: {
@@ -58,63 +60,98 @@ export const CLIENT_CHANNELS: {
   'load-problem-data': 'load-problem-data',
   'save-code-result': 'save-code-result',
   'call-boj-view-rect': 'call-boj-view-rect',
+  'reset-judge': 'reset-judge',
 };
 
-declare global {
-  class Ipc {
-    on(
-      channel: (typeof ElECTRON_CHANNELS)['load-code'],
-      listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['load-code']) => void,
-    ): void;
+class Ipc {
+  on(
+    channel: (typeof ElECTRON_CHANNELS)['load-code'],
+    listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['load-code']) => void,
+  ): void;
 
-    on(
-      channel: (typeof ElECTRON_CHANNELS)['save-code'],
-      listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['save-code']) => void,
-    ): void;
+  on(
+    channel: (typeof ElECTRON_CHANNELS)['save-code'],
+    listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['save-code']) => void,
+  ): void;
 
-    on(
-      channel: (typeof ElECTRON_CHANNELS)['change-boj-view-width'],
-      listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['change-boj-view-width']) => void,
-    ): void;
+  on(
+    channel: (typeof ElECTRON_CHANNELS)['change-boj-view-width'],
+    listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['change-boj-view-width']) => void,
+  ): void;
 
-    on(
-      channel: (typeof ElECTRON_CHANNELS)['judge-start'],
-      listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['judge-start']) => void,
-    ): void;
+  on(
+    channel: (typeof ElECTRON_CHANNELS)['judge-start'],
+    listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['judge-start']) => void,
+  ): void;
 
-    on(channel: (typeof ElECTRON_CHANNELS)['go-back-boj-view'], listener: (e: Electron.IpcMainEvent) => void): void;
+  on(channel: (typeof ElECTRON_CHANNELS)['go-back-boj-view'], listener: (e: Electron.IpcMainEvent) => void): void;
 
-    on(channel: (typeof ElECTRON_CHANNELS)['go-front-boj-view'], listener: (e: Electron.IpcMainEvent) => void): void;
+  on(channel: (typeof ElECTRON_CHANNELS)['go-front-boj-view'], listener: (e: Electron.IpcMainEvent) => void): void;
 
-    on(channel: (typeof ElECTRON_CHANNELS)['ready-editor'], listener: (e: Electron.IpcMainEvent) => void): void;
+  on(channel: (typeof ElECTRON_CHANNELS)['ready-editor'], listener: (e: Electron.IpcMainEvent) => void): void;
 
-    send(
-      browserWindow: BrowserWindow,
-      channel: (typeof CLIENT_CHANNELS)['load-code-result'],
-      message: ChannelToMessage['load-code-result'],
-    ): void;
+  on(channel: string, listener: (e: Electron.IpcMainEvent, ...args: any[]) => void | Promise<void>): void {
+    const fn: typeof listener = async (e, ...args) => {
+      try {
+        const result = listener(e, ...args);
 
-    send(
-      browserWindow: BrowserWindow,
-      channel: (typeof CLIENT_CHANNELS)['load-problem-data'],
-      message: ChannelToMessage['load-problem-data'],
-    ): void;
+        if (result instanceof Promise) {
+          await result;
+        }
+      } catch (err) {
+        if (err instanceof IpcError) {
+          switch (err.errorType) {
+            case 'build-error':
+              this.send(e.sender, 'reset-judge');
 
-    send(
-      browserWindow: BrowserWindow,
-      channel: (typeof CLIENT_CHANNELS)['save-code-result'],
-      message: ChannelToMessage['save-code-result'],
-    ): void;
+              break;
 
-    send(
-      browserWindow: BrowserWindow,
-      channel: (typeof CLIENT_CHANNELS)['judge-result'],
-      message: ChannelToMessage['judge-result'],
-    ): void;
+            default:
+              break;
+          }
+        }
+      }
+    };
 
-    send(browserWindow: BrowserWindow, channel: (typeof CLIENT_CHANNELS)['call-boj-view-rect']): void;
+    ipcMain.on(channel, fn);
   }
 
+  send(
+    webContents: WebContents,
+    channel: (typeof CLIENT_CHANNELS)['load-code-result'],
+    message: ChannelToMessage['load-code-result'],
+  ): void;
+
+  send(
+    webContents: WebContents,
+    channel: (typeof CLIENT_CHANNELS)['load-problem-data'],
+    message: ChannelToMessage['load-problem-data'],
+  ): void;
+
+  send(
+    webContents: WebContents,
+    channel: (typeof CLIENT_CHANNELS)['save-code-result'],
+    message: ChannelToMessage['save-code-result'],
+  ): void;
+
+  send(
+    webContents: WebContents,
+    channel: (typeof CLIENT_CHANNELS)['judge-result'],
+    message: ChannelToMessage['judge-result'],
+  ): void;
+
+  send(webContents: WebContents, channel: (typeof CLIENT_CHANNELS)['call-boj-view-rect']): void;
+
+  send(webContents: WebContents, channel: (typeof CLIENT_CHANNELS)['reset-judge']): void;
+
+  send(webContents: WebContents, channel: string, ...args: any[]): void {
+    webContents.send(channel, ...args);
+  }
+}
+
+export const ipc = new Ipc();
+
+declare global {
   interface Window {
     electron: {
       ipcRenderer: {
@@ -135,6 +172,7 @@ declare global {
           func: (message: ChannelToMessage['judge-result']) => void,
         ): () => void;
         on(channel: (typeof CLIENT_CHANNELS)['call-boj-view-rect'], func: () => void): () => void;
+        on(channel: (typeof CLIENT_CHANNELS)['reset-judge'], func: () => void): () => void;
 
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['load-code'], message: ChannelToMessage['load-code']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['save-code'], message: ChannelToMessage['save-code']): void;

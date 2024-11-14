@@ -6,12 +6,25 @@ import { useShallow } from 'zustand/shallow';
 
 import { useStore } from '../../store';
 
+const EXTS: CodeInfo['ext'][] = ['cpp', 'js'];
+
+const extToLang = (ext: CodeInfo['ext']) => {
+  switch (ext) {
+    case 'cpp':
+      return 'C++14';
+    case 'js':
+      return 'node.js';
+    default:
+      return '';
+  }
+};
+
 export function Header() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
 
   const [code] = useStore(useShallow((s) => [s.code]));
 
-  const [ext] = useStore(useShallow((s) => [s.ext]));
+  const [ext, setExt] = useStore(useShallow((s) => [s.ext, s.setExt]));
 
   const [mode, setMode] = useStore(useShallow((s) => [s.mode, s.setMode]));
 
@@ -20,6 +33,8 @@ export function Header() {
   const [setJudgeResult] = useStore(useShallow((s) => [s.setJudgeResult]));
 
   const [isStale, setIsStale] = useState(false);
+
+  const [langMenuIsOpen, setLangMenuIsOpen] = useState(false);
 
   useEffect(() => {
     setIsStale(true);
@@ -81,6 +96,85 @@ export function Header() {
           display: flex;
         `}
       >
+        <div
+          className={css`
+            display: flex;
+            position: relative;
+            z-index: 10;
+            margin-right: 0.5rem;
+          `}
+        >
+          <button
+            type="button"
+            onClick={() => {
+              setLangMenuIsOpen(!langMenuIsOpen);
+            }}
+            className={css`
+              border: none;
+              background: lightgray;
+              border-radius: 4px;
+              color: white;
+              padding: 0.4rem 0.8rem;
+              cursor: pointer;
+
+              &::after {
+                content: '';
+                display: inline-block;
+                margin-left: 0.255em;
+                vertical-align: 0.255em;
+                border-top: 0.3em solid;
+                border-right: 0.3em solid transparent;
+                border-left: 0.3em solid transparent;
+              }
+            `}
+          >
+            {extToLang(ext)}
+          </button>
+
+          {langMenuIsOpen && (
+            <div
+              className={css`
+                position: absolute;
+                top: 100%;
+                right: 0;
+                background-color: white;
+                border-radius: 4px;
+                overflow: hidden;
+                box-shadow: 1px 1px 1px 1px rgb(0, 0, 0, 0.2);
+
+                ul {
+                  padding: 0.5rem;
+                  margin: 0;
+
+                  li {
+                    list-style: none;
+                    text-align: left;
+                    font-size: 0.8rem;
+                    padding: 0.2rem 0.4rem;
+                    cursor: pointer;
+                  }
+                }
+              `}
+            >
+              <ul>
+                {EXTS.map((_ext) => {
+                  return (
+                    <li
+                      key={_ext}
+                      onClick={() => {
+                        setLangMenuIsOpen(false);
+                        setExt(_ext);
+                      }}
+                    >
+                      {extToLang(_ext)}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+        </div>
+
         <div
           className={css`
             display: flex;

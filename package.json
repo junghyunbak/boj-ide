@@ -1,6 +1,6 @@
 {
-  "name": "BOJ-IDE",
-  "version": "1.0.1",
+  "name": "boj-ide",
+  "version": "1.0.3",
   "description": "A foundation for scalable desktop apps",
   "keywords": [
     "electron",
@@ -103,6 +103,7 @@
     }
   },
   "dependencies": {
+    "@codemirror/lang-cpp": "^6.0.2",
     "@codemirror/lang-javascript": "^6.2.2",
     "@electron/notarize": "^2.3.2",
     "@emotion/css": "^11.13.4",
@@ -186,8 +187,8 @@
     "webpack-merge": "^5.9.0"
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.erb.ElectronReact",
+    "productName": "BOJ IDE",
+    "appId": "org.erb.boj-ide",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [

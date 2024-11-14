@@ -5,16 +5,17 @@ import pie from 'puppeteer-in-electron';
 import * as cheerio from 'cheerio';
 
 import { Text } from 'domhandler';
-import { spawn } from 'child_process';
-import process from 'process';
+
 import fs from 'fs';
 import path from 'path';
 
-import { ipc, normalizeOutput } from './util';
+import { ipc } from '../types/ipc';
+
+import { Judge } from './judge';
 
 const JS_INPUT_TEMPLATE = `const fs = require('fs');
 
-const stdin = fs.readFileSync('input', 'utf-8').split('\\n');
+const stdin = fs.readFileSync(process.platform === 'linux' ? 0 : 'input', 'utf-8').split('\\n');
 
 const input = (() => {
   let i = -1;
@@ -22,15 +23,34 @@ const input = (() => {
   return () => stdin[++i];
 })();
 
-// [javascript input template]
-//
-// input 함수를 사용하면 표준 입력을 한줄씩 읽어올 수 있습니다.
-//
-// 예제 - A+B (https://www.acmicpc.net/problem/1000)
-//
-// const [a, b] = input().split(' ').map(Number);
-// 
-// console.log(a + b);
+/*
+[javascript input template]
+
+input 함수를 사용하면 표준 입력을 한줄씩 읽어올 수 있습니다.
+
+예제 - A+B (https://www.acmicpc.net/problem/1000)
+*/
+
+const [a, b] = input().split(' ').map(Number);
+
+console.log(a + b);
+`;
+
+const CPP_INPUT_TEMPLATE = `#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+  ios::sync_with_stdio(false);
+
+  int a, b;
+
+  cin >> a >> b;
+
+  cout << a+b << endl;
+
+  return 0;
+}
 `;
 
 export default class BojView {
@@ -46,10 +66,14 @@ export default class BojView {
 
   private outputs: string[] = [];
 
+  private judge: Judge;
+
   constructor(mainWindow: BrowserWindow) {
     this.mainWindow = mainWindow;
 
     this.view = new WebContentsView();
+
+    this.judge = new Judge(mainWindow);
   }
 
   async build() {
@@ -60,8 +84,6 @@ export default class BojView {
     this.attachEvent();
 
     this.puppeteerBroswer = await pie.connect(app, puppeteer);
-
-    ipc.send(this.mainWindow, 'call-boj-view-rect');
   }
 
   attachView() {
@@ -72,7 +94,7 @@ export default class BojView {
     this.view.webContents.on('did-navigate', async (e, url) => {
       const BOJ_DOMAIN = 'www.acmicpc.net';
 
-      if (!url.startsWith(`https://${BOJ_DOMAIN}`)) {
+      if (!(url.startsWith(`https://${BOJ_DOMAIN}`) || url.startsWith(`https://help.acmicpc.net`))) {
         this.view.webContents.loadURL(`https://${BOJ_DOMAIN}`);
 
         return;
@@ -127,7 +149,7 @@ export default class BojView {
         this.inputs = inputs;
         this.outputs = outputs;
 
-        ipc.send(this.mainWindow, 'load-problem-data', {
+        ipc.send(this.mainWindow.webContents, 'load-problem-data', {
           data: {
             number: problemNumber,
             testCase: {
@@ -140,7 +162,7 @@ export default class BojView {
         return;
       }
 
-      ipc.send(this.mainWindow, 'load-problem-data', { data: null });
+      ipc.send(this.mainWindow.webContents, 'load-problem-data', { data: null });
     });
 
     ipc.on('go-back-boj-view', () => {
@@ -162,89 +184,16 @@ export default class BojView {
 
     // [ ]: 파일 생성, 채점 과정 모두에서 에러가 발생했을 때 처리 필요
     ipc.on('judge-start', async (e, { data: { code, ext } }) => {
-      const basePath = app.getPath('userData');
-
-      const nodeBinPath =
-        process.env.NODE_ENV === 'development'
-          ? path.join(__dirname, '..', '..', 'assets', 'node.exe')
-          : path.join(process.resourcesPath, 'assets', 'node.exe');
-
-      /**
-       * 파일 생성
-       */
-      const fileName = `${this.problemNumber}.${ext}`;
-
-      const codePath = `${basePath}/${fileName}`;
-
-      fs.writeFileSync(codePath, code);
-
-      /**
-       * 채점
-       */
-      for (let i = 0; i < this.inputs.length; i += 1) {
-        let error = '';
-
-        let output = '';
-
-        const start = Date.now();
-
-        // [ ]: 최적화 필요
-        fs.writeFileSync(`${basePath}/input`, this.inputs[i]);
-
-        const result = await new Promise<JudgeResult['result']>((resolve) => {
-          const outputProcess = spawn(`${nodeBinPath} ${codePath}`, {
-            cwd: basePath,
-            shell: true,
-            timeout: 5000,
-          });
-
-          outputProcess.stdout.on('data', (buf) => {
-            /**
-             * ANSI 색상 코드를 제거하는 코드.
-             *
-             * 자주 사용되지 않는 정규식이라고 에러를 발생시키는 것이므로 비활성화해도 상관없다고 판단.
-             *
-             * https://stackoverflow.com/questions/49743842/javascript-unexpected-control-characters-in-regular-expression
-             */
-            // eslint-disable-next-line no-control-regex
-            const cleanText = buf.toString().replace(/\x1B\[[0-?]*[ -/]*[@-~]/g, '');
-
-            output += cleanText;
-          });
-
-          outputProcess.stdout.on('end', () => {
-            resolve(normalizeOutput(output) === normalizeOutput(this.outputs[i]) ? '성공' : '실패');
-          });
-
-          outputProcess.stderr.on('data', (buf) => {
-            error = buf.toString();
-
-            resolve('에러 발생');
-          });
-
-          outputProcess.on('close', (endCode) => {
-            /**
-             * code 0 : 정상종료
-             * code null : 비정상종료(timeout 에 의한 종료)
-             */
-            if (endCode === null) {
-              resolve('시간 초과');
-            }
-
-            resolve('실패');
-          });
-        });
-
-        const end = Date.now();
-
-        const elapsed = end - start;
-
-        ipc.send(this.mainWindow, 'judge-result', {
-          data: { index: i, stderr: error, stdout: output, elapsed, result },
-        });
-      }
+      await this.judge.execute({
+        problemNumber: this.problemNumber,
+        code,
+        ext,
+        inputs: this.inputs,
+        outputs: this.outputs,
+      });
     });
 
+    // [ ]: 공통 에러처리 핸들러로 전송
     ipc.on('save-code', (e, { data: { number, ext, code } }) => {
       const basePath = app.getPath('userData');
 
@@ -262,7 +211,7 @@ export default class BojView {
         isSaved = false;
       }
 
-      ipc.send(this.mainWindow, 'save-code-result', { data: { isSaved } });
+      ipc.send(this.mainWindow.webContents, 'save-code-result', { data: { isSaved } });
     });
 
     ipc.on('load-code', (e, { data: { number, ext } }) => {
@@ -271,7 +220,20 @@ export default class BojView {
       const filePath = path.join(basePath, `${number}.${ext}`);
 
       if (!fs.existsSync(filePath)) {
-        ipc.send(this.mainWindow, 'load-code-result', { data: { code: JS_INPUT_TEMPLATE } });
+        const DEFAULT_CODE_TEMPLATE = (() => {
+          switch (ext) {
+            case 'cpp':
+              return CPP_INPUT_TEMPLATE;
+            case 'js':
+              return JS_INPUT_TEMPLATE;
+            default:
+              return '';
+          }
+        })();
+
+        ipc.send(this.mainWindow.webContents, 'load-code-result', {
+          data: { code: DEFAULT_CODE_TEMPLATE },
+        });
 
         return;
       }
@@ -280,7 +242,7 @@ export default class BojView {
         encoding: 'utf-8',
       });
 
-      ipc.send(this.mainWindow, 'load-code-result', { data: { code } });
+      ipc.send(this.mainWindow.webContents, 'load-code-result', { data: { code } });
     });
   }
 
