@@ -9,6 +9,7 @@ import path from 'path';
 import { normalizeOutput } from './util';
 
 import { ipc } from '../types/ipc';
+import { IpcError } from '../error';
 
 const EXIT_CODE = {
   TIMEOUT: null,
@@ -77,7 +78,7 @@ export class Judge {
         });
 
         if (!buildResult) {
-          throw new Error('빌드 에러');
+          throw new IpcError('빌드 에러', 'build-error');
         }
 
         /**

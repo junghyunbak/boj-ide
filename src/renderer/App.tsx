@@ -11,6 +11,7 @@ import { Editor } from './components/Editor';
 import { Header } from './components/Header';
 
 import './App.css';
+import { AlertModal } from './components/AlertModal';
 
 interface VerticalResizerLayoutProps {
   Up: typeof Editor;
@@ -162,28 +163,53 @@ export default function App() {
 
   const [setJudgeResult] = useStore(useShallow((s) => [s.setJudgeResult]));
 
+  const [setIsJudging] = useStore(useShallow((s) => [s.setIsJudging]));
+
+  const [setMessage] = useStore(useShallow((s) => [s.setMessage]));
+
   useEffect(() => {
     window.electron.ipcRenderer.on('load-problem-data', ({ data }) => {
       setProblem(data);
       setJudgeResult(() => []);
     });
 
+    window.electron.ipcRenderer.on('reset-judge', () => {
+      setIsJudging(false);
+      setJudgeResult(() => []);
+    });
+
+    window.electron.ipcRenderer.on('occur-error', ({ data: { message } }) => {
+      setMessage(message);
+    });
+
     window.electron.ipcRenderer.sendMessage('ready-editor');
-  }, [setProblem, setJudgeResult]);
+  }, [setProblem, setJudgeResult, setIsJudging, setMessage]);
+
+  useEffect(() => {}, []);
 
   return (
     <Layout>
       <div
         className={css`
+          position: relative;
           width: 100%;
           height: 100%;
-          display: flex;
-          flex-direction: column;
         `}
       >
-        <Header />
+        <div
+          className={css`
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+          `}
+        >
+          <Header />
 
-        <VerticalResizerLayout Up={Editor} Down={Output} />
+          <VerticalResizerLayout Up={Editor} Down={Output} />
+        </div>
+
+        <AlertModal />
       </div>
     </Layout>
   );

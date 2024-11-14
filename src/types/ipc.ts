@@ -20,6 +20,7 @@ type ChannelToMessage = {
   'load-problem-data': MessageTemplate<ProblemInfo>;
   'save-code-result': MessageTemplate<SaveResult>;
   'judge-result': MessageTemplate<JudgeResult>;
+  'occur-error': MessageTemplate<{ message: string }>;
   'reset-judge': undefined;
   'call-boj-view-rect': undefined;
 };
@@ -37,7 +38,13 @@ type ElectronChannels = keyof Pick<
 
 type ClientChannels = keyof Pick<
   ChannelToMessage,
-  'load-problem-data' | 'judge-result' | 'load-code-result' | 'save-code-result' | 'call-boj-view-rect' | 'reset-judge'
+  | 'load-problem-data'
+  | 'judge-result'
+  | 'load-code-result'
+  | 'save-code-result'
+  | 'call-boj-view-rect'
+  | 'reset-judge'
+  | 'occur-error'
 >;
 
 export const ElECTRON_CHANNELS: {
@@ -61,6 +68,7 @@ export const CLIENT_CHANNELS: {
   'save-code-result': 'save-code-result',
   'call-boj-view-rect': 'call-boj-view-rect',
   'reset-judge': 'reset-judge',
+  'occur-error': 'occur-error',
 };
 
 class Ipc {
@@ -109,6 +117,8 @@ class Ipc {
             default:
               break;
           }
+
+          this.send(e.sender, 'occur-error', { data: { message: err.message } });
         }
       }
     };
@@ -144,6 +154,12 @@ class Ipc {
 
   send(webContents: WebContents, channel: (typeof CLIENT_CHANNELS)['reset-judge']): void;
 
+  send(
+    webContents: WebContents,
+    channel: (typeof CLIENT_CHANNELS)['occur-error'],
+    message: ChannelToMessage['occur-error'],
+  ): void;
+
   send(webContents: WebContents, channel: string, ...args: any[]): void {
     webContents.send(channel, ...args);
   }
@@ -173,6 +189,10 @@ declare global {
         ): () => void;
         on(channel: (typeof CLIENT_CHANNELS)['call-boj-view-rect'], func: () => void): () => void;
         on(channel: (typeof CLIENT_CHANNELS)['reset-judge'], func: () => void): () => void;
+        on(
+          channel: (typeof CLIENT_CHANNELS)['occur-error'],
+          func: (message: ChannelToMessage['occur-error']) => void,
+        ): () => void;
 
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['load-code'], message: ChannelToMessage['load-code']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['save-code'], message: ChannelToMessage['save-code']): void;

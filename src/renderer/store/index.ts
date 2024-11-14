@@ -5,11 +5,13 @@ import { createEditorSlice } from './slices/editor';
 import { createJudgeSlice } from './slices/judge';
 import { createProblemSlice } from './slices/problem';
 import { createLayoutSlice } from './slices/layout';
+import { createAlertSlice } from './slices/alert';
 
 export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createJudgeSlice> &
   ReturnType<typeof createProblemSlice> &
-  ReturnType<typeof createLayoutSlice>;
+  ReturnType<typeof createLayoutSlice> &
+  ReturnType<typeof createAlertSlice>;
 
 export const useStore = create<StoreState>()(
   persist(
@@ -18,6 +20,7 @@ export const useStore = create<StoreState>()(
       ...createJudgeSlice(...a),
       ...createProblemSlice(...a),
       ...createLayoutSlice(...a),
+      ...createAlertSlice(...a),
     }),
     {
       name: 'zustandStore',
