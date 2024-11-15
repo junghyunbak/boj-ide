@@ -66,37 +66,44 @@ export default function App() {
       >
         <HistoryBar />
 
-        <HorizontalLayout>
-          <HorizontalLayout.Left>
-            <BojView />
-          </HorizontalLayout.Left>
+        <div
+          className={css`
+            flex: 1;
+            overflow: hidden;
+          `}
+        >
+          <HorizontalLayout>
+            <HorizontalLayout.Left>
+              <BojView />
+            </HorizontalLayout.Left>
 
-          <HorizontalLayout.Right>
-            <div
-              className={css`
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-                height: 100%;
-                position: relative;
-              `}
-            >
-              <Header />
+            <HorizontalLayout.Right>
+              <div
+                className={css`
+                  display: flex;
+                  flex-direction: column;
+                  width: 100%;
+                  height: 100%;
+                  position: relative;
+                `}
+              >
+                <Header />
 
-              <VerticalLayout>
-                <VerticalLayout.Top>
-                  <Editor />
-                </VerticalLayout.Top>
+                <VerticalLayout>
+                  <VerticalLayout.Top>
+                    <Editor />
+                  </VerticalLayout.Top>
 
-                <VerticalLayout.Bottom>
-                  <Output />
-                </VerticalLayout.Bottom>
-              </VerticalLayout>
+                  <VerticalLayout.Bottom>
+                    <Output />
+                  </VerticalLayout.Bottom>
+                </VerticalLayout>
 
-              <AlertModal />
-            </div>
-          </HorizontalLayout.Right>
-        </HorizontalLayout>
+                <AlertModal />
+              </div>
+            </HorizontalLayout.Right>
+          </HorizontalLayout>
+        </div>
       </div>
     </div>
   );
