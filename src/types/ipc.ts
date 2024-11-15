@@ -17,7 +17,7 @@ type ChannelToMessage = {
    * client
    */
   'load-code-result': MessageTemplate<Pick<CodeInfo, 'code'>>;
-  'load-problem-data': MessageTemplate<ProblemInfo>;
+  'load-problem-data': MessageTemplate<ProblemInfo | null>;
   'save-code-result': MessageTemplate<SaveResult>;
   'judge-result': MessageTemplate<JudgeResult>;
   'occur-error': MessageTemplate<{ message: string }>;

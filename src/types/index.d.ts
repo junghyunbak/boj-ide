@@ -7,12 +7,13 @@ type MyOmit<T, K extends keyof T> = {
 };
 
 type ProblemInfo = {
+  name: string;
   number: string;
   testCase: {
     inputs: string[];
     outputs: string[];
   };
-} | null;
+};
 
 type EditorMode = 'vim' | 'normal';
 

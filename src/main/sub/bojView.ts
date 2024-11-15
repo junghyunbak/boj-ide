@@ -66,6 +66,8 @@ export class BojView {
 
       const $ = cheerio.load(content);
 
+      const name = $('#problem_title').html() || '';
+
       const inputs = Array.from($('[id|="sample-input"]'))
         .map((v) => {
           const [child] = v.children;
@@ -92,6 +94,7 @@ export class BojView {
 
       ipc.send(this.mainWindow.webContents, 'load-problem-data', {
         data: {
+          name,
           number,
           testCase: {
             inputs,

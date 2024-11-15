@@ -15,9 +15,11 @@ import { BojView } from './components/BojView';
 
 import './App.css';
 import './assets/fonts.css';
+import { HistoryBar } from './components/HistoryBar';
 
 export default function App() {
   const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
+  const [addProblemHistory] = useStore(useShallow((s) => [s.addProblemHistory]));
 
   const [setJudgeResult] = useStore(useShallow((s) => [s.setJudgeResult]));
 
@@ -29,6 +31,10 @@ export default function App() {
     window.electron.ipcRenderer.on('load-problem-data', ({ data }) => {
       setProblem(data);
       setJudgeResult(() => []);
+
+      if (data) {
+        addProblemHistory(data);
+      }
     });
 
     window.electron.ipcRenderer.on('reset-judge', () => {
@@ -41,7 +47,7 @@ export default function App() {
     });
 
     window.electron.ipcRenderer.sendMessage('ready-editor');
-  }, [setProblem, setJudgeResult, setIsJudging, setMessage]);
+  }, [setProblem, setJudgeResult, setIsJudging, setMessage, addProblemHistory]);
 
   return (
     <div
@@ -50,37 +56,48 @@ export default function App() {
         inset: 0;
       `}
     >
-      <HorizontalLayout>
-        <HorizontalLayout.Left>
-          <BojView />
-        </HorizontalLayout.Left>
+      <div
+        className={css`
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          height: 100%;
+        `}
+      >
+        <HistoryBar />
 
-        <HorizontalLayout.Right>
-          <div
-            className={css`
-              display: flex;
-              flex-direction: column;
-              width: 100%;
-              height: 100%;
-              position: relative;
-            `}
-          >
-            <Header />
+        <HorizontalLayout>
+          <HorizontalLayout.Left>
+            <BojView />
+          </HorizontalLayout.Left>
 
-            <VerticalLayout>
-              <VerticalLayout.Top>
-                <Editor />
-              </VerticalLayout.Top>
+          <HorizontalLayout.Right>
+            <div
+              className={css`
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                height: 100%;
+                position: relative;
+              `}
+            >
+              <Header />
 
-              <VerticalLayout.Bottom>
-                <Output />
-              </VerticalLayout.Bottom>
-            </VerticalLayout>
+              <VerticalLayout>
+                <VerticalLayout.Top>
+                  <Editor />
+                </VerticalLayout.Top>
 
-            <AlertModal />
-          </div>
-        </HorizontalLayout.Right>
-      </HorizontalLayout>
+                <VerticalLayout.Bottom>
+                  <Output />
+                </VerticalLayout.Bottom>
+              </VerticalLayout>
+
+              <AlertModal />
+            </div>
+          </HorizontalLayout.Right>
+        </HorizontalLayout>
+      </div>
     </div>
   );
 }
