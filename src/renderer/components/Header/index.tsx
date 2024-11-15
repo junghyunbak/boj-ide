@@ -104,6 +104,7 @@ export function Header() {
       <p
         className={css`
           margin: 0;
+          font-size: 0.875rem;
         `}
       >
         {problem && `${problem.number}.${ext}`}
@@ -133,10 +134,11 @@ export function Header() {
               border: none;
               background: lightgray;
               border-radius: 4px;
-              color: white;
+              color: black;
               padding: 0.4rem 0.8rem;
               cursor: pointer;
               white-space: nowrap;
+              font-weight: 500;
 
               &::after {
                 content: '';
@@ -187,7 +189,6 @@ export function Header() {
                     <button
                       key={_ext}
                       type="button"
-                      className={css``}
                       onClick={(e) => {
                         setLangMenuIsOpen(false);
 
@@ -217,10 +218,11 @@ export function Header() {
               transition: all ease 0.2s;
               padding: 0.4rem 0.8rem;
               cursor: pointer;
+              font-weight: 500;
 
               &:hover {
                 background-color: lightgray;
-                color: white;
+                color: black;
               }
 
               p {
@@ -233,7 +235,7 @@ export function Header() {
             className={css`
               border: none;
               background-color: ${mode === 'normal' ? 'lightgray' : 'transparent'};
-              color: ${mode === 'normal' ? 'white' : 'black'};
+              color: ${mode === 'normal' ? 'black' : 'lightgray'};
             `}
             type="button"
             onClick={() => {
@@ -247,7 +249,7 @@ export function Header() {
             className={css`
               border: none;
               background-color: ${mode === 'vim' ? 'lightgray' : 'transparent'};
-              color: ${mode === 'vim' ? 'white' : 'black'};
+              color: ${mode === 'vim' ? 'black' : 'lightgray'};
             `}
             type="button"
             onClick={() => {
