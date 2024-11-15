@@ -122,7 +122,13 @@ export class BojView {
     });
 
     ipc.on('go-problem', (e, { data: { number } }) => {
-      this.view.webContents.loadURL(`https://${BOJ_DOMAIN}/problem/${number}`);
+      const distUrl = `https://${BOJ_DOMAIN}/problem/${number}`;
+
+      if (this.view.webContents.getURL() === distUrl) {
+        return;
+      }
+
+      this.view.webContents.loadURL(distUrl);
     });
   }
 }
