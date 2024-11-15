@@ -99,13 +99,13 @@ export function AlertModal() {
           ESC / ENTER
         </button>
 
-        <p
+        <pre
           className={css`
             margin: 0;
           `}
         >
           {message}
-        </p>
+        </pre>
       </div>
     </div>
   );
