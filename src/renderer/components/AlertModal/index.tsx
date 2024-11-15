@@ -50,18 +50,23 @@ export function AlertModal() {
           inset: 0;
 
           background-color: rgba(0, 0, 0, 0.2);
+          backdrop-filter: blur(4px);
         `}
+        onClick={() => {
+          setMessage(null);
+        }}
       />
       <div
         className={css`
           min-width: 50%;
-          min-height: 30%;
+          min-height: 20%;
           position: absolute;
           background-color: white;
-          border-radius: 1.5rem;
+          border-radius: 0.5rem;
           display: flex;
           justify-content: center;
           align-items: center;
+          box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
         `}
       >
         <button
@@ -70,12 +75,26 @@ export function AlertModal() {
             position: absolute;
             top: 1rem;
             right: 1rem;
+            padding: 0.5rem;
+            margin: 0;
+            background-color: transparent;
+            cursor: pointer;
+            border: 1px solid lightgray;
+            border-radius: 0.25rem;
+            font-size: 0.5rem;
+
+            transition: all 0.3s ease;
+
+            &:hover {
+              box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+            }
           `}
+          aria-label="modal-close-button"
           onClick={() => {
             setMessage(null);
           }}
         >
-          닫기
+          ESC / ENTER
         </button>
 
         <p>{message}</p>
