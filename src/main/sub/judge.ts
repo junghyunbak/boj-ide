@@ -47,6 +47,50 @@ export class Judge {
     await this.run(executeCommand, inputs, outputs);
   }
 
+  async checkProgram(ext: Ext) {
+    const program = (() => {
+      switch (ext) {
+        case 'py':
+          return 'python3';
+
+        case 'cpp':
+          return 'g++';
+
+        case 'js':
+          return 'node';
+
+        default:
+          return '';
+      }
+    })();
+
+    let output = '';
+
+    await new Promise((resolve) => {
+      const process = spawn(`${program} --version`, {
+        shell: true,
+      });
+
+      process.stdout.on('data', (buf) => {
+        output += buf.toString();
+      });
+
+      process.on('error', () => {
+        resolve(true);
+      });
+
+      process.on('close', () => {
+        resolve(true);
+      });
+    });
+
+    const isInstalled = /[0-9]+\.[0-9]+\.[0-9]+/.test(output);
+
+    if (!isInstalled) {
+      throw new IpcError('프로그램이 설치되어 있지 않습니다.', 'build-error');
+    }
+  }
+
   async codeBuild(ext: Ext, problemNumber: string, code: string): Promise<BuildFileName> {
     switch (ext) {
       case 'cpp': {
@@ -57,23 +101,29 @@ export class Judge {
 
         const outFileName = problemNumber;
 
-        const buildResult = await new Promise((resolve) => {
+        let error = '';
+
+        await new Promise((resolve) => {
           const buildProcess = spawn(`g++ ${fileName} -o ${outFileName} -O2 -Wall -lm -static -std=gnu++14`, {
             cwd: this.basePath,
             shell: true,
           });
 
-          buildProcess.on('close', (exitCode) => {
-            resolve(exitCode !== EXIT_CODE.ERROR);
+          buildProcess.stderr.on('data', (buf) => {
+            error += buf.toString();
           });
 
           buildProcess.on('error', () => {
-            resolve(false);
+            resolve(true);
+          });
+
+          buildProcess.on('close', () => {
+            resolve(true);
           });
         });
 
-        if (!buildResult) {
-          throw new IpcError('빌드 중 에러가 발생했습니다.', 'build-error');
+        if (error !== '') {
+          throw new IpcError(`빌드 중 에러가 발생했습니다.\n\n${error}`, 'build-error');
         }
 
         /**
@@ -82,9 +132,6 @@ export class Judge {
         return `${outFileName}.exe`;
       }
 
-      /**
-       * 파이썬도 컴파일이 필요?
-       */
       case 'py':
       case 'js':
       default:
@@ -108,55 +155,18 @@ export class Judge {
     }
   }
 
-  async checkProgram(ext: Ext) {
-    const program = (() => {
-      switch (ext) {
-        case 'py':
-          return 'python3';
-
-        case 'cpp':
-          return 'g++';
-
-        case 'js':
-          return 'node';
-
-        default:
-          return '';
-      }
-    })();
-
-    let output = '';
-
-    const isInstalled = await new Promise((resolve) => {
-      const process = spawn(`${program} --version`, {
-        shell: true,
-      });
-
-      process.stdout.on('data', (buf) => {
-        output += buf.toString();
-      });
-
-      process.on('close', () => {
-        resolve(/[0-9]+\.[0-9]+\.[0-9]+/.test(output));
-      });
-    });
-
-    if (!isInstalled) {
-      throw new IpcError('프로그램이 설치되어 있지 않습니다.', 'build-error');
-    }
-  }
-
   async run(cmd: string, inputs: string[], outputs: string[]) {
     for (let i = 0; i < inputs.length; i += 1) {
+      fs.writeFileSync(path.join(this.basePath, 'input'), inputs[i]);
+
       let error = '';
       let output = '';
-
-      fs.writeFileSync(path.join(this.basePath, 'input'), inputs[i]);
+      let exitCode;
 
       const start: number = Date.now();
       let end: number = Date.now();
 
-      const result = await new Promise<JudgeResult['result']>((resolve) => {
+      await new Promise((resolve) => {
         const inputProcess = spawn(`${process.platform === 'win32' ? 'type' : 'cat'} input`, {
           cwd: this.basePath,
           shell: true,
@@ -170,32 +180,46 @@ export class Judge {
 
         inputProcess.stdout.pipe(outputProcess.stdin);
 
+        outputProcess.on('error', () => {
+          resolve(true);
+        });
+
+        outputProcess.on('close', () => {
+          end = Date.now();
+
+          resolve(true);
+        });
+
         outputProcess.stdout.on('data', (buf) => {
           output += this.removeAnsiText(buf.toString());
         });
 
-        outputProcess.stdout.on('end', () => {
-          resolve(normalizeOutput(output) === normalizeOutput(outputs[i]) ? '성공' : '실패');
-
-          end = Date.now();
-        });
-
         outputProcess.stderr.on('data', (buf) => {
-          error = buf.toString();
-
-          resolve('에러 발생');
+          error += buf.toString();
         });
 
-        outputProcess.on('close', (exitCode) => {
-          if (exitCode === EXIT_CODE.TIMEOUT) {
-            resolve('시간 초과');
-          }
-
-          resolve('실패');
+        outputProcess.on('close', (_exitCode) => {
+          exitCode = _exitCode;
         });
       });
 
       const elapsed = end - start;
+
+      const result: JudgeResult['result'] = (() => {
+        if (error !== '') {
+          return '에러 발생';
+        }
+
+        if (output !== '') {
+          return normalizeOutput(output) === normalizeOutput(outputs[i]) ? '성공' : '실패';
+        }
+
+        if (exitCode === EXIT_CODE.TIMEOUT) {
+          return '시간 초과';
+        }
+
+        return '실패';
+      })();
 
       ipc.send(this.webContents, 'judge-result', {
         data: { index: i, stderr: error, stdout: output, elapsed, result },
