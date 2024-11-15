@@ -20,7 +20,7 @@ type EditorMode = 'vim' | 'normal';
 type CodeInfo = {
   code: string;
   number: string;
-  ext: 'js' | 'cpp' | 'py';
+  ext: 'js' | 'cpp' | 'py' | 'java';
 };
 
 type Ext = CodeInfo['ext'];

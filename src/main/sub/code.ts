@@ -5,7 +5,7 @@ import path from 'path';
 import { ipc } from '../../types/ipc';
 import { IpcError } from '../../error';
 
-import { JS_INPUT_TEMPLATE, CPP_INPUT_TEMPLATE, PY_INPUT_TEMPLATE } from '../../constants';
+import { JS_INPUT_TEMPLATE, CPP_INPUT_TEMPLATE, PY_INPUT_TEMPLATE, JAVA_CODE_TEMPLATE } from '../../constants';
 
 export class Code {
   private basePath: string;
@@ -41,6 +41,8 @@ export class Code {
               return JS_INPUT_TEMPLATE;
             case 'py':
               return PY_INPUT_TEMPLATE;
+            case 'java':
+              return JAVA_CODE_TEMPLATE;
             default:
               return '';
           }

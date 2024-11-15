@@ -6,7 +6,7 @@ import { useShallow } from 'zustand/shallow';
 
 import { useStore } from '../../store';
 
-const EXTS: CodeInfo['ext'][] = ['cpp', 'js', 'py'];
+const EXTS: CodeInfo['ext'][] = ['cpp', 'js', 'py', 'java'];
 
 const extToLang = (ext: CodeInfo['ext']) => {
   switch (ext) {
@@ -16,6 +16,8 @@ const extToLang = (ext: CodeInfo['ext']) => {
       return 'node.js';
     case 'py':
       return 'python3';
+    case 'java':
+      return 'java11';
     default:
       return '';
   }

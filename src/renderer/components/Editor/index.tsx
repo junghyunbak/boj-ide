@@ -5,6 +5,7 @@ import { vim, Vim } from '@replit/codemirror-vim';
 import { javascript } from '@codemirror/lang-javascript';
 import { cpp } from '@codemirror/lang-cpp';
 import { python } from '@codemirror/lang-python';
+import { java } from '@codemirror/lang-java';
 import ReactCodeMirror, { EditorView, type Extension } from '@uiw/react-codemirror';
 
 import { useShallow } from 'zustand/shallow';
@@ -137,6 +138,8 @@ export function Editor() {
       tmp.push(cpp());
     } else if (ext === 'py') {
       tmp.push(python());
+    } else if (ext === 'java') {
+      tmp.push(java());
     }
 
     if (mode === 'vim') {

@@ -59,6 +59,9 @@ export class Judge {
         case 'js':
           return 'node';
 
+        case 'java':
+          return 'javac';
+
         default:
           return '';
       }
@@ -134,6 +137,44 @@ export class Judge {
         return `${outFileName}${process.platform === 'win32' ? '.exe' : ''}`;
       }
 
+      case 'java': {
+        const fileName = `Main.java`;
+        const filePath = path.join(this.basePath, fileName);
+
+        fs.writeFileSync(filePath, code);
+
+        const outFileName = 'Main';
+
+        let error = '';
+
+        await new Promise((resolve) => {
+          const buildCmd = `javac --release 11 -J-Xms1024m -J-Xmx1920m -J-Xss512m -encoding UTF-8 ${fileName}`;
+
+          const buildProcess = spawn(buildCmd, {
+            cwd: this.basePath,
+            shell: true,
+          });
+
+          buildProcess.stderr.on('data', (buf) => {
+            error += buf.toString();
+          });
+
+          buildProcess.on('error', () => {
+            resolve(true);
+          });
+
+          buildProcess.on('close', () => {
+            resolve(true);
+          });
+        });
+
+        if (error !== '') {
+          throw new IpcError(`빌드 중 에러가 발생했습니다.\n\n${error}`, 'build-error');
+        }
+
+        return outFileName;
+      }
+
       case 'py':
       case 'js':
       default:
@@ -151,6 +192,9 @@ export class Judge {
 
       case 'py':
         return `python3 -W ignore ${buildFileName}`;
+
+      case 'java':
+        return `java -Xms1024m -Xmx1920m -Xss512m -Dfile.encoding=UTF-8 -XX:+UseSerialGC ${buildFileName}`;
 
       default:
         return '';
