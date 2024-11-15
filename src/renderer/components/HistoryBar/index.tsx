@@ -16,20 +16,22 @@ export function HistoryBar() {
   const xScrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    const xScroll = xScrollRef.current;
+
+    if (!xScroll) {
+      return () => {};
+    }
+
     let isDragging = false;
     let startX = 0;
     let scrollLeft = 0;
 
     const handleMouseDown = (e: MouseEvent) => {
-      if (!xScrollRef.current) {
-        return;
-      }
-
       isDragging = true;
 
       startX = e.clientX;
 
-      scrollLeft = xScrollRef.current.scrollLeft;
+      scrollLeft = xScroll.scrollLeft;
     };
 
     const handleMouseLeave = () => {
@@ -37,29 +39,29 @@ export function HistoryBar() {
     };
 
     const handleMouseMove = (e: MouseEvent) => {
-      if (!isDragging || !xScrollRef.current) {
+      if (!isDragging) {
         return;
       }
 
       const deltaX = e.clientX - startX;
 
-      xScrollRef.current.scrollLeft = scrollLeft - deltaX;
+      xScroll.scrollLeft = scrollLeft - deltaX;
     };
 
     const handleMouseUp = () => {
       isDragging = false;
     };
 
-    window.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
-    window.addEventListener('mouseleave', handleMouseLeave);
+    xScroll.addEventListener('mousedown', handleMouseDown);
+    xScroll.addEventListener('mousemove', handleMouseMove);
+    xScroll.addEventListener('mouseup', handleMouseUp);
+    xScroll.addEventListener('mouseleave', handleMouseLeave);
 
     return () => {
-      window.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-      window.removeEventListener('mouseleave', handleMouseLeave);
+      xScroll.removeEventListener('mousedown', handleMouseDown);
+      xScroll.removeEventListener('mousemove', handleMouseMove);
+      xScroll.removeEventListener('mouseup', handleMouseUp);
+      xScroll.removeEventListener('mouseleave', handleMouseLeave);
     };
   }, []);
 
