@@ -79,6 +79,12 @@ export const Output = memo(() => {
     return tmp;
   })();
 
+  const isJudgeComplete = judgeResult.length > 0 && judgeResult.every((v) => v !== undefined);
+
+  const correctCount = judgeResult
+    .filter((v) => v !== undefined)
+    .reduce((a, c) => a + (c.result === '성공' ? 1 : 0), 0);
+
   return (
     <div
       className={css`
@@ -89,6 +95,23 @@ export const Output = memo(() => {
         margin: 0;
       `}
     >
+      {isJudgeComplete && (
+        <div
+          className={css`
+            border-bottom: 1px solid lightgray;
+          `}
+        >
+          <p
+            className={css`
+              margin: 1rem;
+              color: ${judgeResult.length === correctCount ? 'green' : 'red'};
+            `}
+          >
+            {`${judgeResult.length}개 중 ${correctCount}개 성공`}
+          </p>
+        </div>
+      )}
+
       {testCases.map(({ input, output }, i, arr) => {
         return (
           <div
