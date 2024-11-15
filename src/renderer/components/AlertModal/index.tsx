@@ -60,6 +60,7 @@ export function AlertModal() {
         className={css`
           min-width: 50%;
           min-height: 20%;
+          max-width: 90%;
           position: absolute;
           background-color: white;
           border-radius: 0.5rem;
@@ -67,6 +68,7 @@ export function AlertModal() {
           justify-content: center;
           align-items: center;
           box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
+          padding: 3rem 1rem;
         `}
       >
         <button
@@ -97,7 +99,13 @@ export function AlertModal() {
           ESC / ENTER
         </button>
 
-        <p>{message}</p>
+        <p
+          className={css`
+            margin: 0;
+          `}
+        >
+          {message}
+        </p>
       </div>
     </div>
   );
