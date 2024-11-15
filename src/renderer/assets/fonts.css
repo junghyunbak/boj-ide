@@ -2,3 +2,8 @@
   font-family: hack;
   src: url('./Hack-Regular.ttf');
 }
+
+@font-face {
+  font-family: menlo;
+  src: url('./Menlo-Regular.ttf');
+}
