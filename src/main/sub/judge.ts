@@ -175,7 +175,6 @@ export class Judge {
         const outputProcess = spawn(cmd, {
           cwd: this.basePath,
           shell: true,
-          timeout: 5000,
         });
 
         inputProcess.stdout.pipe(outputProcess.stdin);
@@ -200,7 +199,15 @@ export class Judge {
 
         outputProcess.on('close', (_exitCode) => {
           exitCode = _exitCode;
+
+          resolve(true);
         });
+
+        setTimeout(() => {
+          exitCode = EXIT_CODE.TIMEOUT;
+
+          resolve(true);
+        }, 6000);
       });
 
       const elapsed = end - start;
@@ -210,12 +217,12 @@ export class Judge {
           return '에러 발생';
         }
 
-        if (output !== '') {
-          return normalizeOutput(output) === normalizeOutput(outputs[i]) ? '성공' : '실패';
-        }
-
         if (exitCode === EXIT_CODE.TIMEOUT) {
           return '시간 초과';
+        }
+
+        if (output !== '') {
+          return normalizeOutput(output) === normalizeOutput(outputs[i]) ? '성공' : '실패';
         }
 
         return '실패';
