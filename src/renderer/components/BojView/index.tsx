@@ -26,11 +26,17 @@ export function BojView() {
       }
     });
 
-    window.addEventListener('resize', () => {
+    const handleResizedBojView = () => {
       sendResizingResult(bojAreaRef.current);
-    });
+    };
 
-    sendResizingResult(bojAreaRef.current);
+    window.addEventListener('resize', handleResizedBojView);
+
+    handleResizedBojView();
+
+    return () => {
+      window.removeEventListener('resize', handleResizedBojView);
+    };
   }, []);
 
   return (
