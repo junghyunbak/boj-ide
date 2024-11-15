@@ -11,6 +11,7 @@ type ChannelToMessage = {
   'judge-start': MessageTemplate<CodeInfo & ProblemInfo>;
   'go-back-boj-view': undefined;
   'go-front-boj-view': undefined;
+  'go-problem': MessageTemplate<ProblemInfo>;
   'ready-editor': undefined;
 
   /**
@@ -34,6 +35,7 @@ type ElectronChannels = keyof Pick<
   | 'go-back-boj-view'
   | 'go-front-boj-view'
   | 'ready-editor'
+  | 'go-problem'
 >;
 
 type ClientChannels = keyof Pick<
@@ -57,6 +59,7 @@ export const ElECTRON_CHANNELS: {
   'ready-editor': 'ready-editor',
   'go-back-boj-view': 'go-back-boj-view',
   'go-front-boj-view': 'go-front-boj-view',
+  'go-problem': 'go-problem',
 };
 
 export const CLIENT_CHANNELS: {
@@ -95,6 +98,11 @@ class Ipc {
   on(channel: (typeof ElECTRON_CHANNELS)['go-back-boj-view'], listener: (e: Electron.IpcMainEvent) => void): void;
 
   on(channel: (typeof ElECTRON_CHANNELS)['go-front-boj-view'], listener: (e: Electron.IpcMainEvent) => void): void;
+
+  on(
+    channel: (typeof ElECTRON_CHANNELS)['go-problem'],
+    listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['go-problem']) => void,
+  ): void;
 
   on(channel: (typeof ElECTRON_CHANNELS)['ready-editor'], listener: (e: Electron.IpcMainEvent) => void): void;
 
@@ -206,6 +214,7 @@ declare global {
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['judge-start'], message: ChannelToMessage['judge-start']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['go-back-boj-view']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['go-front-boj-view']): void;
+        sendMessage(channel: (typeof ElECTRON_CHANNELS)['go-problem'], message: ChannelToMessage['go-problem']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['ready-editor']): void;
       };
     };

@@ -120,5 +120,9 @@ export class BojView {
         height: height - 1,
       });
     });
+
+    ipc.on('go-problem', (e, { data: { number } }) => {
+      this.view.webContents.loadURL(`https://${BOJ_DOMAIN}/problem/${number}`);
+    });
   }
 }

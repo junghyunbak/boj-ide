@@ -5,7 +5,7 @@ import { css } from '@emotion/css';
 import { useStore } from '../../store';
 
 export function HistoryBar() {
-  const [problem] = useStore(useShallow((s) => [s.problem]));
+  const [problem, setProblem] = useStore(useShallow((s) => [s.problem, s.setProblem]));
 
   const [problemHistories, removeProblemHistory] = useStore(
     useShallow((s) => [s.problemHistories, s.removeProblemHistory]),
@@ -20,9 +20,12 @@ export function HistoryBar() {
         height: 40px;
       `}
     >
-      {problemHistories.map(({ number, name }, i) => {
+      {problemHistories.map((problemInfo, i) => {
+        const { number, name } = problemInfo;
+
         return (
-          <div
+          <button
+            type="button"
             key={number}
             className={css`
               border-right: 1px solid lightgray;
@@ -32,7 +35,13 @@ export function HistoryBar() {
               padding: 0 0.5rem;
               gap: 0.5rem;
               background-color: ${problem?.number === number ? 'gray' : 'transparent'};
+              cursor: pointer;
+              border: none;
             `}
+            onClick={() => {
+              setProblem(problemInfo);
+              window.electron.ipcRenderer.sendMessage('go-problem', { data: problemInfo });
+            }}
           >
             <p
               className={css`
@@ -49,7 +58,7 @@ export function HistoryBar() {
             >
               x
             </button>
-          </div>
+          </button>
         );
       })}
     </div>
