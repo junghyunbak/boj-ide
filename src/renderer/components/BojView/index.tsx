@@ -19,6 +19,9 @@ const sendResizingResult = (htmlDivEl: HTMLDivElement | null) => {
 export function BojView() {
   const bojAreaRef = useRef<HTMLDivElement>(null);
 
+  /**
+   * bojView 영역 변경에 따른 electron으로 동기화 요청
+   */
   useEffect(() => {
     useStore.subscribe((s, prev) => {
       if (s.leftRatio !== prev.leftRatio) {
@@ -37,6 +40,15 @@ export function BojView() {
     return () => {
       window.removeEventListener('resize', handleResizedBojView);
     };
+  }, []);
+
+  /**
+   * electron에서 bojView 영역 크기 요청 이벤트 리스너
+   */
+  useEffect(() => {
+    window.electron.ipcRenderer.on('call-boj-view-rect', () => {
+      sendResizingResult(bojAreaRef.current);
+    });
   }, []);
 
   return (

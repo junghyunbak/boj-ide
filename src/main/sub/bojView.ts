@@ -138,5 +138,7 @@ export class BojView {
 
       this.view.webContents.loadURL(distUrl);
     });
+
+    ipc.send(this.mainWindow.webContents, 'call-boj-view-rect');
   }
 }
