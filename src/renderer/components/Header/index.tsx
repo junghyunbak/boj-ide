@@ -23,35 +23,44 @@ const extToLang = (ext: CodeInfo['ext']) => {
 
 export function Header() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
-
   const [code] = useStore(useShallow((s) => [s.code]));
-
   const [ext, setExt] = useStore(useShallow((s) => [s.ext, s.setExt]));
-
   const [mode, setMode] = useStore(useShallow((s) => [s.mode, s.setMode]));
 
   const [isJudging, setIsJudging] = useStore(useShallow((s) => [s.isJudging, s.setIsJudging]));
-
   const [setJudgeResult] = useStore(useShallow((s) => [s.setJudgeResult]));
 
-  const [isStale, setIsStale] = useState(false);
+  const [setMessage] = useStore(useShallow((s) => [s.setMessage]));
 
+  const [isStale, setIsStale] = useState(false);
   const [langMenuIsOpen, setLangMenuIsOpen] = useState(false);
 
   useEffect(() => {
     setIsStale(true);
   }, [code]);
 
+  useEffect(() => {
+    const handleLangMenuClose = () => {
+      setLangMenuIsOpen(false);
+    };
+
+    window.addEventListener('click', handleLangMenuClose);
+
+    return () => {
+      window.removeEventListener('click', handleLangMenuClose);
+    };
+  }, []);
+
   /**
    * 코드 저장 시 완료 여부를 전달받는 ipc 이벤트 초기화
    */
   useEffect(() => {
     window.electron.ipcRenderer.on('save-code-result', ({ data: { isSaved } }) => {
-      console.log(isSaved ? '저장이 완료되었습니다.' : '저장에 실패하였습니다.');
+      setMessage(isSaved ? '저장이 완료되었습니다.' : '저장에 실패하였습니다.');
 
       setIsStale(false);
     });
-  }, []);
+  }, [setMessage]);
 
   const handleSaveButtonClick = () => {
     if (!problem) {
@@ -113,8 +122,10 @@ export function Header() {
         >
           <button
             type="button"
-            onClick={() => {
+            onClick={(e) => {
               setLangMenuIsOpen(!langMenuIsOpen);
+
+              e.stopPropagation();
             }}
             className={css`
               border: none;
@@ -123,6 +134,7 @@ export function Header() {
               color: white;
               padding: 0.4rem 0.8rem;
               cursor: pointer;
+              white-space: nowrap;
 
               &::after {
                 content: '';
@@ -149,35 +161,44 @@ export function Header() {
                 overflow: hidden;
                 box-shadow: 1px 1px 1px 1px rgb(0, 0, 0, 0.2);
 
-                ul {
+                > div {
                   padding: 0.5rem;
                   margin: 0;
 
-                  li {
-                    list-style: none;
+                  button {
                     text-align: left;
                     font-size: 0.8rem;
                     padding: 0.2rem 0.4rem;
                     cursor: pointer;
+                    border: none;
+                    background-color: transparent;
                   }
                 }
               `}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
             >
-              <ul>
+              <div>
                 {EXTS.map((_ext) => {
                   return (
-                    <li
+                    <button
                       key={_ext}
-                      onClick={() => {
+                      type="button"
+                      className={css``}
+                      onClick={(e) => {
                         setLangMenuIsOpen(false);
+
                         setExt(_ext);
+
+                        e.stopPropagation();
                       }}
                     >
                       {extToLang(_ext)}
-                    </li>
+                    </button>
                   );
                 })}
-              </ul>
+              </div>
             </div>
           )}
         </div>
