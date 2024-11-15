@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { useShallow } from 'zustand/shallow';
 
 import { css } from '@emotion/css';
@@ -6,6 +8,24 @@ import { useStore } from '../../store';
 
 export function AlertModal() {
   const [message, setMessage] = useStore(useShallow((s) => [s.message, s.setMessage]));
+
+  useEffect(() => {
+    if (!message) {
+      return () => {};
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' || e.key === 'Enter') {
+        setMessage(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [message, setMessage]);
 
   if (!message) {
     return null;
