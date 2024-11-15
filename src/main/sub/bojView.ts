@@ -121,7 +121,15 @@ export class BojView {
       });
     });
 
-    ipc.on('go-problem', (e, { data: { number } }) => {
+    ipc.on('go-problem', (e, { data }) => {
+      if (!data) {
+        this.view.webContents.loadURL('https://www.acmicpc.net/problemset');
+
+        return;
+      }
+
+      const { number } = data;
+
       const distUrl = `https://${BOJ_DOMAIN}/problem/${number}`;
 
       if (this.view.webContents.getURL() === distUrl) {

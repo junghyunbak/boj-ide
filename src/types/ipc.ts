@@ -11,7 +11,7 @@ type ChannelToMessage = {
   'judge-start': MessageTemplate<CodeInfo & ProblemInfo>;
   'go-back-boj-view': undefined;
   'go-front-boj-view': undefined;
-  'go-problem': MessageTemplate<ProblemInfo>;
+  'go-problem': MessageTemplate<ProblemInfo | null>;
   'ready-editor': undefined;
 
   /**

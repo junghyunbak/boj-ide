@@ -139,8 +139,16 @@ export function HistoryBar() {
                   }
                 `}
                 aria-label="tab-close-button"
-                onClick={() => {
+                onClick={(e) => {
                   removeProblemHistory(i);
+
+                  if (problem?.number === number) {
+                    setProblem(null);
+
+                    window.electron.ipcRenderer.sendMessage('go-problem', { data: null });
+                  }
+
+                  e.stopPropagation();
                 }}
               >
                 <svg
