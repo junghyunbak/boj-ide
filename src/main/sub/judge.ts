@@ -104,7 +104,12 @@ export class Judge {
         let error = '';
 
         await new Promise((resolve) => {
-          const buildProcess = spawn(`g++ ${fileName} -o ${outFileName} -O2 -Wall -lm -static -std=gnu++14`, {
+          const buildCmd =
+            process.platform === 'win32'
+              ? `g++ ${fileName} -o ${outFileName} -O2 -Wall -lm -static -std=gnu++14`
+              : `g++ -std=c++14 ${fileName} -o ${outFileName}`;
+
+          const buildProcess = spawn(buildCmd, {
             cwd: this.basePath,
             shell: true,
           });
@@ -126,10 +131,7 @@ export class Judge {
           throw new IpcError(`빌드 중 에러가 발생했습니다.\n\n${error}`, 'build-error');
         }
 
-        /**
-         * 윈도우만 지원한다고 가정
-         */
-        return `${outFileName}.exe`;
+        return `${outFileName}${process.platform === 'win32' ? '.exe' : ''}`;
       }
 
       case 'py':
