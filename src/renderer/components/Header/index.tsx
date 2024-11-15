@@ -286,11 +286,11 @@ export function Header() {
           `}
         >
           <button type="button" onClick={handleSaveButtonClick} disabled={!problem || !isStale}>
-            저장하기
+            저장
           </button>
 
           <button type="button" onClick={handleSubmitButtonClick} disabled={!problem || isJudging}>
-            제출하기
+            코드 실행
           </button>
         </div>
       </div>
