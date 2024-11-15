@@ -1,3 +1,8 @@
 #root * {
   box-sizing: border-box;
 }
+
+body,
+button {
+  font-family: 'open-sans';
+}

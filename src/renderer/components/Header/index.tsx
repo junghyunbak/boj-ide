@@ -270,6 +270,7 @@ export function Header() {
               padding: 0.4rem 0.8rem;
               cursor: pointer;
               background-color: #428bca;
+              white-space: nowrap;
 
               &:disabled {
                 background-color: gray;
