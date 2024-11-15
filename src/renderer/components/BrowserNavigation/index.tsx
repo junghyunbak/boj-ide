@@ -1,4 +1,5 @@
 import { css } from '@emotion/css';
+import { size } from '../../../styles';
 
 export function BrowserNavigation() {
   /**
@@ -23,6 +24,7 @@ export function BrowserNavigation() {
         align-items: center;
         padding: 0.3rem 0.5rem;
         gap: 0.2rem;
+        min-height: ${size.BOJ_VIEW_NAVIGATION_HEIGHT}px;
 
         button {
           border: none;

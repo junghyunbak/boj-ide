@@ -5,6 +5,7 @@ import { useShallow } from 'zustand/shallow';
 import { css } from '@emotion/css';
 
 import { useStore } from '../../store';
+import { size } from '../../../styles';
 
 export function HistoryBar() {
   const [problem, setProblem] = useStore(useShallow((s) => [s.problem, s.setProblem]));
@@ -71,8 +72,8 @@ export function HistoryBar() {
         border-bottom: 1px solid lightgray;
         display: flex;
         overflow-x: scroll;
-        min-height: 40px;
-        height: 40px;
+        min-height: ${size.BOJ_VIEW_NAVIGATION_HEIGHT}px;
+        height: ${size.BOJ_VIEW_NAVIGATION_HEIGHT}px;
 
         &::-webkit-scrollbar {
           display: none;
