@@ -157,7 +157,7 @@ export class Judge {
       let end: number = Date.now();
 
       const result = await new Promise<JudgeResult['result']>((resolve) => {
-        const inputProcess = spawn(`type input`, {
+        const inputProcess = spawn(`${process.platform === 'win32' ? 'type' : 'cat'} input`, {
           cwd: this.basePath,
           shell: true,
         });
