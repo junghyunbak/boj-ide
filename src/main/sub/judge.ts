@@ -70,6 +70,11 @@ export class Judge {
     let output = '';
 
     await new Promise((resolve) => {
+      /**
+       * 프로그램을 실행한 후 에러여부로 판단하지 않고, 버전을 확인하는 이유는
+       *
+       * => 윈도우 환경에서는 프로그램이 없으면 에러를 발생시키지 않고 스토어로 이동하기 때문이다.
+       */
       const process = spawn(`${program} --version`, {
         shell: true,
       });
