@@ -25,7 +25,7 @@ export class Code {
 
         ipc.send(this.webContents, 'save-code-result', { data: { isSaved: true } });
       } catch (_) {
-        throw new IpcError('코드 저장 실패', 'code-save-error');
+        throw new IpcError('코드 저장에 실패하였습니다.', 'code-save-error');
       }
     });
 

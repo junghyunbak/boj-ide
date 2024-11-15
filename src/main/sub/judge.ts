@@ -73,7 +73,7 @@ export class Judge {
         });
 
         if (!buildResult) {
-          throw new IpcError('빌드 에러', 'build-error');
+          throw new IpcError('빌드 중 에러가 발생했습니다.', 'build-error');
         }
 
         /**
