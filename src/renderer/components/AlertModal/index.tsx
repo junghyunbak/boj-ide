@@ -102,6 +102,7 @@ export function AlertModal() {
         <pre
           className={css`
             margin: 0;
+            white-space: pre-wrap;
           `}
         >
           {message}
