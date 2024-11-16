@@ -80,7 +80,7 @@ export const Output = memo(() => {
     return tmp;
   })();
 
-  const isJudgeComplete = judgeResult.length > 0 && judgeResult.every((v) => v !== undefined);
+  const isJudgeComplete = !isJudging && judgeResult.length > 0 && judgeResult.every((v) => v !== undefined);
 
   const correctCount = judgeResult
     .filter((v) => v !== undefined)
@@ -96,8 +96,17 @@ export const Output = memo(() => {
         margin: 0;
       `}
     >
-      {testCases.map(({ input, output }, i, arr) => {
-        return <TestCase index={i} input={input} output={output} isJudging={isJudging} judgeResult={judgeResult[i]} />;
+      {testCases.map(({ input, output }, i) => {
+        return (
+          <TestCase
+            key={i}
+            index={i}
+            input={input}
+            output={output}
+            isJudging={isJudging}
+            judgeResult={judgeResult[i]}
+          />
+        );
       })}
 
       {isJudgeComplete && (

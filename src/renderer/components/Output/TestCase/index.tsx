@@ -54,6 +54,15 @@ export function TestCase({ isJudging, index, input, output, editable = false, ju
           onClick={() => setIsOpen(!isOpen)}
         >
           예제 입력 {index + 1}{' '}
+          {isJudging && !judgeResult && (
+            <span
+              className={css`
+                color: gray;
+              `}
+            >
+              채점중...
+            </span>
+          )}
           {judgeResult && (
             <span
               className={css`
