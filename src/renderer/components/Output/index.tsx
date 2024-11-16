@@ -96,12 +96,12 @@ export const Output = memo(() => {
         margin: 0;
       `}
     >
+      {testCases.map(({ input, output }, i, arr) => {
+        return <TestCase index={i} input={input} output={output} isJudging={isJudging} judgeResult={judgeResult[i]} />;
+      })}
+
       {isJudgeComplete && (
-        <div
-          className={css`
-            border-bottom: 1px solid lightgray;
-          `}
-        >
+        <div className={css``}>
           <p
             className={css`
               margin: 1rem;
@@ -112,10 +112,6 @@ export const Output = memo(() => {
           </p>
         </div>
       )}
-
-      {testCases.map(({ input, output }, i, arr) => {
-        return <TestCase index={i} input={input} output={output} isJudging={isJudging} judgeResult={judgeResult[i]} />;
-      })}
     </div>
   );
 });

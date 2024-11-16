@@ -58,6 +58,10 @@ export function TestCase({ isJudging, index, input, output, editable = false, ju
             <span
               className={css`
                 color: ${judgeResult.result === '성공' ? 'green' : 'red'};
+                font-size: 0.875rem;
+                background-color: ${judgeResult.result === '성공' ? '#0080003d' : '#ff00003b'};
+                padding: 2px 4px;
+                border-radius: 4px;
               `}
             >
               {judgeResult.result}
