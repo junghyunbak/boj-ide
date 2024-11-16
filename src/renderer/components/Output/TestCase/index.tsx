@@ -1,17 +1,22 @@
 import { css } from '@emotion/css';
 import { useState } from 'react';
+import { useStore } from '../../../store';
+import { useShallow } from 'zustand/shallow';
 
 interface TestCaseProps {
+  problemNumber?: string;
   index: number;
   input: string;
   output: string;
-  editable?: boolean;
   isJudging: boolean;
   judgeResult?: JudgeResult;
+  type: TC['type'];
 }
 
-export function TestCase({ isJudging, index, input, output, editable = false, judgeResult }: TestCaseProps) {
+export function TestCase({ problemNumber, isJudging, index, input, output, judgeResult, type }: TestCaseProps) {
   const [isOpen, setIsOpen] = useState(false);
+
+  const [removeCustomTestCase] = useStore(useShallow((s) => [s.removeCustomTestCase]));
 
   return (
     <div
@@ -34,6 +39,8 @@ export function TestCase({ isJudging, index, input, output, editable = false, ju
             text-align: start;
             cursor: pointer;
             font-size: 1rem;
+            display: flex;
+            align-items: center;
 
             &::before {
               content: '';
@@ -53,7 +60,7 @@ export function TestCase({ isJudging, index, input, output, editable = false, ju
           `}
           onClick={() => setIsOpen(!isOpen)}
         >
-          예제 입력 {index + 1}{' '}
+          {type === 'custom' ? '사용자' : ''} 예제 입력 {index + 1}{' '}
           {isJudging && !judgeResult && (
             <span
               className={css`
@@ -71,10 +78,37 @@ export function TestCase({ isJudging, index, input, output, editable = false, ju
                 background-color: ${judgeResult.result === '성공' ? '#0080003d' : '#ff00003b'};
                 padding: 2px 4px;
                 border-radius: 4px;
+                margin-left: 0.5rem;
               `}
             >
               {judgeResult.result}
             </span>
+          )}
+          {type === 'custom' && (
+            <div
+              className={css`
+                display: flex;
+                margin-left: 0.5rem;
+                border: 2px solid red;
+                border-radius: 9999px;
+                width: 1rem;
+                height: 1rem;
+                justify-content: center;
+                align-items: center;
+              `}
+              onClick={(e) => {
+                removeCustomTestCase(problemNumber || '', index);
+
+                e.stopPropagation();
+              }}
+            >
+              <div
+                className={css`
+                  width: 80%;
+                  border-bottom: 2px solid red;
+                `}
+              />
+            </div>
           )}
         </button>
 

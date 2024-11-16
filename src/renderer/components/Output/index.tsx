@@ -1,16 +1,12 @@
 import { css } from '@emotion/css';
 
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import { useShallow } from 'zustand/shallow';
 
 import { useStore } from '../../store';
 import { TestCase } from './TestCase';
-
-type TestCase = {
-  input: string;
-  output: string;
-};
+import { TestCaseCreator } from './TestCaseCreater';
 
 export const Output = memo(() => {
   const [problem] = useStore(useShallow((s) => [s.problem]));
@@ -19,12 +15,14 @@ export const Output = memo(() => {
 
   const [judgeResult, setJudgeResult] = useStore(useShallow((s) => [s.judgeResult, s.setJudgeResult]));
 
+  const [customTestCase] = useStore(useShallow((s) => [s.customTestCase]));
+
   const N = (() => {
     if (!problem) {
       return 0;
     }
 
-    return problem.testCase.inputs.length;
+    return problem.testCase.inputs.length + (customTestCase[problem.number] || []).length;
   })();
 
   /**
@@ -63,17 +61,18 @@ export const Output = memo(() => {
     setIsJudging(false);
   }, [judgeResult, setIsJudging, N]);
 
-  const testCases = ((): TestCase[] => {
+  const testCases = ((): TC[] => {
     if (!problem) {
       return [];
     }
 
-    const tmp: TestCase[] = [];
+    const tmp: TC[] = [];
 
-    for (let i = 0; i < N; i += 1) {
+    for (let i = 0; i < problem.testCase.inputs.length; i++) {
       tmp.push({
         input: problem.testCase.inputs[i],
         output: problem.testCase.outputs[i],
+        type: 'problem',
       });
     }
 
@@ -96,7 +95,7 @@ export const Output = memo(() => {
         margin: 0;
       `}
     >
-      {testCases.map(({ input, output }, i) => {
+      {testCases.map(({ input, output, type }, i) => {
         return (
           <TestCase
             key={i}
@@ -105,6 +104,22 @@ export const Output = memo(() => {
             output={output}
             isJudging={isJudging}
             judgeResult={judgeResult[i]}
+            type={type}
+          />
+        );
+      })}
+
+      {(customTestCase[problem?.number || ''] || []).map(({ input, output, type }, i) => {
+        return (
+          <TestCase
+            key={i}
+            index={i}
+            input={input}
+            output={output}
+            isJudging={isJudging}
+            judgeResult={judgeResult[(problem?.testCase.inputs.length || 0) + i]}
+            type={type}
+            problemNumber={problem?.number}
           />
         );
       })}
@@ -121,6 +136,8 @@ export const Output = memo(() => {
           </p>
         </div>
       )}
+
+      {problem && <TestCaseCreator problemNumber={problem.number} />}
     </div>
   );
 });

@@ -24,6 +24,8 @@ export function Header() {
   const [isStale, setIsStale] = useState(false);
   const [langMenuIsOpen, setLangMenuIsOpen] = useState(false);
 
+  const [customTestCase] = useStore(useShallow((s) => [s.customTestCase]));
+
   useEffect(() => {
     setIsStale(true);
   }, [code]);
@@ -68,11 +70,29 @@ export function Header() {
 
     setJudgeResult(() => []);
 
+    const inputs: string[] = [];
+    const outputs: string[] = [];
+
+    for (let i = 0; i < problem.testCase.inputs.length; i++) {
+      inputs.push(problem.testCase.inputs[i]);
+      outputs.push(problem.testCase.outputs[i]);
+    }
+
+    customTestCase[problem.number]?.forEach(({ input, output }) => {
+      inputs.push(input);
+      outputs.push(output);
+    });
+
     window.electron.ipcRenderer.sendMessage('judge-start', {
       data: {
         code,
         language: lang,
-        ...problem,
+        number: problem.number,
+        name: problem.name,
+        testCase: {
+          inputs,
+          outputs,
+        },
       },
     });
   };

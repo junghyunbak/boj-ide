@@ -43,3 +43,9 @@ type Rect = {
   width: number;
   height: number;
 };
+
+type TC = {
+  input: string;
+  output: string;
+  type: 'problem' | 'custom';
+};

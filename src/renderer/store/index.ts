@@ -25,9 +25,9 @@ export const useStore = create<StoreState>()(
     {
       name: 'zustandStore',
       partialize: (s) => {
-        const { lang, mode, leftRatio, topRatio, problemHistories } = s;
+        const { lang, mode, leftRatio, topRatio, problemHistories, customTestCase } = s;
 
-        return { lang, mode, leftRatio, topRatio, problemHistories };
+        return { lang, mode, leftRatio, topRatio, problemHistories, customTestCase };
       },
     },
   ),
