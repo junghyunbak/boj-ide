@@ -63,7 +63,6 @@ export function AlertModal() {
           max-width: 90%;
           position: absolute;
           background-color: white;
-          border-radius: 0.5rem;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -82,7 +81,6 @@ export function AlertModal() {
             background-color: transparent;
             cursor: pointer;
             border: 1px solid lightgray;
-            border-radius: 0.25rem;
             font-size: 0.5rem;
 
             transition: all 0.3s ease;
