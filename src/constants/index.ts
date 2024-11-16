@@ -2,9 +2,14 @@ export const LANGAUGES: Langauge[] = ['C++14', 'Java11', 'Python3', 'node.js'];
 
 export const BOJ_DOMAIN = 'www.acmicpc.net';
 
-export const JS_INPUT_TEMPLATE = `const fs = require('fs');
+export const JS_INPUT_TEMPLATE = `const readline = require('readline');
 
-const stdin = fs.readFileSync(process.platform === 'linux' ? 0 : 'input', 'utf-8').split('\\n');
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+})
+
+const stdin = [];
 
 const input = (() => {
   let i = -1;
@@ -12,17 +17,15 @@ const input = (() => {
   return () => stdin[++i];
 })();
 
-/*
-[javascript input template]
+rl.on('line', (line) => {
+  stdin.push(line.trim());
+});
 
-input 함수를 사용하면 표준 입력을 한줄씩 읽어올 수 있습니다.
+rl.on('close', () => {
+  const [a, b] = input().split(' ').map(Number);
 
-예제 - A+B (https://www.acmicpc.net/problem/1000)
-*/
-
-const [a, b] = input().split(' ').map(Number);
-
-console.log(a + b);
+  console.log(a + b);
+})
 `;
 
 export const CPP_INPUT_TEMPLATE = `#include <bits/stdc++.h>
@@ -31,13 +34,9 @@ using namespace std;
 
 int main() {
   ios::sync_with_stdio(false);
-
   int a, b;
-
   cin >> a >> b;
-
   cout << a+b << endl;
-
   return 0;
 }
 `;
