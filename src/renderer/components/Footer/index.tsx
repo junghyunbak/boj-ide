@@ -19,12 +19,11 @@ export function Footer() {
             border: none;
             background-color: transparent;
             font-size: 0.75rem;
-            border-radius: 4px;
             cursor: pointer;
-            transition: all ease 0.2s;
 
             &:hover {
-              background-color: rgba(0, 0, 0, 0.2);
+              color: #428bca;
+              background-color: rgba(0, 0, 0, 0.1);
             }
           }
         `}

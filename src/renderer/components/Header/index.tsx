@@ -140,7 +140,6 @@ export function Header() {
             className={css`
               border: none;
               background: lightgray;
-              border-radius: 4px;
               color: white;
               padding: 0.4rem 0.8rem;
               cursor: pointer;
@@ -168,7 +167,6 @@ export function Header() {
                 top: 100%;
                 right: 0;
                 background-color: white;
-                border-radius: 4px;
                 overflow: hidden;
                 box-shadow: 1px 1px 1px 1px rgb(0, 0, 0, 0.2);
 
@@ -215,7 +213,6 @@ export function Header() {
           className={css`
             display: flex;
             border: 1px solid lightgray;
-            border-radius: 4px;
             overflow: hidden;
             margin-right: 0.5rem;
 
@@ -272,7 +269,6 @@ export function Header() {
 
             button {
               border: none;
-              border-radius: 4px;
               color: white;
               padding: 0.4rem 0.8rem;
               cursor: pointer;

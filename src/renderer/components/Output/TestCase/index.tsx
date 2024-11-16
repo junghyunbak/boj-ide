@@ -65,6 +65,7 @@ export function TestCase({ problemNumber, isJudging, index, input, output, judge
             <span
               className={css`
                 color: gray;
+                margin-left: 0.5rem;
               `}
             >
               채점중...
@@ -73,11 +74,10 @@ export function TestCase({ problemNumber, isJudging, index, input, output, judge
           {judgeResult && (
             <span
               className={css`
-                color: ${judgeResult.result === '성공' ? 'green' : 'red'};
-                font-size: 0.875rem;
-                background-color: ${judgeResult.result === '성공' ? '#0080003d' : '#ff00003b'};
+                color: white;
+                font-size: 0.75rem;
+                background-color: ${judgeResult.result === '성공' ? '#77ea77' : '#ec8c8c'};
                 padding: 2px 4px;
-                border-radius: 4px;
                 margin-left: 0.5rem;
               `}
             >
