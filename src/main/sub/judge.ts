@@ -6,7 +6,17 @@ import { spawn } from 'child_process';
 
 import path from 'path';
 
-import { normalizeOutput } from '../util';
+import {
+  isContainVersion,
+  lang2BinExt,
+  lang2BuildCmd,
+  lang2ExecuteCmd,
+  lang2Ext,
+  lang2Tool,
+  normalizeOutput,
+  removeAnsiText,
+  stdinCmd,
+} from '../../utils';
 
 import { ipc } from '../../types/ipc';
 
@@ -37,45 +47,21 @@ export class Judge {
     });
   }
 
-  async execute({ number, code, ext, testCase: { inputs, outputs } }: CodeInfo & ProblemInfo) {
-    await this.checkProgram(ext);
+  async execute({ number, code, language, testCase: { inputs, outputs } }: CodeInfo & ProblemInfo) {
+    await this.checkTool(language);
 
-    const buildFileName = await this.codeBuild(ext, number, code);
+    const buildFileName = await this.buildCode(language, number, code);
 
-    const executeCommand = this.createExecuteCommand(buildFileName, ext);
+    const executeCmd = lang2ExecuteCmd(language, buildFileName, process.platform);
 
-    await this.run(executeCommand, inputs, outputs);
+    await this.run(executeCmd, inputs, outputs);
   }
 
-  async checkProgram(ext: Ext) {
-    const program = (() => {
-      switch (ext) {
-        case 'py':
-          return 'python3';
-
-        case 'cpp':
-          return 'g++';
-
-        case 'js':
-          return 'node';
-
-        case 'java':
-          return 'javac';
-
-        default:
-          return '';
-      }
-    })();
-
+  async checkTool(language: Langauge) {
     let output = '';
 
     await new Promise((resolve) => {
-      /**
-       * 프로그램을 실행한 후 에러여부로 판단하지 않고, 버전을 확인하는 이유는
-       *
-       * => 윈도우 환경에서는 프로그램이 없으면 에러를 발생시키지 않고 스토어로 이동하기 때문이다.
-       */
-      const process = spawn(`${program} --version`, {
+      const process = spawn(`${lang2Tool(language)} --version`, {
         shell: true,
       });
 
@@ -92,121 +78,47 @@ export class Judge {
       });
     });
 
-    const isInstalled = /[0-9]+\.[0-9]+\.[0-9]+/.test(output);
-
-    if (!isInstalled) {
+    if (!isContainVersion(output)) {
       throw new IpcError('프로그램이 설치되어 있지 않습니다.', 'build-error');
     }
   }
 
-  async codeBuild(ext: Ext, problemNumber: string, code: string): Promise<BuildFileName> {
-    switch (ext) {
-      case 'cpp': {
-        const fileName = `${problemNumber}.cc`;
-        const filePath = path.join(this.basePath, fileName);
+  async buildCode(language: Langauge, fileName: string, code: string): Promise<BuildFileName> {
+    fs.writeFileSync(path.join(this.basePath, `${fileName}.${lang2Ext(language, process.platform)}`), code, {
+      encoding: 'utf-8',
+    });
 
-        fs.writeFileSync(filePath, code);
-
-        const outFileName = problemNumber;
-
-        let error = '';
-
-        await new Promise((resolve) => {
-          const buildCmd =
-            process.platform === 'win32'
-              ? `g++ ${fileName} -o ${outFileName} -O2 -Wall -lm -static -std=gnu++14`
-              : `g++ -std=c++14 ${fileName} -o ${outFileName}`;
-
-          const buildProcess = spawn(buildCmd, {
-            cwd: this.basePath,
-            shell: true,
-          });
-
-          buildProcess.stderr.on('data', (buf) => {
-            error += buf.toString();
-          });
-
-          buildProcess.on('error', () => {
-            resolve(true);
-          });
-
-          buildProcess.on('close', () => {
-            resolve(true);
-          });
-        });
-
-        if (error !== '') {
-          throw new IpcError(`빌드 중 에러가 발생했습니다.\n\n${error}`, 'build-error');
-        }
-
-        return `${outFileName}${process.platform === 'win32' ? '.exe' : ''}`;
-      }
-
-      case 'java': {
-        const fileName = `Main.java`;
-        const filePath = path.join(this.basePath, fileName);
-
-        fs.writeFileSync(filePath, code);
-
-        const outFileName = 'Main';
-
-        let error = '';
-
-        await new Promise((resolve) => {
-          const buildCmd = `javac --release 11 -J-Xms1024m -J-Xmx1920m -J-Xss512m -encoding UTF-8 ${fileName}`;
-
-          const buildProcess = spawn(buildCmd, {
-            cwd: this.basePath,
-            shell: true,
-          });
-
-          buildProcess.stderr.on('data', (buf) => {
-            error += buf.toString();
-          });
-
-          buildProcess.on('error', () => {
-            resolve(true);
-          });
-
-          buildProcess.on('close', () => {
-            resolve(true);
-          });
-        });
-
-        if (error !== '') {
-          throw new IpcError(`빌드 중 에러가 발생했습니다.\n\n${error}`, 'build-error');
-        }
-
-        return outFileName;
-      }
-
-      case 'py':
-      case 'js':
-      default:
-        return `${problemNumber}.${ext}`;
+    if (language === 'node.js' || language === 'Python3') {
+      return `${fileName}.${lang2Ext(language, process.platform)}`;
     }
+
+    let error = '';
+
+    await new Promise((resolve) => {
+      const ps = spawn(lang2BuildCmd(language, fileName, process.platform), {
+        cwd: this.basePath,
+        shell: true,
+      });
+
+      ps.stderr.on('data', (buf) => {
+        error += buf.toString();
+      });
+
+      ps.on('error', () => {
+        error = 'execute error';
+        resolve(true);
+      });
+      ps.on('close', () => resolve(true));
+    });
+
+    if (error !== '') {
+      throw new IpcError(error, 'build-error');
+    }
+
+    return lang2BinExt(language, process.platform);
   }
 
-  createExecuteCommand(buildFileName: string, ext: Ext): string {
-    switch (ext) {
-      case 'cpp':
-        return `${process.platform === 'win32' ? '' : './'}${buildFileName}`;
-
-      case 'js':
-        return `node ${buildFileName}`;
-
-      case 'py':
-        return `python3 -W ignore ${buildFileName}`;
-
-      case 'java':
-        return `java -Xms1024m -Xmx1920m -Xss512m -Dfile.encoding=UTF-8 -XX:+UseSerialGC ${buildFileName}`;
-
-      default:
-        return '';
-    }
-  }
-
-  async run(cmd: string, inputs: string[], outputs: string[]) {
+  async run(executeCmd: string, inputs: string[], outputs: string[]) {
     for (let i = 0; i < inputs.length; i += 1) {
       fs.writeFileSync(path.join(this.basePath, 'input'), inputs[i]);
 
@@ -218,12 +130,12 @@ export class Judge {
       let end: number = Date.now();
 
       await new Promise((resolve) => {
-        const inputProcess = spawn(`${process.platform === 'win32' ? 'type' : 'cat'} input`, {
+        const inputProcess = spawn(stdinCmd(process.platform, 'input'), {
           cwd: this.basePath,
           shell: true,
         });
 
-        const outputProcess = spawn(cmd, {
+        const outputProcess = spawn(executeCmd, {
           cwd: this.basePath,
           shell: true,
         });
@@ -241,7 +153,7 @@ export class Judge {
         });
 
         outputProcess.stdout.on('data', (buf) => {
-          output += this.removeAnsiText(buf.toString());
+          output += removeAnsiText(buf.toString());
         });
 
         outputProcess.stderr.on('data', (buf) => {
@@ -283,15 +195,5 @@ export class Judge {
         data: { index: i, stderr: error, stdout: output, elapsed, result },
       });
     }
-  }
-
-  removeAnsiText(text: string) {
-    /**
-     * 자주 사용되지 않는 정규식이라고 에러를 발생시키는 것이므로 비활성화해도 상관없다고 판단.
-     *
-     * https://stackoverflow.com/questions/49743842/javascript-unexpected-control-characters-in-regular-expression
-     */
-    // eslint-disable-next-line no-control-regex
-    return text.replace(/\x1B\[[0-?]*[ -/]*[@-~]/g, '');
   }
 }

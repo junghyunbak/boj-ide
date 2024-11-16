@@ -7,8 +7,8 @@ type EditorSlice = {
   mode: EditorMode;
   setMode: (mode: EditorMode) => void;
 
-  ext: CodeInfo['ext'];
-  setExt: (ext: CodeInfo['ext']) => void;
+  lang: Langauge;
+  setLang: (lang: Langauge) => void;
 };
 
 export const createEditorSlice: StateCreator<EditorSlice> = (set): EditorSlice => ({
@@ -22,8 +22,8 @@ export const createEditorSlice: StateCreator<EditorSlice> = (set): EditorSlice =
     set(() => ({ mode }));
   },
 
-  ext: 'js',
-  setExt(ext) {
-    set(() => ({ ext }));
+  lang: 'node.js',
+  setLang(lang) {
+    set(() => ({ lang }));
   },
 });

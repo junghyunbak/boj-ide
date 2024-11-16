@@ -11,11 +11,3 @@ export function resolveHtmlPath(htmlFileName: string) {
   }
   return `file://${path.resolve(__dirname, '../renderer/', htmlFileName)}`;
 }
-
-export function normalizeOutput(output: string) {
-  return output
-    .trim()
-    .split('\n')
-    .map((line: string) => line.trim())
-    .join('\n');
-}

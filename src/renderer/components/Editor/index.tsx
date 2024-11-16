@@ -14,7 +14,7 @@ import { useStore } from '../../store';
 
 export function Editor() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
-  const [ext] = useStore(useShallow((s) => [s.ext]));
+  const [lang] = useStore(useShallow((s) => [s.lang]));
   const [code, setCode] = useStore(useShallow((s) => [s.code, s.setCode]));
   const [mode] = useStore(useShallow((s) => [s.mode]));
 
@@ -31,8 +31,8 @@ export function Editor() {
       return;
     }
 
-    window.electron.ipcRenderer.sendMessage('load-code', { data: { number: problem.number, ext } });
-  }, [problem, ext]);
+    window.electron.ipcRenderer.sendMessage('load-code', { data: { number: problem.number, language: lang } });
+  }, [problem, lang]);
 
   /**
    * 로딩 된 소스코드를 반영하는 ipc 이벤트 초기화
@@ -52,7 +52,7 @@ export function Editor() {
         return;
       }
 
-      window.electron.ipcRenderer.sendMessage('save-code', { data: { number: problem.number, ext, code } });
+      window.electron.ipcRenderer.sendMessage('save-code', { data: { number: problem.number, language: lang, code } });
     };
 
     Vim.defineEx('write', 'w', saveCode);
@@ -70,7 +70,7 @@ export function Editor() {
     return () => {
       window.removeEventListener('keydown', handleSaveCode);
     };
-  }, [code, ext, problem]);
+  }, [code, lang, problem]);
 
   /**
    * 레이아웃이 달라졌을경우, 에디터의 크기 갱신을 위한 이벤트 등록
@@ -132,14 +132,21 @@ export function Editor() {
 
     tmp.push(FontTheme);
 
-    if (ext === 'js') {
-      tmp.push(javascript());
-    } else if (ext === 'cpp') {
-      tmp.push(cpp());
-    } else if (ext === 'py') {
-      tmp.push(python());
-    } else if (ext === 'java') {
-      tmp.push(java());
+    switch (lang) {
+      case 'node.js':
+        tmp.push(javascript());
+        break;
+      case 'C++14':
+        tmp.push(cpp());
+        break;
+      case 'Java11':
+        tmp.push(java());
+        break;
+      case 'Python3':
+        tmp.push(python());
+        break;
+      default:
+        break;
     }
 
     if (mode === 'vim') {

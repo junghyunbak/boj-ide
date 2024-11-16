@@ -17,13 +17,13 @@ type ProblemInfo = {
 
 type EditorMode = 'vim' | 'normal';
 
+type Langauge = 'node.js' | 'C++14' | 'Java11' | 'Python3';
+
 type CodeInfo = {
   code: string;
   number: string;
-  ext: 'js' | 'cpp' | 'py' | 'java';
+  language: Langauge;
 };
-
-type Ext = CodeInfo['ext'];
 
 type JudgeResult = {
   index: number;

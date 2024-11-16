@@ -7,6 +7,8 @@ import { IpcError } from '../../error';
 
 import { JS_INPUT_TEMPLATE, CPP_INPUT_TEMPLATE, PY_INPUT_TEMPLATE, JAVA_CODE_TEMPLATE } from '../../constants';
 
+import { lang2Ext } from '../../utils';
+
 export class Code {
   private basePath: string;
 
@@ -19,9 +21,11 @@ export class Code {
   }
 
   build() {
-    ipc.on('save-code', (e, { data: { number, ext, code } }) => {
+    ipc.on('save-code', (e, { data: { number, language, code } }) => {
       try {
-        fs.writeFileSync(path.join(this.basePath, `${number}.${ext}`), code, { encoding: 'utf-8' });
+        fs.writeFileSync(path.join(this.basePath, `${number}.${lang2Ext(language, process.platform)}`), code, {
+          encoding: 'utf-8',
+        });
 
         ipc.send(this.webContents, 'save-code-result', { data: { isSaved: true } });
       } catch (_) {
@@ -29,19 +33,19 @@ export class Code {
       }
     });
 
-    ipc.on('load-code', (e, { data: { number, ext } }) => {
-      const filePath = path.join(this.basePath, `${number}.${ext}`);
+    ipc.on('load-code', (e, { data: { number, language } }) => {
+      const filePath = path.join(this.basePath, `${number}.${lang2Ext(language, process.platform)}`);
 
       if (!fs.existsSync(filePath)) {
         const code = (() => {
-          switch (ext) {
-            case 'cpp':
+          switch (language) {
+            case 'C++14':
               return CPP_INPUT_TEMPLATE;
-            case 'js':
+            case 'node.js':
               return JS_INPUT_TEMPLATE;
-            case 'py':
+            case 'Python3':
               return PY_INPUT_TEMPLATE;
-            case 'java':
+            case 'Java11':
               return JAVA_CODE_TEMPLATE;
             default:
               return '';

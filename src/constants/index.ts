@@ -1,3 +1,5 @@
+export const LANGAUGES: Langauge[] = ['C++14', 'Java11', 'Python3', 'node.js'];
+
 export const BOJ_DOMAIN = 'www.acmicpc.net';
 
 export const JS_INPUT_TEMPLATE = `const fs = require('fs');

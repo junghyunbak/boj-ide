@@ -6,27 +6,14 @@ import { useShallow } from 'zustand/shallow';
 
 import { useStore } from '../../store';
 
-const EXTS: CodeInfo['ext'][] = ['cpp', 'js', 'py', 'java'];
+import { LANGAUGES } from '../../../constants';
 
-const extToLang = (ext: CodeInfo['ext']) => {
-  switch (ext) {
-    case 'cpp':
-      return 'C++14';
-    case 'js':
-      return 'node.js';
-    case 'py':
-      return 'python3';
-    case 'java':
-      return 'java11';
-    default:
-      return '';
-  }
-};
+import { lang2Ext } from '../../../utils';
 
 export function Header() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
   const [code] = useStore(useShallow((s) => [s.code]));
-  const [ext, setExt] = useStore(useShallow((s) => [s.ext, s.setExt]));
+  const [lang, setLang] = useStore(useShallow((s) => [s.lang, s.setLang]));
   const [mode, setMode] = useStore(useShallow((s) => [s.mode, s.setMode]));
 
   const [isJudging, setIsJudging] = useStore(useShallow((s) => [s.isJudging, s.setIsJudging]));
@@ -69,7 +56,7 @@ export function Header() {
       return;
     }
 
-    window.electron.ipcRenderer.sendMessage('save-code', { data: { number: problem.number, ext, code } });
+    window.electron.ipcRenderer.sendMessage('save-code', { data: { number: problem.number, language: lang, code } });
   };
 
   const handleSubmitButtonClick = () => {
@@ -84,7 +71,7 @@ export function Header() {
     window.electron.ipcRenderer.sendMessage('judge-start', {
       data: {
         code,
-        ext,
+        language: lang,
         ...problem,
       },
     });
@@ -107,7 +94,7 @@ export function Header() {
           font-size: 0.875rem;
         `}
       >
-        {problem && `${problem.number}.${ext}`}
+        {problem && `${problem.number}.${lang2Ext(lang, process.platform)}`}
       </p>
 
       <div
@@ -151,7 +138,7 @@ export function Header() {
               }
             `}
           >
-            {extToLang(ext)}
+            {lang}
           </button>
 
           {langMenuIsOpen && (
@@ -184,20 +171,18 @@ export function Header() {
               }}
             >
               <div>
-                {EXTS.map((_ext) => {
+                {LANGAUGES.map((language) => {
                   return (
                     <button
-                      key={_ext}
+                      key={language}
                       type="button"
                       onClick={(e) => {
                         setLangMenuIsOpen(false);
-
-                        setExt(_ext);
-
+                        setLang(language);
                         e.stopPropagation();
                       }}
                     >
-                      {extToLang(_ext)}
+                      {language}
                     </button>
                   );
                 })}
