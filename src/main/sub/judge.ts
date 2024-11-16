@@ -115,8 +115,6 @@ export class Judge {
       ps.on('close', () => resolve(true));
     });
 
-    console.log('자바에러', error);
-
     if (error !== '') {
       throw new IpcError(error, 'build-error');
     }
