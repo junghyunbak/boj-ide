@@ -49,10 +49,10 @@ export function lang2BuildCmd(lang: Langauge, fileName: string, platform: typeof
   }
 }
 
-export function lang2BinExt(lang: Langauge, platform: typeof process.platform) {
+export function lang2Bin(lang: Langauge, fileName: string, platform: typeof process.platform) {
   switch (lang) {
     case 'C++14':
-      return platform === 'win32' ? '.exe' : '';
+      return fileName + (platform === 'win32' ? '.exe' : '');
     case 'Java11':
       return 'Main';
     default:

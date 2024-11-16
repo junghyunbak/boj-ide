@@ -8,7 +8,7 @@ import path from 'path';
 
 import {
   isContainVersion,
-  lang2BinExt,
+  lang2Bin,
   lang2BuildCmd,
   lang2ExecuteCmd,
   lang2Ext,
@@ -115,7 +115,7 @@ export class Judge {
       throw new IpcError(error, 'build-error');
     }
 
-    return lang2BinExt(language, process.platform);
+    return lang2Bin(language, fileName, process.platform);
   }
 
   async run(executeCmd: string, inputs: string[], outputs: string[]) {
