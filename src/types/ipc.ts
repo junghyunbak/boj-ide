@@ -6,7 +6,7 @@ type ChannelToMessage = {
    * electron
    */
   'load-code': MessageTemplate<MyOmit<CodeInfo, 'code'>>;
-  'save-code': MessageTemplate<CodeInfo>;
+  'save-code': MessageTemplate<CodeInfo & { silence?: boolean }>;
   'change-boj-view-width': MessageTemplate<Rect>;
   'judge-start': MessageTemplate<CodeInfo & ProblemInfo>;
   'go-back-boj-view': undefined;

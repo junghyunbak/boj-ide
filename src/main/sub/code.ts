@@ -21,13 +21,15 @@ export class Code {
   }
 
   build() {
-    ipc.on('save-code', (e, { data: { number, language, code } }) => {
+    ipc.on('save-code', (e, { data: { number, language, code, silence } }) => {
       try {
         fs.writeFileSync(path.join(this.basePath, `${number}.${lang2Ext(language, process.platform)}`), code, {
           encoding: 'utf-8',
         });
 
-        ipc.send(this.webContents, 'save-code-result', { data: { isSaved: true } });
+        if (!silence) {
+          ipc.send(this.webContents, 'save-code-result', { data: { isSaved: true } });
+        }
       } catch (_) {
         throw new IpcError('코드 저장에 실패하였습니다.', 'code-save-error');
       }

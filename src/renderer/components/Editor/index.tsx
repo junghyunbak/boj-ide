@@ -24,7 +24,7 @@ export function Editor() {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   /**
-   * 문제, 확장자가 변경되면 소스코드를 로딩
+   * 문제, 확장자가 변경되면 소스코드를 로딩, 기존의 코드를 저장
    */
   useEffect(() => {
     if (!problem) {
@@ -32,6 +32,12 @@ export function Editor() {
     }
 
     window.electron.ipcRenderer.sendMessage('load-code', { data: { number: problem.number, language: lang } });
+
+    return () => {
+      window.electron.ipcRenderer.sendMessage('save-code', {
+        data: { number: problem.number, language: lang, code: useStore.getState().code, silence: true },
+      });
+    };
   }, [problem, lang]);
 
   /**
