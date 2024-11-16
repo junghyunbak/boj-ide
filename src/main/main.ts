@@ -22,6 +22,7 @@ import { ipc } from '../types/ipc';
 import { BojView } from './sub/bojView';
 import { Code } from './sub/code';
 import { Judge } from './sub/judge';
+import { spawn } from 'child_process';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -103,7 +104,13 @@ const createWindow = async (puppeteerBroswer: Browser) => {
   });
 
   ipc.on('open-source-code-folder', () => {
-    shell.openExternal(app.getPath('userData'));
+    if (process.platform === 'darwin') {
+      spawn('open', [path.resolve(app.getPath('userData'))]);
+
+      return;
+    }
+
+    shell.openExternal(path.resolve(app.getPath('userData')));
   });
 
   mainWindow.on('closed', () => {
