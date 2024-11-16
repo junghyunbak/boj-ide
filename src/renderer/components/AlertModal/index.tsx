@@ -74,20 +74,15 @@ export function AlertModal() {
           type="button"
           className={css`
             position: absolute;
-            top: 1rem;
-            right: 1rem;
+            top: 0.5rem;
+            right: 0.5rem;
             padding: 0.5rem;
             margin: 0;
-            background-color: transparent;
+            background-color: #428bca;
+            border: none;
+            font-size: 0.625rem;
+            color: white;
             cursor: pointer;
-            border: 1px solid lightgray;
-            font-size: 0.5rem;
-
-            transition: all 0.3s ease;
-
-            &:hover {
-              box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
-            }
           `}
           aria-label="modal-close-button"
           onClick={() => {
