@@ -5,6 +5,7 @@ import { memo, useEffect } from 'react';
 import { useShallow } from 'zustand/shallow';
 
 import { useStore } from '../../store';
+import { TestCase } from './TestCase';
 
 type TestCase = {
   input: string;
@@ -113,137 +114,7 @@ export const Output = memo(() => {
       )}
 
       {testCases.map(({ input, output }, i, arr) => {
-        return (
-          <div
-            key={i}
-            className={css`
-              width: 100%;
-            `}
-          >
-            <li
-              className={css`
-                list-style: none;
-                padding: 1rem;
-
-                p {
-                  margin: 0;
-                }
-              `}
-            >
-              <p className={css``}>예제 입력 {i + 1}</p>
-
-              <div
-                className={css`
-                  display: flex;
-                  gap: 0.5rem;
-
-                  pre {
-                    background-color: #f7f7f9;
-
-                    border: 1px solid lightgray;
-
-                    overflow-x: scroll;
-
-                    font-size: 18px;
-                    font-family: 'menlo';
-                    line-height: 1.4;
-                  }
-                `}
-              >
-                <pre
-                  style={{
-                    width: '50%',
-                    padding: '8px',
-                  }}
-                >
-                  {input}
-                </pre>
-                <pre
-                  style={{
-                    width: '50%',
-                    padding: '8px',
-                  }}
-                >
-                  {output}
-                </pre>
-              </div>
-
-              {isJudging && !judgeResult[i] && <p>채점중...</p>}
-
-              {judgeResult[i] && (
-                <table
-                  className={css`
-                    tr {
-                      td:first-of-type {
-                        white-space: nowrap;
-                        text-align: right;
-                        vertical-align: top;
-
-                        color: gray;
-
-                        &::after {
-                          content: '>';
-                          padding: 0 0.5rem;
-                        }
-                      }
-                    }
-
-                    pre {
-                      margin: 0;
-                      font-size: 1rem;
-                      white-space: pre-wrap;
-                    }
-                  `}
-                >
-                  <tbody>
-                    <tr>
-                      <td>결과</td>
-
-                      <td
-                        className={css`
-                          color: ${judgeResult[i]?.result === '성공' ? 'green' : 'red'};
-                        `}
-                      >
-                        {judgeResult[i]?.result}
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>실행 시간</td>
-                      <td>{`${judgeResult[i]?.elapsed}ms`}</td>
-                    </tr>
-
-                    <tr>
-                      <td>출력</td>
-
-                      <td>
-                        <pre>{judgeResult[i]?.stdout}</pre>
-                      </td>
-                    </tr>
-
-                    {judgeResult[i]?.stderr && (
-                      <tr>
-                        <td>에러</td>
-
-                        <td>
-                          <pre>{judgeResult[i].stderr}</pre>
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              )}
-            </li>
-
-            {i !== arr.length - 1 && (
-              <div
-                className={css`
-                  border-bottom: 1px solid lightgray;
-                `}
-              />
-            )}
-          </div>
-        );
+        return <TestCase index={i} input={input} output={output} isJudging={isJudging} judgeResult={judgeResult[i]} />;
       })}
     </div>
   );
