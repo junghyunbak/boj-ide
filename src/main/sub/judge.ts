@@ -92,6 +92,10 @@ export class Judge {
       return `${fileName}.${lang2Ext(language, process.platform)}`;
     }
 
+    if (language === 'Java11') {
+      fs.writeFileSync(path.join(this.basePath, 'Main.java'), code, { encoding: 'utf-8' });
+    }
+
     let error = '';
 
     await new Promise((resolve) => {
@@ -110,6 +114,8 @@ export class Judge {
       });
       ps.on('close', () => resolve(true));
     });
+
+    console.log('자바에러', error);
 
     if (error !== '') {
       throw new IpcError(error, 'build-error');
