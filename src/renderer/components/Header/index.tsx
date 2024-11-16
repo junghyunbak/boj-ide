@@ -94,7 +94,7 @@ export function Header() {
           font-size: 0.875rem;
         `}
       >
-        {problem && `${problem.number}.${lang2Ext(lang, process.platform)}`}
+        {problem && `${problem.number}.${lang2Ext(lang)}`}
       </p>
 
       <div

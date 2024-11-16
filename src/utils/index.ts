@@ -21,7 +21,7 @@ export function lang2Tool(lang: Langauge) {
   }
 }
 
-export function lang2Ext(lang: Langauge, platform: typeof process.platform) {
+export function lang2Ext(lang: Langauge, platform: typeof process.platform = 'win32') {
   switch (lang) {
     case 'Java11':
       return 'java';
