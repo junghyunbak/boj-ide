@@ -102,6 +102,10 @@ const createWindow = async (puppeteerBroswer: Browser) => {
     new BojView(mainWindow, puppeteerBroswer).build();
   });
 
+  ipc.on('open-source-code-folder', () => {
+    shell.openExternal(app.getPath('userData'));
+  });
+
   mainWindow.on('closed', () => {
     mainWindow = null;
   });

@@ -16,6 +16,7 @@ import { BojView } from './components/BojView';
 import './App.css';
 import './assets/fonts.css';
 import { HistoryBar } from './components/HistoryBar';
+import { Footer } from './components/Footer';
 
 export default function App() {
   const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
@@ -104,6 +105,8 @@ export default function App() {
             </HorizontalLayout.Right>
           </HorizontalLayout>
         </div>
+
+        <Footer />
       </div>
     </div>
   );
