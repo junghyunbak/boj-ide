@@ -121,7 +121,7 @@ export function Header() {
               border: none;
               background: lightgray;
               border-radius: 4px;
-              color: black;
+              color: white;
               padding: 0.4rem 0.8rem;
               cursor: pointer;
               white-space: nowrap;
@@ -207,7 +207,7 @@ export function Header() {
 
               &:hover {
                 background-color: lightgray;
-                color: black;
+                color: white;
               }
 
               p {
@@ -220,7 +220,7 @@ export function Header() {
             className={css`
               border: none;
               background-color: ${mode === 'normal' ? 'lightgray' : 'transparent'};
-              color: ${mode === 'normal' ? 'black' : 'lightgray'};
+              color: ${mode === 'normal' ? 'white' : 'lightgray'};
             `}
             type="button"
             onClick={() => {
@@ -234,7 +234,7 @@ export function Header() {
             className={css`
               border: none;
               background-color: ${mode === 'vim' ? 'lightgray' : 'transparent'};
-              color: ${mode === 'vim' ? 'black' : 'lightgray'};
+              color: ${mode === 'vim' ? 'white' : 'lightgray'};
             `}
             type="button"
             onClick={() => {
