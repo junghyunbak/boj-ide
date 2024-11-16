@@ -1,12 +1,12 @@
 {
-  "name": "electron-react-boilerplate",
+  "name": "boj-ide",
   "version": "1.1.3",
   "description": "A foundation for scalable desktop apps",
   "license": "MIT",
   "author": {
     "name": "Electron React Boilerplate Maintainers",
     "email": "electronreactboilerplate@gmail.com",
-    "url": "https://github.com/electron-react-boilerplate"
+    "url": "https://github.com/boj-ide"
   },
   "main": "./dist/main/main.js",
   "scripts": {
