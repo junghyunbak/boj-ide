@@ -1,10 +1,10 @@
 import { css } from '@emotion/css';
 
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect } from 'react';
 
 import { useShallow } from 'zustand/shallow';
-
 import { useStore } from '../../store';
+
 import { TestCase } from './TestCase';
 import { TestCaseCreator } from './TestCaseCreater';
 
@@ -24,6 +24,10 @@ export const Output = memo(() => {
 
     return problem.testCase.inputs.length + (customTestCase[problem.number] || []).length;
   })();
+
+  useEffect(() => {
+    setJudgeResult(() => []);
+  }, [customTestCase]);
 
   /**
    * 채점 결과가 도착하는 ipc 이벤트 리스너 초기화
@@ -76,6 +80,8 @@ export const Output = memo(() => {
       });
     }
 
+    tmp.push(...(customTestCase[problem.number] || []));
+
     return tmp;
   })();
 
@@ -95,34 +101,21 @@ export const Output = memo(() => {
         margin: 0;
       `}
     >
-      {testCases.map(({ input, output, type }, i) => {
-        return (
-          <TestCase
-            key={i}
-            index={i}
-            input={input}
-            output={output}
-            isJudging={isJudging}
-            judgeResult={judgeResult[i]}
-            type={type}
-          />
-        );
-      })}
-
-      {(customTestCase[problem?.number || ''] || []).map(({ input, output, type }, i) => {
-        return (
-          <TestCase
-            key={i}
-            index={i}
-            input={input}
-            output={output}
-            isJudging={isJudging}
-            judgeResult={judgeResult[(problem?.testCase.inputs.length || 0) + i]}
-            type={type}
-            problemNumber={problem?.number}
-          />
-        );
-      })}
+      {problem &&
+        testCases.map(({ input, output, type }, i) => {
+          return (
+            <TestCase
+              key={i}
+              index={i}
+              input={input}
+              output={output}
+              isJudging={isJudging}
+              judgeResult={judgeResult[i]}
+              type={type}
+              problem={problem}
+            />
+          );
+        })}
 
       {isJudgeComplete && (
         <div className={css``}>

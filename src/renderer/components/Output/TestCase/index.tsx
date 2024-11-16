@@ -4,7 +4,7 @@ import { useStore } from '../../../store';
 import { useShallow } from 'zustand/shallow';
 
 interface TestCaseProps {
-  problemNumber?: string;
+  problem: ProblemInfo;
   index: number;
   input: string;
   output: string;
@@ -13,7 +13,7 @@ interface TestCaseProps {
   type: TC['type'];
 }
 
-export function TestCase({ problemNumber, isJudging, index, input, output, judgeResult, type }: TestCaseProps) {
+export function TestCase({ problem, isJudging, index, input, output, judgeResult, type }: TestCaseProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const [removeCustomTestCase] = useStore(useShallow((s) => [s.removeCustomTestCase]));
@@ -60,7 +60,8 @@ export function TestCase({ problemNumber, isJudging, index, input, output, judge
           `}
           onClick={() => setIsOpen(!isOpen)}
         >
-          {type === 'custom' ? '사용자' : ''} 예제 입력 {index + 1}{' '}
+          {type === 'custom' ? '사용자' : ''} 예제 입력{' '}
+          {index + 1 - (type === 'custom' ? problem.testCase.inputs.length : 0)}{' '}
           {isJudging && !judgeResult && (
             <span
               className={css`
@@ -75,9 +76,9 @@ export function TestCase({ problemNumber, isJudging, index, input, output, judge
             <span
               className={css`
                 color: white;
-                font-size: 0.75rem;
-                background-color: ${judgeResult.result === '성공' ? '#77ea77' : '#ec8c8c'};
-                padding: 2px 4px;
+                font-size: 11px;
+                background-color: ${judgeResult.result === '성공' ? '#5cb85c' : '#d9534f'};
+                padding: 3px 6px;
                 margin-left: 0.5rem;
               `}
             >
@@ -97,7 +98,7 @@ export function TestCase({ problemNumber, isJudging, index, input, output, judge
                 align-items: center;
               `}
               onClick={(e) => {
-                removeCustomTestCase(problemNumber || '', index);
+                removeCustomTestCase(problem.number, index - problem.testCase.inputs.length);
 
                 e.stopPropagation();
               }}
@@ -187,7 +188,7 @@ export function TestCase({ problemNumber, isJudging, index, input, output, judge
 
                     <td
                       className={css`
-                        color: ${judgeResult?.result === '성공' ? 'green' : 'red'};
+                        color: ${judgeResult?.result === '성공' ? '#5cb85c' : '#d9534f'};
                       `}
                     >
                       {judgeResult?.result}
