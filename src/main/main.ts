@@ -65,8 +65,8 @@ const createWindow = async (puppeteerBroswer: Browser) => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1024,
-    height: 728,
+    width: 1152,
+    height: 870,
     resizable: true,
     icon: getAssetPath('icon.png'),
     webPreferences: {
