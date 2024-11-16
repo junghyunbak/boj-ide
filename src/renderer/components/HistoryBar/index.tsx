@@ -72,8 +72,8 @@ export function HistoryBar() {
         border-bottom: 1px solid lightgray;
         display: flex;
         overflow-x: scroll;
-        min-height: ${size.BOJ_VIEW_NAVIGATION_HEIGHT}px;
-        height: ${size.BOJ_VIEW_NAVIGATION_HEIGHT}px;
+        min-height: ${size.HISTORY_BAR_HEIGHT}px;
+        height: ${size.HISTORY_BAR_HEIGHT}px;
 
         &::-webkit-scrollbar {
           display: none;

@@ -24,7 +24,7 @@ export function BrowserNavigation() {
         align-items: center;
         padding: 0.3rem 0.5rem;
         gap: 0.2rem;
-        min-height: ${size.BOJ_VIEW_NAVIGATION_HEIGHT}px;
+        height: ${size.BOJ_VIEW_NAVIGATION_HEIGHT}px;
 
         button {
           border: none;
