@@ -151,7 +151,7 @@ export function execute(
 
   const result = ((): JudgeResult['result'] => {
     if (stderr.length !== 0) {
-      return '에러 발생';
+      return '런타임 에러';
     }
 
     if (signal === 'SIGTERM') {
@@ -159,10 +159,10 @@ export function execute(
     }
 
     if (stdout.length !== 0 && normalizeOutput(processOutput) === normalizeOutput(output)) {
-      return '성공';
+      return '맞았습니다!!';
     }
 
-    return '실패';
+    return '틀렸습니다';
   })();
 
   return { result, elapsed, stdout: processOutput, stderr: stderr.toString() };

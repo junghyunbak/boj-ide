@@ -19,3 +19,9 @@
   font-weight: 500;
   src: url('./OpenSans-Medium.ttf');
 }
+
+@font-face {
+  font-family: open-sans;
+  font-weight: 700;
+  src: url('./OpenSans-Bold.ttf');
+}

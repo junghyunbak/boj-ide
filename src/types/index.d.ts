@@ -29,7 +29,7 @@ type CodeInfo = {
 
 type JudgeResult = {
   index: number;
-  result: '성공' | '시간 초과' | '에러 발생' | '실패';
+  result: '맞았습니다!!' | '시간 초과' | '런타임 에러' | '틀렸습니다';
   stderr: string;
   stdout: string;
   elapsed: number;

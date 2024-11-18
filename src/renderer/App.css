@@ -1,3 +1,7 @@
+#root {
+  font-size: 16px;
+}
+
 #root * {
   box-sizing: border-box;
 }

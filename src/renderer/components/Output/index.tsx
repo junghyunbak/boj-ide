@@ -27,7 +27,7 @@ export const Output = memo(() => {
 
   useEffect(() => {
     setJudgeResult(() => []);
-  }, [customTestCase]);
+  }, [customTestCase, setJudgeResult]);
 
   /**
    * 채점 결과가 도착하는 ipc 이벤트 리스너 초기화
@@ -72,7 +72,7 @@ export const Output = memo(() => {
 
     const tmp: TC[] = [];
 
-    for (let i = 0; i < problem.testCase.inputs.length; i++) {
+    for (let i = 0; i < problem.testCase.inputs.length; i += 1) {
       tmp.push({
         input: problem.testCase.inputs[i],
         output: problem.testCase.outputs[i],
@@ -89,7 +89,7 @@ export const Output = memo(() => {
 
   const correctCount = judgeResult
     .filter((v) => v !== undefined)
-    .reduce((a, c) => a + (c.result === '성공' ? 1 : 0), 0);
+    .reduce((a, c) => a + (c.result === '맞았습니다!!' ? 1 : 0), 0);
 
   return (
     <div

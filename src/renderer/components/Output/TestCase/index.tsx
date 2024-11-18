@@ -2,6 +2,7 @@ import { css } from '@emotion/css';
 import { useState } from 'react';
 import { useStore } from '../../../store';
 import { useShallow } from 'zustand/shallow';
+import { color } from '../../../../styles';
 
 interface TestCaseProps {
   problem: ProblemInfo;
@@ -17,6 +18,21 @@ export function TestCase({ problem, isJudging, index, input, output, judgeResult
   const [isOpen, setIsOpen] = useState(false);
 
   const [removeCustomTestCase] = useStore(useShallow((s) => [s.removeCustomTestCase]));
+
+  const resultColor = (() => {
+    switch (judgeResult?.result) {
+      case '런타임 에러':
+        return color.error;
+      case '맞았습니다!!':
+        return color.correct;
+      case '시간 초과':
+        return color.over;
+      case '틀렸습니다':
+        return color.wrong;
+      default:
+        return color.text;
+    }
+  })();
 
   return (
     <div
@@ -75,10 +91,8 @@ export function TestCase({ problem, isJudging, index, input, output, judgeResult
           {judgeResult && (
             <span
               className={css`
-                color: white;
-                font-size: 11px;
-                background-color: ${judgeResult.result === '성공' ? '#5cb85c' : '#d9534f'};
-                padding: 3px 6px;
+                color: ${resultColor};
+                font-weight: 700;
                 margin-left: 0.5rem;
               `}
             >
@@ -155,8 +169,6 @@ export function TestCase({ problem, isJudging, index, input, output, judgeResult
               </pre>
             </div>
 
-            {isJudging && !judgeResult && <p>채점중...</p>}
-
             {judgeResult && (
               <table
                 className={css`
@@ -188,7 +200,8 @@ export function TestCase({ problem, isJudging, index, input, output, judgeResult
 
                     <td
                       className={css`
-                        color: ${judgeResult?.result === '성공' ? '#5cb85c' : '#d9534f'};
+                        color: ${resultColor};
+                        font-weight: 700;
                       `}
                     >
                       {judgeResult?.result}
