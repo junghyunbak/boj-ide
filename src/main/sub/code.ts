@@ -7,7 +7,7 @@ import { IpcError } from '../../error';
 
 import { JS_INPUT_TEMPLATE, CPP_INPUT_TEMPLATE, PY_INPUT_TEMPLATE, JAVA_CODE_TEMPLATE } from '../../constants';
 
-import { lang2Ext } from '../../utils';
+import { langToJudgeInfo } from '../../utils';
 
 export class Code {
   private basePath: string;
@@ -22,8 +22,14 @@ export class Code {
 
   build() {
     ipc.on('save-code', (e, { data: { number, language, code, silence } }) => {
+      const ext = langToJudgeInfo[language].ext[process.platform];
+
+      if (!ext) {
+        throw new Error('지원하지 않는 플랫폼입니다.');
+      }
+
       try {
-        fs.writeFileSync(path.join(this.basePath, `${number}.${lang2Ext(language, process.platform)}`), code, {
+        fs.writeFileSync(path.join(this.basePath, `${number}.${ext}`), code, {
           encoding: 'utf-8',
         });
 
@@ -31,12 +37,18 @@ export class Code {
           ipc.send(this.webContents, 'save-code-result', { data: { isSaved: true } });
         }
       } catch (_) {
-        throw new IpcError('코드 저장에 실패하였습니다.', 'code-save-error');
+        throw new Error('코드 저장에 실패하였습니다.');
       }
     });
 
     ipc.on('load-code', (e, { data: { number, language } }) => {
-      const filePath = path.join(this.basePath, `${number}.${lang2Ext(language, process.platform)}`);
+      const ext = langToJudgeInfo[language].ext[process.platform];
+
+      if (!ext) {
+        throw new Error('지원하지 않는 플랫폼입니다.');
+      }
+
+      const filePath = path.join(this.basePath, `${number}.${ext}`);
 
       if (!fs.existsSync(filePath)) {
         const code = (() => {

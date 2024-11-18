@@ -1,5 +1,4 @@
 import { ipcMain, type WebContents } from 'electron';
-import { IpcError } from '../error';
 
 type ChannelToMessage = {
   /**
@@ -123,21 +122,6 @@ class Ipc {
           await result;
         }
       } catch (err) {
-        if (err instanceof IpcError) {
-          switch (err.errorType) {
-            case 'build-error':
-              this.send(e.sender, 'reset-judge');
-              this.send(e.sender, 'occur-error', {
-                data: { message: `빌드 중 에러가 발생했습니다.\n\n${err.message}` },
-              });
-              break;
-            default:
-              break;
-          }
-
-          return;
-        }
-
         if (err instanceof Error) {
           this.send(e.sender, 'reset-judge');
           this.send(e.sender, 'occur-error', { data: { message: err.message } });
