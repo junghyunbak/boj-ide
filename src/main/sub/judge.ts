@@ -2,7 +2,7 @@ import { app, WebContents } from 'electron';
 
 import fs from 'fs';
 
-import { spawnSync } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
 
 import path from 'path';
 
@@ -82,7 +82,7 @@ export function checkCli(cli: string) {
   return /[0-9]+\.[0-9]+\.[0-9]+/.test(stdout.toString());
 }
 
-export function compile({
+export async function compile({
   language,
   code,
   fileName,
@@ -114,10 +114,22 @@ export function compile({
       throw new Error('지원하지 않는 플랫폼입니다.');
     }
 
-    const { stderr } = spawnSync(compileCmd, { cwd: basePath, shell: true, timeout: 6000 });
+    const stderr = await new Promise((resolve) => {
+      let error = '';
 
-    if (stderr.length !== 0) {
-      throw new Error(`컴파일 에러\n\n${stderr.toString()}`);
+      const ps = spawn(compileCmd, { cwd: basePath, shell: true });
+
+      ps.stderr.on('data', (buf) => {
+        error += buf.toString();
+      });
+
+      ps.on('close', () => {
+        resolve(error);
+      });
+    });
+
+    if (stderr !== '') {
+      throw new Error(`컴파일 에러\n\n${stderr}`);
     }
   }
 }
@@ -136,7 +148,7 @@ export class Judge {
   build() {
     ipc.on(
       'judge-start',
-      (
+      async (
         e,
         {
           data: {
@@ -157,7 +169,7 @@ export class Judge {
         /**
          * 컴파일
          */
-        compile({ language, code, fileName: number, basePath: this.basePath, platform: process.platform });
+        await compile({ language, code, fileName: number, basePath: this.basePath, platform: process.platform });
 
         /**
          * 채점 시작
