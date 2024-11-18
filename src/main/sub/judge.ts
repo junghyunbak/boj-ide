@@ -6,7 +6,11 @@ import { spawnSync } from 'child_process';
 
 import path from 'path';
 
-import { normalizeOutput, removeAnsiText } from '../../utils';
+import { Worker } from 'worker_threads';
+
+import appRoot from 'app-root-path';
+
+import { normalizeOutput } from '../../utils';
 
 import { ipc } from '../../types/ipc';
 
@@ -118,56 +122,6 @@ export function compile({
   }
 }
 
-export function execute(
-  language: Language,
-  fileName: string,
-  input: string,
-  output: string,
-  basePath: string,
-): { result: JudgeResult['result']; elapsed: number; stdout: string; stderr: string } {
-  fs.writeFileSync(path.join(basePath, 'input'), input);
-
-  const executeCmd = langToJudgeInfo[language].execute(fileName)[process.platform];
-
-  if (!executeCmd) {
-    throw new Error('지원하지 않는 플랫폼입니다.');
-  }
-
-  const start = Date.now();
-
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  const { stderr, stdout, signal } = spawnSync(executeCmd, {
-    cwd: basePath,
-    input,
-    shell: true,
-    timeout: 6000,
-  });
-
-  const end = Date.now();
-
-  const elapsed = end - start;
-
-  const processOutput = removeAnsiText(stdout.toString());
-
-  const result = ((): JudgeResult['result'] => {
-    if (stderr.length !== 0) {
-      return '런타임 에러';
-    }
-
-    if (signal === 'SIGTERM') {
-      return '시간 초과';
-    }
-
-    if (stdout.length !== 0 && normalizeOutput(processOutput) === normalizeOutput(output)) {
-      return '맞았습니다!!';
-    }
-
-    return '틀렸습니다';
-  })();
-
-  return { result, elapsed, stdout: processOutput, stderr: stderr.toString() };
-}
-
 export class Judge {
   private basePath: string;
 
@@ -193,18 +147,66 @@ export class Judge {
           },
         },
       ) => {
+        /**
+         * cli 존재여부 체크
+         */
         if (!checkCli(langToJudgeInfo[language].cli)) {
           throw new Error('프로그램이 설치되어 있지 않습니다.');
         }
 
+        /**
+         * 컴파일
+         */
         compile({ language, code, fileName: number, basePath: this.basePath, platform: process.platform });
 
-        for (let i = 0; i < inputs.length; i += 1) {
-          const { elapsed, stderr, stdout, result } = execute(language, number, inputs[i], outputs[i], this.basePath);
+        /**
+         * 채점 시작
+         */
+        const executeCmd = langToJudgeInfo[language].execute(number)[process.platform];
 
-          ipc.send(this.webContents, 'judge-result', {
-            data: { index: i, stderr: stderr.toString(), stdout, elapsed, result },
-          });
+        if (!executeCmd) {
+          throw new Error('지원하지 않는 플랫폼입니다.');
+        }
+
+        for (let index = 0; index < inputs.length; index += 1) {
+          (() => {
+            const worker = new Worker(path.resolve(process.cwd(), appRoot.path, 'src', 'main', 'sub', 'worker.ts'), {
+              execArgv: ['-r', 'ts-node/register'],
+            });
+
+            worker.once('message', (data) => {
+              const { stderr, stdout, signal, elapsed } = data;
+
+              const result = ((): JudgeResult['result'] => {
+                if (stderr.length !== 0) {
+                  return '런타임 에러';
+                }
+
+                if (signal === 'SIGTERM') {
+                  return '시간 초과';
+                }
+
+                if (stdout.length !== 0 && normalizeOutput(stdout) === normalizeOutput(outputs[index])) {
+                  return '맞았습니다!!';
+                }
+
+                return '틀렸습니다';
+              })();
+
+              ipc.send(this.webContents, 'judge-result', {
+                data: { index, stderr, stdout, elapsed, result },
+              });
+
+              worker.terminate();
+            });
+
+            // [ ]: 타입 안정성 작업 필요
+            worker.postMessage({
+              executeCmd,
+              input: inputs[index],
+              basePath: this.basePath,
+            });
+          })();
         }
       },
     );

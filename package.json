@@ -111,6 +111,7 @@
     "@emotion/css": "^11.13.4",
     "@replit/codemirror-vim": "^6.2.1",
     "@uiw/react-codemirror": "^4.23.6",
+    "app-root-path": "^3.1.0",
     "cheerio": "^1.0.0",
     "domhandler": "^5.0.3",
     "electron-debug": "^3.2.0",
