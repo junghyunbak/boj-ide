@@ -9,7 +9,7 @@ import { useStore } from '../../store';
 import { LANGAUGES } from '../../../constants';
 
 import { lang2Ext } from '../../../utils';
-import { size } from '../../../styles';
+import { color, size } from '../../../styles';
 
 export function Header() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
@@ -108,6 +108,7 @@ export function Header() {
         padding: 1rem;
         border-bottom: 1px solid lightgray;
         height: ${size.EDITOR_HEADER_HEIGHT}px;
+        color: ${color.text};
       `}
     >
       <p

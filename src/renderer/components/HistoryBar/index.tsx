@@ -5,7 +5,7 @@ import { useShallow } from 'zustand/shallow';
 import { css } from '@emotion/css';
 
 import { useStore } from '../../store';
-import { size } from '../../../styles';
+import { color, size } from '../../../styles';
 
 export function HistoryBar() {
   const [problem, setProblem] = useStore(useShallow((s) => [s.problem, s.setProblem]));
@@ -110,6 +110,7 @@ export function HistoryBar() {
                 width: 100%;
                 height: 100%;
                 border-bottom: 2px solid ${problem?.number === number ? '#428bca' : 'transparent'};
+                color: ${color.text};
               `}
             >
               <p

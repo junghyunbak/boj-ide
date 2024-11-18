@@ -1,4 +1,5 @@
 import { css } from '@emotion/css';
+import { color } from '../../../styles';
 
 export function Footer() {
   return (
@@ -19,6 +20,7 @@ export function Footer() {
             border: none;
             background-color: transparent;
             font-size: 0.75rem;
+            color: ${color.text};
             cursor: pointer;
 
             &:hover {
@@ -51,9 +53,10 @@ export function Footer() {
         className={css`
           margin: 0;
           font-size: 0.75rem;
+          color: ${color.text};
         `}
       >
-        v1.1.2
+        v1.1.3
       </p>
     </div>
   );
