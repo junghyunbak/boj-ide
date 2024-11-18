@@ -79,6 +79,7 @@ export function TestCase({ problem, isJudging, index, input, output, judgeResult
               background: none;
               color: ${color.primaryText};
               cursor: pointer;
+              padding: 0;
             `}
             onClick={() => setIsOpen(!isOpen)}
           >
@@ -94,6 +95,7 @@ export function TestCase({ problem, isJudging, index, input, output, judgeResult
                 background: none;
                 color: ${color.primaryText};
                 cursor: pointer;
+                padding: 0;
               `}
               onClick={(e) => {
                 removeCustomTestCase(problem.number, index - problem.testCase.inputs.length);

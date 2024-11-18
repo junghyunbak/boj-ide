@@ -116,6 +116,7 @@ export const Output = memo(() => {
               border: 1px solid #ddd;
               border-collapse: collapse;
               font-size: 0.875rem;
+              color: ${color.text};
 
               th {
                 text-align: start;
