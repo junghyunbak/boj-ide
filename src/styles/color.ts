@@ -11,3 +11,5 @@ export const primaryBg = '#428bca';
 export const primaryText = '#0076C0';
 
 export const text = '#333333';
+
+export const judging = '#e67e22';

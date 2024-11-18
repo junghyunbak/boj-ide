@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { css } from '@emotion/css';
-import { useStore } from '../../../store';
 import { useShallow } from 'zustand/shallow';
+import { useStore } from '../../../store';
 
 interface TestCaseCreatorProps {
   problemNumber: string;
@@ -42,11 +42,12 @@ export function TestCaseCreator({ problemNumber }: TestCaseCreatorProps) {
             font-family: 'menlo';
             border: 1px solid lightgray;
             background-color: #f7f7f9;
+            padding: 0.5rem;
           }
         `}
       >
-        <textarea value={input} onChange={(e) => setInput(e.target.value)}></textarea>
-        <textarea value={output} onChange={(e) => setOutput(e.target.value)}></textarea>
+        <textarea value={input} onChange={(e) => setInput(e.target.value)} placeholder="예제 입력" />
+        <textarea value={output} onChange={(e) => setOutput(e.target.value)} placeholder="예제 출력" />
       </div>
 
       <button

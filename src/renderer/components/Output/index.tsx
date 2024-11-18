@@ -7,6 +7,7 @@ import { useStore } from '../../store';
 
 import { TestCase } from './TestCase';
 import { TestCaseCreator } from './TestCaseCreater';
+import { color } from '../../../styles';
 
 export const Output = memo(() => {
   const [problem] = useStore(useShallow((s) => [s.problem]));
@@ -101,28 +102,89 @@ export const Output = memo(() => {
         margin: 0;
       `}
     >
-      {problem &&
-        testCases.map(({ input, output, type }, i) => {
-          return (
-            <TestCase
-              key={i}
-              index={i}
-              input={input}
-              output={output}
-              isJudging={isJudging}
-              judgeResult={judgeResult[i]}
-              type={type}
-              problem={problem}
-            />
-          );
-        })}
+      <div
+        className={css`
+          padding: 1rem;
+          padding-bottom: 0;
+          width: 100%;
+        `}
+      >
+        {problem && (
+          <table
+            className={css`
+              width: 100%;
+              border: 1px solid #ddd;
+              border-collapse: collapse;
+              font-size: 0.875rem;
+
+              th {
+                text-align: start;
+              }
+
+              th,
+              td {
+                border-left: 1px solid #ddd;
+                border-right: 1px solid #ddd;
+                padding: 0.5rem;
+              }
+
+              tr {
+                border-top: 1px solid #ddd;
+              }
+
+              tr:nth-child(2n) {
+                border-top: none;
+
+                td {
+                  padding: 0;
+                  border: none;
+                }
+              }
+
+              tr:nth-child(4n - 3) {
+                background-color: #f9f9f9;
+              }
+            `}
+          >
+            <thead>
+              <th style={{ width: '35%' }}>예제</th>
+              <th style={{ width: '35%' }}>결과</th>
+              <th style={{ width: '15%' }}>상세</th>
+              <th style={{ width: '15%' }}>삭제</th>
+            </thead>
+            <tbody>
+              {testCases.map(({ input, output, type }, i) => {
+                return (
+                  <TestCase
+                    key={i}
+                    index={i}
+                    input={input}
+                    output={output}
+                    isJudging={isJudging}
+                    judgeResult={judgeResult[i]}
+                    type={type}
+                    problem={problem}
+                  />
+                );
+              })}
+            </tbody>
+          </table>
+        )}
+      </div>
 
       {isJudgeComplete && (
-        <div className={css``}>
+        <div
+          className={css`
+            padding: 1rem;
+            padding-bottom: 0;
+          `}
+        >
           <p
             className={css`
-              margin: 1rem;
-              color: ${judgeResult.length === correctCount ? 'green' : 'red'};
+              margin: 0;
+              color: ${judgeResult.length === correctCount ? color.correct : color.wrong};
+              font-weight: bold;
+              font-size: 0.875rem;
             `}
           >
             {`${judgeResult.length}개 중 ${correctCount}개 성공`}
