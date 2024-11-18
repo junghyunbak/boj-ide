@@ -7,8 +7,8 @@ type EditorSlice = {
   mode: EditorMode;
   setMode: (mode: EditorMode) => void;
 
-  lang: Langauge;
-  setLang: (lang: Langauge) => void;
+  lang: Language;
+  setLang: (lang: Language) => void;
 };
 
 export const createEditorSlice: StateCreator<EditorSlice> = (set): EditorSlice => ({

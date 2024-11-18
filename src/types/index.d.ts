@@ -17,12 +17,14 @@ type ProblemInfo = {
 
 type EditorMode = 'vim' | 'normal';
 
-type Langauge = 'node.js' | 'C++14' | 'Java11' | 'Python3';
+type Language = 'node.js' | 'C++14' | 'Java11' | 'Python3';
+
+type Cli = 'g++' | 'javac' | 'node' | 'python3';
 
 type CodeInfo = {
   code: string;
   number: string;
-  language: Langauge;
+  language: Language;
 };
 
 type JudgeResult = {

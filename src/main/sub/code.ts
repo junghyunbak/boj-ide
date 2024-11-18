@@ -3,11 +3,10 @@ import fs from 'fs';
 import path from 'path';
 
 import { ipc } from '../../types/ipc';
-import { IpcError } from '../../error';
 
 import { JS_INPUT_TEMPLATE, CPP_INPUT_TEMPLATE, PY_INPUT_TEMPLATE, JAVA_CODE_TEMPLATE } from '../../constants';
 
-import { langToJudgeInfo } from '../../utils';
+import { langToJudgeInfo } from './judge';
 
 export class Code {
   private basePath: string;
