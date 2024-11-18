@@ -10,6 +10,92 @@ import { isContainVersion, langToJudgeInfo, normalizeOutput, removeAnsiText } fr
 
 import { ipc } from '../../types/ipc';
 
+export function checkCli(language: Langauge) {
+  const { stdout } = spawnSync(`${langToJudgeInfo[language].cli} --version`, { shell: true });
+
+  if (!isContainVersion(stdout.toString())) {
+    throw new Error('프로그램이 설치되어 있지 않습니다.');
+  }
+}
+
+export function compile(language: Langauge, code: string, fileName: string, basePath: string) {
+  const ext = langToJudgeInfo[language].ext[process.platform];
+
+  if (!ext) {
+    throw new Error('지원하지 않는 언어입니다.');
+  }
+
+  if (langToJudgeInfo[language].compile) {
+    fs.writeFileSync(path.join(basePath, `${fileName}.${ext}`), code, { encoding: 'utf-8' });
+
+    if (language === 'Java11') {
+      fs.writeFileSync(path.join(basePath, 'Main.java'), code, { encoding: 'utf-8' });
+    }
+
+    const compileCmd = langToJudgeInfo[language].compile(fileName)[process.platform];
+
+    if (!compileCmd) {
+      throw new Error('지원하지 않는 플랫폼입니다.');
+    }
+
+    const { stderr } = spawnSync(compileCmd, { cwd: basePath, shell: true, timeout: 6000 });
+
+    if (stderr.length !== 0) {
+      throw new Error(`컴파일 에러\n\n${stderr.toString()}`);
+    }
+  }
+}
+
+export function execute(
+  language: Langauge,
+  fileName: string,
+  input: string,
+  output: string,
+  basePath: string,
+): { result: JudgeResult['result']; elapsed: number; stdout: string; stderr: string } {
+  fs.writeFileSync(path.join(basePath, 'input'), input);
+
+  const executeCmd = langToJudgeInfo[language].execute(fileName)[process.platform];
+
+  if (!executeCmd) {
+    throw new Error('지원하지 않는 플랫폼입니다.');
+  }
+
+  const start = Date.now();
+
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  const { stderr, stdout, signal } = spawnSync(executeCmd, {
+    cwd: basePath,
+    input,
+    shell: true,
+    timeout: 6000,
+  });
+
+  const end = Date.now();
+
+  const elapsed = end - start;
+
+  const processOutput = removeAnsiText(stdout.toString());
+
+  const result = ((): JudgeResult['result'] => {
+    if (stderr.length !== 0) {
+      return '에러 발생';
+    }
+
+    if (signal === 'SIGTERM') {
+      return '시간 초과';
+    }
+
+    if (stdout.length !== 0 && normalizeOutput(processOutput) === normalizeOutput(output)) {
+      return '성공';
+    }
+
+    return '실패';
+  })();
+
+  return { result, elapsed, stdout: processOutput, stderr: stderr.toString() };
+}
+
 export class Judge {
   private basePath: string;
 
@@ -35,88 +121,14 @@ export class Judge {
           },
         },
       ) => {
-        /**
-         * 프로그램 설치여부 확인
-         */
-        const { stdout } = spawnSync(`${langToJudgeInfo[language].cli} --version`, { shell: true });
+        checkCli(language);
+        compile(language, code, number, this.basePath);
 
-        if (!isContainVersion(stdout.toString())) {
-          throw new Error('프로그램이 설치되어 있지 않습니다.');
-        }
-
-        /**
-         * 언어에 따라 빌드 수행
-         */
-        const ext = langToJudgeInfo[language].ext[process.platform];
-
-        if (!ext) {
-          throw new Error('지원하지 않는 언어입니다.');
-        }
-
-        if (langToJudgeInfo[language].compile) {
-          fs.writeFileSync(path.join(this.basePath, `${number}.${ext}`), code, { encoding: 'utf-8' });
-
-          if (language === 'Java11') {
-            fs.writeFileSync(path.join(this.basePath, 'Main.java'), code, { encoding: 'utf-8' });
-          }
-
-          const compileCmd = langToJudgeInfo[language].compile(number)[process.platform];
-
-          if (!compileCmd) {
-            throw new Error('지원하지 않는 플랫폼입니다.');
-          }
-
-          const { stderr } = spawnSync(compileCmd, { cwd: this.basePath, shell: true, timeout: 6000 });
-
-          if (stderr.length !== 0) {
-            throw new Error(`컴파일 에러\n\n${stderr.toString()}`);
-          }
-        }
-
-        /**
-         * 채점 진행
-         */
         for (let i = 0; i < inputs.length; i += 1) {
-          fs.writeFileSync(path.join(this.basePath, 'input'), inputs[i]);
-
-          const executeCmd = langToJudgeInfo[language].execute(number)[process.platform];
-
-          if (!executeCmd) {
-            throw new Error('지원하지 않는 플랫폼입니다.');
-          }
-
-          const start = Date.now();
-
-          // eslint-disable-next-line @typescript-eslint/no-shadow
-          const { stderr, stdout, signal } = spawnSync(executeCmd, {
-            cwd: this.basePath,
-            input: inputs[i],
-            shell: true,
-            timeout: 6000,
-          });
-
-          const end = Date.now();
-
-          const output = removeAnsiText(stdout.toString());
-
-          const result = (() => {
-            if (stderr.length !== 0) {
-              return '에러 발생';
-            }
-
-            if (signal === 'SIGTERM') {
-              return '시간 초과';
-            }
-
-            if (stdout.length !== 0 && normalizeOutput(output) === normalizeOutput(outputs[i])) {
-              return '성공';
-            }
-
-            return '실패';
-          })();
+          const { elapsed, stderr, stdout, result } = execute(language, number, inputs[i], outputs[i], this.basePath);
 
           ipc.send(this.webContents, 'judge-result', {
-            data: { index: i, stderr: stderr.toString(), stdout: output, elapsed: end - start, result },
+            data: { index: i, stderr: stderr.toString(), stdout, elapsed, result },
           });
         }
       },
