@@ -56,7 +56,7 @@ export function Footer() {
           color: ${color.text};
         `}
       >
-        v1.1.3
+        v1.1.4
       </p>
     </div>
   );
