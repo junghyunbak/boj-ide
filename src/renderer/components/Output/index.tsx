@@ -148,10 +148,12 @@ export const Output = memo(() => {
             `}
           >
             <thead>
-              <th style={{ width: '35%' }}>예제</th>
-              <th style={{ width: '35%' }}>결과</th>
-              <th style={{ width: '15%' }}>상세</th>
-              <th style={{ width: '15%' }}>삭제</th>
+              <tr>
+                <th style={{ width: '35%' }}>예제</th>
+                <th style={{ width: '35%' }}>결과</th>
+                <th style={{ width: '15%' }}>상세</th>
+                <th style={{ width: '15%' }}>삭제</th>
+              </tr>
             </thead>
             <tbody>
               {testCases.map(({ input, output, type }, i) => {
