@@ -6,12 +6,14 @@ import { createJudgeSlice } from './slices/judge';
 import { createProblemSlice } from './slices/problem';
 import { createLayoutSlice } from './slices/layout';
 import { createAlertSlice } from './slices/alert';
+import { createReleasesSlice } from './slices/releases';
 
 export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createJudgeSlice> &
   ReturnType<typeof createProblemSlice> &
   ReturnType<typeof createLayoutSlice> &
-  ReturnType<typeof createAlertSlice>;
+  ReturnType<typeof createAlertSlice> &
+  ReturnType<typeof createReleasesSlice>;
 
 export const useStore = create<StoreState>()(
   persist(
@@ -21,13 +23,14 @@ export const useStore = create<StoreState>()(
       ...createProblemSlice(...a),
       ...createLayoutSlice(...a),
       ...createAlertSlice(...a),
+      ...createReleasesSlice(...a),
     }),
     {
       name: 'zustandStore',
       partialize: (s) => {
-        const { lang, mode, leftRatio, topRatio, problemHistories, customTestCase } = s;
+        const { lang, mode, leftRatio, topRatio, problemHistories, customTestCase, oldReleases } = s;
 
-        return { lang, mode, leftRatio, topRatio, problemHistories, customTestCase };
+        return { lang, mode, leftRatio, topRatio, problemHistories, customTestCase, oldReleases };
       },
     },
   ),

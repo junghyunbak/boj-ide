@@ -4,7 +4,10 @@ import { useShallow } from 'zustand/shallow';
 
 import { css } from '@emotion/css';
 
+import Markdown from 'react-markdown';
+
 import { useStore } from '../../store';
+import { color } from '../../../styles';
 
 export function AlertModal() {
   const [message, setMessage] = useStore(useShallow((s) => [s.message, s.setMessage]));
@@ -56,50 +59,72 @@ export function AlertModal() {
           setMessage(null);
         }}
       />
+
       <div
         className={css`
           min-width: 50%;
-          min-height: 20%;
           max-width: 90%;
+          min-height: 20%;
+          max-height: 90%;
+
           position: absolute;
-          background-color: white;
+
           display: flex;
-          justify-content: center;
-          align-items: center;
+          flex-direction: column;
+
           box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
-          padding: 3rem 1rem;
+
+          background-color: white;
         `}
       >
-        <button
-          type="button"
+        <div
           className={css`
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
+            display: flex;
+            justify-content: end;
+            width: 100%;
+            border-bottom: 1px solid lightgray;
             padding: 0.5rem;
-            margin: 0;
-            background-color: #428bca;
-            border: none;
-            font-size: 0.625rem;
-            color: white;
-            cursor: pointer;
           `}
-          aria-label="modal-close-button"
-          onClick={() => {
-            setMessage(null);
-          }}
         >
-          ESC / ENTER
-        </button>
+          <button
+            type="button"
+            className={css`
+              border: none;
+              margin: 0;
+              background-color: ${color.primaryBg};
+              font-size: 0.875rem;
+              color: white;
+              cursor: pointer;
+              padding: 0.4rem 0.8rem;
+            `}
+            aria-label="modal-close-button"
+            onClick={() => {
+              setMessage(null);
+            }}
+          >
+            ESC / ENTER
+          </button>
+        </div>
 
-        <pre
+        <div
           className={css`
-            margin: 0;
-            white-space: pre-wrap;
+            flex: 1;
+            padding: 2rem;
+            overflow-y: scroll;
+
+            color: ${color.text};
+
+            img {
+              width: 100%;
+            }
+
+            a {
+              color: ${color.primaryText};
+            }
           `}
         >
-          {message}
-        </pre>
+          <Markdown>{message}</Markdown>
+        </div>
       </div>
     </div>
   );
