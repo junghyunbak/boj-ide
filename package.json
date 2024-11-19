@@ -109,7 +109,6 @@
     "@codemirror/lang-python": "^6.1.6",
     "@electron/notarize": "^2.3.2",
     "@emotion/css": "^11.13.4",
-    "@octokit/types": "^13.6.1",
     "@replit/codemirror-vim": "^6.2.1",
     "@uiw/react-codemirror": "^4.23.6",
     "app-root-path": "^3.1.0",
@@ -127,6 +126,7 @@
     "zustand": "^5.0.1"
   },
   "devDependencies": {
+    "@octokit/types": "^13.6.1",
     "@electron/rebuild": "^3.3.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
     "@svgr/webpack": "^8.1.0",
