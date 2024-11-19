@@ -8,8 +8,6 @@ import path from 'path';
 
 import { Worker } from 'worker_threads';
 
-import appRoot from 'app-root-path';
-
 import { normalizeOutput } from '../../utils';
 
 import { ipc } from '../../types/ipc';
