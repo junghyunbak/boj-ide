@@ -123,7 +123,15 @@ export function AlertModal() {
             }
           `}
         >
-          <Markdown>{message}</Markdown>
+          <Markdown
+            components={{
+              a(props) {
+                return <a {...props} target="_blank" />;
+              },
+            }}
+          >
+            {message}
+          </Markdown>
         </div>
       </div>
     </div>
