@@ -12,9 +12,7 @@ import { normalizeOutput } from '../../utils';
 
 import { ipc } from '../../types/ipc';
 
-export const MAX_BUFFER_SIZE = 1024 * 10;
-
-export const MAX_LINE_LENGTH = 200;
+import { MAX_BUFFER_SIZE, MAX_LINE_LENGTH } from '../../constants';
 
 type JudgeInfo = {
   cli: Cli;

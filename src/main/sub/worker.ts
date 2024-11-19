@@ -1,7 +1,7 @@
 import { spawnSync } from 'child_process';
 import { parentPort } from 'worker_threads';
 import { removeAnsiText } from '../../utils';
-import { MAX_BUFFER_SIZE } from './judge';
+import { MAX_BUFFER_SIZE } from '../../constants';
 
 type ExecuteResult = {
   stdout: string;
