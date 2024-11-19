@@ -182,9 +182,7 @@ export class Judge {
 
         for (let index = 0; index < inputs.length; index += 1) {
           (() => {
-            const worker = new Worker(path.resolve(process.cwd(), appRoot.path, 'src', 'main', 'sub', 'worker.ts'), {
-              execArgv: ['-r', 'ts-node/register'],
-            });
+            const worker = new Worker(path.join(__dirname, 'worker'));
 
             worker.once('message', (data) => {
               const { stderr, stdout, signal, elapsed } = data;
