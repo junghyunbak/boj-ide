@@ -142,8 +142,10 @@ export const Output = memo(() => {
                 }
               }
 
-              tr:nth-child(4n - 3) {
-                background-color: #f9f9f9;
+              tbody {
+                tr:nth-child(4n - 3) {
+                  background-color: #f9f9f9;
+                }
               }
             `}
           >
