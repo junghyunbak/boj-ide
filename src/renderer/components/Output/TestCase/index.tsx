@@ -186,8 +186,8 @@ export function TestCase({ problem, isJudging, index, input, output, judgeResult
 
                     pre {
                       margin: 0;
-                      font-size: 1rem;
                       white-space: pre-wrap;
+                      font-family: open-sans;
                     }
                   `}
                 >
