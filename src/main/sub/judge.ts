@@ -14,6 +14,10 @@ import { normalizeOutput } from '../../utils';
 
 import { ipc } from '../../types/ipc';
 
+export const MAX_BUFFER_SIZE = 1024 * 10;
+
+export const MAX_LINE_LENGTH = 200;
+
 type JudgeInfo = {
   cli: Cli;
   ext: Partial<Record<NodeJS.Platform, string>>;
@@ -187,13 +191,15 @@ export class Judge {
             worker.once('message', (data) => {
               const { stderr, stdout, signal, elapsed } = data;
 
+              const outputBufferSize = Buffer.byteLength(stdout, 'utf-8');
+
               const result = ((): JudgeResult['result'] => {
                 if (stderr.length !== 0) {
                   return '런타임 에러';
                 }
 
                 if (signal === 'SIGTERM') {
-                  return '시간 초과';
+                  return outputBufferSize > MAX_BUFFER_SIZE ? '출력 초과' : '시간 초과';
                 }
 
                 if (stdout.length !== 0 && normalizeOutput(stdout) === normalizeOutput(outputs[index])) {
@@ -203,8 +209,18 @@ export class Judge {
                 return '틀렸습니다';
               })();
 
+              let output = stdout;
+
+              if (output.split('\n').length > MAX_LINE_LENGTH) {
+                output = stdout
+                  .split('\n')
+                  .slice(0, MAX_LINE_LENGTH + 1)
+                  .join('\n');
+                output += '\n\n출력이 너무 깁니다.';
+              }
+
               ipc.send(this.webContents, 'judge-result', {
-                data: { index, stderr, stdout, elapsed, result },
+                data: { index, stderr, stdout: output, elapsed, result },
               });
 
               worker.terminate();

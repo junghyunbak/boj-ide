@@ -27,6 +27,7 @@ export function TestCase({ problem, isJudging, index, input, output, judgeResult
         case '맞았습니다!!':
           return color.correct;
         case '시간 초과':
+        case '출력 초과':
           return color.over;
         case '틀렸습니다':
           return color.wrong;
