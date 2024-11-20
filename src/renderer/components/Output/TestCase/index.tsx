@@ -73,6 +73,21 @@ export function TestCase({ problem, isJudging, index, input, output, judgeResult
           </p>
         </td>
         <td>
+          {judgeResult && (
+            <p
+              className={css`
+                margin: 0;
+
+                span {
+                  color: #e74c3c;
+                }
+              `}
+            >
+              {judgeResult.elapsed} <span>ms</span>
+            </p>
+          )}
+        </td>
+        <td>
           <button
             type="button"
             className={css`
@@ -116,7 +131,7 @@ export function TestCase({ problem, isJudging, index, input, output, judgeResult
         </td>
       </tr>
       <tr>
-        <td colSpan={4}>
+        <td colSpan={5}>
           {isOpen && (
             <div
               className={css`

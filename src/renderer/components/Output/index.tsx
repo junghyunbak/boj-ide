@@ -151,10 +151,11 @@ export const Output = memo(() => {
           >
             <thead>
               <tr>
-                <th style={{ width: '35%' }}>예제</th>
-                <th style={{ width: '35%' }}>결과</th>
-                <th style={{ width: '15%' }}>상세</th>
-                <th style={{ width: '15%' }}>삭제</th>
+                <th style={{ width: '25%' }}>예제</th>
+                <th style={{ width: '25%' }}>결과</th>
+                <th style={{ width: '17.3%' }}>시간</th>
+                <th style={{ width: '17.3%' }}>상세</th>
+                <th style={{ width: '17.3%' }}>삭제</th>
               </tr>
             </thead>
             <tbody>
