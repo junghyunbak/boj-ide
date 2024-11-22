@@ -1,8 +1,11 @@
-import { BrowserWindow, WebContentsView } from 'electron';
+import { app, BrowserWindow, WebContentsView } from 'electron';
 
 import { type Browser } from 'puppeteer-core';
 
 import pie from 'puppeteer-in-electron';
+
+import fs from 'fs';
+import path from 'path';
 
 import * as cheerio from 'cheerio';
 
@@ -21,11 +24,23 @@ export class BojView {
 
   private puppeteerBroswer: Browser;
 
+  private hisotryUrlFilePath: string;
+
   constructor(mainWindow: BrowserWindow, puppeteerBrowser: Browser) {
     this.mainWindow = mainWindow;
 
+    const basePath = app.getPath('userData');
+
+    this.hisotryUrlFilePath = path.join(basePath, 'last-url');
+
+    if (!fs.existsSync(this.hisotryUrlFilePath)) {
+      fs.writeFileSync(this.hisotryUrlFilePath, 'https://www.acmicpc.net/problem/1000', 'utf-8');
+    }
+
+    const url = fs.readFileSync(this.hisotryUrlFilePath, { encoding: 'utf-8' });
+
     this.view = new WebContentsView();
-    this.view.webContents.loadURL('https://www.acmicpc.net/problem/1000');
+    this.view.webContents.loadURL(url);
 
     this.mainWindow.contentView.addChildView(this.view);
 
@@ -33,7 +48,7 @@ export class BojView {
   }
 
   build() {
-    this.view.webContents.on('did-navigate', async (e, url) => {
+    const handleDidNavigate = async (e: Electron.Event, url: string) => {
       if (!whiteListUrl.some((wlUrl) => url.startsWith(wlUrl))) {
         this.view.webContents.loadURL(`https://${BOJ_DOMAIN}`);
 
@@ -41,6 +56,8 @@ export class BojView {
 
         return;
       }
+
+      fs.writeFileSync(this.hisotryUrlFilePath, url, 'utf-8');
 
       if (!url.startsWith(`https://${BOJ_DOMAIN}/problem/`)) {
         ipc.send(this.mainWindow.webContents, 'load-problem-data', { data: null });
@@ -104,7 +121,11 @@ export class BojView {
           },
         },
       });
-    });
+    };
+
+    this.view.webContents.on('did-navigate', handleDidNavigate);
+
+    this.view.webContents.on('did-navigate-in-page', handleDidNavigate);
 
     ipc.on('go-back-boj-view', () => {
       this.view.webContents.goBack();
