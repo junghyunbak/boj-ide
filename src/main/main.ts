@@ -15,6 +15,8 @@ import { app, BrowserWindow, shell } from 'electron';
 import puppeteer, { type Browser } from 'puppeteer-core';
 import pie from 'puppeteer-in-electron';
 
+import { spawn } from 'child_process';
+
 import { resolveHtmlPath } from './util';
 
 import { ipc } from '../types/ipc';
@@ -22,7 +24,6 @@ import { ipc } from '../types/ipc';
 import { BojView } from './sub/bojView';
 import { Code } from './sub/code';
 import { Judge } from './sub/judge';
-import { spawn } from 'child_process';
 
 let mainWindow: BrowserWindow | null = null;
 

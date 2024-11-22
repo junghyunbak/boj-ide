@@ -10,7 +10,9 @@ import { Text } from 'domhandler';
 
 import { ipc } from '../../types/ipc';
 
-import { BOJ_DOMAIN } from '../../constants';
+import { BOJ_DOMAIN, BOJ_HELP_DOMAIN, SOLVED_AC_DOMAIN } from '../../constants';
+
+const whiteListUrl = [`https://${BOJ_DOMAIN}`, `https://${BOJ_HELP_DOMAIN}`, `https://${SOLVED_AC_DOMAIN}`];
 
 export class BojView {
   private view: WebContentsView;
@@ -32,7 +34,7 @@ export class BojView {
 
   build() {
     this.view.webContents.on('did-navigate', async (e, url) => {
-      if (!(url.startsWith(`https://${BOJ_DOMAIN}`) || url.startsWith(`https://help.acmicpc.net`))) {
+      if (!whiteListUrl.some((wlUrl) => url.startsWith(wlUrl))) {
         this.view.webContents.loadURL(`https://${BOJ_DOMAIN}`);
 
         ipc.send(this.mainWindow.webContents, 'load-problem-data', { data: null });
@@ -137,6 +139,16 @@ export class BojView {
       }
 
       this.view.webContents.loadURL(distUrl);
+    });
+
+    ipc.on('go-page', (e, { data }) => {
+      if (data === 'baekjoon') {
+        this.view.webContents.loadURL(`https://${BOJ_DOMAIN}/problemset`);
+      } else if (data === 'solved.ac') {
+        this.view.webContents.loadURL(`https://${SOLVED_AC_DOMAIN}`);
+      } else if (typeof data === 'number') {
+        this.view.webContents.loadURL(`https://${BOJ_DOMAIN}/problem/${data}`);
+      }
     });
 
     ipc.send(this.mainWindow.webContents, 'call-boj-view-rect');

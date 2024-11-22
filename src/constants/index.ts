@@ -6,6 +6,10 @@ export const LANGAUGES: Language[] = ['C++14', 'Java11', 'Python3', 'node.js'];
 
 export const BOJ_DOMAIN = 'www.acmicpc.net';
 
+export const BOJ_HELP_DOMAIN = 'help.acmicpc.net';
+
+export const SOLVED_AC_DOMAIN = 'solved.ac';
+
 export const JS_INPUT_TEMPLATE = `const readline = require('readline');
 
 const rl = readline.createInterface({

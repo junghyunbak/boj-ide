@@ -11,6 +11,7 @@ type ChannelToMessage = {
   'go-back-boj-view': undefined;
   'go-front-boj-view': undefined;
   'go-problem': MessageTemplate<ProblemInfo | null>;
+  'go-page': MessageTemplate<'solved.ac' | 'baekjoon' | number>;
   'ready-editor': undefined;
   'open-source-code-folder': undefined;
 
@@ -37,6 +38,7 @@ type ElectronChannels = keyof Pick<
   | 'ready-editor'
   | 'go-problem'
   | 'open-source-code-folder'
+  | 'go-page'
 >;
 
 type ClientChannels = keyof Pick<
@@ -62,6 +64,7 @@ export const ElECTRON_CHANNELS: {
   'go-front-boj-view': 'go-front-boj-view',
   'go-problem': 'go-problem',
   'open-source-code-folder': 'open-source-code-folder',
+  'go-page': 'go-page',
 };
 
 export const CLIENT_CHANNELS: {
@@ -112,6 +115,11 @@ class Ipc {
   ): void;
 
   on(channel: (typeof ElECTRON_CHANNELS)['ready-editor'], listener: (e: Electron.IpcMainEvent) => void): void;
+
+  on(
+    channel: (typeof ElECTRON_CHANNELS)['go-page'],
+    listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['go-page']) => void,
+  ): void;
 
   on(channel: string, listener: (e: Electron.IpcMainEvent, ...args: any[]) => void | Promise<void>): void {
     const fn: typeof listener = async (e, ...args) => {
@@ -212,6 +220,7 @@ declare global {
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['go-problem'], message: ChannelToMessage['go-problem']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['ready-editor']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['open-source-code-folder']): void;
+        sendMessage(channel: (typeof ElECTRON_CHANNELS)['go-page'], message: ChannelToMessage['go-page']): void;
       };
     };
   }
