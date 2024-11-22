@@ -28,7 +28,7 @@ export function Editor() {
    */
   useEffect(() => {
     if (!problem) {
-      return;
+      return () => {};
     }
 
     window.electron.ipcRenderer.sendMessage('load-code', { data: { number: problem.number, language: lang } });
