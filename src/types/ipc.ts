@@ -6,6 +6,7 @@ type ChannelToMessage = {
    */
   'load-code': MessageTemplate<MyOmit<CodeInfo, 'code'>>;
   'save-code': MessageTemplate<CodeInfo & { silence?: boolean }>;
+  'submit-code': MessageTemplate<CodeInfo>;
   'change-boj-view-width': MessageTemplate<Rect>;
   'judge-start': MessageTemplate<CodeInfo & ProblemInfo>;
   'go-back-boj-view': undefined;
@@ -39,6 +40,7 @@ type ElectronChannels = keyof Pick<
   | 'go-problem'
   | 'open-source-code-folder'
   | 'go-page'
+  | 'submit-code'
 >;
 
 type ClientChannels = keyof Pick<
@@ -65,6 +67,7 @@ export const ElECTRON_CHANNELS: {
   'go-problem': 'go-problem',
   'open-source-code-folder': 'open-source-code-folder',
   'go-page': 'go-page',
+  'submit-code': 'submit-code',
 };
 
 export const CLIENT_CHANNELS: {
@@ -119,6 +122,11 @@ class Ipc {
   on(
     channel: (typeof ElECTRON_CHANNELS)['go-page'],
     listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['go-page']) => void,
+  ): void;
+
+  on(
+    channel: (typeof ElECTRON_CHANNELS)['submit-code'],
+    listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['submit-code']) => void,
   ): void;
 
   on(channel: string, listener: (e: Electron.IpcMainEvent, ...args: any[]) => void | Promise<void>): void {
@@ -221,6 +229,7 @@ declare global {
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['ready-editor']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['open-source-code-folder']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['go-page'], message: ChannelToMessage['go-page']): void;
+        sendMessage(channel: (typeof ElECTRON_CHANNELS)['submit-code'], message: ChannelToMessage['submit-code']): void;
       };
     };
   }

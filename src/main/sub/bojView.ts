@@ -172,6 +172,84 @@ export class BojView {
       }
     });
 
+    ipc.on('submit-code', async (e, { data: { code, language, number } }) => {
+      // @ts-expect-error
+      const page = await pie.getPage(this.puppeteerBroswer, this.view);
+
+      page.goto(`https://${BOJ_DOMAIN}/submit/${number}`);
+
+      await page.waitForSelector('#language_chosen');
+
+      const $langChosen = await page.$('#language_chosen');
+
+      if (!$langChosen) {
+        throw new Error('언어 선택기를 찾을 수 없습니다.');
+      }
+
+      await $langChosen.click();
+
+      const langElList = await page.$$('#language_chosen .chosen-results .active-result');
+
+      let $targetLangEl = null;
+
+      const langOfChosen = (() => {
+        switch (language) {
+          case 'C++14':
+            return 'C++14';
+          case 'Java11':
+            return 'Java 11';
+          case 'Python3':
+            return 'Python 3';
+          case 'node.js':
+            return 'node.js';
+          default:
+            return '';
+        }
+      })();
+
+      // eslint-disable-next-line no-restricted-syntax
+      for (const $langEl of langElList) {
+        const langName = await page.evaluate(($el) => $el.textContent, $langEl);
+
+        if (langName === langOfChosen) {
+          $targetLangEl = $langEl;
+
+          break;
+        }
+      }
+
+      if (!$targetLangEl) {
+        throw new Error('선택한 언어가 존재하지 않습니다.\n\n언어 설정을 확인해주세요.');
+      }
+
+      await $targetLangEl.click();
+
+      const $editorEl = await page.$('#submit_form > div:nth-child(5) > div > div');
+
+      if (!$editorEl) {
+        throw new Error('에디터를 찾을 수 없습니다.');
+      }
+
+      await $editorEl.click();
+
+      await $editorEl.type(code);
+
+      /**
+       * 자동완성으로 인해 생겨난 텍스트를 제거하기 위한 코드
+       */
+      for (let i = 0; i < 100; i += 1) {
+        await $editorEl.press('Delete');
+      }
+
+      const $submitButton = await page.$('#submit_button');
+
+      if (!$submitButton) {
+        throw new Error('제출 버튼을 찾을 수 없습니다.');
+      }
+
+      await $submitButton.click();
+    });
+
     ipc.send(this.mainWindow.webContents, 'call-boj-view-rect');
   }
 }
