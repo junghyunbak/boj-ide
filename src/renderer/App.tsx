@@ -17,6 +17,7 @@ import './App.css';
 import './assets/fonts.css';
 import { HistoryBar } from './components/HistoryBar';
 import { Footer } from './components/Footer';
+import { ConfirmModal } from './components/ConfirmModal';
 
 export default function App() {
   const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
@@ -101,6 +102,7 @@ export default function App() {
                 </VerticalLayout>
 
                 <AlertModal />
+                <ConfirmModal />
               </div>
             </HorizontalLayout.Right>
           </HorizontalLayout>
