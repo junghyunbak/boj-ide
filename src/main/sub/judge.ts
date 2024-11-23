@@ -163,7 +163,9 @@ export class Judge {
          * cli 존재여부 체크
          */
         if (!checkCli(langToJudgeInfo[language].cli)) {
-          throw new Error('프로그램이 설치되어 있지 않습니다.');
+          throw new Error(
+            `프로그램이 설치되어 있지 않습니다.\n\nCLI(Command Line Interface):${langToJudgeInfo[language].cli}가 설치되어 있어야 합니다.\n\n설치 후 재시작해주세요.`,
+          );
         }
 
         /**
