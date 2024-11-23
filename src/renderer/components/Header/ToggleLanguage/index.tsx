@@ -1,4 +1,9 @@
-import { useState, useEffect } from 'react';
+/**
+ * 언어 선택 모달의 닫힘을 방지하기 위해 div 요소에 e.stopPropagation() 클릭 이벤트를 추가함으로써 발생한 eslint 룰의 비활성화
+ */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import { useState, useEffect, MouseEventHandler } from 'react';
 import { css } from '@emotion/css';
 import { useShallow } from 'zustand/shallow';
 import { LANGAUGES } from '../../../../constants';
@@ -21,6 +26,20 @@ export function ToggleLanguage() {
     };
   }, []);
 
+  const handleChosenButtonClick: MouseEventHandler<HTMLButtonElement> = (e) => {
+    setLangMenuIsOpen(!langMenuIsOpen);
+
+    e.stopPropagation();
+  };
+
+  const handleLanguageItemClick =
+    (language: Language): MouseEventHandler<HTMLButtonElement> =>
+    (e) => {
+      setLangMenuIsOpen(false);
+      setLang(language);
+      e.stopPropagation();
+    };
+
   return (
     <div
       className={css`
@@ -31,11 +50,7 @@ export function ToggleLanguage() {
     >
       <button
         type="button"
-        onClick={(e) => {
-          setLangMenuIsOpen(!langMenuIsOpen);
-
-          e.stopPropagation();
-        }}
+        onClick={handleChosenButtonClick}
         className={css`
           border: none;
           background: lightgray;
@@ -59,53 +74,45 @@ export function ToggleLanguage() {
         {lang}
       </button>
 
-      {langMenuIsOpen && (
+      <div
+        className={css`
+          display: ${langMenuIsOpen ? 'block' : 'none'};
+          position: absolute;
+          top: 100%;
+          right: 0;
+          background-color: white;
+          overflow: hidden;
+          box-shadow: 1px 1px 1px 1px rgb(0, 0, 0, 0.2);
+        `}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div
           className={css`
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background-color: white;
-            overflow: hidden;
-            box-shadow: 1px 1px 1px 1px rgb(0, 0, 0, 0.2);
-
-            > div {
-              padding: 0.5rem;
-              margin: 0;
-
-              button {
-                text-align: left;
-                font-size: 0.8rem;
-                padding: 0.2rem 0.4rem;
-                cursor: pointer;
-                border: none;
-                background-color: transparent;
-              }
-            }
+            padding: 0.5rem;
+            margin: 0;
           `}
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
         >
-          <div>
-            {LANGAUGES.map((language) => {
-              return (
-                <button
-                  key={language}
-                  type="button"
-                  onClick={(e) => {
-                    setLangMenuIsOpen(false);
-                    setLang(language);
-                    e.stopPropagation();
-                  }}
-                >
-                  {language}
-                </button>
-              );
-            })}
-          </div>
+          {LANGAUGES.map((language) => {
+            return (
+              <button
+                key={language}
+                type="button"
+                onClick={handleLanguageItemClick(language)}
+                className={css`
+                  text-align: left;
+                  font-size: 0.8rem;
+                  padding: 0.2rem 0.4rem;
+                  cursor: pointer;
+                  border: none;
+                  background-color: transparent;
+                `}
+              >
+                {language}
+              </button>
+            );
+          })}
         </div>
-      )}
+      </div>
     </div>
   );
 }
