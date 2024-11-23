@@ -2,6 +2,7 @@ import { useShallow } from 'zustand/shallow';
 import { css } from '@emotion/css';
 import { useStore } from '../../store';
 import { SubmitButton } from '../core/button/SubmitButton';
+import { color } from '../../../styles';
 
 export function ConfirmModal() {
   const [confirmMessage, callback, setConfirm] = useStore(
@@ -50,6 +51,7 @@ export function ConfirmModal() {
         <p
           className={css`
             margin: 0;
+            color: ${color.text};
           `}
         >
           {confirmMessage}
