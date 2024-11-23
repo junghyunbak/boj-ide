@@ -178,7 +178,33 @@ export class BojView {
 
       page.goto(`https://${BOJ_DOMAIN}/submit/${number}`);
 
-      await page.waitForSelector('#language_chosen');
+      const isLogin = await new Promise<boolean>((resolve) => {
+        page
+          .waitForSelector('#login_form')
+          .then(() => {
+            resolve(false);
+
+            return '';
+          })
+          .catch(() => {
+            resolve(false);
+          });
+
+        page
+          .waitForSelector('#language_chosen')
+          .then(() => {
+            resolve(true);
+
+            return '';
+          })
+          .catch(() => {
+            resolve(false);
+          });
+      });
+
+      if (!isLogin) {
+        throw new Error('로그인이 되어있지 않습니다.');
+      }
 
       const $langChosen = await page.$('#language_chosen');
 
