@@ -164,7 +164,7 @@ export class Judge {
          */
         if (!checkCli(langToJudgeInfo[language].cli)) {
           throw new Error(
-            `프로그램이 설치되어 있지 않습니다.\n\n\`$ ${langToJudgeInfo[language].cli}\`(cli)가 설치되어 있어야 합니다.\n\n설치 후 재시작해주세요.`,
+            `프로그램이 설치되어 있지 않습니다.\n\ncli(\`${langToJudgeInfo[language].cli}\`)가 설치되어 있어야 합니다.\n\n설치 후 재시작해주세요.`,
           );
         }
 
