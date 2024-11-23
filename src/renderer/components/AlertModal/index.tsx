@@ -121,6 +121,13 @@ export function AlertModal() {
             a {
               color: ${color.primaryText};
             }
+
+            code {
+              background-color: rgba(0, 0, 0, 0.1);
+              padding: 0.1rem 0.2rem;
+              font-family: open-sans;
+              font-size: 0.875rem;
+            }
           `}
         >
           <Markdown
