@@ -15,7 +15,7 @@ import { app, BrowserWindow, shell } from 'electron';
 import puppeteer, { type Browser } from 'puppeteer-core';
 import pie from 'puppeteer-in-electron';
 
-import { spawn } from 'child_process';
+import { spawnSync } from 'child_process';
 
 import { resolveHtmlPath } from './util';
 
@@ -106,7 +106,7 @@ const createWindow = async (puppeteerBroswer: Browser) => {
 
   ipc.on('open-source-code-folder', () => {
     if (process.platform === 'darwin') {
-      spawn('open', [path.resolve(app.getPath('userData'))]);
+      spawnSync('open', [path.resolve(app.getPath('userData'))]);
 
       return;
     }
