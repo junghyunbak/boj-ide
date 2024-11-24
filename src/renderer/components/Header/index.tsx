@@ -17,6 +17,7 @@ export function Header() {
         width: 100%;
         border-bottom: 1px solid lightgray;
         height: ${size.EDITOR_HEADER_HEIGHT}px;
+        min-height: ${size.EDITOR_HEADER_HEIGHT}px;
         color: ${color.text};
       `}
     >
