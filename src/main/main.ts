@@ -115,7 +115,7 @@ const createWindow = async (puppeteerBroswer: Browser) => {
   });
 
   mainWindow.on('closed', () => {
-    mainWindow = null;
+    app.quit();
   });
 
   // Open urls in the user's browser
