@@ -2,7 +2,7 @@ import { app, WebContents } from 'electron';
 
 import fs from 'fs';
 
-import { spawn, spawnSync } from 'child_process';
+import { customSpawn } from '../../utils/customSpawn';
 
 import path from 'path';
 
@@ -77,7 +77,7 @@ export const langToJudgeInfo: Record<Language, JudgeInfo> = {
 };
 
 export function checkCli(cli: string) {
-  const { stdout } = spawnSync(`${cli} --version`, { shell: true });
+  const { stdout } = customSpawn.sync(`${cli} --version`, { shell: true });
 
   return /[0-9]+\.[0-9]+\.[0-9]+/.test(stdout.toString());
 }
@@ -117,7 +117,7 @@ export async function compile({
     const stderr = await new Promise((resolve) => {
       let error = '';
 
-      const ps = spawn(compileCmd, { cwd: basePath, shell: true });
+      const ps = customSpawn.async(compileCmd, { cwd: basePath, shell: true });
 
       ps.stderr.on('data', (buf) => {
         error += buf.toString();

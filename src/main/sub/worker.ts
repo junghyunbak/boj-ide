@@ -1,4 +1,4 @@
-import { spawnSync } from 'child_process';
+import { customSpawn } from '../../utils/customSpawn';
 import { parentPort } from 'worker_threads';
 import { removeAnsiText } from '../../utils';
 import { MAX_BUFFER_SIZE } from '../../constants';
@@ -21,7 +21,7 @@ function execute({
 }): ExecuteResult {
   const start = Date.now();
 
-  const { stderr, stdout, signal } = spawnSync(executeCmd, {
+  const { stderr, stdout, signal } = customSpawn.sync(executeCmd, {
     cwd: basePath,
     input,
     shell: true,
