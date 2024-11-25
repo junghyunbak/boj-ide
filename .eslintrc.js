@@ -20,6 +20,7 @@ module.exports = {
     camelcase: 'off',
     'no-dupe-class-members': 'off',
     'class-methods-use-this': 'off',
+    'react/no-unknown-property': ['error', { ignore: ['css'] }],
   },
   parserOptions: {
     ecmaVersion: 2022,

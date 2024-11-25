@@ -5,6 +5,7 @@
     "module": "commonjs",
     "lib": ["dom", "es2022"],
     "jsx": "react-jsx",
+    "jsxImportSource": "@emotion/react",
     "strict": true,
     "sourceMap": true,
     "moduleResolution": "node",
