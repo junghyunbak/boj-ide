@@ -104,6 +104,7 @@ export async function compile({
   if (langToJudgeInfo[language].compile) {
     fs.writeFileSync(path.join(basePath, `${fileName}.${ext}`), code, { encoding: 'utf-8' });
 
+    // BUG: java 파일이 비어있을 경우에도 Main.java 파일이 갱신되지 않음.
     if (language === 'Java11') {
       fs.writeFileSync(path.join(basePath, 'Main.java'), code, { encoding: 'utf-8' });
     }
