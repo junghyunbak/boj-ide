@@ -4,7 +4,7 @@ import { color } from '@/styles';
 export const TestCaseRow = styled.tr`
   border-top: 1px solid #ddd;
 
-  &:nth-child(2n) {
+  &:nth-of-type(2n) {
     border-top: none;
 
     & > td {
@@ -13,7 +13,7 @@ export const TestCaseRow = styled.tr`
     }
   }
 
-  &:nth-child(4n - 3) {
+  &:nth-of-type(4n - 3) {
     background-color: #f9f9f9;
   }
 `;
