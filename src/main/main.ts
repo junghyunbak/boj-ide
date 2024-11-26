@@ -10,7 +10,7 @@
  */
 import path from 'path';
 
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, shell, globalShortcut } from 'electron';
 
 import puppeteer, { type Browser } from 'puppeteer-core';
 import pie from 'puppeteer-in-electron';
@@ -135,6 +135,18 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+app.on('browser-window-focus', () => {
+  const doNothing = () => {};
+
+  globalShortcut.register('CommandOrControl+R', doNothing);
+  globalShortcut.register('CommandOrControl+Shift+R', doNothing);
+});
+
+app.on('browser-window-blur', () => {
+  globalShortcut.unregister('CommandOrControl+R');
+  globalShortcut.unregister('CommandOrControl+Shift+R');
 });
 
 (async () => {
