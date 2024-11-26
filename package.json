@@ -1,6 +1,6 @@
 {
   "name": "boj-ide",
-  "version": "1.3.7",
+  "version": "1.3.8",
   "description": "A foundation for scalable desktop apps",
   "keywords": [
     "electron",

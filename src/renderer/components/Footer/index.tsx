@@ -141,7 +141,7 @@ export function Footer() {
             !
           </div>
         )}
-        v1.3.7
+        v1.3.8
       </button>
     </div>
   );
