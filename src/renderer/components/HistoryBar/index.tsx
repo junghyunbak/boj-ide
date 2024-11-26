@@ -31,12 +31,11 @@ export function HistoryBar() {
   const handleHistoryBarItemCloseButtonClick =
     (problemInfo: ProblemInfo, index: number): MouseEventHandler<HTMLButtonElement> =>
     (e) => {
-      removeProblemHistory(index);
+      const nextProblem = removeProblemHistory(index);
 
       if (problem?.number === problemInfo.number) {
-        setProblem(null);
-
-        window.electron.ipcRenderer.sendMessage('go-problem', { data: null });
+        setProblem(nextProblem);
+        window.electron.ipcRenderer.sendMessage('go-problem', { data: nextProblem });
       }
 
       e.stopPropagation();
