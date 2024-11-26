@@ -258,14 +258,23 @@ export class BojView {
 
       await $editorEl.click();
 
-      await $editorEl.type(code);
+      // eslint-disable-next-line no-restricted-syntax
+      for (const line of code.split('\n')) {
+        await page.keyboard.down('Shift');
+        await page.keyboard.press('Home');
+        await page.keyboard.press('Delete');
+        await page.keyboard.up('Shift');
 
-      /**
-       * 자동완성으로 인해 생겨난 텍스트를 제거하기 위한 코드
-       */
-      for (let i = 0; i < 100; i += 1) {
-        await $editorEl.press('Delete');
+        await $editorEl.type(line);
+
+        await page.keyboard.press('Enter');
       }
+
+      await page.keyboard.press('Enter');
+      await page.keyboard.down('Shift');
+      await page.keyboard.press('PageDown');
+      await page.keyboard.press('Delete');
+      await page.keyboard.up('Shift');
 
       const $submitButton = await page.$('#submit_button');
 
