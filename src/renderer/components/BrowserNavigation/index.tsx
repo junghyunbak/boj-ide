@@ -1,4 +1,5 @@
-import { css } from '@emotion/css';
+import { css } from '@emotion/react';
+
 import { color, size } from '../../../styles';
 
 export function BrowserNavigation() {
@@ -23,7 +24,7 @@ export function BrowserNavigation() {
 
   return (
     <div
-      className={css`
+      css={css`
         width: 100%;
         height: ${size.BOJ_VIEW_NAVIGATION_HEIGHT}px;
         box-sizing: border-box;
@@ -37,7 +38,7 @@ export function BrowserNavigation() {
       `}
     >
       <div
-        className={css`
+        css={css`
           display: flex;
           align-items: center;
 
@@ -81,7 +82,7 @@ export function BrowserNavigation() {
           type="button"
           onClick={handleGoFrontButtonClick}
           aria-label="go-front-button"
-          className={css`
+          css={css`
             transform: rotate(180deg);
           `}
         >
@@ -96,7 +97,7 @@ export function BrowserNavigation() {
       </div>
 
       <div
-        className={css`
+        css={css`
           display: flex;
 
           button {
@@ -114,7 +115,7 @@ export function BrowserNavigation() {
         <button
           type="button"
           onClick={handleGoSolvedAcButtonClick}
-          className={css`
+          css={css`
             font-weight: bolder;
 
             span {
@@ -130,7 +131,7 @@ export function BrowserNavigation() {
         <button
           type="button"
           onClick={handleGoBaekjoonButtonClick}
-          className={css`
+          css={css`
             color: ${color.text};
             letter-spacing: 0.1rem;
             font-weight: 500;

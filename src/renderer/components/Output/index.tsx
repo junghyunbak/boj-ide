@@ -120,32 +120,9 @@ export const Output = memo(() => {
 
               th {
                 text-align: start;
-              }
-
-              th,
-              td {
                 border-left: 1px solid #ddd;
                 border-right: 1px solid #ddd;
                 padding: 0.5rem;
-              }
-
-              tr {
-                border-top: 1px solid #ddd;
-              }
-
-              tr:nth-child(2n) {
-                border-top: none;
-
-                td {
-                  padding: 0;
-                  border: none;
-                }
-              }
-
-              tbody {
-                tr:nth-child(4n - 3) {
-                  background-color: #f9f9f9;
-                }
               }
             `}
           >
