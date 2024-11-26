@@ -1,11 +1,8 @@
-import { useEffect, useRef } from 'react';
-
 import { useShallow } from 'zustand/shallow';
-
-import { css } from '@emotion/css';
-
-import { useStore } from '../../store';
-import { color, size } from '../../../styles';
+import { css } from '@emotion/react';
+import { useStore } from '@/renderer/store';
+import { color, size } from '@/styles';
+import { useXScroll } from '@/renderer/hooks';
 
 export function HistoryBar() {
   const [problem, setProblem] = useStore(useShallow((s) => [s.problem, s.setProblem]));
@@ -14,61 +11,11 @@ export function HistoryBar() {
     useShallow((s) => [s.problemHistories, s.removeProblemHistory]),
   );
 
-  const xScrollRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const xScroll = xScrollRef.current;
-
-    if (!xScroll) {
-      return () => {};
-    }
-
-    let isDragging = false;
-    let startX = 0;
-    let scrollLeft = 0;
-
-    const handleMouseDown = (e: MouseEvent) => {
-      isDragging = true;
-
-      startX = e.clientX;
-
-      scrollLeft = xScroll.scrollLeft;
-    };
-
-    const handleMouseLeave = () => {
-      isDragging = false;
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isDragging) {
-        return;
-      }
-
-      const deltaX = e.clientX - startX;
-
-      xScroll.scrollLeft = scrollLeft - deltaX;
-    };
-
-    const handleMouseUp = () => {
-      isDragging = false;
-    };
-
-    xScroll.addEventListener('mousedown', handleMouseDown);
-    xScroll.addEventListener('mousemove', handleMouseMove);
-    xScroll.addEventListener('mouseup', handleMouseUp);
-    xScroll.addEventListener('mouseleave', handleMouseLeave);
-
-    return () => {
-      xScroll.removeEventListener('mousedown', handleMouseDown);
-      xScroll.removeEventListener('mousemove', handleMouseMove);
-      xScroll.removeEventListener('mouseup', handleMouseUp);
-      xScroll.removeEventListener('mouseleave', handleMouseLeave);
-    };
-  }, []);
+  const { xScrollRef } = useXScroll();
 
   return (
     <div
-      className={css`
+      css={css`
         border-bottom: 1px solid lightgray;
         display: flex;
         overflow-x: scroll;
@@ -88,7 +35,7 @@ export function HistoryBar() {
           <button
             type="button"
             key={number}
-            className={css`
+            css={css`
               background-color: transparent;
               border-top: 0;
               border: 0;
@@ -101,7 +48,7 @@ export function HistoryBar() {
             }}
           >
             <div
-              className={css`
+              css={css`
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -114,7 +61,7 @@ export function HistoryBar() {
               `}
             >
               <p
-                className={css`
+                css={css`
                   margin: 0;
                   white-space: nowrap;
                 `}
@@ -123,7 +70,7 @@ export function HistoryBar() {
               </p>
               <button
                 type="button"
-                className={css`
+                css={css`
                   border: none;
                   border-radius: 9999px;
                   width: 15px;
@@ -156,7 +103,7 @@ export function HistoryBar() {
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="none"
-                  className={css`
+                  css={css`
                     width: 100%;
                     height: 100%;
                   `}
