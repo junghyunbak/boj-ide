@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { color } from '../../../../styles';
+import { color } from '@/styles';
 
 export const TestCaseRow = styled.tr`
   border-top: 1px solid #ddd;

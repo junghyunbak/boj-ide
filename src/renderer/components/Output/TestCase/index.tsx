@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useShallow } from 'zustand/shallow';
-import { useStore } from '../../../store';
-import { color } from '../../../../styles';
+import { useStore } from '@/renderer/store';
+import { color } from '@/styles';
 import {
   TestCaseButton,
   TestCaseData,
@@ -17,7 +17,7 @@ interface TestCaseProps {
   input: string;
   output: string;
   isJudging: boolean;
-  judgeResult?: JudgeResult;
+  judgeResult: JudgeResult | undefined;
   type: TC['type'];
 }
 

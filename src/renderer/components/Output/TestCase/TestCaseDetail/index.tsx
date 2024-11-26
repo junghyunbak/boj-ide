@@ -15,7 +15,7 @@ interface TestCaseDetailProps {
   input: string;
   output: string;
   resultColor: string;
-  judgeResult?: JudgeResult;
+  judgeResult: JudgeResult | undefined;
 }
 
 export function TestCaseDetail({ isOpen, input, output, judgeResult, resultColor }: TestCaseDetailProps) {
