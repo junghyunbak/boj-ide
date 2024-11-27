@@ -47,6 +47,7 @@ export class Code {
         throw new Error('지원하지 않는 플랫폼입니다.');
       }
 
+      // [ ]: c++14, c++17, c++17(clang) 세 언어가 각각의 파일을 가지도록 구현
       const filePath = path.join(this.basePath, `${number}.${ext}`);
 
       if (!fs.existsSync(filePath)) {
