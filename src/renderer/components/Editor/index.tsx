@@ -1,16 +1,14 @@
-import { css } from '@emotion/css';
+import { css } from '@emotion/react';
 import { useEffect, useRef, useState } from 'react';
-
 import { vim, Vim } from '@replit/codemirror-vim';
 import { javascript } from '@codemirror/lang-javascript';
 import { cpp } from '@codemirror/lang-cpp';
 import { python } from '@codemirror/lang-python';
 import { java } from '@codemirror/lang-java';
 import ReactCodeMirror, { EditorView, type Extension } from '@uiw/react-codemirror';
-
 import { useShallow } from 'zustand/shallow';
-
-import { useStore } from '../../store';
+import { useStore } from '@/renderer/store';
+import { EditorPlaceholder } from './EditorPlaceholder';
 
 export function Editor() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
@@ -167,31 +165,13 @@ export function Editor() {
   return (
     <div
       ref={containerRef}
-      className={css`
+      css={css`
         width: 100%;
         height: 100%;
       `}
     >
       {!problem ? (
-        <div
-          className={css`
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-          `}
-        >
-          <h1
-            className={css`
-              color: #428bca;
-            `}
-          >
-            {'/<>'}
-          </h1>
-          <p>왼쪽 브라우저에서 문제 페이지로 이동하세요.</p>
-        </div>
+        <EditorPlaceholder />
       ) : (
         <ReactCodeMirror
           extensions={extensions}
