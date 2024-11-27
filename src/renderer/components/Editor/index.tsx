@@ -143,6 +143,8 @@ export function Editor() {
         tmp.push(javascript());
         break;
       case 'C++14':
+      case 'C++17':
+      case 'C++17 (Clang)':
         tmp.push(cpp());
         break;
       case 'Java11':

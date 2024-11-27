@@ -221,13 +221,14 @@ export class BojView {
       const langOfChosen = (() => {
         switch (language) {
           case 'C++14':
-            return 'C++14';
+          case 'C++17':
+          case 'C++17 (Clang)':
+          case 'node.js':
+            return language;
           case 'Java11':
             return 'Java 11';
           case 'Python3':
             return 'Python 3';
-          case 'node.js':
-            return 'node.js';
           default:
             return '';
         }

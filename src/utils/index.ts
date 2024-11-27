@@ -19,6 +19,8 @@ export function lang2Ext(lang: Language, platform: typeof process.platform = 'wi
     case 'Java11':
       return 'java';
     case 'C++14':
+    case 'C++17':
+    case 'C++17 (Clang)':
       return platform === 'win32' ? 'cpp' : 'cc';
     case 'node.js':
       return 'js';

@@ -1,27 +1,51 @@
 import { app, WebContents } from 'electron';
-
 import fs from 'fs';
-
-import { customSpawn } from '../../utils/customSpawn';
-
 import path from 'path';
-
 import { Worker } from 'worker_threads';
-
-import { normalizeOutput } from '../../utils';
-
-import { ipc } from '../../types/ipc';
-
-import { MAX_BUFFER_SIZE, MAX_LINE_LENGTH } from '../../constants';
+import { customSpawn } from '@/utils/customSpawn';
+import { normalizeOutput } from '@/utils';
+import { ipc } from '@/types/ipc';
+import { MAX_BUFFER_SIZE, MAX_LINE_LENGTH } from '@/constants';
 
 type JudgeInfo = {
   cli: Cli;
   ext: Partial<Record<NodeJS.Platform, string>>;
-  compile?: (fileName?: string) => Partial<Record<NodeJS.Platform, string>>;
+  compile?: (fileName?: string) => Partial<Record<NodeJS.Platform, `${Cli} ${string}`>>;
+  // [ ]: template literal type 적용
   execute: (fileName?: string) => Partial<Record<NodeJS.Platform, string>>;
 };
 
 export const langToJudgeInfo: Record<Language, JudgeInfo> = {
+  'C++17 (Clang)': {
+    cli: 'clang++',
+    ext: {
+      win32: 'cpp',
+      darwin: 'cc',
+    },
+    compile: (fileName) => ({
+      win32: `clang++ ${fileName}.cpp -o ${fileName} -std=gnu++17 -O2 -Wall -lm -static`,
+      darwin: `clang++ ${fileName}.cc -o ${fileName} -std=gnu++17`,
+    }),
+    execute: (fileName) => ({
+      win32: `${fileName}.exe`,
+      darwin: `./${fileName}`,
+    }),
+  },
+  'C++17': {
+    cli: 'g++',
+    ext: {
+      win32: 'cpp',
+      darwin: 'cc',
+    },
+    compile: (fileName) => ({
+      win32: `g++ ${fileName}.cpp -o ${fileName} -std=gnu++17 -O2 -Wall -lm -static`,
+      darwin: `g++ ${fileName}.cc -o ${fileName} -std=c++17`,
+    }),
+    execute: (fileName) => ({
+      win32: `${fileName}.exe`,
+      darwin: `./${fileName}`,
+    }),
+  },
   'C++14': {
     cli: 'g++',
     ext: {

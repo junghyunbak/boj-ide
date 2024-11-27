@@ -53,6 +53,8 @@ export class Code {
         const code = (() => {
           switch (language) {
             case 'C++14':
+            case 'C++17':
+            case 'C++17 (Clang)':
               return CPP_INPUT_TEMPLATE;
             case 'node.js':
               return JS_INPUT_TEMPLATE;
