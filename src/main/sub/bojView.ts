@@ -1,19 +1,12 @@
 import { app, BrowserWindow, WebContentsView } from 'electron';
-
 import { type Browser } from 'puppeteer-core';
-
 import pie from 'puppeteer-in-electron';
-
 import fs from 'fs';
 import path from 'path';
-
 import * as cheerio from 'cheerio';
-
 import { Text } from 'domhandler';
-
-import { ipc } from '../../types/ipc';
-
-import { BOJ_DOMAIN, BOJ_HELP_DOMAIN, SOLVED_AC_DOMAIN } from '../../constants';
+import { ipc } from '@/types/ipc';
+import { BOJ_DOMAIN, BOJ_HELP_DOMAIN, SOLVED_AC_DOMAIN } from '@/constants';
 
 const whiteListUrl = [`https://${BOJ_DOMAIN}`, `https://${BOJ_HELP_DOMAIN}`, `https://${SOLVED_AC_DOMAIN}`];
 
@@ -92,7 +85,7 @@ export class BojView {
           const [child] = v.children;
 
           if (!(child instanceof Text)) {
-            return null;
+            return '';
           }
 
           return child.data;
