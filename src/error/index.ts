@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/node';
+
 type IpcErrorType = 'personal' | 'system';
 
 export class IpcError extends Error {
@@ -9,3 +11,7 @@ export class IpcError extends Error {
     this.errorType = errorType;
   }
 }
+
+export const sentryErrorHandler = (err: Error) => {
+  Sentry.captureException(err);
+};

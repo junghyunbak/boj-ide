@@ -14,15 +14,12 @@ import puppeteer, { type Browser } from 'puppeteer-core';
 import pie from 'puppeteer-in-electron';
 import { spawnSync } from 'child_process';
 import { ipc } from '@/types/ipc';
-import * as Sentry from '@sentry/node';
+import { sentryErrorHandler } from '@/error';
 import { resolveHtmlPath } from './util';
 import { BojView } from './sub/bojView';
 import { Code } from './sub/code';
 import { Judge } from './sub/judge';
-
-Sentry.init({
-  dsn: 'https://261d50b928f05be5ce5cc591544f3309@o4508379534458880.ingest.us.sentry.io/4508379538653184',
-});
+import '@/error/sentry';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -170,5 +167,5 @@ app.on('browser-window-blur', () => {
         if (mainWindow === null) createWindow(puppeteerBroswer);
       });
     })
-    .catch(console.log);
+    .catch(sentryErrorHandler);
 })();

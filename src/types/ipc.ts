@@ -1,6 +1,5 @@
 import { ipcMain, type WebContents } from 'electron';
-import * as Sentry from '@sentry/node';
-import { IpcError } from '@/error';
+import { IpcError, sentryErrorHandler } from '@/error';
 
 type ChannelToMessage = {
   /**
@@ -148,7 +147,7 @@ class Ipc {
             return;
           }
 
-          Sentry.captureException(err);
+          sentryErrorHandler(err);
         }
       }
     };
