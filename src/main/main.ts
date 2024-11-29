@@ -21,7 +21,7 @@ import { Code } from './sub/code';
 import { Judge } from './sub/judge';
 
 Sentry.init({
-  dsn: 'https://4fb519408fef7bdd15f249cbd2476aa0@o4508379230175232.ingest.us.sentry.io/4508379263729664',
+  dsn: 'https://261d50b928f05be5ce5cc591544f3309@o4508379534458880.ingest.us.sentry.io/4508379538653184',
 });
 
 let mainWindow: BrowserWindow | null = null;
