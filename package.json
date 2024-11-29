@@ -113,6 +113,7 @@
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
     "@replit/codemirror-vim": "^6.2.1",
+    "@sentry/node": "^8.41.0",
     "@uiw/react-codemirror": "^4.23.6",
     "cheerio": "^1.0.0",
     "domhandler": "^5.0.3",

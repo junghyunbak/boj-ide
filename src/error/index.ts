@@ -1,4 +1,4 @@
-type IpcErrorType = 'build-error' | 'code-save-error';
+type IpcErrorType = 'personal' | 'system';
 
 export class IpcError extends Error {
   errorType: IpcErrorType;

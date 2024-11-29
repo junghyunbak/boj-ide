@@ -6,6 +6,7 @@ import { customSpawn } from '@/utils/customSpawn';
 import { normalizeOutput } from '@/utils';
 import { ipc } from '@/types/ipc';
 import { MAX_BUFFER_SIZE, MAX_LINE_LENGTH } from '@/constants';
+import { IpcError } from '@/error';
 
 type JudgeInfo = {
   cli: Cli;
@@ -154,7 +155,7 @@ export async function compile({
     });
 
     if (stderr !== '') {
-      throw new Error(`컴파일 에러\n\n${stderr}`);
+      throw new IpcError(`컴파일 에러\n\n${stderr}`, 'personal');
     }
   }
 }

@@ -9,21 +9,20 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-
 import { app, BrowserWindow, shell, globalShortcut } from 'electron';
-
 import puppeteer, { type Browser } from 'puppeteer-core';
 import pie from 'puppeteer-in-electron';
-
 import { spawnSync } from 'child_process';
-
+import { ipc } from '@/types/ipc';
+import * as Sentry from '@sentry/node';
 import { resolveHtmlPath } from './util';
-
-import { ipc } from '../types/ipc';
-
 import { BojView } from './sub/bojView';
 import { Code } from './sub/code';
 import { Judge } from './sub/judge';
+
+Sentry.init({
+  dsn: 'https://4fb519408fef7bdd15f249cbd2476aa0@o4508379230175232.ingest.us.sentry.io/4508379263729664',
+});
 
 let mainWindow: BrowserWindow | null = null;
 

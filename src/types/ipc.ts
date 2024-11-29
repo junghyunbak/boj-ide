@@ -1,4 +1,6 @@
 import { ipcMain, type WebContents } from 'electron';
+import * as Sentry from '@sentry/node';
+import { IpcError } from '@/error';
 
 type ChannelToMessage = {
   /**
@@ -141,6 +143,12 @@ class Ipc {
         if (err instanceof Error) {
           this.send(e.sender, 'reset-judge');
           this.send(e.sender, 'occur-error', { data: { message: err.message } });
+
+          if (err instanceof IpcError && err.errorType === 'personal') {
+            return;
+          }
+
+          Sentry.captureException(err);
         }
       }
     };
