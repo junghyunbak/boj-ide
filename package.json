@@ -1,7 +1,7 @@
 {
   "name": "boj-ide",
   "version": "1.4.8",
-  "description": "A foundation for scalable desktop apps",
+  "description": "Copy and paste automation tool in Baekjun Online Judge",
   "keywords": [
     "electron",
     "boilerplate",
@@ -13,19 +13,19 @@
     "hot",
     "reload"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
+  "homepage": "https://boj-ide.gitbook.io/boj-ide-docs",
   "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
+    "url": "https://github.com/junghyunbak/boj-ide/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
+    "url": "git+https://github.com/junghyunbak/boj-ide.git"
   },
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "junghyunbak",
+    "email": "jeong5728@gmail.com",
+    "url": "https://github.com/boj-ide"
   },
   "contributors": [
     {
@@ -153,7 +153,7 @@
     "css-minimizer-webpack-plugin": "^5.0.1",
     "detect-port": "^1.5.1",
     "electron": "^31.3.0",
-    "electron-builder": "^24.13.3",
+    "electron-builder": "^25.1.8",
     "electron-devtools-installer": "^3.2.0",
     "electronmon": "^2.0.2",
     "eslint": "^8.49.0",
@@ -205,13 +205,10 @@
       "package.json"
     ],
     "mac": {
-      "sign": ".erb/scripts/notarize.js",
-      "notarize": false,
       "target": {
         "target": "default",
         "arch": [
-          "arm64",
-          "x64"
+          "universal"
         ]
       },
       "type": "distribution",

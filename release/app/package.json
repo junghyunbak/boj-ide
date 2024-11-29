@@ -1,11 +1,11 @@
 {
   "name": "boj-ide",
   "version": "1.4.8",
-  "description": "A foundation for scalable desktop apps",
+  "description": "Copy and paste automation tool in Baekjun Online Judge",
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
+    "name": "junghyunbak",
+    "email": "jeong5728@gmail.com",
     "url": "https://github.com/boj-ide"
   },
   "main": "./dist/main/main.js",
