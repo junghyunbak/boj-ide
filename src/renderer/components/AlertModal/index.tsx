@@ -1,13 +1,15 @@
 import { useEffect } from 'react';
-
 import { useShallow } from 'zustand/shallow';
-
-import { css } from '@emotion/css';
-
 import Markdown from 'react-markdown';
-
-import { useStore } from '../../store';
-import { color } from '../../../styles';
+import { useStore } from '@/renderer/store';
+import {
+  AlertModalContentBox,
+  AlertModalContentHeaderBox,
+  AlertModalContentHeaderCloseButton,
+  AlertModalContentMarkdownBox,
+  AlertModalDimmedBox,
+  AlertModalLayout,
+} from './index.styles';
 
 export function AlertModal() {
   const [message, setMessage] = useStore(useShallow((s) => [s.message, s.setMessage]));
@@ -35,103 +37,43 @@ export function AlertModal() {
   }
 
   return (
-    <div
-      className={css`
-        position: absolute;
-        inset: 0;
-
-        z-index: 9999;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      `}
-    >
-      <div
-        className={css`
-          position: absolute;
-          inset: 0;
-
-          background-color: rgba(0, 0, 0, 0.2);
-          backdrop-filter: blur(4px);
-        `}
+    <AlertModalLayout>
+      <AlertModalDimmedBox
         onClick={() => {
           setMessage(null);
         }}
       />
 
-      <div
-        className={css`
-          min-width: 50%;
-          max-width: 90%;
-          min-height: 20%;
-          max-height: 90%;
-
-          position: absolute;
-
-          display: flex;
-          flex-direction: column;
-
-          box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
-
-          background-color: white;
-        `}
-      >
-        <div
-          className={css`
-            display: flex;
-            justify-content: end;
-            width: 100%;
-            border-bottom: 1px solid lightgray;
-            padding: 0.5rem;
-          `}
-        >
-          <button
+      <AlertModalContentBox>
+        <AlertModalContentHeaderBox>
+          <AlertModalContentHeaderCloseButton
             type="button"
-            className={css`
-              border: none;
-              margin: 0;
-              background-color: ${color.primaryBg};
-              font-size: 0.875rem;
-              color: white;
-              cursor: pointer;
-              padding: 0.4rem 0.8rem;
-            `}
             aria-label="modal-close-button"
             onClick={() => {
               setMessage(null);
             }}
           >
             ESC / ENTER
-          </button>
-        </div>
+          </AlertModalContentHeaderCloseButton>
+        </AlertModalContentHeaderBox>
 
-        <div
-          className={css`
-            flex: 1;
-            padding: 2rem;
-            overflow-y: scroll;
-
-            color: ${color.text};
-
-            img {
-              width: 100%;
-            }
-
-            a {
-              color: ${color.primaryText};
-            }
-
-            code {
-              background-color: rgba(0, 0, 0, 0.1);
-              padding: 0.1rem 0.2rem;
-              font-family: open-sans;
-              font-size: 0.875rem;
-            }
-          `}
-        >
+        <AlertModalContentMarkdownBox>
           <Markdown
             components={{
+              h1(props) {
+                return (
+                  <div className="headline">
+                    <h1 {...props} />
+                  </div>
+                );
+              },
+              h2(props) {
+                return (
+                  <div className="headline">
+                    <h2 {...props} />
+                  </div>
+                );
+              },
               a(props) {
                 return <a {...props} target="_blank" />;
               },
@@ -139,8 +81,8 @@ export function AlertModal() {
           >
             {message}
           </Markdown>
-        </div>
-      </div>
-    </div>
+        </AlertModalContentMarkdownBox>
+      </AlertModalContentBox>
+    </AlertModalLayout>
   );
 }

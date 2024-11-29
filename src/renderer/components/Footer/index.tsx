@@ -36,7 +36,7 @@ export function Footer() {
     setMessage(
       newReleases
         .map((v) => {
-          return [`## ${v.name}`, v.body, `[download](${v.html_url})`, '---'].join('\n\n');
+          return [`## ${v.name}`, v.body, `[다운로드](${v.html_url})`].join('\n\n');
         })
         .join('\n\n'),
     );
