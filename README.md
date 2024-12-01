@@ -3,3 +3,5 @@
 |사용방법|버그제보 및 문의|
 |-|-|
 |[링크](https://boj-ide.gitbook.io/boj-ide-docs)|[링크](https://github.com/junghyunbak/boj-ide/issues)|
+
+<img src="https://github.com/user-attachments/assets/21c1ddf5-6110-4ce8-82c7-020592fb7a88"/>
