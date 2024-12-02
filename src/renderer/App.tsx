@@ -17,7 +17,7 @@ import { ConfirmModal } from './components/ConfirmModal';
 import { AppContentBox, EditorAndOutputBox, AppLayout } from './App.styles';
 
 import './App.css';
-import './assets/fonts.css';
+import './assets/fonts/fonts.css';
 
 export default function App() {
   const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
