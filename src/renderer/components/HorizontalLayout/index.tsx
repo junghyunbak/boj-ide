@@ -1,9 +1,6 @@
 /* eslint-disable react/require-default-props */
 import React, { useRef, useEffect } from 'react';
-
-import { css } from '@emotion/css';
-
-import { useStore } from '../../store';
+import { HLLayout, HLLeftBox, HLResizerBox, HLRightBox } from './index.styles';
 
 interface LeftProps {
   children?: React.ReactNode;
@@ -27,9 +24,10 @@ const RightType = (<Right />).type;
 
 interface LayoutProps {
   children?: React.ReactNode;
+  onLeftRatioChange?: (leftRatio: number) => void;
 }
 
-function Layout({ children }: LayoutProps) {
+function Layout({ children, onLeftRatioChange = () => {} }: LayoutProps) {
   const leftRef = useRef<HTMLDivElement | null>(null);
   const resizerRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -44,16 +42,12 @@ function Layout({ children }: LayoutProps) {
     }
 
     let isDragging = false;
-
     let startX = 0;
-
     let leftWidth = 0;
 
     const handleResizerMouseDown = (e: MouseEvent) => {
       isDragging = true;
-
       startX = e.clientX;
-
       leftWidth = left.getBoundingClientRect().width;
     };
 
@@ -63,12 +57,10 @@ function Layout({ children }: LayoutProps) {
       }
 
       const deltaX = e.clientX - startX;
-
       const ratio = Math.min(((leftWidth + deltaX) / container.getBoundingClientRect().width) * 100, 100);
-
       left.style.width = `${ratio}%`;
 
-      useStore.getState().setLeftRatio(ratio);
+      onLeftRatioChange(ratio);
     };
 
     const handleMouseUp = () => {
@@ -86,7 +78,7 @@ function Layout({ children }: LayoutProps) {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, []);
+  }, [onLeftRatioChange]);
 
   const [LeftElement] = React.Children.toArray(children).filter(
     (child) => React.isValidElement(child) && child.type === LeftType,
@@ -96,57 +88,13 @@ function Layout({ children }: LayoutProps) {
   );
 
   return (
-    <div
-      className={css`
-        display: flex;
-        width: 100%;
-        height: 100%;
-      `}
-      ref={containerRef}
-    >
-      <div
-        ref={leftRef}
-        className={css`
-          width: ${useStore.getState().leftRatio}%;
-          height: 100%;
-        `}
-      >
-        {LeftElement}
-      </div>
+    <HLLayout ref={containerRef}>
+      <HLLeftBox ref={leftRef}>{LeftElement}</HLLeftBox>
 
-      <div
-        ref={resizerRef}
-        className={css`
-          width: 15px;
-          height: 100%;
-          background-color: white;
-          &:hover {
-            cursor: col-resize;
-          }
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          border-left: 1px solid lightgray;
-          border-right: 1px solid lightgray;
-        `}
-      >
-        <div
-          className={css`
-            height: 50px;
-            border-left: 5px dotted lightgray;
-          `}
-        />
-      </div>
+      <HLResizerBox ref={resizerRef} />
 
-      <div
-        className={css`
-          flex: 1;
-          overflow: hidden;
-        `}
-      >
-        {RightElement}
-      </div>
-    </div>
+      <HLRightBox>{RightElement}</HLRightBox>
+    </HLLayout>
   );
 }
 

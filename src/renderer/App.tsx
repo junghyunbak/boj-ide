@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
-
-import { css } from '@emotion/css';
-
 import { useShallow } from 'zustand/shallow';
-import { useStore } from './store';
+
+import { useStore } from '@/renderer/store';
 
 import { Output } from './components/Output';
 import { VerticalLayout } from './components/VerticalLayout';
@@ -12,21 +10,20 @@ import { Header } from './components/Header';
 import { AlertModal } from './components/AlertModal';
 import { HorizontalLayout } from './components/HorizontalLayout';
 import { BojView } from './components/BojView';
-
-import './App.css';
-import './assets/fonts.css';
 import { HistoryBar } from './components/HistoryBar';
 import { Footer } from './components/Footer';
 import { ConfirmModal } from './components/ConfirmModal';
 
+import { AppContentBox, EditorAndOutputBox, AppLayout } from './App.styles';
+
+import './App.css';
+import './assets/fonts.css';
+
 export default function App() {
   const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
   const [addProblemHistory] = useStore(useShallow((s) => [s.addProblemHistory]));
-
   const [setJudgeResult] = useStore(useShallow((s) => [s.setJudgeResult]));
-
   const [setIsJudging] = useStore(useShallow((s) => [s.setIsJudging]));
-
   const [setMessage] = useStore(useShallow((s) => [s.setMessage]));
 
   useEffect(() => {
@@ -51,65 +48,46 @@ export default function App() {
     window.electron.ipcRenderer.sendMessage('ready-editor');
   }, [setProblem, setJudgeResult, setIsJudging, setMessage, addProblemHistory]);
 
+  const handleLeftRatioChange = (leftRatio: number) => {
+    useStore.getState().setLeftRatio(leftRatio);
+  };
+
+  const handleTopRatioChange = (topRatio: number) => {
+    useStore.getState().setTopRatio(topRatio);
+  };
+
   return (
-    <div
-      className={css`
-        position: fixed;
-        inset: 0;
-      `}
-    >
-      <div
-        className={css`
-          display: flex;
-          flex-direction: column;
-          width: 100%;
-          height: 100%;
-        `}
-      >
-        <HistoryBar />
+    <AppLayout>
+      <HistoryBar />
 
-        <div
-          className={css`
-            flex: 1;
-            overflow: hidden;
-          `}
-        >
-          <HorizontalLayout>
-            <HorizontalLayout.Left>
-              <BojView />
-            </HorizontalLayout.Left>
+      <AppContentBox>
+        <HorizontalLayout onLeftRatioChange={handleLeftRatioChange}>
+          <HorizontalLayout.Left>
+            <BojView />
+          </HorizontalLayout.Left>
 
-            <HorizontalLayout.Right>
-              <div
-                className={css`
-                  display: flex;
-                  flex-direction: column;
-                  width: 100%;
-                  height: 100%;
-                  position: relative;
-                `}
-              >
-                <Header />
+          <HorizontalLayout.Right>
+            <EditorAndOutputBox>
+              <Header />
 
-                <VerticalLayout>
-                  <VerticalLayout.Top>
-                    <Editor />
-                  </VerticalLayout.Top>
+              <VerticalLayout onTopRatioChange={handleTopRatioChange}>
+                <VerticalLayout.Top>
+                  <Editor />
+                </VerticalLayout.Top>
 
-                  <VerticalLayout.Bottom>
-                    <Output />
-                  </VerticalLayout.Bottom>
-                </VerticalLayout>
+                <VerticalLayout.Bottom>
+                  <Output />
+                </VerticalLayout.Bottom>
+              </VerticalLayout>
 
-                <AlertModal />
-                <ConfirmModal />
-              </div>
-            </HorizontalLayout.Right>
-          </HorizontalLayout>
-        </div>
+              <AlertModal />
+              <ConfirmModal />
+            </EditorAndOutputBox>
+          </HorizontalLayout.Right>
+        </HorizontalLayout>
+      </AppContentBox>
 
-        <Footer />
-      </div>
-    </div>
+      <Footer />
+    </AppLayout>
   );
 }
