@@ -1,8 +1,12 @@
 import { useShallow } from 'zustand/shallow';
-import { css } from '@emotion/css';
-import { useStore } from '../../store';
-import { SubmitButton } from '../core/button/SubmitButton';
-import { color } from '../../../styles';
+import { useStore } from '@/renderer/store';
+import { SubmitButton } from '@/renderer/components/core/button/SubmitButton';
+import {
+  ConfirmModalContentBox,
+  ConfirmModalLayout,
+  ConfirmModalMessageParagraph,
+  ConfirmModalYesOrNoBox,
+} from './index.styles';
 
 export function ConfirmModal() {
   const [confirmMessage, callback, setConfirm] = useStore(
@@ -28,45 +32,15 @@ export function ConfirmModal() {
   }
 
   return (
-    <div
-      className={css`
-        position: absolute;
-        inset: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      `}
-    >
-      <div
-        className={css`
-          background-color: white;
-          padding: 1rem;
-          display: flex;
-          align-items: center;
-          flex-direction: column;
-          border: 1px solid lightgray;
-          gap: 1rem;
-        `}
-      >
-        <p
-          className={css`
-            margin: 0;
-            color: ${color.text};
-          `}
-        >
-          {confirmMessage}
-        </p>
+    <ConfirmModalLayout>
+      <ConfirmModalContentBox>
+        <ConfirmModalMessageParagraph>{confirmMessage}</ConfirmModalMessageParagraph>
 
-        <div
-          className={css`
-            display: flex;
-            gap: 0.5rem;
-          `}
-        >
+        <ConfirmModalYesOrNoBox>
           <SubmitButton onClick={handleOkButtonClick}>예</SubmitButton>
           <SubmitButton onClick={handleNoButtonClick}>아니오</SubmitButton>
-        </div>
-      </div>
-    </div>
+        </ConfirmModalYesOrNoBox>
+      </ConfirmModalContentBox>
+    </ConfirmModalLayout>
   );
 }
