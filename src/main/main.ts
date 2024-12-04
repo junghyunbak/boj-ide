@@ -10,7 +10,7 @@
  */
 import path from 'path';
 import fs from 'fs';
-import { app, BrowserWindow, shell, globalShortcut, dialog } from 'electron';
+import { app, BrowserWindow, shell, globalShortcut } from 'electron';
 import puppeteer from 'puppeteer-core';
 import pie from 'puppeteer-in-electron';
 import { spawnSync } from 'child_process';
@@ -161,6 +161,25 @@ const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
   app.quit();
 } else {
+  /**
+   * for windows deep link
+   */
+  if (process.platform === 'win32') {
+    (() => {
+      const url = process.argv[1] || '';
+
+      const problemNumber = getBojProblemNumber(url);
+
+      if (!problemNumber) {
+        return;
+      }
+
+      const problemUrl = `https://www.acmicpc.net/problem/${problemNumber}`;
+
+      fs.writeFileSync(path.join(app.getPath('userData'), 'last-url'), problemUrl, 'utf-8');
+    })();
+  }
+
   app.on('second-instance', (e, commandLine) => {
     const url = commandLine.pop() || '';
 
@@ -175,10 +194,11 @@ if (!gotTheLock) {
     if (bojView) {
       bojView.loadUrl(problemUrl);
     }
-
-    dialog.showErrorBox(`[테스트]`, `${problemUrl}`);
   });
 
+  /**
+   * for mac os deep link
+   */
   app.on('open-url', (e, url) => {
     const problemNumber = getBojProblemNumber(url);
 
@@ -195,6 +215,9 @@ if (!gotTheLock) {
     }
   });
 
+  /**
+   * entry
+   */
   (async () => {
     await pie.initialize(app);
 
