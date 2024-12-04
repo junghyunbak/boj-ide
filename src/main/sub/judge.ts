@@ -17,21 +17,6 @@ type JudgeInfo = {
 };
 
 export const langToJudgeInfo: Record<Language, JudgeInfo> = {
-  'C++17 (Clang)': {
-    cli: 'clang++',
-    ext: {
-      win32: 'cpp',
-      darwin: 'cc',
-    },
-    compile: (fileName) => ({
-      win32: `clang++ ${fileName}.cpp -o ${fileName} -std=gnu++17 -O2 -Wall -lm -static`,
-      darwin: `clang++ ${fileName}.cc -o ${fileName} -std=gnu++17`,
-    }),
-    execute: (fileName) => ({
-      win32: `${fileName}.exe`,
-      darwin: `./${fileName}`,
-    }),
-  },
   'C++17': {
     cli: 'g++',
     ext: {

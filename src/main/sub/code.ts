@@ -47,7 +47,7 @@ export class Code {
         throw new Error('지원하지 않는 플랫폼입니다.');
       }
 
-      // [ ]: c++14, c++17, c++17(clang) 세 언어가 각각의 파일을 가지도록 구현
+      // [ ]: c++14, c++17 이 각각의 파일을 가지도록 구현
       const filePath = path.join(this.basePath, `${number}.${ext}`);
 
       if (!fs.existsSync(filePath)) {
@@ -55,7 +55,6 @@ export class Code {
           switch (language) {
             case 'C++14':
             case 'C++17':
-            case 'C++17 (Clang)':
               return CPP_INPUT_TEMPLATE;
             case 'node.js':
               return JS_INPUT_TEMPLATE;

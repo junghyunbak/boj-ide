@@ -17,9 +17,9 @@ type ProblemInfo = {
 
 type EditorMode = 'vim' | 'normal';
 
-type Language = 'node.js' | 'C++14' | 'C++17' | 'C++17 (Clang)' | 'Java11' | 'Python3';
+type Language = 'node.js' | 'C++14' | 'C++17' | 'Java11' | 'Python3';
 
-type Compiler = 'g++' | 'javac' | 'clang++';
+type Compiler = 'g++' | 'javac';
 type Executer = 'java' | 'node' | 'python3';
 
 type Cli = Compiler | Executer;

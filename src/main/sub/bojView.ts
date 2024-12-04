@@ -227,7 +227,6 @@ export class BojView {
         switch (language) {
           case 'C++14':
           case 'C++17':
-          case 'C++17 (Clang)':
           case 'node.js':
             return language;
           case 'Java11':
