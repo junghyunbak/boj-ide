@@ -36,7 +36,7 @@ export const HistoryBarItemContentParagraph = styled.p`
   user-select: none;
   margin: 0;
   white-space: nowrap;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: ${color.text};
 `;
 
