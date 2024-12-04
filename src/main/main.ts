@@ -16,7 +16,7 @@ import pie from 'puppeteer-in-electron';
 import { spawnSync } from 'child_process';
 import { ipc } from '@/types/ipc';
 import { sentryErrorHandler } from '@/error';
-import { resolveHtmlPath } from './util';
+import { getBojProblemNumber, resolveHtmlPath } from './util';
 import { BojView } from './sub/bojView';
 import { Code } from './sub/code';
 import { Judge } from './sub/judge';
@@ -162,25 +162,31 @@ if (!gotTheLock) {
   app.quit();
 } else {
   app.on('second-instance', (e, commandLine) => {
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) {
-        mainWindow.restore();
-      }
+    const url = commandLine.pop() || '';
 
-      mainWindow.focus();
-    }
+    const problemNumber = getBojProblemNumber(url);
 
-    dialog.showErrorBox(`[테스트]`, `${commandLine.pop()}`);
-  });
-
-  app.on('open-url', (e, url) => {
-    const tmp = /^boj-ide:\/\/([0-9]+)$/.exec(url);
-
-    if (!tmp) {
+    if (!problemNumber) {
       return;
     }
 
-    const problemUrl = `https://www.acmicpc.net/problem/${tmp[1]}`;
+    const problemUrl = `https://www.acmicpc.net/problem/${problemNumber}`;
+
+    if (bojView) {
+      bojView.loadUrl(problemUrl);
+    }
+
+    dialog.showErrorBox(`[테스트]`, `${problemUrl}`);
+  });
+
+  app.on('open-url', (e, url) => {
+    const problemNumber = getBojProblemNumber(url);
+
+    if (!problemNumber) {
+      return;
+    }
+
+    const problemUrl = `https://www.acmicpc.net/problem/${problemNumber}`;
 
     if (bojView) {
       bojView.loadUrl(problemUrl);
