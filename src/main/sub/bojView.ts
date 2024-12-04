@@ -40,6 +40,10 @@ export class BojView {
     this.puppeteerBroswer = puppeteerBrowser;
   }
 
+  loadUrl(url: string) {
+    this.view.webContents.loadURL(url);
+  }
+
   build() {
     const handleDidNavigate = async (e: Electron.Event, url: string) => {
       if (!whiteListUrl.some((wlUrl) => url.startsWith(wlUrl))) {

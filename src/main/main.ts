@@ -9,8 +9,9 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
+import fs from 'fs';
 import { app, BrowserWindow, shell, globalShortcut } from 'electron';
-import puppeteer, { type Browser } from 'puppeteer-core';
+import puppeteer from 'puppeteer-core';
 import pie from 'puppeteer-in-electron';
 import { spawnSync } from 'child_process';
 import { ipc } from '@/types/ipc';
@@ -19,9 +20,19 @@ import { resolveHtmlPath } from './util';
 import { BojView } from './sub/bojView';
 import { Code } from './sub/code';
 import { Judge } from './sub/judge';
+
 import '@/error/sentry';
 
 let mainWindow: BrowserWindow | null = null;
+let bojView: BojView | null = null;
+
+if (process.defaultApp) {
+  if (process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient('electron-fiddle', process.execPath, [path.resolve(process.argv[1])]);
+  }
+} else {
+  app.setAsDefaultProtocolClient('electron-fiddle');
+}
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -47,7 +58,7 @@ const installExtensions = async () => {
     .catch(console.log);
 };
 
-const createWindow = async (puppeteerBroswer: Browser) => {
+const createWindow = async (puppeteerBroswer: Awaited<ReturnType<typeof pie.connect>>) => {
   if (isDebug) {
     await installExtensions();
   }
@@ -97,7 +108,8 @@ const createWindow = async (puppeteerBroswer: Browser) => {
      */
     new Code(mainWindow.webContents).build();
     new Judge(mainWindow.webContents).build();
-    new BojView(mainWindow, puppeteerBroswer).build();
+    bojView = new BojView(mainWindow, puppeteerBroswer);
+    bojView.build();
   });
 
   ipc.on('open-source-code-folder', () => {
@@ -124,7 +136,6 @@ const createWindow = async (puppeteerBroswer: Browser) => {
 /**
  * Add event listeners...
  */
-
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
@@ -143,6 +154,22 @@ app.on('browser-window-focus', () => {
 app.on('browser-window-blur', () => {
   globalShortcut.unregister('CommandOrControl+R');
   globalShortcut.unregister('CommandOrControl+Shift+R');
+});
+
+app.on('open-url', (e, url) => {
+  const tmp = /^boj-ide:\/\/([0-9]+)$/.exec(url);
+
+  if (!tmp) {
+    return;
+  }
+
+  const problemUrl = `https://www.acmicpc.net/problem/${tmp[1]}`;
+
+  if (bojView) {
+    bojView.loadUrl(problemUrl);
+  } else {
+    fs.writeFileSync(path.join(app.getPath('userData'), 'last-url'), problemUrl, 'utf-8');
+  }
 });
 
 (async () => {
