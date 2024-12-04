@@ -28,10 +28,10 @@ let bojView: BojView | null = null;
 
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
-    app.setAsDefaultProtocolClient('electron-fiddle', process.execPath, [path.resolve(process.argv[1])]);
+    app.setAsDefaultProtocolClient('boj-ide', process.execPath, [path.resolve(process.argv[1])]);
   }
 } else {
-  app.setAsDefaultProtocolClient('electron-fiddle');
+  app.setAsDefaultProtocolClient('boj-ide');
 }
 
 if (process.env.NODE_ENV === 'production') {
