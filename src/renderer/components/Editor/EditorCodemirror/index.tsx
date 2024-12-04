@@ -21,6 +21,8 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
   const [editorHeight, setEditorHeight] = useState(0);
   const [editorWidth, setEditorWidth] = useState(0);
 
+  const [isCodeStale, setIsCodeStale] = useState(false);
+
   const editorRef = useRef<HTMLDivElement | null>(null);
 
   const extensions = (() => {
@@ -143,21 +145,30 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
   }, [setCode, setState, state]);
 
   /**
+   * 코드가 변경 될 경우, 코드 저장 관련 기능을 활성화
+   */
+  useEffect(() => {
+    setIsCodeStale(true);
+  }, [code]);
+
+  /**
    * 저장 이벤트 등록
    */
   useEffect(() => {
     const saveCode = () => {
-      if (!problem) {
+      if (!problem || !isCodeStale) {
         return;
       }
 
       window.electron.ipcRenderer.sendMessage('save-code', { data: { number: problem.number, language: lang, code } });
+
+      setIsCodeStale(false);
     };
 
     Vim.defineEx('write', 'w', saveCode);
 
     const handleSaveCode = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key === 's') {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
 
         saveCode();
@@ -169,7 +180,7 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
     return () => {
       window.removeEventListener('keydown', handleSaveCode);
     };
-  }, [code, lang, problem]);
+  }, [code, lang, problem, isCodeStale]);
 
   return <div ref={editorRef} />;
 }
