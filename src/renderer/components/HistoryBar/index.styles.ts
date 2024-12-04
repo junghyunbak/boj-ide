@@ -33,6 +33,7 @@ export const HistoryBarItemContentBox = styled.div<{ isSelect: boolean }>`
 `;
 
 export const HistoryBarItemContentParagraph = styled.p`
+  user-select: none;
   margin: 0;
   white-space: nowrap;
   font-size: 0.875rem;
