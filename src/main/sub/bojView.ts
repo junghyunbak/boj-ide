@@ -41,6 +41,14 @@ export class BojView {
   }
 
   loadUrl(url: string) {
+    if (this.mainWindow) {
+      if (this.mainWindow.isMinimized()) {
+        this.mainWindow.restore();
+      }
+
+      this.mainWindow.focus();
+    }
+
     this.view.webContents.loadURL(url);
   }
 
