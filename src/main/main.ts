@@ -10,7 +10,7 @@
  */
 import path from 'path';
 import fs from 'fs';
-import { app, BrowserWindow, shell, globalShortcut } from 'electron';
+import { app, BrowserWindow, shell, globalShortcut, dialog } from 'electron';
 import puppeteer from 'puppeteer-core';
 import pie from 'puppeteer-in-electron';
 import { spawnSync } from 'child_process';
@@ -156,43 +156,61 @@ app.on('browser-window-blur', () => {
   globalShortcut.unregister('CommandOrControl+Shift+R');
 });
 
-app.on('open-url', (e, url) => {
-  const tmp = /^boj-ide:\/\/([0-9]+)$/.exec(url);
+const gotTheLock = app.requestSingleInstanceLock();
 
-  if (!tmp) {
-    return;
-  }
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', (e, commandLine) => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) {
+        mainWindow.restore();
+      }
 
-  const problemUrl = `https://www.acmicpc.net/problem/${tmp[1]}`;
+      mainWindow.focus();
+    }
 
-  if (bojView) {
-    bojView.loadUrl(problemUrl);
-  } else {
-    fs.writeFileSync(path.join(app.getPath('userData'), 'last-url'), problemUrl, 'utf-8');
-  }
-});
+    dialog.showErrorBox(`[테스트]`, `${commandLine.pop()}`);
+  });
 
-(async () => {
-  await pie.initialize(app);
+  app.on('open-url', (e, url) => {
+    const tmp = /^boj-ide:\/\/([0-9]+)$/.exec(url);
 
-  app
-    .whenReady()
-    .then(async () => {
-      /**
-       * [pie 라이브러리 유지보수 이슈]
-       *
-       * pie와 최신 puppeteer-core 타입과 일치하지 않음
-       */
-      // @ts-expect-error
-      const puppeteerBroswer = await pie.connect(app, puppeteer);
+    if (!tmp) {
+      return;
+    }
 
-      createWindow(puppeteerBroswer);
+    const problemUrl = `https://www.acmicpc.net/problem/${tmp[1]}`;
 
-      app.on('activate', () => {
-        // On macOS it's common to re-create a window in the app when the
-        // dock icon is clicked and there are no other windows open.
-        if (mainWindow === null) createWindow(puppeteerBroswer);
-      });
-    })
-    .catch(sentryErrorHandler);
-})();
+    if (bojView) {
+      bojView.loadUrl(problemUrl);
+    } else {
+      fs.writeFileSync(path.join(app.getPath('userData'), 'last-url'), problemUrl, 'utf-8');
+    }
+  });
+
+  (async () => {
+    await pie.initialize(app);
+
+    app
+      .whenReady()
+      .then(async () => {
+        /**
+         * [pie 라이브러리 유지보수 이슈]
+         *
+         * pie와 최신 puppeteer-core 타입과 일치하지 않음
+         */
+        // @ts-expect-error
+        const puppeteerBroswer = await pie.connect(app, puppeteer);
+
+        createWindow(puppeteerBroswer);
+
+        app.on('activate', () => {
+          // On macOS it's common to re-create a window in the app when the
+          // dock icon is clicked and there are no other windows open.
+          if (mainWindow === null) createWindow(puppeteerBroswer);
+        });
+      })
+      .catch(sentryErrorHandler);
+  })();
+}
