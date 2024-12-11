@@ -13,7 +13,7 @@
 ```bash
 npm install
 
-npm run start # 개발
+npm start # 개발
 
 npm run package # 패키징
 ```
