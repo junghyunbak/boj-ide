@@ -30,6 +30,14 @@ type CodeInfo = {
   language: Language;
 };
 
+type JudgeInfo = {
+  cli: Cli;
+  ext: Partial<Record<NodeJS.Platform, string>>;
+  compile?: (fileName?: string) => Partial<Record<NodeJS.Platform, `${Cli} ${string}`>>;
+  // [ ]: template literal type 적용
+  execute: (fileName?: string) => Partial<Record<NodeJS.Platform, string>>;
+};
+
 type JudgeResult = {
   index: number;
   result: '맞았습니다!!' | '시간 초과' | '런타임 에러' | '틀렸습니다' | '출력 초과';

@@ -1,12 +1,9 @@
 import { app, WebContents } from 'electron';
 import fs from 'fs';
 import path from 'path';
-
-import { ipc } from '../../types/ipc';
-
-import { JS_INPUT_TEMPLATE, CPP_INPUT_TEMPLATE, PY_INPUT_TEMPLATE, JAVA_CODE_TEMPLATE } from '../../constants';
-
-import { langToJudgeInfo } from './judge';
+import { JS_INPUT_TEMPLATE, CPP_INPUT_TEMPLATE, PY_INPUT_TEMPLATE, JAVA_CODE_TEMPLATE } from '@/constants';
+import { ipc } from '@/types/ipc';
+import { langToJudgeInfo } from '@/constants/judge';
 
 export class Code {
   private basePath: string;
