@@ -10,7 +10,7 @@
  */
 import path from 'path';
 import fs from 'fs';
-import { app, BrowserWindow, shell, globalShortcut, Menu, MenuItemConstructorOptions } from 'electron';
+import { app, BrowserWindow, shell, globalShortcut } from 'electron';
 import puppeteer from 'puppeteer-core';
 import pie from 'puppeteer-in-electron';
 import { spawnSync } from 'child_process';
@@ -22,6 +22,7 @@ import { Code } from './sub/code';
 import { Judge } from './sub/judge';
 
 import '@/error/sentry';
+import MenuBuilder from './menu';
 
 let mainWindow: BrowserWindow | null = null;
 let bojView: BojView | null = null;
@@ -84,24 +85,7 @@ const createWindow = async (puppeteerBroswer: Awaited<ReturnType<typeof pie.conn
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
-  const menuOptions: MenuItemConstructorOptions[] = [];
-
-  if (process.platform === 'darwin') {
-    menuOptions.push({
-      label: 'BOJ IDE',
-      submenu: [
-        {
-          label: 'Quit',
-          accelerator: 'Command+Q',
-          click: () => {
-            app.quit();
-          },
-        },
-      ],
-    });
-  }
-
-  Menu.setApplicationMenu(Menu.buildFromTemplate(menuOptions));
+  new MenuBuilder(mainWindow).buildMenu();
 
   mainWindow.on('ready-to-show', () => {
     if (!mainWindow) {
