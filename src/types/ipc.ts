@@ -147,7 +147,9 @@ class Ipc {
             return;
           }
 
-          sentryErrorHandler(err);
+          if (process.env.NODE_ENV === 'production') {
+            sentryErrorHandler(err);
+          }
         }
       }
     };
