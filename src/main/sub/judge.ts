@@ -7,6 +7,7 @@ import { normalizeOutput } from '@/utils';
 import { ipc } from '@/types/ipc';
 import { MAX_BUFFER_SIZE, MAX_LINE_LENGTH } from '@/constants';
 import { IpcError } from '@/error';
+import { Code } from './code';
 
 type JudgeInfo = {
   cli: Cli;
@@ -97,20 +98,14 @@ export async function compile({
   code,
   fileName,
   basePath,
-  platform,
+  ext,
 }: {
   language: Language;
   code: string;
   fileName: string;
   basePath: string;
-  platform: NodeJS.Platform;
+  ext: string;
 }) {
-  const ext = langToJudgeInfo[language].ext[platform];
-
-  if (!ext) {
-    throw new Error('지원하지 않는 플랫폼입니다.');
-  }
-
   if (langToJudgeInfo[language].compile) {
     fs.writeFileSync(path.join(basePath, `${fileName}.${ext}`), code, { encoding: 'utf-8' });
 
@@ -119,7 +114,7 @@ export async function compile({
       fs.writeFileSync(path.join(basePath, 'Main.java'), code, { encoding: 'utf-8' });
     }
 
-    const compileCmd = langToJudgeInfo[language].compile(fileName)[platform];
+    const compileCmd = langToJudgeInfo[language].compile(fileName)[process.platform];
 
     if (compileCmd === undefined) {
       throw new Error('지원하지 않는 플랫폼입니다.');
@@ -170,6 +165,12 @@ export class Judge {
           },
         },
       ) => {
+        const ext = langToJudgeInfo[language].ext[process.platform];
+
+        if (!ext) {
+          throw new Error('지원하지 않는 플랫폼입니다.');
+        }
+
         /**
          * cli 존재여부 체크
          */
@@ -180,9 +181,14 @@ export class Judge {
         }
 
         /**
+         * 코드 저장
+         */
+        Code.saveFile(this.basePath, number, ext, code);
+
+        /**
          * 컴파일
          */
-        await compile({ language, code, fileName: number, basePath: this.basePath, platform: process.platform });
+        await compile({ language, code, fileName: number, basePath: this.basePath, ext });
 
         /**
          * 채점 시작

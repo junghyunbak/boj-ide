@@ -19,6 +19,12 @@ export class Code {
     this.webContents = webContents;
   }
 
+  static saveFile(basePath: string, fileName: string, ext: string, code: string) {
+    fs.writeFileSync(path.join(basePath, `${fileName}.${ext}`), code, {
+      encoding: 'utf-8',
+    });
+  }
+
   build() {
     ipc.on('save-code', (e, { data: { number, language, code, silence } }) => {
       const ext = langToJudgeInfo[language].ext[process.platform];
@@ -28,9 +34,7 @@ export class Code {
       }
 
       try {
-        fs.writeFileSync(path.join(this.basePath, `${number}.${ext}`), code, {
-          encoding: 'utf-8',
-        });
+        Code.saveFile(this.basePath, number, ext, code);
 
         if (!silence) {
           ipc.send(this.webContents, 'save-code-result', { data: { isSaved: true } });

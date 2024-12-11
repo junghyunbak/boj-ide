@@ -32,10 +32,6 @@ export function ExecuteCodeButton() {
 
     const { code, lang } = useStore.getState();
 
-    window.electron.ipcRenderer.sendMessage('save-code', {
-      data: { number: problem.number, language: lang, code, silence: true },
-    });
-
     window.electron.ipcRenderer.sendMessage('judge-start', {
       data: {
         code,
