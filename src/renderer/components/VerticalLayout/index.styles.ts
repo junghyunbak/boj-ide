@@ -32,6 +32,8 @@ export const VLResizerBox = styled.div`
   }
 
   &::before {
+    content: '';
+    display: block;
     border-top: 5px dotted lightgray;
     width: 50px;
   }
