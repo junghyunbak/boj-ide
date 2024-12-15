@@ -8,6 +8,8 @@ export const over = '#fa7268';
 
 export const primaryBg = '#428bca';
 
+export const secondaryBg = '#ba68c8';
+
 export const primaryText = '#0076C0';
 
 export const text = '#333333';
