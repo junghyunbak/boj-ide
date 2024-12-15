@@ -4,7 +4,7 @@ import { SubmitButton } from '@/renderer/components/core/button/SubmitButton';
 import {
   ConfirmModalContentBox,
   ConfirmModalLayout,
-  ConfirmModalMessageParagraph,
+  ConfirmModalMessagePre,
   ConfirmModalYesOrNoBox,
 } from './index.styles';
 
@@ -34,7 +34,7 @@ export function ConfirmModal() {
   return (
     <ConfirmModalLayout>
       <ConfirmModalContentBox>
-        <ConfirmModalMessageParagraph>{confirmMessage}</ConfirmModalMessageParagraph>
+        <ConfirmModalMessagePre>{confirmMessage}</ConfirmModalMessagePre>
 
         <ConfirmModalYesOrNoBox>
           <SubmitButton onClick={handleOkButtonClick}>예</SubmitButton>

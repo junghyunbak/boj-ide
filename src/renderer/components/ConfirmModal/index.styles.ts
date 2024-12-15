@@ -23,7 +23,8 @@ export const ConfirmModalContentBox = styled.div`
   border: 1px solid lightgray;
 `;
 
-export const ConfirmModalMessageParagraph = styled.p`
+export const ConfirmModalMessagePre = styled.pre`
+  text-align: center;
   margin: 0;
   color: ${color.text};
 `;
