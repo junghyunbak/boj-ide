@@ -92,6 +92,8 @@ export class BojView {
 
       const name = $('#problem_title').html() || '';
 
+      const inputDesc = $('#problem_input').html() || '';
+
       const inputs = Array.from($('[id|="sample-input"]'))
         .map((v) => {
           const [child] = v.children;
@@ -120,6 +122,7 @@ export class BojView {
         data: {
           name,
           number,
+          inputDesc,
           testCase: {
             inputs,
             outputs,
