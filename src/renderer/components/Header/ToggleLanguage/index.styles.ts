@@ -6,14 +6,19 @@ export const ToggleLanguageLayout = styled.div`
   z-index: 10;
 `;
 
-export const ToggleLanguageButton = styled.button`
-  border: none;
-  background: lightgray;
-  color: white;
+export const ToggleLanguageButton = styled.button<{ isActive: boolean }>`
+  border: 1px solid #ccc;
+  color: #333;
   padding: 0.4rem 0.8rem;
   font-weight: 500;
   white-space: nowrap;
+  box-shadow: ${(props) => (props.isActive ? 'inset 0 3px 5px rgba(0, 0, 0, 0.125)' : 'none')};
+  background: ${(props) => (props.isActive ? '#e6e6e6' : 'none')};
   cursor: pointer;
+
+  &:hover {
+    background-color: #e6e6e6;
+  }
 
   &::after {
     content: '';
@@ -33,7 +38,9 @@ export const ToggleLanguageModalBox = styled.div<{ isOpen: boolean }>`
   right: 0;
   background-color: white;
   overflow: hidden;
-  box-shadow: 1px 1px 1px 1px rgb(0, 0, 0, 0.2);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  margin: 2px 0 0;
 `;
 
 export const ToggleLanguageModalList = styled.ul`

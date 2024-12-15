@@ -49,7 +49,7 @@ export function ToggleLanguage() {
 
   return (
     <ToggleLanguageLayout>
-      <ToggleLanguageButton type="button" onClick={handleChosenButtonClick}>
+      <ToggleLanguageButton type="button" onClick={handleChosenButtonClick} isActive={langMenuIsOpen}>
         {lang}
       </ToggleLanguageButton>
 
