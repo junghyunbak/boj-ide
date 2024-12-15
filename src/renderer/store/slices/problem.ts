@@ -66,7 +66,11 @@ export const createProblemSlice: StateCreator<ProblemSlice> = (set, get): Proble
     set((s) => {
       const next = [...s.problemHistories];
 
-      if (next.find((v) => v.number === problemInfo.number)) {
+      const idx = next.findIndex((v) => v.number === problemInfo.number);
+
+      if (idx !== -1) {
+        next.splice(idx, 1, problemInfo);
+
         return { problemHistories: next };
       }
 
