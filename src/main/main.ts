@@ -20,9 +20,9 @@ import { getBojProblemNumber, resolveHtmlPath } from './util';
 import { BojView } from './sub/bojView';
 import { Code } from './sub/code';
 import { Judge } from './sub/judge';
+import MenuBuilder from './menu';
 
 import '@/error/sentry';
-import MenuBuilder from './menu';
 
 let mainWindow: BrowserWindow | null = null;
 let bojView: BojView | null = null;
@@ -107,8 +107,8 @@ const createWindow = async (puppeteerBroswer: Awaited<ReturnType<typeof pie.conn
     /**
      * BojView가 제일 나중에 빌드되어야 함.
      */
-    new Code(mainWindow.webContents).build();
     new Judge(mainWindow.webContents).build();
+    new Code(mainWindow, puppeteerBroswer).build();
     bojView = new BojView(mainWindow, puppeteerBroswer);
     bojView.build();
   });

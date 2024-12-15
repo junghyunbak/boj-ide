@@ -1,9 +1,14 @@
 import { css } from '@emotion/css';
-import { color } from '../../../../../styles';
+import { color } from '@/styles';
+import Color from 'color';
 
-interface SubmitButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+interface SubmitButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  secondary?: boolean;
+}
 
-export function SubmitButton({ onClick, children, disabled }: SubmitButtonProps) {
+export function SubmitButton({ onClick, children, disabled, secondary = false }: SubmitButtonProps) {
+  const bgColor = secondary ? color.secondaryBg : color.primaryBg;
+
   return (
     <button
       type="button"
@@ -13,21 +18,21 @@ export function SubmitButton({ onClick, children, disabled }: SubmitButtonProps)
         color: white;
         padding: 0.4rem 0.8rem;
         cursor: pointer;
-        background-color: ${color.primaryBg};
+        background-color: ${bgColor};
         white-space: nowrap;
 
         &:disabled {
-          background-color: gray;
+          background-color: ${Color(bgColor).darken(0.2).toString()};
           cursor: auto;
           color: lightgray;
 
           &:hover {
-            background-color: gray;
+            background-color: ${Color(bgColor).darken(0.25).toString()};
           }
         }
 
         &:hover {
-          background-color: #2980b9;
+          background-color: ${Color(bgColor).lighten(0.05).toString()};
         }
       `}
       disabled={disabled}

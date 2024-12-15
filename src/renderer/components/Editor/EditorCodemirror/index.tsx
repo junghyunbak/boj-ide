@@ -79,6 +79,14 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
   });
 
   useEffect(() => {
+    window.electron.ipcRenderer.on('ai-result', ({ data: { text } }) => {
+      const { code: existCode } = useStore.getState();
+
+      setCode(existCode + text);
+    });
+  }, [setCode]);
+
+  useEffect(() => {
     if (!editorRef.current) {
       return;
     }
