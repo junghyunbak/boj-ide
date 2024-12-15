@@ -49,7 +49,9 @@ int main() {
 }
 `;
 
-export const PY_INPUT_TEMPLATE = `a, b = map(int, input().split())
+export const PY_INPUT_TEMPLATE = `import sys
+
+a, b = map(int, sys.stdin.readline().split())
 print(a+b)
 `;
 
