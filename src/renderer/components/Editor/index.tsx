@@ -4,10 +4,12 @@ import { useShallow } from 'zustand/shallow';
 import { useStore } from '@/renderer/store';
 import { EditorPlaceholder } from './EditorPlaceholder';
 import { EditorCodemirror } from './EditorCodemirror';
+import { EditorSettings } from './EditorSettings';
 
 export function Editor() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
   const [lang] = useStore(useShallow((s) => [s.lang]));
+  const [isSetting] = useStore(useShallow((s) => [s.isSetting]));
 
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -36,7 +38,13 @@ export function Editor() {
         height: 100%;
       `}
     >
-      {!problem ? <EditorPlaceholder /> : <EditorCodemirror containerRef={containerRef} />}
+      {!problem ? (
+        <EditorPlaceholder />
+      ) : isSetting ? (
+        <EditorSettings />
+      ) : (
+        <EditorCodemirror containerRef={containerRef} />
+      )}
     </div>
   );
 }

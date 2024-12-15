@@ -1,16 +1,20 @@
-import { css } from '@emotion/css';
-import { color, size } from '../../../styles';
+import { css } from '@emotion/react';
+import { useStore } from '@/renderer/store';
+import { useShallow } from 'zustand/shallow';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGear } from '@fortawesome/free-solid-svg-icons';
+import { color, size } from '@/styles';
 import { SaveCodeButton } from './SaveCodeButton';
 import { ExecuteCodeButton } from './ExecuteCodeButton';
-import { ToggleEditorMode } from './ToggleEditorMode';
-import { EditorTitle } from './EditorTitle';
 import { SubmitCodeButton } from './SubmitCodeButton';
 import { ToggleLanguage } from './ToggleLanguage';
 
 export function Header() {
+  const [isSetting, setIsSetting] = useStore(useShallow((s) => [s.isSetting, s.setIsSetting]));
+
   return (
     <div
-      className={css`
+      css={css`
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -19,31 +23,43 @@ export function Header() {
         height: ${size.EDITOR_HEADER_HEIGHT}px;
         min-height: ${size.EDITOR_HEADER_HEIGHT}px;
         color: ${color.text};
+        padding: 0 0.5rem;
       `}
     >
-      <div
-        className={css`
-          margin-left: 1rem;
-        `}
-      >
-        <EditorTitle />
+      <div>
+        <ToggleLanguage />
       </div>
 
       <div
-        className={css`
+        css={css`
           display: flex;
+          align-items: center;
           gap: 0.5rem;
-          margin-right: 1rem;
+          height: 100%;
         `}
       >
-        <ToggleLanguage />
-
-        <ToggleEditorMode />
-
+        <button
+          type="button"
+          onClick={() => {
+            setIsSetting(!isSetting);
+          }}
+          css={css`
+            border: 0;
+            background: none;
+            color: gray;
+            cursor: pointer;
+          `}
+        >
+          <FontAwesomeIcon size="xl" icon={faGear} />
+        </button>
         <SaveCodeButton />
-
         <ExecuteCodeButton />
-
+        <div
+          css={css`
+            border-left: 1px solid lightgray;
+            height: 100%;
+          `}
+        />
         <SubmitCodeButton />
       </div>
     </div>

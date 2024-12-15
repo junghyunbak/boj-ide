@@ -17,6 +17,7 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
   const [lang] = useStore(useShallow((s) => [s.lang]));
   const [code, setCode] = useStore(useShallow((s) => [s.code, s.setCode]));
   const [mode] = useStore(useShallow((s) => [s.mode]));
+  const [fontSize] = useStore(useShallow((s) => [s.fontSize]));
 
   const [editorHeight, setEditorHeight] = useState(0);
   const [editorWidth, setEditorWidth] = useState(0);
@@ -30,11 +31,11 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
 
     const FontTheme = EditorView.theme({
       '.cm-content': {
-        fontSize: '16px',
+        fontSize: `${fontSize}px`,
         fontFamily: 'hack',
       },
       '.cm-gutters': {
-        fontSize: '16px',
+        fontSize: `${fontSize}px`,
         fontFamily: 'hack',
       },
     });
