@@ -22,36 +22,6 @@ const createDefaultCode = (language: Language) => {
   }
 };
 
-const createPrompt = (inputs: string[], problemDesc: string, language: Language) => `
-${problemDesc}
-
-위 설명을 토대로 프로그래밍 언어 \`${language}\`로 \`표준 입력\`을 받기 위한 코드를 생성합니다.
-
----
-
-${inputs.map(
-  (input) => `
-${input}
-
-`,
-)}
-
-위는 \`표준 입력\`으로 들어올 수 있는 예시입니다.
-
----
-
-${createDefaultCode(language)}
-
-위 코드는 답변 생성에 참고만 하고, 그대로 답변에 포함시켜서는 안됩니다.
-
----
-
-- 생성한 코드에 대한 설명을 절대 하지 않는다.
-- Markdown 문법을 사용하지 않고 평문으로 답한다.
-
-위는 답변을 할 때 지켜야 할 사항입니다.
-`;
-
 export class Code {
   private basePath: string;
 
