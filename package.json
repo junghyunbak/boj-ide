@@ -126,7 +126,6 @@
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
     "electron-updater": "^6.1.4",
-    "openai": "^4.76.3",
     "puppeteer-core": "^23.6.0",
     "puppeteer-in-electron": "^3.0.5",
     "react": "^18.2.0",

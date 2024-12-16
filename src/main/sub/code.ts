@@ -5,7 +5,6 @@ import { JS_INPUT_TEMPLATE, CPP_INPUT_TEMPLATE, PY_INPUT_TEMPLATE, JAVA_CODE_TEM
 import { ipc } from '@/types/ipc';
 import { langToJudgeInfo } from '@/constants/judge';
 import { type Browser } from 'puppeteer-core';
-import { client } from '../api';
 
 const createDefaultCode = (language: Language) => {
   switch (language) {
@@ -76,40 +75,6 @@ export class Code {
   }
 
   build() {
-    ipc.on(
-      'create-input-template',
-      async (
-        e,
-        {
-          data: {
-            language,
-            inputDesc,
-            testCase: { inputs },
-          },
-        },
-      ) => {
-        const stream = await client.chat.completions.create({
-          model: 'gpt-3.5-turbo',
-          stream: true,
-          messages: [
-            {
-              role: 'user',
-              content: createPrompt(inputs, inputDesc || '', language),
-            },
-          ],
-        });
-
-        // eslint-disable-next-line no-restricted-syntax
-        for await (const chunk of stream) {
-          const {
-            delta: { content },
-          } = chunk.choices[0];
-
-          ipc.send(this.webContents, 'ai-result', { data: { text: content || '' } });
-        }
-      },
-    );
-
     ipc.on('save-code', (e, { data: { number, language, code, silence } }) => {
       const ext = langToJudgeInfo[language].ext[process.platform];
 
