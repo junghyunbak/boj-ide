@@ -8,11 +8,18 @@ export function AICreateButton() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
   const [setConfirm] = useStore(useShallow((s) => [s.setConfirm]));
   const [setCode] = useStore(useShallow((s) => [s.setCode]));
+  const [setMessage] = useStore(useShallow((s) => [s.setMessage]));
 
-  const { complete, completion, isLoading } = useCompletion({
+  const { complete, completion, isLoading, error } = useCompletion({
     api: 'https://boj-ide.junghyunbak.site/api/ai/template',
     experimental_throttle: 50,
   });
+
+  useEffect(() => {
+    if (error) {
+      setMessage(`## ️오류 발생\n### 원인\n1. AI 서버 문제 발생\n2. AI 사용량 한도초과`);
+    }
+  }, [error, setMessage]);
 
   useEffect(() => {
     setCode(completion);
