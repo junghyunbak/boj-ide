@@ -8,12 +8,10 @@ import { SaveCodeButton } from './SaveCodeButton';
 import { ExecuteCodeButton } from './ExecuteCodeButton';
 import { SubmitCodeButton } from './SubmitCodeButton';
 import { ToggleLanguage } from './ToggleLanguage';
-import { SubmitButton } from '../core/button/SubmitButton';
+import { AICreateButton } from './AICreateButton';
 
 export function Header() {
-  const [problem] = useStore(useShallow((s) => [s.problem]));
   const [isSetting, setIsSetting] = useStore(useShallow((s) => [s.isSetting, s.setIsSetting]));
-  const [setConfirm] = useStore(useShallow((s) => [s.setConfirm]));
 
   return (
     <div
@@ -56,28 +54,7 @@ export function Header() {
           <FontAwesomeIcon size="xl" icon={faGear} />
         </button>
 
-        <SubmitButton
-          type="button"
-          secondary
-          onClick={() => {
-            setConfirm('기존의 코드가 삭제됩니다.\n계속하시겠습니까?', () => {
-              if (!problem) {
-                return;
-              }
-
-              const { lang, setCode } = useStore.getState();
-
-              setCode('');
-
-              window.electron.ipcRenderer.sendMessage('create-input-template', {
-                data: { ...problem, language: lang },
-              });
-            });
-          }}
-        >
-          AI 입력 생성
-        </SubmitButton>
-
+        <AICreateButton />
         <SaveCodeButton />
         <ExecuteCodeButton />
         <div
