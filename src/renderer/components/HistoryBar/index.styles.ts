@@ -53,14 +53,14 @@ export const HistoryBarItemContentBox = styled.div<{ isSelect: boolean }>`
 
   padding: 0.4375rem 0.875rem;
 
-  background-color: ${(props) => (props.isSelect ? 'white' : 'none')};
+  background-color: ${(props) => (props.isSelect ? 'white' : 'transparent')};
   border-top-right-radius: 8px;
   border-top-left-radius: 8px;
 
-  ${({ isSelect }) => (isSelect ? 'border-top: 1px solid lightgray;' : '')}
-  ${({ isSelect }) => (isSelect ? 'border-left: 1px solid lightgray;' : '')}
-  ${({ isSelect }) => (isSelect ? 'border-right: 1px solid lightgray;' : '')}
-  ${({ isSelect }) => (!isSelect ? 'border-bottom: 1px solid lightgray;' : 'border-bottom: 1px solid transparent')}
+  border-top: 1px solid ${({ isSelect }) => (isSelect ? 'lightgray' : 'transparent')};
+  border-left: 1px solid ${({ isSelect }) => (isSelect ? 'lightgray' : 'transparent')};
+  border-right: 1px solid ${({ isSelect }) => (isSelect ? 'lightgray' : 'transparent')};
+  border-bottom: 1px solid ${({ isSelect }) => (!isSelect ? 'lightgray' : 'transparent')};
 `;
 
 export const HistoryBarItemContentParagraph = styled.p`
