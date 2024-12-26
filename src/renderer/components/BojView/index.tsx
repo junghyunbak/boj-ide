@@ -1,8 +1,8 @@
 import { css } from '@emotion/css';
 import { useEffect, useRef } from 'react';
+import { useStore } from '@/renderer/store';
+import { useShallow } from 'zustand/shallow';
 import { BrowserNavigation } from '../BrowserNavigation';
-
-import { useStore } from '../../store';
 
 const sendResizingResult = (htmlDivEl: HTMLDivElement | null) => {
   if (!htmlDivEl) {
@@ -17,6 +17,9 @@ const sendResizingResult = (htmlDivEl: HTMLDivElement | null) => {
 };
 
 export function BojView() {
+  const [url] = useStore(useShallow((s) => [s.url]));
+  const [isDrag] = useStore(useShallow((s) => [s.isDrag]));
+
   const bojAreaRef = useRef<HTMLDivElement>(null);
 
   /**
@@ -65,29 +68,17 @@ export function BojView() {
       <div
         className={css`
           flex: 1;
-          padding: 10%;
+          display: flex;
         `}
         ref={bojAreaRef}
       >
-        <div
+        <webview
           className={css`
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 4px dotted lightgray;
-            border-radius: 10px;
+            flex: 1;
+            pointer-events: ${isDrag ? 'none' : 'auto'};
           `}
-        >
-          <p
-            className={css`
-              color: gray;
-            `}
-          >
-            로딩 중...
-          </p>
-        </div>
+          src={url}
+        />
       </div>
     </div>
   );

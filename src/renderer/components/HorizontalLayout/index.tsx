@@ -1,5 +1,7 @@
 /* eslint-disable react/require-default-props */
 import React, { useRef, useEffect } from 'react';
+import { useStore } from '@/renderer/store';
+import { useShallow } from 'zustand/shallow';
 import { HLLayout, HLLeftBox, HLResizerBox, HLRightBox } from './index.styles';
 
 interface LeftProps {
@@ -32,6 +34,8 @@ function Layout({ children, onLeftRatioChange = () => {} }: LayoutProps) {
   const resizerRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
+  const [setIsDrag] = useStore(useShallow((s) => [s.setIsDrag]));
+
   useEffect(() => {
     const left = leftRef.current;
     const resizer = resizerRef.current;
@@ -46,6 +50,7 @@ function Layout({ children, onLeftRatioChange = () => {} }: LayoutProps) {
     let leftWidth = 0;
 
     const handleResizerMouseDown = (e: MouseEvent) => {
+      setIsDrag(true);
       isDragging = true;
       startX = e.clientX;
       leftWidth = left.getBoundingClientRect().width;
@@ -64,6 +69,7 @@ function Layout({ children, onLeftRatioChange = () => {} }: LayoutProps) {
     };
 
     const handleMouseUp = () => {
+      setIsDrag(false);
       isDragging = false;
     };
 
@@ -78,7 +84,7 @@ function Layout({ children, onLeftRatioChange = () => {} }: LayoutProps) {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [onLeftRatioChange]);
+  }, [onLeftRatioChange, setIsDrag]);
 
   const [LeftElement] = React.Children.toArray(children).filter(
     (child) => React.isValidElement(child) && child.type === LeftType,

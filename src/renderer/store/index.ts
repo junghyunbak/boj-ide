@@ -8,6 +8,7 @@ import { createLayoutSlice } from './slices/layout';
 import { createAlertSlice } from './slices/alert';
 import { createReleasesSlice } from './slices/releases';
 import { createConfirmSlice } from './slices/confirm';
+import { createBojViewSlice } from './slices/bojView';
 
 export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createJudgeSlice> &
@@ -15,11 +16,13 @@ export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createLayoutSlice> &
   ReturnType<typeof createAlertSlice> &
   ReturnType<typeof createReleasesSlice> &
-  ReturnType<typeof createConfirmSlice>;
+  ReturnType<typeof createConfirmSlice> &
+  ReturnType<typeof createBojViewSlice>;
 
 export const useStore = create<StoreState>()(
   persist(
     (...a) => ({
+      ...createBojViewSlice(...a),
       ...createEditorSlice(...a),
       ...createJudgeSlice(...a),
       ...createProblemSlice(...a),
@@ -31,9 +34,9 @@ export const useStore = create<StoreState>()(
     {
       name: 'zustandStore',
       partialize: (s) => {
-        const { lang, mode, leftRatio, topRatio, problemHistories, customTestCase, oldReleases, fontSize } = s;
+        const { lang, mode, leftRatio, topRatio, problemHistories, customTestCase, oldReleases, fontSize, url } = s;
 
-        return { lang, mode, leftRatio, topRatio, problemHistories, customTestCase, oldReleases, fontSize };
+        return { lang, mode, leftRatio, topRatio, problemHistories, customTestCase, oldReleases, fontSize, url };
       },
     },
   ),
