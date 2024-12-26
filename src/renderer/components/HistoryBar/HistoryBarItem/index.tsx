@@ -66,6 +66,8 @@ export function HistoryBarItem({ problemInfo, index }: HistoryBarItemProps) {
         <div
           css={css`
             display: flex;
+            justify-content: center;
+            width: 12px;
             height: 14px;
           `}
         >
