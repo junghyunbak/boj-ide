@@ -6,6 +6,7 @@ import { useStore } from '@/renderer/store';
 import { useXScroll } from '@/renderer/hooks';
 import { ReactComponent as X } from '@/renderer/assets/svgs/x.svg';
 import { css } from '@emotion/react';
+import { BOJ_DOMAIN, SOLVED_AC_DOMAIN } from '@/constants';
 
 import {
   HistoryBarItemLayout,
@@ -18,6 +19,7 @@ import {
 
 export function HistoryBar() {
   const [problem, setProblem] = useStore(useShallow((s) => [s.problem, s.setProblem]));
+  const [webViewUrl, setWebViewUrl] = useStore(useShallow((s) => [s.url, s.setUrl]));
 
   const [problemHistories, removeProblemHistory] = useStore(
     useShallow((s) => [s.problemHistories, s.removeProblemHistory]),
@@ -45,6 +47,38 @@ export function HistoryBar() {
 
   return (
     <HistoryBarLayout ref={xScrollRef}>
+      {[
+        [`https://${SOLVED_AC_DOMAIN}`, 'solved.ac'],
+        [`https://${BOJ_DOMAIN}`, 'baekjoon'],
+      ].map(([url, title]) => {
+        const isSelect = (() => {
+          if (problem) {
+            return false;
+          }
+
+          if (webViewUrl.startsWith(url)) {
+            return true;
+          }
+
+          return false;
+        })();
+
+        return (
+          <HistoryBarItemLayout
+            key={url}
+            onClick={() => {
+              setWebViewUrl(url);
+            }}
+          >
+            {isSelect && <HistoryBarItemDecoratorBox direction="left" />}
+            <HistoryBarItemContentBox isSelect={isSelect}>
+              <HistoryBarItemContentParagraph>{title}</HistoryBarItemContentParagraph>
+            </HistoryBarItemContentBox>
+            {isSelect && <HistoryBarItemDecoratorBox direction="right" />}
+          </HistoryBarItemLayout>
+        );
+      })}
+
       {problemHistories.map((problemInfo, index) => {
         const isSelect = problem?.number === problemInfo.number;
 

@@ -8,7 +8,6 @@ export const BrowserNavigationLayout = styled.div`
   overflow: hidden;
 
   width: 100%;
-  height: ${size.BOJ_VIEW_NAVIGATION_HEIGHT}px;
 
   padding: 0.3rem 0.5rem;
 

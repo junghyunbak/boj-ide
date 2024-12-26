@@ -9,6 +9,7 @@ import {
   BrowserNavigationLayout,
 } from './index.styles';
 
+// browser navigation -> nav
 export function BrowserNavigation() {
   /**
    * 일단 히스토리의 존재 여부와는 상관없이 메세지 보내도록 구현
@@ -45,41 +46,6 @@ export function BrowserNavigation() {
           <LeftArrow />
         </BrowserNavigationHistoryButton>
       </BrowserNavigationHistoryBox>
-
-      <BrowserNavigationBookmarkBox>
-        <BrowserNavigationBookmarkButton
-          type="button"
-          onClick={handleGoSolvedAcButtonClick}
-          css={css`
-            font-weight: bolder;
-
-            span {
-              color: white;
-              background-color: #00cb00;
-              border-radius: 0.4rem;
-              padding: 0.1rem 0.5rem;
-            }
-          `}
-        >
-          solved.<span>AC</span>
-        </BrowserNavigationBookmarkButton>
-
-        <BrowserNavigationBookmarkButton
-          type="button"
-          onClick={handleGoBaekjoonButtonClick}
-          css={css`
-            color: ${color.text};
-            letter-spacing: 0.1rem;
-            font-weight: 500;
-
-            span {
-              color: ${color.primaryText};
-            }
-          `}
-        >
-          BAE<span>{'/<'}</span>JOON<span>{'>'}</span>
-        </BrowserNavigationBookmarkButton>
-      </BrowserNavigationBookmarkBox>
     </BrowserNavigationLayout>
   );
 }
