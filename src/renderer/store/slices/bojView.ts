@@ -7,9 +7,16 @@ type BojViewSlice = {
 
   isDrag: boolean;
   setIsDrag: (isDrag: boolean) => void;
+
+  webView: Electron.WebviewTag | null;
+  setWebView: (webView: Electron.WebviewTag | null) => void;
 };
 
 export const createBojViewSlice: StateCreator<BojViewSlice> = (set): BojViewSlice => ({
+  webView: null,
+  setWebView(webView) {
+    set(() => ({ webView }));
+  },
   isDrag: false,
   setIsDrag(isDrag) {
     set(() => ({

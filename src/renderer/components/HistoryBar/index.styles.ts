@@ -2,11 +2,10 @@ import styled from '@emotion/styled';
 import { size, color } from '@/styles';
 
 export const HistoryBarLayout = styled.div`
-  border-bottom: 1px solid lightgray;
   display: flex;
   overflow-x: scroll;
-  min-height: ${size.HISTORY_BAR_HEIGHT}px;
-  height: ${size.HISTORY_BAR_HEIGHT}px;
+  background-color: #f9f9f9;
+  padding-top: 0.25rem;
 
   &::-webkit-scrollbar {
     display: none;
@@ -14,8 +13,33 @@ export const HistoryBarLayout = styled.div`
 `;
 
 export const HistoryBarItemLayout = styled.div`
-  border-right: 1px solid lightgray;
   padding: 0;
+  position: relative;
+`;
+
+export const HistoryBarItemDecoratorBox = styled.div<{ direction: 'left' | 'right' }>`
+  position: absolute;
+  z-index: 10;
+  width: 14px;
+  height: 14px;
+  ${({ direction }) => (direction === 'left' ? 'left: -13px' : 'right: -13px')};
+  bottom: 0;
+  background-color: white;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    ${({ direction }) => (direction === 'left' ? 'left: -100%' : 'right: -100%')};
+    top: -100%;
+    width: 200%;
+    height: 200%;
+    background-color: #f9f9f9;
+    border: 1px solid lightgray;
+    box-sizing: border-box;
+    border-radius: 8px;
+  }
 `;
 
 export const HistoryBarItemContentBox = styled.div<{ isSelect: boolean }>`
@@ -27,9 +51,16 @@ export const HistoryBarItemContentBox = styled.div<{ isSelect: boolean }>`
   width: 100%;
   height: 100%;
 
-  padding: 0 0.7rem;
+  padding: 0.3rem 0.6rem;
 
-  border-bottom: 2px solid ${(props) => (props.isSelect ? '#428bca' : 'transparent')};
+  background-color: ${(props) => (props.isSelect ? 'white' : 'none')};
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+
+  ${({ isSelect }) => (isSelect ? 'border-top: 1px solid lightgray;' : '')}
+  ${({ isSelect }) => (isSelect ? 'border-left: 1px solid lightgray;' : '')}
+  ${({ isSelect }) => (isSelect ? 'border-right: 1px solid lightgray;' : '')}
+  ${({ isSelect }) => (!isSelect ? 'border-bottom: 1px solid lightgray;' : 'border-bottom: 1px solid transparent')}
 `;
 
 export const HistoryBarItemContentParagraph = styled.p`

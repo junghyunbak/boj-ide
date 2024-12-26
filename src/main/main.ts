@@ -79,6 +79,7 @@ const createWindow = async (puppeteerBroswer: Awaited<ReturnType<typeof pie.conn
     resizable: true,
     icon: getAssetPath('icon.png'),
     webPreferences: {
+      webviewTag: true,
       preload: app.isPackaged ? path.join(__dirname, 'preload.js') : path.join(__dirname, '../../.erb/dll/preload.js'),
     },
   });
@@ -110,7 +111,7 @@ const createWindow = async (puppeteerBroswer: Awaited<ReturnType<typeof pie.conn
     new Judge(mainWindow.webContents).build();
     new Code(mainWindow, puppeteerBroswer).build();
     bojView = new BojView(mainWindow, puppeteerBroswer);
-    bojView.build();
+    //bojView.build();
   });
 
   ipc.on('open-source-code-folder', () => {

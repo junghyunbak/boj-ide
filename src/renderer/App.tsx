@@ -13,6 +13,7 @@ import { BojView } from './components/BojView';
 import { HistoryBar } from './components/HistoryBar';
 import { Footer } from './components/Footer';
 import { ConfirmModal } from './components/ConfirmModal';
+import { BrowserNavigation } from './components/BrowserNavigation';
 
 import { AppContentBox, EditorAndOutputBox, AppLayout } from './App.styles';
 
@@ -59,6 +60,7 @@ export default function App() {
   return (
     <AppLayout>
       <HistoryBar />
+      <BrowserNavigation />
 
       <AppContentBox>
         <HorizontalLayout onLeftRatioChange={handleLeftRatioChange}>
@@ -79,15 +81,15 @@ export default function App() {
                   <Output />
                 </VerticalLayout.Bottom>
               </VerticalLayout>
-
-              <AlertModal />
-              <ConfirmModal />
             </EditorAndOutputBox>
           </HorizontalLayout.Right>
         </HorizontalLayout>
       </AppContentBox>
 
       <Footer />
+
+      <AlertModal />
+      <ConfirmModal />
     </AppLayout>
   );
 }

@@ -5,6 +5,7 @@ import { useShallow } from 'zustand/shallow';
 import { useStore } from '@/renderer/store';
 import { useXScroll } from '@/renderer/hooks';
 import { ReactComponent as X } from '@/renderer/assets/svgs/x.svg';
+import { css } from '@emotion/react';
 
 import {
   HistoryBarItemLayout,
@@ -12,6 +13,7 @@ import {
   HistoryBarItemContentBox,
   HistoryBarItemContentParagraph,
   HistoryBarLayout,
+  HistoryBarItemDecoratorBox,
 } from './index.styles';
 
 export function HistoryBar() {
@@ -44,9 +46,12 @@ export function HistoryBar() {
   return (
     <HistoryBarLayout ref={xScrollRef}>
       {problemHistories.map((problemInfo, index) => {
+        const isSelect = problem?.number === problemInfo.number;
+
         return (
           <HistoryBarItemLayout key={problemInfo.number} onClick={handleHistoryBarItemClick(problemInfo)}>
-            <HistoryBarItemContentBox isSelect={problem?.number === problemInfo.number}>
+            {isSelect && <HistoryBarItemDecoratorBox direction="left" />}
+            <HistoryBarItemContentBox isSelect={isSelect}>
               <HistoryBarItemContentParagraph>
                 {`${problemInfo.number}번: ${problemInfo.name}`}
               </HistoryBarItemContentParagraph>
@@ -59,9 +64,17 @@ export function HistoryBar() {
                 <X />
               </HistoryBarItemCloseButton>
             </HistoryBarItemContentBox>
+            {isSelect && <HistoryBarItemDecoratorBox direction="right" />}
           </HistoryBarItemLayout>
         );
       })}
+
+      <div
+        css={css`
+          flex: 1;
+          border-bottom: 1px solid lightgray;
+        `}
+      />
     </HistoryBarLayout>
   );
 }
