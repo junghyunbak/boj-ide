@@ -5,8 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGear } from '@fortawesome/free-solid-svg-icons';
 import { color, size } from '@/styles';
 import { SaveCodeButton } from './SaveCodeButton';
-import { ExecuteCodeButton } from './ExecuteCodeButton';
-import { SubmitCodeButton } from './SubmitCodeButton';
 import { ToggleLanguage } from './ToggleLanguage';
 import { AICreateButton } from './AICreateButton';
 
@@ -56,14 +54,6 @@ export function Header() {
 
         <AICreateButton />
         <SaveCodeButton />
-        <ExecuteCodeButton />
-        <div
-          css={css`
-            border-left: 1px solid lightgray;
-            height: 100%;
-          `}
-        />
-        <SubmitCodeButton />
       </div>
     </div>
   );

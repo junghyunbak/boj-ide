@@ -44,11 +44,11 @@ export function BojView() {
         .map((v) => {
           const [child] = v.children;
 
-          if (!(child instanceof Text)) {
-            return '';
+          if ('data' in child) {
+            return child.data;
           }
 
-          return child.data;
+          return '';
         })
         .filter((v) => v !== null);
 
@@ -56,11 +56,11 @@ export function BojView() {
         .map((v) => {
           const [child] = v.children;
 
-          if (!(child instanceof Text)) {
-            return null;
+          if ('data' in child) {
+            return child.data;
           }
 
-          return child.data;
+          return '';
         })
         .filter((v) => v !== null);
 

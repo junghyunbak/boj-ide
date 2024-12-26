@@ -1,21 +1,17 @@
-import { css } from '@emotion/css';
-
+import { css } from '@emotion/react';
 import { memo, useEffect } from 'react';
-
 import { useShallow } from 'zustand/shallow';
-import { useStore } from '../../store';
-
+import { useStore } from '@/renderer/store';
+import { color } from '@/styles';
 import { TestCase } from './TestCase';
 import { TestCaseCreator } from './TestCaseCreater';
-import { color } from '../../../styles';
+import { ExecuteCodeButton } from '../Header/ExecuteCodeButton';
 
+// [ ]: 왜 memo?
 export const Output = memo(() => {
   const [problem] = useStore(useShallow((s) => [s.problem]));
-
   const [isJudging, setIsJudging] = useStore(useShallow((s) => [s.isJudging, s.setIsJudging]));
-
   const [judgeResult, setJudgeResult] = useStore(useShallow((s) => [s.judgeResult, s.setJudgeResult]));
-
   const [customTestCase] = useStore(useShallow((s) => [s.customTestCase]));
 
   const N = (() => {
@@ -28,7 +24,7 @@ export const Output = memo(() => {
 
   useEffect(() => {
     setJudgeResult(() => []);
-  }, [customTestCase, setJudgeResult]);
+  }, [problem, customTestCase, setJudgeResult]);
 
   /**
    * 채점 결과가 도착하는 ipc 이벤트 리스너 초기화
@@ -94,89 +90,119 @@ export const Output = memo(() => {
 
   return (
     <div
-      className={css`
+      css={css`
         width: 100%;
         height: 100%;
-        overflow-y: scroll;
-        padding: 0;
-        margin: 0;
+        display: flex;
+        flex-direction: column;
       `}
     >
       <div
-        className={css`
-          padding: 1rem;
-          padding-bottom: 0;
+        css={css`
           width: 100%;
+          border-bottom: 1px solid lightgray;
+          padding: 0.5rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
         `}
       >
-        {problem && (
-          <table
-            className={css`
-              width: 100%;
-              border: 1px solid #ddd;
-              border-collapse: collapse;
-              font-size: 0.875rem;
-              color: ${color.text};
-              table-layout: fixed;
-
-              th {
-                text-align: start;
-                border-left: 1px solid #ddd;
-                border-right: 1px solid #ddd;
-                padding: 0.5rem;
-              }
-            `}
-          >
-            <thead>
-              <tr>
-                <th style={{ width: '25%' }}>예제</th>
-                <th style={{ width: '25%' }}>결과</th>
-                <th style={{ width: '17.3%' }}>시간</th>
-                <th style={{ width: '17.3%' }}>상세</th>
-                <th style={{ width: '17.3%' }}>삭제</th>
-              </tr>
-            </thead>
-            <tbody>
-              {testCases.map(({ input, output, type }, i) => {
-                return (
-                  <TestCase
-                    key={i}
-                    index={i}
-                    input={input}
-                    output={output}
-                    isJudging={isJudging}
-                    judgeResult={judgeResult[i]}
-                    type={type}
-                    problem={problem}
-                  />
-                );
-              })}
-            </tbody>
-          </table>
-        )}
-      </div>
-
-      {isJudgeComplete && (
         <div
-          className={css`
-            padding: 1rem;
-            padding-bottom: 0;
+          css={css`
+            padding-left: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
           `}
         >
           <p
-            className={css`
+            css={css`
               margin: 0;
-              color: ${judgeResult.length === correctCount ? color.correct : color.wrong};
-              font-weight: bold;
               font-size: 0.875rem;
+              color: #333;
             `}
           >
-            {`${judgeResult.length}개 중 ${correctCount}개 성공`}
+            실행 결과
           </p>
+          {isJudgeComplete && (
+            <p
+              css={css`
+                margin: 0;
+                color: ${judgeResult.length === correctCount ? color.correct : color.wrong};
+                font-weight: bold;
+                font-size: 0.875rem;
+              `}
+            >
+              {`${judgeResult.length}개 중 ${correctCount}개 성공`}
+            </p>
+          )}
         </div>
-      )}
+        <ExecuteCodeButton />
+      </div>
 
-      {problem && <TestCaseCreator problemNumber={problem.number} />}
+      <div
+        css={css`
+          flex: 1;
+          overflow-y: scroll;
+          padding: 0;
+          margin: 0;
+        `}
+      >
+        <div
+          css={css`
+            padding: 1rem;
+            padding-bottom: 0;
+            width: 100%;
+          `}
+        >
+          {problem && (
+            <table
+              css={css`
+                width: 100%;
+                border: 1px solid #ddd;
+                border-collapse: collapse;
+                font-size: 0.875rem;
+                color: ${color.text};
+                table-layout: fixed;
+
+                th {
+                  text-align: start;
+                  border-left: 1px solid #ddd;
+                  border-right: 1px solid #ddd;
+                  padding: 0.5rem;
+                }
+              `}
+            >
+              <thead>
+                <tr>
+                  <th style={{ width: '25%' }}>예제</th>
+                  <th style={{ width: '25%' }}>결과</th>
+                  <th style={{ width: '17.3%' }}>시간</th>
+                  <th style={{ width: '17.3%' }}>상세</th>
+                  <th style={{ width: '17.3%' }}>삭제</th>
+                </tr>
+              </thead>
+              <tbody>
+                {testCases.map(({ input, output, type }, i) => {
+                  return (
+                    <TestCase
+                      key={i}
+                      index={i}
+                      input={input}
+                      output={output}
+                      isJudging={isJudging}
+                      judgeResult={judgeResult[i]}
+                      type={type}
+                      problem={problem}
+                    />
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+        </div>
+
+        {problem && <TestCaseCreator problemNumber={problem.number} />}
+      </div>
     </div>
   );
 });

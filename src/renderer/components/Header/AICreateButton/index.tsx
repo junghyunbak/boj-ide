@@ -11,7 +11,10 @@ export function AICreateButton() {
   const [setMessage] = useStore(useShallow((s) => [s.setMessage]));
 
   const { complete, completion, isLoading, error } = useCompletion({
-    api: 'https://boj-ide.junghyunbak.site/api/ai/template',
+    api:
+      process.env.NODE_ENV === 'production'
+        ? 'https://boj-ide.junghyunbak.site/api/ai/template'
+        : 'http://localhost:3000/api/ai/template',
     experimental_throttle: 50,
   });
 
@@ -34,6 +37,8 @@ export function AICreateButton() {
           if (!problem) {
             return;
           }
+
+          setCode('');
 
           const { lang } = useStore.getState();
 

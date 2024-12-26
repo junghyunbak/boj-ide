@@ -3,6 +3,7 @@ import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 import { useEffect, useState } from 'react';
 import { BrowserNavigationHistoryBox, BrowserNavigationHistoryButton, BrowserNavigationLayout } from './index.styles';
+import { SubmitCodeButton } from '../Header/SubmitCodeButton';
 
 // browser navigation -> nav
 export function BrowserNavigation() {
@@ -56,6 +57,8 @@ export function BrowserNavigation() {
           <LeftArrow />
         </BrowserNavigationHistoryButton>
       </BrowserNavigationHistoryBox>
+
+      <SubmitCodeButton />
     </BrowserNavigationLayout>
   );
 }

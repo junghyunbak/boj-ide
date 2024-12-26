@@ -20,7 +20,6 @@ import {
 export function HistoryBar() {
   const [problem, setProblem] = useStore(useShallow((s) => [s.problem, s.setProblem]));
   const [webViewUrl, setWebViewUrl] = useStore(useShallow((s) => [s.url, s.setUrl]));
-  const [setUrl] = useStore(useShallow((s) => [s.setUrl]));
 
   const [problemHistories, removeProblemHistory] = useStore(
     useShallow((s) => [s.problemHistories, s.removeProblemHistory]),
@@ -30,7 +29,7 @@ export function HistoryBar() {
 
   const handleHistoryBarItemClick = (problemInfo: ProblemInfo) => () => {
     setProblem(problemInfo);
-    setUrl(`https://${BOJ_DOMAIN}/problem/${problemInfo.number}`);
+    setWebViewUrl(`https://${BOJ_DOMAIN}/problem/${problemInfo.number}`);
   };
 
   const handleBookmarkItemClick = (url: string) => () => {
@@ -48,7 +47,7 @@ export function HistoryBar() {
         setWebViewUrl(`https://${BOJ_DOMAIN}/problemset`);
       } else if (nextProblem && problem?.number === problemInfo.number) {
         setProblem(nextProblem);
-        setUrl(`https://${BOJ_DOMAIN}/problem/${nextProblem.number}`);
+        setWebViewUrl(`https://${BOJ_DOMAIN}/problem/${nextProblem.number}`);
       }
 
       e.stopPropagation();
