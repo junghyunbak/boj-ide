@@ -20,6 +20,7 @@ import {
 export function HistoryBar() {
   const [problem, setProblem] = useStore(useShallow((s) => [s.problem, s.setProblem]));
   const [webViewUrl, setWebViewUrl] = useStore(useShallow((s) => [s.url, s.setUrl]));
+  const [setUrl] = useStore(useShallow((s) => [s.setUrl]));
 
   const [problemHistories, removeProblemHistory] = useStore(
     useShallow((s) => [s.problemHistories, s.removeProblemHistory]),
@@ -29,7 +30,12 @@ export function HistoryBar() {
 
   const handleHistoryBarItemClick = (problemInfo: ProblemInfo) => () => {
     setProblem(problemInfo);
-    window.electron.ipcRenderer.sendMessage('go-problem', { data: problemInfo });
+    setUrl(`https://${BOJ_DOMAIN}/problem/${problemInfo.number}`);
+  };
+
+  const handleBookmarkItemClick = (url: string) => () => {
+    setProblem(null);
+    setWebViewUrl(url);
   };
 
   const handleHistoryBarItemCloseButtonClick =
@@ -37,9 +43,12 @@ export function HistoryBar() {
     (e) => {
       const nextProblem = removeProblemHistory(index);
 
-      if (problem?.number === problemInfo.number) {
+      if (!nextProblem) {
+        setProblem(null);
+        setWebViewUrl(`https://${BOJ_DOMAIN}/problemset`);
+      } else if (nextProblem && problem?.number === problemInfo.number) {
         setProblem(nextProblem);
-        window.electron.ipcRenderer.sendMessage('go-problem', { data: nextProblem });
+        setUrl(`https://${BOJ_DOMAIN}/problem/${nextProblem.number}`);
       }
 
       e.stopPropagation();
@@ -49,6 +58,7 @@ export function HistoryBar() {
     <HistoryBarLayout ref={xScrollRef}>
       {[
         [`https://${SOLVED_AC_DOMAIN}`, 'solved.ac'],
+        // [ ]: /problemset 경로로 변경
         [`https://${BOJ_DOMAIN}`, 'baekjoon'],
       ].map(([url, title]) => {
         const isSelect = (() => {
@@ -64,12 +74,7 @@ export function HistoryBar() {
         })();
 
         return (
-          <HistoryBarItemLayout
-            key={url}
-            onClick={() => {
-              setWebViewUrl(url);
-            }}
-          >
+          <HistoryBarItemLayout key={url} onClick={handleBookmarkItemClick(url)}>
             {isSelect && <HistoryBarItemDecoratorBox direction="left" />}
             <HistoryBarItemContentBox isSelect={isSelect}>
               <HistoryBarItemContentParagraph>{title}</HistoryBarItemContentParagraph>

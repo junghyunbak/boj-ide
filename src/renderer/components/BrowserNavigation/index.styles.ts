@@ -41,7 +41,7 @@ export const BrowserNavigationHistoryButton = styled.button<{ horizontalFlip?: b
 
   transform: rotate(${(props) => (props.horizontalFlip ? 180 : 0)}deg);
 
-  &:hover {
+  &:not(:disabled):hover {
     background-color: #ececec;
   }
 
@@ -50,6 +50,14 @@ export const BrowserNavigationHistoryButton = styled.button<{ horizontalFlip?: b
   svg {
     width: 100%;
     color: gray;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+
+    svg {
+      color: lightgray;
+    }
   }
 `;
 

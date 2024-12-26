@@ -28,15 +28,6 @@ export default function App() {
   const [setMessage] = useStore(useShallow((s) => [s.setMessage]));
 
   useEffect(() => {
-    window.electron.ipcRenderer.on('load-problem-data', ({ data }) => {
-      setProblem(data);
-      setJudgeResult(() => []);
-
-      if (data) {
-        addProblemHistory(data);
-      }
-    });
-
     window.electron.ipcRenderer.on('reset-judge', () => {
       setIsJudging(false);
       setJudgeResult(() => []);

@@ -51,7 +51,7 @@ export const HistoryBarItemContentBox = styled.div<{ isSelect: boolean }>`
   width: 100%;
   height: 100%;
 
-  padding: 0.3rem 0.875rem;
+  padding: 0.4375rem 0.875rem;
 
   background-color: ${(props) => (props.isSelect ? 'white' : 'none')};
   border-top-right-radius: 8px;

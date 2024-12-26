@@ -2,15 +2,82 @@ import { css } from '@emotion/react';
 import { useEffect } from 'react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
+import { BOJ_DOMAIN } from '@/constants';
+import * as cheerio from 'cheerio';
 
 export function BojView() {
-  const [url] = useStore(useShallow((s) => [s.url]));
+  const [webViewUrl] = useStore(useShallow((s) => [s.url]));
   const [isDrag] = useStore(useShallow((s) => [s.isDrag]));
   const [webview, setWebView] = useStore(useShallow((s) => [s.webView, s.setWebView]));
+  const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
+  const [addProblemHistory] = useStore(useShallow((s) => [s.addProblemHistory]));
 
   useEffect(() => {
     setWebView(document.querySelector('webview') as Electron.WebviewTag);
   }, [setWebView]);
+
+  useEffect(() => {
+    if (!webview) {
+      return;
+    }
+
+    webview.addEventListener('did-finish-load', async () => {
+      const url = webview.getURL() || '';
+
+      if (!url.startsWith(`https://${BOJ_DOMAIN}/problem/`)) {
+        setProblem(null);
+        // setUrl(url); [ ]: 좀 중복된다. (브라우저 내에서 url이동 시)
+        return;
+      }
+
+      const html = await webview.executeJavaScript('document.documentElement.outerHTML');
+
+      const $ = cheerio.load(html);
+
+      const [_, number] = new RegExp(`https://${BOJ_DOMAIN}/problem/([0-9]+)`).exec(url) || [];
+
+      const name = $('#problem_title').html() || '';
+
+      const inputDesc = $('#problem_input').html() || '';
+
+      const inputs = Array.from($('[id|="sample-input"]'))
+        .map((v) => {
+          const [child] = v.children;
+
+          if (!(child instanceof Text)) {
+            return '';
+          }
+
+          return child.data;
+        })
+        .filter((v) => v !== null);
+
+      const outputs = Array.from($('[id|="sample-output"]'))
+        .map((v) => {
+          const [child] = v.children;
+
+          if (!(child instanceof Text)) {
+            return null;
+          }
+
+          return child.data;
+        })
+        .filter((v) => v !== null);
+
+      const problemInfo: ProblemInfo = {
+        name,
+        number,
+        inputDesc,
+        testCase: {
+          inputs,
+          outputs,
+        },
+      };
+
+      setProblem(problemInfo);
+      addProblemHistory(problemInfo);
+    });
+  }, [webview, setProblem, addProblemHistory]);
 
   return (
     <div
@@ -26,7 +93,7 @@ export function BojView() {
           flex: 1;
           pointer-events: ${isDrag ? 'none' : 'auto'};
         `}
-        src={url}
+        src={webViewUrl}
       />
     </div>
   );
