@@ -31,7 +31,7 @@ export function HistoryBarItem({ problemInfo, index }: HistoryBarItemProps) {
           res.json(),
         );
 
-        setLevel(data.level || -1);
+        setLevel(data.level ?? -1);
       } catch (e) {
         console.log(e);
       }
