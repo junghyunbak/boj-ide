@@ -1,6 +1,6 @@
 import { useShallow } from 'zustand/shallow';
 import { useStore } from '@/renderer/store';
-import { useXScroll } from '@/renderer/hooks';
+import { useWebviewRoute, useXScroll } from '@/renderer/hooks';
 import { css } from '@emotion/react';
 import { BOJ_DOMAIN, SOLVED_AC_DOMAIN } from '@/constants';
 
@@ -14,16 +14,15 @@ import {
 import { HistoryBarItem } from './HistoryBarItem';
 
 export function HistoryBar() {
-  const [problem, setProblem] = useStore(useShallow((s) => [s.problem, s.setProblem]));
-  const [webViewUrl, setWebViewUrl] = useStore(useShallow((s) => [s.url, s.setUrl]));
-
+  const [problem] = useStore(useShallow((s) => [s.problem]));
+  const [webviewUrl] = useStore(useShallow((s) => [s.webviewUrl]));
   const [problemHistories] = useStore(useShallow((s) => [s.problemHistories, s.removeProblemHistory]));
+  const { gotoUrl } = useWebviewRoute();
 
   const { xScrollRef } = useXScroll();
 
   const handleBookmarkItemClick = (url: string) => () => {
-    setProblem(null);
-    setWebViewUrl(url);
+    gotoUrl(url);
   };
 
   return (
@@ -38,7 +37,7 @@ export function HistoryBar() {
             return false;
           }
 
-          if (webViewUrl.startsWith(url)) {
+          if (webviewUrl.startsWith(url)) {
             return true;
           }
 

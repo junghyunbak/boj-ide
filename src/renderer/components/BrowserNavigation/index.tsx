@@ -7,32 +7,28 @@ import { SubmitCodeButton } from '../Header/SubmitCodeButton';
 
 // browser navigation -> nav
 export function BrowserNavigation() {
-  const [webView] = useStore(useShallow((s) => [s.webView]));
+  const [webview] = useStore(useShallow((s) => [s.webview]));
 
   const [canGoBack, setCanGoBack] = useState(true);
   const [canGoForward, setCanGoForward] = useState(true);
 
   useEffect(() => {
-    if (!webView) {
+    if (!webview) {
       return;
     }
 
-    webView.addEventListener('did-finish-load', () => {
-      setCanGoBack(webView.canGoBack());
-      setCanGoForward(webView.canGoForward());
+    webview.addEventListener('did-finish-load', () => {
+      setCanGoBack(webview.canGoBack());
+      setCanGoForward(webview.canGoForward());
     });
-  }, [webView]);
+  }, [webview]);
 
   const handleGoBackButtonClick = () => {
-    if (webView) {
-      webView.goBack();
-    }
+    webview?.goBack();
   };
 
   const handleGoFrontButtonClick = () => {
-    if (webView) {
-      webView.goForward();
-    }
+    webview?.goForward();
   };
 
   return (

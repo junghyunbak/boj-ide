@@ -4,6 +4,7 @@ import { ReactComponent as X } from '@/renderer/assets/svgs/x.svg';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 import { BOJ_DOMAIN } from '@/constants';
+import { useWebviewRoute } from '@/renderer/hooks';
 import {
   HistoryBarItemLayout,
   HistoryBarItemCloseButton,
@@ -18,9 +19,9 @@ interface HistoryBarItemProps {
 }
 
 export function HistoryBarItem({ problemInfo, index }: HistoryBarItemProps) {
-  const [problem, setProblem] = useStore(useShallow((s) => [s.problem, s.setProblem]));
-  const [setWebViewUrl] = useStore(useShallow((s) => [s.setUrl]));
+  const [problem] = useStore(useShallow((s) => [s.problem]));
   const [removeProblemHistory] = useStore(useShallow((s) => [s.removeProblemHistory]));
+  const { gotoProblem, gotoUrl } = useWebviewRoute();
 
   const [level, setLevel] = useState(-1);
 
@@ -39,19 +40,16 @@ export function HistoryBarItem({ problemInfo, index }: HistoryBarItemProps) {
   }, [problemInfo]);
 
   const handleHistoryBarItemClick = () => {
-    setProblem(problemInfo);
-    setWebViewUrl(`https://${BOJ_DOMAIN}/problem/${problemInfo.number}`);
+    gotoProblem(problemInfo);
   };
 
   const handleHistoryBarItemCloseButtonClick: MouseEventHandler<HTMLButtonElement> = (e) => {
     const nextProblem = removeProblemHistory(index);
 
     if (!nextProblem) {
-      setProblem(null);
-      setWebViewUrl(`https://${BOJ_DOMAIN}/problemset`);
+      gotoUrl(`https://${BOJ_DOMAIN}/problemset`);
     } else if (nextProblem && problem?.number === problemInfo.number) {
-      setProblem(nextProblem);
-      setWebViewUrl(`https://${BOJ_DOMAIN}/problem/${nextProblem.number}`);
+      gotoProblem(nextProblem);
     }
 
     e.stopPropagation();

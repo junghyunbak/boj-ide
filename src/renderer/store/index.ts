@@ -34,9 +34,31 @@ export const useStore = create<StoreState>()(
     {
       name: 'zustandStore',
       partialize: (s) => {
-        const { lang, mode, leftRatio, topRatio, problemHistories, customTestCase, oldReleases, fontSize, url } = s;
+        const {
+          problem,
+          lang,
+          mode,
+          leftRatio,
+          topRatio,
+          problemHistories,
+          customTestCase,
+          oldReleases,
+          fontSize,
+          webviewUrl,
+        } = s;
 
-        return { lang, mode, leftRatio, topRatio, problemHistories, customTestCase, oldReleases, fontSize, url };
+        return {
+          problem,
+          lang,
+          mode,
+          leftRatio,
+          topRatio,
+          problemHistories,
+          customTestCase,
+          oldReleases,
+          fontSize,
+          webviewUrl,
+        };
       },
     },
   ),
