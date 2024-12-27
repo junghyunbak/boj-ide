@@ -1,5 +1,5 @@
 import { ipcMain, type WebContents } from 'electron';
-import { IpcError, sentryErrorHandler } from '@/error';
+import { IpcError, sentryErrorHandler, SubmitError } from '@/error';
 
 type ChannelToMessage = {
   /**
@@ -9,9 +9,10 @@ type ChannelToMessage = {
   'load-files': undefined;
   'save-code': MessageTemplate<CodeInfo & { silence?: boolean }>;
   'judge-start': MessageTemplate<CodeInfo & ProblemInfo>;
-  'submit-code': MessageTemplate<CodeInfo>;
+  'submit-code': MessageTemplate<CodeInfo & { id: string }>;
   'open-source-code-folder': undefined;
   'open-deep-link': undefined;
+  'pass-through-submit-result': MessageTemplate<{ id: string; resultText: string }>;
 
   /**
    * client
@@ -21,6 +22,7 @@ type ChannelToMessage = {
   'save-code-result': MessageTemplate<SaveResult>;
   'judge-result': MessageTemplate<JudgeResult>;
   'judge-reset': undefined;
+  'submit-code-result': MessageTemplate<{ id: string; gage: number; type: 'submit' | 'judge'; resultText?: string }>;
   'occur-error': MessageTemplate<{ message: string }>;
   'open-problem': MessageTemplate<{ problemNumber: number }>;
 };
@@ -34,6 +36,7 @@ type ElectronChannels = keyof Pick<
   | 'open-source-code-folder'
   | 'submit-code'
   | 'open-deep-link'
+  | 'pass-through-submit-result'
 >;
 
 type ClientChannels = keyof Pick<
@@ -45,6 +48,7 @@ type ClientChannels = keyof Pick<
   | 'judge-reset'
   | 'occur-error'
   | 'open-problem'
+  | 'submit-code-result'
 >;
 
 export const ElECTRON_CHANNELS: {
@@ -57,6 +61,7 @@ export const ElECTRON_CHANNELS: {
   'submit-code': 'submit-code',
   'open-source-code-folder': 'open-source-code-folder',
   'open-deep-link': 'open-deep-link',
+  'pass-through-submit-result': 'pass-through-submit-result',
 };
 
 export const CLIENT_CHANNELS: {
@@ -69,6 +74,7 @@ export const CLIENT_CHANNELS: {
   'judge-reset': 'judge-reset',
   'occur-error': 'occur-error',
   'open-problem': 'open-problem',
+  'submit-code-result': 'submit-code-result',
 };
 
 class Ipc {
@@ -101,6 +107,11 @@ class Ipc {
 
   on(channel: (typeof ElECTRON_CHANNELS)['open-deep-link'], listener: (e: Electron.IpcMainEvent) => void): void;
 
+  on(
+    channel: (typeof ElECTRON_CHANNELS)['pass-through-submit-result'],
+    listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['pass-through-submit-result']) => void,
+  ): void;
+
   on(channel: string, listener: (e: Electron.IpcMainEvent, ...args: any[]) => void | Promise<void>): void {
     const fn: typeof listener = async (e, ...args) => {
       try {
@@ -115,6 +126,11 @@ class Ipc {
           this.send(e.sender, 'occur-error', { data: { message: err.message } });
 
           if (err instanceof IpcError && err.errorType === 'personal') {
+            return;
+          }
+
+          if (err instanceof SubmitError) {
+            this.send(e.sender, 'submit-code-result', { data: { id: err.id, gage: -1, type: 'submit' } });
             return;
           }
 
@@ -166,6 +182,12 @@ class Ipc {
     message: ChannelToMessage['open-problem'],
   ): void;
 
+  send(
+    webContents: WebContents,
+    channel: (typeof CLIENT_CHANNELS)['submit-code-result'],
+    message: ChannelToMessage['submit-code-result'],
+  ): void;
+
   send(webContents: WebContents, channel: string, ...args: any[]): void {
     webContents.send(channel, ...args);
   }
@@ -202,11 +224,19 @@ declare global {
           channel: (typeof CLIENT_CHANNELS)['open-problem'],
           func: (message: ChannelToMessage['open-problem']) => void,
         ): () => void;
+        on(
+          channel: (typeof CLIENT_CHANNELS)['submit-code-result'],
+          func: (message: ChannelToMessage['submit-code-result']) => void,
+        ): () => void;
 
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['load-code'], message: ChannelToMessage['load-code']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['save-code'], message: ChannelToMessage['save-code']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['judge-start'], message: ChannelToMessage['judge-start']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['submit-code'], message: ChannelToMessage['submit-code']): void;
+        sendMessage(
+          channel: (typeof ElECTRON_CHANNELS)['pass-through-submit-result'],
+          message: ChannelToMessage['pass-through-submit-result'],
+        ): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['open-source-code-folder']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['load-files']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['open-deep-link']): void;

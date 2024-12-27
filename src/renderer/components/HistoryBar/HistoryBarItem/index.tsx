@@ -1,10 +1,10 @@
 import { css } from '@emotion/react';
-import { MouseEventHandler, useEffect, useState } from 'react';
+import { MouseEventHandler } from 'react';
 import { ReactComponent as X } from '@/renderer/assets/svgs/x.svg';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 import { BOJ_DOMAIN } from '@/constants';
-import { useWebviewRoute } from '@/renderer/hooks';
+import { useWebviewRoute, useFetchSolvedACProblemData } from '@/renderer/hooks';
 import {
   HistoryBarItemLayout,
   HistoryBarItemCloseButton,
@@ -23,21 +23,7 @@ export function HistoryBarItem({ problemInfo, index }: HistoryBarItemProps) {
   const [removeProblemHistory] = useStore(useShallow((s) => [s.removeProblemHistory]));
   const { gotoProblem, gotoUrl } = useWebviewRoute();
 
-  const [level, setLevel] = useState(-1);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const data = await fetch(`http://localhost:3000/api/solved?problemId=${problemInfo.number}`).then((res) =>
-          res.json(),
-        );
-
-        setLevel(data.level ?? -1);
-      } catch (e) {
-        console.log(e);
-      }
-    })();
-  }, [problemInfo]);
+  const { TierImg } = useFetchSolvedACProblemData(problemInfo.number);
 
   const handleHistoryBarItemClick = () => {
     gotoProblem(problemInfo);
@@ -69,16 +55,7 @@ export function HistoryBarItem({ problemInfo, index }: HistoryBarItemProps) {
             height: 14px;
           `}
         >
-          {level !== -1 && (
-            <img
-              src={`https://static.solved.ac/tier_small/${level}.svg`}
-              alt=""
-              css={css`
-                width: 100%;
-                height: 100%;
-              `}
-            />
-          )}
+          {TierImg}
         </div>
         <HistoryBarItemContentParagraph>
           {`${problemInfo.number}번: ${problemInfo.name}`}
