@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { memo, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useShallow } from 'zustand/shallow';
 import { useStore } from '@/renderer/store';
 import { color } from '@/styles';
@@ -7,8 +7,7 @@ import { TestCase } from './TestCase';
 import { TestCaseCreator } from './TestCaseCreater';
 import { ExecuteCodeButton } from '../Header/ExecuteCodeButton';
 
-// [ ]: 왜 memo?
-export const Output = memo(() => {
+export function Output() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
   const [isJudging, setIsJudging] = useStore(useShallow((s) => [s.isJudging, s.setIsJudging]));
   const [judgeResult, setJudgeResult] = useStore(useShallow((s) => [s.judgeResult, s.setJudgeResult]));
@@ -205,4 +204,4 @@ export const Output = memo(() => {
       </div>
     </div>
   );
-});
+}

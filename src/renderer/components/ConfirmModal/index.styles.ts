@@ -7,6 +7,7 @@ export const ConfirmModalLayout = styled.div`
   align-items: center;
 
   position: absolute;
+  z-index: 500;
   inset: 0;
 `;
 

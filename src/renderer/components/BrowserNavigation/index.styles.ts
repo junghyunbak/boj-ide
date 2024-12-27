@@ -1,11 +1,9 @@
 import styled from '@emotion/styled';
-import { size } from '@/styles';
 
 export const BrowserNavigationLayout = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  overflow: hidden;
 
   width: 100%;
 

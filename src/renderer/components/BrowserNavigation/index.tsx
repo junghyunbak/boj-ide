@@ -1,16 +1,21 @@
+import { useEffect, useState } from 'react';
 import { ReactComponent as LeftArrow } from '@/renderer/assets/svgs/left-arrow.svg';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
-import { useEffect, useState } from 'react';
+import { css } from '@emotion/react';
+import { useSubmitList } from '@/renderer/hooks';
 import { BrowserNavigationHistoryBox, BrowserNavigationHistoryButton, BrowserNavigationLayout } from './index.styles';
 import { SubmitCodeButton } from '../Header/SubmitCodeButton';
 
 // browser navigation -> nav
 export function BrowserNavigation() {
   const [webview] = useStore(useShallow((s) => [s.webview]));
+  const [submitListIsOpen] = useStore(useShallow((s) => [s.submitListIsOpen]));
 
   const [canGoBack, setCanGoBack] = useState(true);
   const [canGoForward, setCanGoForward] = useState(true);
+
+  const { closeSumbitList, openSubmitList } = useSubmitList();
 
   useEffect(() => {
     if (!webview) {
@@ -54,7 +59,27 @@ export function BrowserNavigation() {
         </BrowserNavigationHistoryButton>
       </BrowserNavigationHistoryBox>
 
-      <SubmitCodeButton />
+      <div
+        css={css`
+          display: flex;
+          gap: 0.5rem;
+        `}
+      >
+        <button
+          type="button"
+          onClick={() => (submitListIsOpen ? closeSumbitList() : openSubmitList())}
+          css={css`
+            border: 1px solid lightgray;
+            background: none;
+            padding: 0.4rem 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+          `}
+        >
+          제출 내역
+        </button>
+        <SubmitCodeButton />
+      </div>
     </BrowserNavigationLayout>
   );
 }

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useShallow } from 'zustand/shallow';
+import { css } from '@emotion/react';
 
 import { useStore } from '@/renderer/store';
 import { BOJ_DOMAIN } from '@/constants';
@@ -21,11 +22,13 @@ import { AppContentBox, EditorAndOutputBox, AppLayout } from './App.styles';
 
 import './App.css';
 import './assets/fonts/fonts.css';
+import { SubmitList } from './components/SubmitList';
 
 export default function App() {
   const [setJudgeResult] = useStore(useShallow((s) => [s.setJudgeResult]));
   const [setIsJudging] = useStore(useShallow((s) => [s.setIsJudging]));
   const [setMessage] = useStore(useShallow((s) => [s.setMessage]));
+  const [submitListIsOpen] = useStore(useShallow((s) => [s.submitListIsOpen]));
 
   const { gotoUrl } = useWebviewRoute();
 
@@ -62,7 +65,16 @@ export default function App() {
       <AppContentBox>
         <HorizontalLayout onLeftRatioChange={handleLeftRatioChange}>
           <HorizontalLayout.Left>
-            <BojView />
+            <div
+              css={css`
+                width: 100%;
+                height: 100%;
+                position: relative;
+              `}
+            >
+              <BojView />
+              {submitListIsOpen && <SubmitList />}
+            </div>
           </HorizontalLayout.Left>
 
           <HorizontalLayout.Right>

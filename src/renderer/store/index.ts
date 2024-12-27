@@ -9,6 +9,7 @@ import { createAlertSlice } from './slices/alert';
 import { createReleasesSlice } from './slices/releases';
 import { createConfirmSlice } from './slices/confirm';
 import { createBojViewSlice } from './slices/bojView';
+import { createSubmitSlice } from './slices/submit';
 
 export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createJudgeSlice> &
@@ -17,11 +18,13 @@ export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createAlertSlice> &
   ReturnType<typeof createReleasesSlice> &
   ReturnType<typeof createConfirmSlice> &
-  ReturnType<typeof createBojViewSlice>;
+  ReturnType<typeof createBojViewSlice> &
+  ReturnType<typeof createSubmitSlice>;
 
 export const useStore = create<StoreState>()(
   persist(
     (...a) => ({
+      ...createSubmitSlice(...a),
       ...createBojViewSlice(...a),
       ...createEditorSlice(...a),
       ...createJudgeSlice(...a),
@@ -45,6 +48,7 @@ export const useStore = create<StoreState>()(
           oldReleases,
           fontSize,
           webviewUrl,
+          submitState,
         } = s;
 
         return {
@@ -58,6 +62,7 @@ export const useStore = create<StoreState>()(
           oldReleases,
           fontSize,
           webviewUrl,
+          submitState,
         };
       },
     },
