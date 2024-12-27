@@ -1,43 +1,11 @@
-import { app, BrowserWindow, WebContentsView } from 'electron';
-import { type Browser } from 'puppeteer-core';
-import pie from 'puppeteer-in-electron';
-import fs from 'fs';
-import path from 'path';
-import * as cheerio from 'cheerio';
-import { Text } from 'domhandler';
+import { BrowserWindow } from 'electron';
 import { ipc } from '@/types/ipc';
-import { BOJ_DOMAIN, BOJ_HELP_DOMAIN, SOLVED_AC_DOMAIN } from '@/constants';
-
-const whiteListUrl = [`https://${BOJ_DOMAIN}`, `https://${BOJ_HELP_DOMAIN}`, `https://${SOLVED_AC_DOMAIN}`];
 
 export class BojView {
-  private view: WebContentsView;
-
   private mainWindow: BrowserWindow;
 
-  private puppeteerBroswer: Browser;
-
-  private hisotryUrlFilePath: string;
-
-  constructor(mainWindow: BrowserWindow, puppeteerBrowser: Browser) {
+  constructor(mainWindow: BrowserWindow) {
     this.mainWindow = mainWindow;
-
-    const basePath = app.getPath('userData');
-
-    this.hisotryUrlFilePath = path.join(basePath, 'last-url');
-
-    if (!fs.existsSync(this.hisotryUrlFilePath)) {
-      fs.writeFileSync(this.hisotryUrlFilePath, 'https://www.acmicpc.net/problem/1000', 'utf-8');
-    }
-
-    const url = fs.readFileSync(this.hisotryUrlFilePath, { encoding: 'utf-8' });
-
-    this.view = new WebContentsView();
-    this.view.webContents.loadURL(url);
-
-    this.mainWindow.contentView.addChildView(this.view);
-
-    this.puppeteerBroswer = puppeteerBrowser;
   }
 
   loadUrl(url: string) {
@@ -48,58 +16,11 @@ export class BojView {
 
       this.mainWindow.focus();
     }
-
-    this.view.webContents.loadURL(url);
   }
 
   build() {
-    ipc.on('go-back-boj-view', () => {
-      this.view.webContents.goBack();
-    });
-
-    ipc.on('go-front-boj-view', () => {
-      this.view.webContents.goForward();
-    });
-
-    ipc.on('change-boj-view-width', (e, { data: { x, y, width, height } }) => {
-      this.view.setBounds({
-        x,
-        y: y + 1,
-        width: width - 1,
-        height: height - 1,
-      });
-    });
-
-    ipc.on('go-problem', (e, { data }) => {
-      if (!data) {
-        this.view.webContents.loadURL('https://www.acmicpc.net/problemset');
-
-        return;
-      }
-
-      const { number } = data;
-
-      const distUrl = `https://${BOJ_DOMAIN}/problem/${number}`;
-
-      if (this.view.webContents.getURL() === distUrl) {
-        return;
-      }
-
-      this.view.webContents.loadURL(distUrl);
-    });
-
-    ipc.on('go-page', (e, { data }) => {
-      if (data === 'baekjoon') {
-        this.view.webContents.loadURL(`https://${BOJ_DOMAIN}/problemset`);
-      } else if (data === 'solved.ac') {
-        this.view.webContents.loadURL(`https://${SOLVED_AC_DOMAIN}`);
-      } else if (typeof data === 'number') {
-        this.view.webContents.loadURL(`https://${BOJ_DOMAIN}/problem/${data}`);
-      }
-    });
-
     ipc.on('submit-code', async (e, { data: { code, language, number } }) => {
-      // @ts-expect-error
+      /*
       const page = await pie.getPage(this.puppeteerBroswer, this.view);
 
       page.goto(`https://${BOJ_DOMAIN}/submit/${number}`);
@@ -209,8 +130,7 @@ export class BojView {
       }
 
       await $submitButton.click();
+    */
     });
-
-    ipc.send(this.mainWindow.webContents, 'call-boj-view-rect');
   }
 }

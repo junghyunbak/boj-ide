@@ -1,18 +1,7 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
-/**
- * This module executes inside of electron's main process. You can start
- * electron renderer process from here and communicate with the other processes
- * through IPC.
- *
- * When running `npm run build` or `npm run build:main`, this file is compiled to
- * `./src/main.js` using webpack. This gives us some performance wins.
- */
 import path from 'path';
-import fs from 'fs';
 import { app, BrowserWindow, shell, globalShortcut } from 'electron';
-import puppeteer from 'puppeteer-core';
-import pie from 'puppeteer-in-electron';
 import { spawnSync } from 'child_process';
 import { ipc } from '@/types/ipc';
 import { sentryErrorHandler } from '@/error';
@@ -25,7 +14,7 @@ import MenuBuilder from './menu';
 import '@/error/sentry';
 
 let mainWindow: BrowserWindow | null = null;
-let bojView: BojView | null = null;
+let problemNumber: number | null = null;
 
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
@@ -59,7 +48,7 @@ const installExtensions = async () => {
     .catch(console.log);
 };
 
-const createWindow = async (puppeteerBroswer: Awaited<ReturnType<typeof pie.connect>>) => {
+const createWindow = async () => {
   if (isDebug) {
     await installExtensions();
   }
@@ -84,9 +73,12 @@ const createWindow = async (puppeteerBroswer: Awaited<ReturnType<typeof pie.conn
     },
   });
 
-  mainWindow.loadURL(resolveHtmlPath('index.html'));
-
+  new Judge(mainWindow).build();
+  new Code(mainWindow).build();
+  new BojView(mainWindow).build();
   new MenuBuilder(mainWindow).buildMenu();
+
+  mainWindow.loadURL(resolveHtmlPath('index.html'));
 
   mainWindow.on('ready-to-show', () => {
     if (!mainWindow) {
@@ -100,20 +92,6 @@ const createWindow = async (puppeteerBroswer: Awaited<ReturnType<typeof pie.conn
     }
   });
 
-  ipc.on('ready-editor', async () => {
-    if (!mainWindow) {
-      throw new Error('"mainWindow" is not defined');
-    }
-
-    /**
-     * BojView가 제일 나중에 빌드되어야 함.
-     */
-    new Judge(mainWindow.webContents).build();
-    new Code(mainWindow, puppeteerBroswer).build();
-    bojView = new BojView(mainWindow, puppeteerBroswer);
-    //bojView.build();
-  });
-
   ipc.on('open-source-code-folder', () => {
     if (process.platform === 'darwin') {
       spawnSync('open', [path.resolve(app.getPath('userData'))]);
@@ -122,6 +100,16 @@ const createWindow = async (puppeteerBroswer: Awaited<ReturnType<typeof pie.conn
     }
 
     shell.openExternal(path.resolve(app.getPath('userData')));
+  });
+
+  ipc.on('open-deep-link', () => {
+    if (!mainWindow) {
+      return;
+    }
+
+    if (problemNumber) {
+      ipc.send(mainWindow.webContents, 'open-problem', { data: { problemNumber } });
+    }
   });
 
   mainWindow.on('closed', () => {
@@ -136,7 +124,7 @@ const createWindow = async (puppeteerBroswer: Awaited<ReturnType<typeof pie.conn
 };
 
 /**
- * Add event listeners...
+ * 앱 이벤트 리스너 할당
  */
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
@@ -158,90 +146,63 @@ app.on('browser-window-blur', () => {
   globalShortcut.unregister('CommandOrControl+Shift+R');
 });
 
+/**
+ * 진입점 & deep links 적용을 위한 코드
+ * https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app
+ */
 const gotTheLock = app.requestSingleInstanceLock();
 
 if (!gotTheLock) {
   app.quit();
 } else {
   /**
-   * for windows deep link
+   * 윈도우 환경 code start 일 경우 처리 위함
    */
   if (process.platform === 'win32') {
     (() => {
       const url = process.argv[1] || '';
 
-      const problemNumber = getBojProblemNumber(url);
-
-      if (!problemNumber) {
-        return;
-      }
-
-      const problemUrl = `https://www.acmicpc.net/problem/${problemNumber}`;
-
-      fs.writeFileSync(path.join(app.getPath('userData'), 'last-url'), problemUrl, 'utf-8');
+      problemNumber = getBojProblemNumber(url);
     })();
   }
 
+  /**
+   * 윈도우 환경 deep link
+   */
   app.on('second-instance', (e, commandLine) => {
     const url = commandLine.pop() || '';
 
-    const problemNumber = getBojProblemNumber(url);
+    problemNumber = getBojProblemNumber(url);
 
-    if (!problemNumber) {
-      return;
-    }
-
-    const problemUrl = `https://www.acmicpc.net/problem/${problemNumber}`;
-
-    if (bojView) {
-      bojView.loadUrl(problemUrl);
+    if (mainWindow && problemNumber) {
+      ipc.send(mainWindow.webContents, 'open-problem', { data: { problemNumber } });
     }
   });
 
   /**
-   * for mac os deep link
+   * 맥 환경 deep link
    */
   app.on('open-url', (e, url) => {
-    const problemNumber = getBojProblemNumber(url);
+    problemNumber = getBojProblemNumber(url);
 
-    if (!problemNumber) {
-      return;
-    }
-
-    const problemUrl = `https://www.acmicpc.net/problem/${problemNumber}`;
-
-    if (bojView) {
-      bojView.loadUrl(problemUrl);
-    } else {
-      fs.writeFileSync(path.join(app.getPath('userData'), 'last-url'), problemUrl, 'utf-8');
+    if (mainWindow && problemNumber) {
+      ipc.send(mainWindow.webContents, 'open-problem', { data: { problemNumber } });
     }
   });
 
   /**
-   * entry
+   * 진입점
    */
-  (async () => {
-    await pie.initialize(app);
+  app
+    .whenReady()
+    .then(async () => {
+      createWindow();
 
-    app
-      .whenReady()
-      .then(async () => {
-        /**
-         * [pie 라이브러리 유지보수 이슈]
-         *
-         * pie와 최신 puppeteer-core 타입과 일치하지 않음
-         */
-        // @ts-expect-error
-        const puppeteerBroswer = await pie.connect(app, puppeteer);
-
-        createWindow(puppeteerBroswer);
-
-        app.on('activate', () => {
-          // On macOS it's common to re-create a window in the app when the
-          // dock icon is clicked and there are no other windows open.
-          if (mainWindow === null) createWindow(puppeteerBroswer);
-        });
-      })
-      .catch(sentryErrorHandler);
-  })();
+      app.on('activate', () => {
+        // On macOS it's common to re-create a window in the app when the
+        // dock icon is clicked and there are no other windows open.
+        if (mainWindow === null) createWindow();
+      });
+    })
+    .catch(sentryErrorHandler);
 }

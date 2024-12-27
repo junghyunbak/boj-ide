@@ -9,7 +9,7 @@ export function useWebviewRoute() {
 
   const gotoProblem = (problemInfo: ProblemInfo) => {
     const url = `https://${BOJ_DOMAIN}/problem/${problemInfo.number}`;
-    webview?.loadURL(url);
+    webview?.loadURL(url).catch(console.log);
 
     /**
      * 낙관적 업데이트
@@ -19,7 +19,7 @@ export function useWebviewRoute() {
   };
 
   const gotoUrl = (url: string) => {
-    webview?.loadURL(url);
+    webview?.loadURL(url).catch(console.log);
 
     /**
      * 낙관적 업데이트

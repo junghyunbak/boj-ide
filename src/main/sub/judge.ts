@@ -1,4 +1,4 @@
-import { app, WebContents } from 'electron';
+import { app, BrowserWindow, WebContents } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import { Worker } from 'worker_threads';
@@ -68,10 +68,10 @@ export class Judge {
 
   private webContents: WebContents;
 
-  constructor(webContents: WebContents) {
+  constructor(mainWindow: BrowserWindow) {
     this.basePath = app.getPath('userData');
 
-    this.webContents = webContents;
+    this.webContents = mainWindow.webContents;
   }
 
   build() {

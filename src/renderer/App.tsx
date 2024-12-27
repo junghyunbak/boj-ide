@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useShallow } from 'zustand/shallow';
 
 import { useStore } from '@/renderer/store';
+import { BOJ_DOMAIN } from '@/constants';
 
 import { Output } from './components/Output';
 import { VerticalLayout } from './components/VerticalLayout';
@@ -14,6 +15,7 @@ import { HistoryBar } from './components/HistoryBar';
 import { Footer } from './components/Footer';
 import { ConfirmModal } from './components/ConfirmModal';
 import { BrowserNavigation } from './components/BrowserNavigation';
+import { useWebviewRoute } from './hooks';
 
 import { AppContentBox, EditorAndOutputBox, AppLayout } from './App.styles';
 
@@ -21,14 +23,14 @@ import './App.css';
 import './assets/fonts/fonts.css';
 
 export default function App() {
-  const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
-  const [addProblemHistory] = useStore(useShallow((s) => [s.addProblemHistory]));
   const [setJudgeResult] = useStore(useShallow((s) => [s.setJudgeResult]));
   const [setIsJudging] = useStore(useShallow((s) => [s.setIsJudging]));
   const [setMessage] = useStore(useShallow((s) => [s.setMessage]));
 
+  const { gotoUrl } = useWebviewRoute();
+
   useEffect(() => {
-    window.electron.ipcRenderer.on('reset-judge', () => {
+    window.electron.ipcRenderer.on('judge-reset', () => {
       setIsJudging(false);
       setJudgeResult(() => []);
     });
@@ -37,8 +39,12 @@ export default function App() {
       setMessage(message);
     });
 
-    window.electron.ipcRenderer.sendMessage('ready-editor');
-  }, [setProblem, setJudgeResult, setIsJudging, setMessage, addProblemHistory]);
+    window.electron.ipcRenderer.on('open-problem', ({ data: { problemNumber } }) => {
+      gotoUrl(`https://${BOJ_DOMAIN}/problem/${problemNumber}`);
+    });
+
+    window.electron.ipcRenderer.sendMessage('open-deep-link');
+  }, [setJudgeResult, setIsJudging, setMessage, gotoUrl]);
 
   const handleLeftRatioChange = (leftRatio: number) => {
     useStore.getState().setLeftRatio(leftRatio);

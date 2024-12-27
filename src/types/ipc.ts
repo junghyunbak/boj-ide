@@ -6,87 +6,69 @@ type ChannelToMessage = {
    * electron
    */
   'load-code': MessageTemplate<MyOmit<CodeInfo, 'code'>>;
-  'save-code': MessageTemplate<CodeInfo & { silence?: boolean }>;
-  'submit-code': MessageTemplate<CodeInfo>;
-  'change-boj-view-width': MessageTemplate<Rect>;
-  'judge-start': MessageTemplate<CodeInfo & ProblemInfo>;
-  'go-back-boj-view': undefined;
-  'go-front-boj-view': undefined;
-  'go-problem': MessageTemplate<ProblemInfo | null>;
-  'go-page': MessageTemplate<'solved.ac' | 'baekjoon' | number>;
-  'ready-editor': undefined;
-  'open-source-code-folder': undefined;
   'load-files': undefined;
+  'save-code': MessageTemplate<CodeInfo & { silence?: boolean }>;
+  'judge-start': MessageTemplate<CodeInfo & ProblemInfo>;
+  'submit-code': MessageTemplate<CodeInfo>;
+  'open-source-code-folder': undefined;
+  'open-deep-link': undefined;
 
   /**
    * client
    */
   'load-code-result': MessageTemplate<Pick<CodeInfo, 'code'>>;
-  'load-problem-data': MessageTemplate<ProblemInfo | null>;
+  'load-files-result': MessageTemplate<{ problemNumbers: number[] }>;
   'save-code-result': MessageTemplate<SaveResult>;
   'judge-result': MessageTemplate<JudgeResult>;
+  'judge-reset': undefined;
   'occur-error': MessageTemplate<{ message: string }>;
-  'reset-judge': undefined;
-  'call-boj-view-rect': undefined;
-  'load-files-result': MessageTemplate<{ problemNumbers: number[] }>;
+  'open-problem': MessageTemplate<{ problemNumber: number }>;
 };
 
 type ElectronChannels = keyof Pick<
   ChannelToMessage,
-  | 'change-boj-view-width'
   | 'judge-start'
   | 'save-code'
   | 'load-code'
-  | 'go-back-boj-view'
-  | 'go-front-boj-view'
-  | 'ready-editor'
-  | 'go-problem'
-  | 'open-source-code-folder'
-  | 'go-page'
-  | 'submit-code'
   | 'load-files'
+  | 'open-source-code-folder'
+  | 'submit-code'
+  | 'open-deep-link'
 >;
 
 type ClientChannels = keyof Pick<
   ChannelToMessage,
-  | 'load-problem-data'
-  | 'judge-result'
   | 'load-code-result'
-  | 'save-code-result'
-  | 'call-boj-view-rect'
-  | 'reset-judge'
-  | 'occur-error'
   | 'load-files-result'
+  | 'judge-result'
+  | 'save-code-result'
+  | 'judge-reset'
+  | 'occur-error'
+  | 'open-problem'
 >;
 
 export const ElECTRON_CHANNELS: {
   [P in ElectronChannels]: P;
 } = {
-  'change-boj-view-width': 'change-boj-view-width',
-  'judge-start': 'judge-start',
-  'save-code': 'save-code',
   'load-code': 'load-code',
-  'ready-editor': 'ready-editor',
-  'go-back-boj-view': 'go-back-boj-view',
-  'go-front-boj-view': 'go-front-boj-view',
-  'go-problem': 'go-problem',
-  'open-source-code-folder': 'open-source-code-folder',
-  'go-page': 'go-page',
-  'submit-code': 'submit-code',
   'load-files': 'load-files',
+  'save-code': 'save-code',
+  'judge-start': 'judge-start',
+  'submit-code': 'submit-code',
+  'open-source-code-folder': 'open-source-code-folder',
+  'open-deep-link': 'open-deep-link',
 };
 
 export const CLIENT_CHANNELS: {
   [P in ClientChannels]: P;
 } = {
   'load-code-result': 'load-code-result',
-  'judge-result': 'judge-result',
-  'load-problem-data': 'load-problem-data',
-  'save-code-result': 'save-code-result',
-  'call-boj-view-rect': 'call-boj-view-rect',
-  'reset-judge': 'reset-judge',
-  'occur-error': 'occur-error',
   'load-files-result': 'load-files-result',
+  'save-code-result': 'save-code-result',
+  'judge-result': 'judge-result',
+  'judge-reset': 'judge-reset',
+  'occur-error': 'occur-error',
+  'open-problem': 'open-problem',
 };
 
 class Ipc {
@@ -101,34 +83,13 @@ class Ipc {
   ): void;
 
   on(
-    channel: (typeof ElECTRON_CHANNELS)['change-boj-view-width'],
-    listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['change-boj-view-width']) => void,
-  ): void;
-
-  on(
     channel: (typeof ElECTRON_CHANNELS)['judge-start'],
     listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['judge-start']) => void,
   ): void;
 
-  on(channel: (typeof ElECTRON_CHANNELS)['go-back-boj-view'], listener: (e: Electron.IpcMainEvent) => void): void;
-
-  on(channel: (typeof ElECTRON_CHANNELS)['go-front-boj-view'], listener: (e: Electron.IpcMainEvent) => void): void;
-
   on(
     channel: (typeof ElECTRON_CHANNELS)['open-source-code-folder'],
     listener: (e: Electron.IpcMainEvent) => void,
-  ): void;
-
-  on(
-    channel: (typeof ElECTRON_CHANNELS)['go-problem'],
-    listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['go-problem']) => void,
-  ): void;
-
-  on(channel: (typeof ElECTRON_CHANNELS)['ready-editor'], listener: (e: Electron.IpcMainEvent) => void): void;
-
-  on(
-    channel: (typeof ElECTRON_CHANNELS)['go-page'],
-    listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['go-page']) => void,
   ): void;
 
   on(
@@ -137,6 +98,8 @@ class Ipc {
   ): void;
 
   on(channel: (typeof ElECTRON_CHANNELS)['load-files'], listener: (e: Electron.IpcMainEvent) => void): void;
+
+  on(channel: (typeof ElECTRON_CHANNELS)['open-deep-link'], listener: (e: Electron.IpcMainEvent) => void): void;
 
   on(channel: string, listener: (e: Electron.IpcMainEvent, ...args: any[]) => void | Promise<void>): void {
     const fn: typeof listener = async (e, ...args) => {
@@ -148,7 +111,7 @@ class Ipc {
         }
       } catch (err) {
         if (err instanceof Error) {
-          this.send(e.sender, 'reset-judge');
+          this.send(e.sender, 'judge-reset');
           this.send(e.sender, 'occur-error', { data: { message: err.message } });
 
           if (err instanceof IpcError && err.errorType === 'personal') {
@@ -173,12 +136,6 @@ class Ipc {
 
   send(
     webContents: WebContents,
-    channel: (typeof CLIENT_CHANNELS)['load-problem-data'],
-    message: ChannelToMessage['load-problem-data'],
-  ): void;
-
-  send(
-    webContents: WebContents,
     channel: (typeof CLIENT_CHANNELS)['save-code-result'],
     message: ChannelToMessage['save-code-result'],
   ): void;
@@ -189,9 +146,7 @@ class Ipc {
     message: ChannelToMessage['judge-result'],
   ): void;
 
-  send(webContents: WebContents, channel: (typeof CLIENT_CHANNELS)['call-boj-view-rect']): void;
-
-  send(webContents: WebContents, channel: (typeof CLIENT_CHANNELS)['reset-judge']): void;
+  send(webContents: WebContents, channel: (typeof CLIENT_CHANNELS)['judge-reset']): void;
 
   send(
     webContents: WebContents,
@@ -203,6 +158,12 @@ class Ipc {
     webContents: WebContents,
     channel: (typeof CLIENT_CHANNELS)['load-files-result'],
     message: ChannelToMessage['load-files-result'],
+  ): void;
+
+  send(
+    webContents: WebContents,
+    channel: (typeof CLIENT_CHANNELS)['open-problem'],
+    message: ChannelToMessage['open-problem'],
   ): void;
 
   send(webContents: WebContents, channel: string, ...args: any[]): void {
@@ -221,10 +182,6 @@ declare global {
           func: (message: ChannelToMessage['load-code-result']) => void,
         ): () => void;
         on(
-          channel: (typeof CLIENT_CHANNELS)['load-problem-data'],
-          func: (message: ChannelToMessage['load-problem-data']) => void,
-        ): () => void;
-        on(
           channel: (typeof CLIENT_CHANNELS)['save-code-result'],
           func: (message: ChannelToMessage['save-code-result']) => void,
         ): () => void;
@@ -232,8 +189,7 @@ declare global {
           channel: (typeof CLIENT_CHANNELS)['judge-result'],
           func: (message: ChannelToMessage['judge-result']) => void,
         ): () => void;
-        on(channel: (typeof CLIENT_CHANNELS)['call-boj-view-rect'], func: () => void): () => void;
-        on(channel: (typeof CLIENT_CHANNELS)['reset-judge'], func: () => void): () => void;
+        on(channel: (typeof CLIENT_CHANNELS)['judge-reset'], func: () => void): () => void;
         on(
           channel: (typeof CLIENT_CHANNELS)['occur-error'],
           func: (message: ChannelToMessage['occur-error']) => void,
@@ -242,25 +198,18 @@ declare global {
           channel: (typeof CLIENT_CHANNELS)['load-files-result'],
           func: (message: ChannelToMessage['load-files-result']) => void,
         ): () => void;
+        on(
+          channel: (typeof CLIENT_CHANNELS)['open-problem'],
+          func: (message: ChannelToMessage['open-problem']) => void,
+        ): () => void;
 
-        /**
-         * [ ]: 제네릭 사용해서 두번씩 채널 이름 적는 부분 최적화
-         */
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['load-code'], message: ChannelToMessage['load-code']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['save-code'], message: ChannelToMessage['save-code']): void;
-        sendMessage(
-          channel: (typeof ElECTRON_CHANNELS)['change-boj-view-width'],
-          message: ChannelToMessage['change-boj-view-width'],
-        ): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['judge-start'], message: ChannelToMessage['judge-start']): void;
-        sendMessage(channel: (typeof ElECTRON_CHANNELS)['go-back-boj-view']): void;
-        sendMessage(channel: (typeof ElECTRON_CHANNELS)['go-front-boj-view']): void;
-        sendMessage(channel: (typeof ElECTRON_CHANNELS)['go-problem'], message: ChannelToMessage['go-problem']): void;
-        sendMessage(channel: (typeof ElECTRON_CHANNELS)['ready-editor']): void;
-        sendMessage(channel: (typeof ElECTRON_CHANNELS)['go-page'], message: ChannelToMessage['go-page']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['submit-code'], message: ChannelToMessage['submit-code']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['open-source-code-folder']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['load-files']): void;
+        sendMessage(channel: (typeof ElECTRON_CHANNELS)['open-deep-link']): void;
       };
     };
   }

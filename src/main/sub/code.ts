@@ -4,7 +4,6 @@ import path from 'path';
 import { JS_INPUT_TEMPLATE, CPP_INPUT_TEMPLATE, PY_INPUT_TEMPLATE, JAVA_CODE_TEMPLATE } from '@/constants';
 import { ipc } from '@/types/ipc';
 import { langToJudgeInfo } from '@/constants/judge';
-import { type Browser } from 'puppeteer-core';
 
 const createDefaultCode = (language: Language) => {
   switch (language) {
@@ -27,15 +26,9 @@ export class Code {
 
   private webContents: WebContents;
 
-  private puppeteerBrowser: Browser;
-
-  private mainWindow: BrowserWindow;
-
-  constructor(mainWindow: BrowserWindow, puppeteerBrowser: Browser) {
+  constructor(mainWindow: BrowserWindow) {
     this.basePath = app.getPath('userData');
-    this.mainWindow = mainWindow;
     this.webContents = mainWindow.webContents;
-    this.puppeteerBrowser = puppeteerBrowser;
   }
 
   static saveFile(basePath: string, fileName: string, ext: string, code: string) {
@@ -90,7 +83,6 @@ export class Code {
         throw new Error('지원하지 않는 플랫폼입니다.');
       }
 
-      // [ ]: c++14, c++17 이 각각의 파일을 가지도록 구현
       const filePath = path.join(this.basePath, `${number}.${ext}`);
 
       if (!fs.existsSync(filePath)) {
