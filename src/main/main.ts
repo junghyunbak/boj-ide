@@ -3,10 +3,11 @@
 import path from 'path';
 import { app, BrowserWindow, shell, globalShortcut } from 'electron';
 import { spawnSync } from 'child_process';
+import pie from 'puppeteer-in-electron';
 import { ipc } from '@/types/ipc';
 import { sentryErrorHandler } from '@/error';
 import { getBojProblemNumber, resolveHtmlPath } from './util';
-import { BojView } from './sub/bojView';
+import { Boj } from './sub/boj';
 import { Code } from './sub/code';
 import { Judge } from './sub/judge';
 import MenuBuilder from './menu';
@@ -75,7 +76,7 @@ const createWindow = async () => {
 
   new Judge(mainWindow).build();
   new Code(mainWindow).build();
-  new BojView(mainWindow).build();
+  new Boj(mainWindow).build();
   new MenuBuilder(mainWindow).buildMenu();
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
@@ -193,16 +194,20 @@ if (!gotTheLock) {
   /**
    * 진입점
    */
-  app
-    .whenReady()
-    .then(async () => {
-      createWindow();
+  (async () => {
+    await pie.initialize(app);
 
-      app.on('activate', () => {
-        // On macOS it's common to re-create a window in the app when the
-        // dock icon is clicked and there are no other windows open.
-        if (mainWindow === null) createWindow();
-      });
-    })
-    .catch(sentryErrorHandler);
+    app
+      .whenReady()
+      .then(async () => {
+        createWindow();
+
+        app.on('activate', () => {
+          // On macOS it's common to re-create a window in the app when the
+          // dock icon is clicked and there are no other windows open.
+          if (mainWindow === null) createWindow();
+        });
+      })
+      .catch(sentryErrorHandler);
+  })();
 }

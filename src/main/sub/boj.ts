@@ -1,27 +1,24 @@
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, app } from 'electron';
 import { ipc } from '@/types/ipc';
+import { BOJ_DOMAIN } from '@/constants';
+import pie from 'puppeteer-in-electron';
+import puppeteer from 'puppeteer-core';
 
-export class BojView {
+export class Boj {
   private mainWindow: BrowserWindow;
 
   constructor(mainWindow: BrowserWindow) {
     this.mainWindow = mainWindow;
   }
 
-  loadUrl(url: string) {
-    if (this.mainWindow) {
-      if (this.mainWindow.isMinimized()) {
-        this.mainWindow.restore();
-      }
-
-      this.mainWindow.focus();
-    }
-  }
-
   build() {
     ipc.on('submit-code', async (e, { data: { code, language, number } }) => {
-      /*
-      const page = await pie.getPage(this.puppeteerBroswer, this.view);
+      // @ts-ignore
+      const browser = await pie.connect(app, puppeteer);
+
+      const window = new BrowserWindow();
+
+      const page = await pie.getPage(browser, window);
 
       page.goto(`https://${BOJ_DOMAIN}/submit/${number}`);
 
@@ -130,7 +127,6 @@ export class BojView {
       }
 
       await $submitButton.click();
-    */
     });
   }
 }
