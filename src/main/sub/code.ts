@@ -45,6 +45,26 @@ export class Code {
   }
 
   build() {
+    ipc.on('load-files', () => {
+      fs.readdir(this.basePath, (err, files) => {
+        const problemNumbers = new Set<number>();
+
+        files.forEach((file) => {
+          const [_, problemNumber] = /([0-9]+)\.(js|cc|cpp|py|java)/.exec(file) || [];
+
+          if (problemNumber) {
+            problemNumbers.add(+problemNumber);
+          }
+        });
+
+        ipc.send(this.webContents, 'load-files-result', {
+          data: {
+            problemNumbers: Array.from(problemNumbers),
+          },
+        });
+      });
+    });
+
     ipc.on('save-code', (e, { data: { number, language, code, silence } }) => {
       const ext = langToJudgeInfo[language].ext[process.platform];
 

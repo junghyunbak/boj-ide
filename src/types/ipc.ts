@@ -16,6 +16,7 @@ type ChannelToMessage = {
   'go-page': MessageTemplate<'solved.ac' | 'baekjoon' | number>;
   'ready-editor': undefined;
   'open-source-code-folder': undefined;
+  'load-files': undefined;
 
   /**
    * client
@@ -27,6 +28,7 @@ type ChannelToMessage = {
   'occur-error': MessageTemplate<{ message: string }>;
   'reset-judge': undefined;
   'call-boj-view-rect': undefined;
+  'load-files-result': MessageTemplate<{ problemNumbers: number[] }>;
 };
 
 type ElectronChannels = keyof Pick<
@@ -42,6 +44,7 @@ type ElectronChannels = keyof Pick<
   | 'open-source-code-folder'
   | 'go-page'
   | 'submit-code'
+  | 'load-files'
 >;
 
 type ClientChannels = keyof Pick<
@@ -53,6 +56,7 @@ type ClientChannels = keyof Pick<
   | 'call-boj-view-rect'
   | 'reset-judge'
   | 'occur-error'
+  | 'load-files-result'
 >;
 
 export const ElECTRON_CHANNELS: {
@@ -69,6 +73,7 @@ export const ElECTRON_CHANNELS: {
   'open-source-code-folder': 'open-source-code-folder',
   'go-page': 'go-page',
   'submit-code': 'submit-code',
+  'load-files': 'load-files',
 };
 
 export const CLIENT_CHANNELS: {
@@ -81,6 +86,7 @@ export const CLIENT_CHANNELS: {
   'call-boj-view-rect': 'call-boj-view-rect',
   'reset-judge': 'reset-judge',
   'occur-error': 'occur-error',
+  'load-files-result': 'load-files-result',
 };
 
 class Ipc {
@@ -129,6 +135,8 @@ class Ipc {
     channel: (typeof ElECTRON_CHANNELS)['submit-code'],
     listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['submit-code']) => void,
   ): void;
+
+  on(channel: (typeof ElECTRON_CHANNELS)['load-files'], listener: (e: Electron.IpcMainEvent) => void): void;
 
   on(channel: string, listener: (e: Electron.IpcMainEvent, ...args: any[]) => void | Promise<void>): void {
     const fn: typeof listener = async (e, ...args) => {
@@ -191,6 +199,12 @@ class Ipc {
     message: ChannelToMessage['occur-error'],
   ): void;
 
+  send(
+    webContents: WebContents,
+    channel: (typeof CLIENT_CHANNELS)['load-files-result'],
+    message: ChannelToMessage['load-files-result'],
+  ): void;
+
   send(webContents: WebContents, channel: string, ...args: any[]): void {
     webContents.send(channel, ...args);
   }
@@ -224,6 +238,10 @@ declare global {
           channel: (typeof CLIENT_CHANNELS)['occur-error'],
           func: (message: ChannelToMessage['occur-error']) => void,
         ): () => void;
+        on(
+          channel: (typeof CLIENT_CHANNELS)['load-files-result'],
+          func: (message: ChannelToMessage['load-files-result']) => void,
+        ): () => void;
 
         /**
          * [ ]: 제네릭 사용해서 두번씩 채널 이름 적는 부분 최적화
@@ -239,9 +257,10 @@ declare global {
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['go-front-boj-view']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['go-problem'], message: ChannelToMessage['go-problem']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['ready-editor']): void;
-        sendMessage(channel: (typeof ElECTRON_CHANNELS)['open-source-code-folder']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['go-page'], message: ChannelToMessage['go-page']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['submit-code'], message: ChannelToMessage['submit-code']): void;
+        sendMessage(channel: (typeof ElECTRON_CHANNELS)['open-source-code-folder']): void;
+        sendMessage(channel: (typeof ElECTRON_CHANNELS)['load-files']): void;
       };
     };
   }
