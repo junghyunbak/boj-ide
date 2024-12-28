@@ -1,23 +1,4 @@
-import { useStore } from '@/renderer/store';
 import { useRef, useEffect } from 'react';
-import { useShallow } from 'zustand/shallow';
-
-export function useSubmitList() {
-  const [setSubmitListIsOpen] = useStore(useShallow((s) => [s.setSubmitListIsOpen]));
-
-  const openSubmitList = () => {
-    setSubmitListIsOpen(true);
-  };
-
-  const closeSumbitList = () => {
-    setSubmitListIsOpen(false);
-  };
-
-  return {
-    openSubmitList,
-    closeSumbitList,
-  };
-}
 
 export function useClickOutOfModal(callback: () => void) {
   const buttonRef = useRef<HTMLButtonElement | null>(null);
