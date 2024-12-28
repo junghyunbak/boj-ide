@@ -18,11 +18,10 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
   const [code, setCode] = useStore(useShallow((s) => [s.code, s.setCode]));
   const [mode] = useStore(useShallow((s) => [s.mode]));
   const [fontSize] = useStore(useShallow((s) => [s.fontSize]));
+  const [isCodeStale, setIsCodeStale] = useStore(useShallow((s) => [s.isCodeStale, s.setIsCodeStale]));
 
   const [editorHeight, setEditorHeight] = useState(0);
   const [editorWidth, setEditorWidth] = useState(0);
-
-  const [isCodeStale, setIsCodeStale] = useState(false);
 
   const editorRef = useRef<HTMLDivElement | null>(null);
 
@@ -149,7 +148,7 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
    */
   useEffect(() => {
     setIsCodeStale(true);
-  }, [code]);
+  }, [code, setIsCodeStale]);
 
   /**
    * 저장 이벤트 등록
@@ -180,7 +179,7 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
     return () => {
       window.removeEventListener('keydown', handleSaveCode);
     };
-  }, [code, lang, problem, isCodeStale]);
+  }, [code, lang, problem, isCodeStale, setIsCodeStale]);
 
   return <div ref={editorRef} />;
 }
