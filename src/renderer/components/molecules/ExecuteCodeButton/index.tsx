@@ -5,15 +5,17 @@ import { useShallow } from 'zustand/shallow';
 export function ExecuteCodeButton() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
   const [isJudging, setIsJudging] = useStore(useShallow((s) => [s.isJudging, s.setIsJudging]));
+  const [setIsCodeStale] = useStore(useShallow((s) => [s.setIsCodeStale]));
   const [setJudgeResult] = useStore(useShallow((s) => [s.setJudgeResult]));
   const [customTestCase] = useStore(useShallow((s) => [s.customTestCase]));
 
-  const handleSubmitButtonClick = () => {
+  const handleExecuteButtonClick = () => {
     if (!problem) {
       return;
     }
 
     setIsJudging(true);
+    setIsCodeStale(false); // [ ]: 코드를 저장하는 로직은 없지만 백엔드에서 처리되고 있으므로 일단 stale 처리함.
     setJudgeResult(() => []);
 
     const inputs: string[] = [];
@@ -46,7 +48,7 @@ export function ExecuteCodeButton() {
   };
 
   return (
-    <ActionButton onClick={handleSubmitButtonClick} disabled={!problem || isJudging}>
+    <ActionButton onClick={handleExecuteButtonClick} disabled={!problem || isJudging}>
       코드 실행
     </ActionButton>
   );

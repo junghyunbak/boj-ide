@@ -12,13 +12,6 @@ export function SaveCodeButton() {
   const [isCodeStale, setIsCodeStale] = useStore(useShallow((s) => [s.isCodeStale, s.setIsCodeStale]));
   const [setMessage] = useStore(useShallow((s) => [s.setMessage]));
 
-  // 에디터로 동작 이동
-  /*
-  useEffect(() => {
-    setIsStale(true);
-  }, [code]);
-  */
-
   useEffect(() => {
     window.electron.ipcRenderer.on('save-code-result', ({ data: { isSaved } }) => {
       setMessage(isSaved ? '저장이 완료되었습니다.' : '저장에 실패하였습니다.');
