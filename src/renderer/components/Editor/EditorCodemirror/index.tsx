@@ -89,41 +89,16 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
    * 레이아웃이 달라졌을경우, 에디터의 크기 갱신을 위한 이벤트 등록
    */
   useEffect(() => {
-    const resizeEditorHeight = () => {
-      if (!containerRef.current) {
-        return;
-      }
+    const observer = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect;
 
-      setEditorHeight(containerRef.current.getBoundingClientRect().height);
-    };
-
-    const resizeEditorWidth = () => {
-      if (!containerRef.current) {
-        return;
-      }
-
-      setEditorWidth(containerRef.current.getBoundingClientRect().width);
-    };
-
-    useStore.subscribe((s, prev) => {
-      if (s.topRatio !== prev.topRatio || s.leftRatio !== prev.leftRatio) {
-        resizeEditorHeight();
-        resizeEditorWidth();
-      }
+      setEditorWidth(width);
+      setEditorHeight(height);
     });
 
-    const handleResizeEditor = () => {
-      resizeEditorHeight();
-      resizeEditorWidth();
-    };
-
-    handleResizeEditor();
-
-    window.addEventListener('resize', handleResizeEditor);
-
-    return () => {
-      window.removeEventListener('resize', handleResizeEditor);
-    };
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
   }, [containerRef]);
 
   /**
