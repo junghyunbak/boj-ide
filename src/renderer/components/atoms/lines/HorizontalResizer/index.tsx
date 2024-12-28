@@ -15,7 +15,7 @@ export const HorizontalResizer = forwardRef<HTMLDivElement>((_, ref) => {
         flex-direction: column;
         align-items: center;
         justify-content: space-evenly;
-        cursor: col-resize;
+        cursor: row-resize;
       `}
     >
       <div

@@ -14,7 +14,7 @@ export function CodeBlock({ children }: CodeBlockProps) {
         background-color: #f7f7f9;
         border: 1px solid lightgray;
         overflow-x: scroll;
-        font-size: 18px;
+        font-size: 1.125rem;
         font-family: 'menlo';
         line-height: 1.4;
       `}
