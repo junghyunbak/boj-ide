@@ -11,10 +11,10 @@ import { VerticalResizer } from '@/renderer/components/atoms/lines/VerticalResiz
 import { HorizontalResizer } from '@/renderer/components/atoms/lines/HorizontalResizer';
 import { AlertModal } from '@/renderer/components/molecules/AlertModal';
 import { ConfirmModal } from '@/renderer/components/molecules/ConfirmModal';
+import { BojView } from '@/renderer/components/molecules/BojView';
+import { Footer } from '@/renderer/components/organisms/Footer';
 
-import { BojView } from './components/BojView';
 import { HistoryBar } from './components/HistoryBar';
-import { Footer } from './components/Footer';
 import { useHorizontalLayout, useWebviewRoute } from './hooks';
 
 import { AppContentBox, AppLayout } from './App.styles';
