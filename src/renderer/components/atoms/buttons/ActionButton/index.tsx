@@ -43,6 +43,7 @@ export function ActionButton({ variant = 'primary', children, onClick, disabled 
           background-color: ${Color(bgColor).lighten(0.05).toString()};
         }
         &:disabled {
+          cursor: auto;
           background-color: ${Color(bgColor).darken(0.2).toString()};
           color: lightgray;
           &:hover {

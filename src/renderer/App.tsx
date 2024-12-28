@@ -9,12 +9,12 @@ import { Output } from '@/renderer/components/templates/Output';
 import { Nav } from '@/renderer/components/organisms/Nav';
 import { VerticalResizer } from '@/renderer/components/atoms/lines/VerticalResizer';
 import { HorizontalResizer } from '@/renderer/components/atoms/lines/HorizontalResizer';
+import { AlertModal } from '@/renderer/components/molecules/AlertModal';
+import { ConfirmModal } from '@/renderer/components/molecules/ConfirmModal';
 
-import { AlertModal } from './components/AlertModal';
 import { BojView } from './components/BojView';
 import { HistoryBar } from './components/HistoryBar';
 import { Footer } from './components/Footer';
-import { ConfirmModal } from './components/ConfirmModal';
 import { useHorizontalLayout, useWebviewRoute } from './hooks';
 
 import { AppContentBox, AppLayout } from './App.styles';
