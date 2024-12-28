@@ -1,34 +1,32 @@
 import { useEffect } from 'react';
 import { useShallow } from 'zustand/shallow';
-import { css } from '@emotion/react';
 
 import { useStore } from '@/renderer/store';
 import { BOJ_DOMAIN } from '@/constants';
 
-import { Output } from './components/Output';
+import { Output } from '@/renderer/components/templates/Output';
+
 import { VerticalLayout } from './components/VerticalLayout';
 import { Editor } from './components/Editor';
-import { Header } from './components/Header';
 import { AlertModal } from './components/AlertModal';
 import { HorizontalLayout } from './components/HorizontalLayout';
 import { BojView } from './components/BojView';
 import { HistoryBar } from './components/HistoryBar';
 import { Footer } from './components/Footer';
 import { ConfirmModal } from './components/ConfirmModal';
-import { BrowserNavigation } from './components/BrowserNavigation';
 import { useWebviewRoute } from './hooks';
 
 import { AppContentBox, EditorAndOutputBox, AppLayout } from './App.styles';
 
 import './App.css';
 import './assets/fonts/fonts.css';
-import { SubmitList } from './components/SubmitList';
+import { Nav } from './components/organisms/Nav';
+import { EditorHeader } from './components/organisms/EditorHeader';
 
 export default function App() {
   const [setJudgeResult] = useStore(useShallow((s) => [s.setJudgeResult]));
   const [setIsJudging] = useStore(useShallow((s) => [s.setIsJudging]));
   const [setMessage] = useStore(useShallow((s) => [s.setMessage]));
-  const [submitListIsOpen] = useStore(useShallow((s) => [s.submitListIsOpen]));
 
   const { gotoUrl } = useWebviewRoute();
 
@@ -60,27 +58,18 @@ export default function App() {
   return (
     <AppLayout>
       <HistoryBar />
-      <BrowserNavigation />
+
+      <Nav />
 
       <AppContentBox>
         <HorizontalLayout onLeftRatioChange={handleLeftRatioChange}>
           <HorizontalLayout.Left>
-            <div
-              css={css`
-                width: 100%;
-                height: 100%;
-                position: relative;
-              `}
-            >
-              <BojView />
-              {submitListIsOpen && <SubmitList />}
-            </div>
+            <BojView />
           </HorizontalLayout.Left>
 
           <HorizontalLayout.Right>
             <EditorAndOutputBox>
-              <Header />
-
+              <EditorHeader />
               <VerticalLayout onTopRatioChange={handleTopRatioChange}>
                 <VerticalLayout.Top>
                   <Editor />

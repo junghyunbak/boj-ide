@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
+import { useCompletion } from 'ai/react';
 
 export function useFetchSolvedACProblemData(problemNumber: string) {
   const [title, setTitle] = useState('');
@@ -35,4 +36,16 @@ export function useFetchSolvedACProblemData(problemNumber: string) {
       ) : null,
     title,
   };
+}
+
+export function useStreamingAICode() {
+  const { complete, completion, isLoading, error } = useCompletion({
+    api:
+      process.env.NODE_ENV === 'production'
+        ? 'https://boj-ide.junghyunbak.site/api/ai/template'
+        : 'http://localhost:3000/api/ai/template',
+    experimental_throttle: 50,
+  });
+
+  return { complete, completion, isLoading, error };
 }

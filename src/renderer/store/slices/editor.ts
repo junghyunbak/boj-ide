@@ -15,9 +15,17 @@ type EditorSlice = {
 
   isSetting: boolean;
   setIsSetting: (isSetting: boolean) => void;
+
+  isCodeStale: boolean;
+  setIsCodeStale: (isCodeStale: boolean) => void;
 };
 
 export const createEditorSlice: StateCreator<EditorSlice> = (set): EditorSlice => ({
+  isCodeStale: false,
+  setIsCodeStale(isCodeStale) {
+    set(() => ({ isCodeStale }));
+  },
+
   fontSize: 14,
   setFontSize(fontSize) {
     set(() => ({ fontSize }));
