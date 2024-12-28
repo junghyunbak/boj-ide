@@ -7,11 +7,9 @@ import { BOJ_DOMAIN } from '@/constants';
 
 import { Output } from '@/renderer/components/templates/Output';
 import { Nav } from '@/renderer/components/organisms/Nav';
-import { EditorHeader } from '@/renderer/components/organisms/EditorHeader';
 import { VerticalResizer } from '@/renderer/components/atoms/lines/VerticalResizer';
 import { HorizontalResizer } from '@/renderer/components/atoms/lines/HorizontalResizer';
 
-import { Editor } from './components/Editor';
 import { AlertModal } from './components/AlertModal';
 import { BojView } from './components/BojView';
 import { HistoryBar } from './components/HistoryBar';
@@ -23,6 +21,8 @@ import { AppContentBox, AppLayout } from './App.styles';
 
 import './App.css';
 import './assets/fonts/fonts.css';
+import { Editor } from './components/templates/Editor';
+import { RowLine } from './components/atoms/lines/RowLIne';
 
 export default function App() {
   const [setJudgeResult] = useStore(useShallow((s) => [s.setJudgeResult]));
@@ -68,9 +68,8 @@ export default function App() {
   return (
     <AppLayout>
       <HistoryBar />
-
       <Nav />
-
+      <RowLine />
       <AppContentBox>
         <div
           ref={containerRef}
@@ -114,24 +113,7 @@ export default function App() {
                   width: 100%;
                 `}
               >
-                <div
-                  css={css`
-                    display: flex;
-                    flex-direction: column;
-                    width: 100%;
-                    height: 100%;
-                  `}
-                >
-                  <EditorHeader />
-                  <div
-                    css={css`
-                      flex: 1;
-                      overflow: hidden;
-                    `}
-                  >
-                    <Editor />
-                  </div>
-                </div>
+                <Editor />
               </div>
 
               <HorizontalResizer ref={resizerRef2} />
