@@ -1,3 +1,4 @@
+import { color } from '@/styles';
 import { css } from '@emotion/react';
 
 export function EditorPlaceholder() {
@@ -14,7 +15,7 @@ export function EditorPlaceholder() {
     >
       <h1
         css={css`
-          color: #428bca;
+          color: ${color.primaryBg};
         `}
       >
         {'/<>'}

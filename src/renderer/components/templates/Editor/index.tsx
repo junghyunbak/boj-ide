@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import { EditorHeader } from '@/renderer/components/organisms/EditorHeader';
-import { Editor as EEditor } from '@/renderer/components/Editor';
-import { RowLine } from '../../atoms/lines/RowLIne';
+import { RowLine } from '@/renderer/components/atoms/lines/RowLIne';
+import { EditorContent } from '@/renderer/components/organisms/EditorContent';
 
 export function Editor() {
   return (
@@ -21,7 +21,7 @@ export function Editor() {
           overflow: hidden;
         `}
       >
-        <EEditor />
+        <EditorContent />
       </div>
     </div>
   );

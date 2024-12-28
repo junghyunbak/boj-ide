@@ -1,8 +1,8 @@
 import { css } from '@emotion/react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import { AngleButton } from '@/renderer/components/atoms/buttons/AngleButton';
+import { Text } from '@/renderer/components/atoms/paragraphs/Text';
 
 const EditorMode: EditorMode[] = ['normal', 'vim'];
 
@@ -10,6 +10,22 @@ export function EditorSettings() {
   const [editorMode, setEditorMode] = useStore(useShallow((s) => [s.mode, s.setMode]));
   const [editorfontSize, setEditorFontSize] = useStore(useShallow((s) => [s.fontSize, s.setFontSize]));
   const [setIsSetting] = useStore(useShallow((s) => [s.setIsSetting]));
+
+  const handleBackButtonClick = () => {
+    setIsSetting(false);
+  };
+
+  const handleEditorModeRatioButtonClick = (mode: EditorMode) => () => {
+    setEditorMode(mode);
+  };
+
+  const handleSelectOptionChange: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
+    const fontSize = +e.target.value;
+
+    if (!Number.isNaN(fontSize)) {
+      setEditorFontSize(fontSize);
+    }
+  };
 
   return (
     <div
@@ -22,13 +38,6 @@ export function EditorSettings() {
         gap: 1rem;
         color: #333;
         position: relative;
-
-        fieldset {
-          border: 0;
-          display: flex;
-          flex-direction: column;
-          padding: 0;
-        }
 
         > div {
           display: flex;
@@ -49,32 +58,28 @@ export function EditorSettings() {
           position: absolute;
         `}
       >
-        <button
-          type="button"
-          css={css`
-            border: 0;
-            background: none;
-            cursor: pointer;
-            color: #333;
-          `}
-          onClick={() => {
-            setIsSetting(false);
-          }}
-        >
-          <FontAwesomeIcon icon={faAngleRight} />
-        </button>
+        <AngleButton onClick={handleBackButtonClick} />
       </div>
-      <p
+
+      <div
         css={css`
-          font-size: 1.3125rem;
           border-bottom: 1px solid #e5e5e5;
+          margin: 1rem 0;
         `}
       >
-        설정
-      </p>
+        <Text fontSize="1.3125rem">설정</Text>
+      </div>
+
       <div>
         <h5>에디터 모드</h5>
-        <fieldset>
+        <fieldset
+          css={css`
+            border: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+          `}
+        >
           {EditorMode.map((mode, i) => {
             return (
               <label key={i}>
@@ -83,29 +88,19 @@ export function EditorSettings() {
                   name={mode}
                   value={mode}
                   checked={editorMode === mode}
-                  onChange={() => {
-                    setEditorMode(mode);
-                  }}
+                  onChange={handleEditorModeRatioButtonClick(mode)}
                 />
-                <span>{mode}</span>
+                {mode}
               </label>
             );
           })}
         </fieldset>
       </div>
+
       <div>
         <h5>에디터 폰트 크기</h5>
-        <select
-          value={editorfontSize}
-          onChange={(e) => {
-            const fontSize = +e.target.value;
-
-            if (!Number.isNaN(fontSize)) {
-              setEditorFontSize(fontSize);
-            }
-          }}
-        >
-          {[8, 9, 10, 11, 12, 13, 14, 15, 16].map((fontSize, i) => {
+        <select value={editorfontSize} onChange={handleSelectOptionChange}>
+          {[8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map((fontSize, i) => {
             return <option key={i}>{fontSize}</option>;
           })}
         </select>
