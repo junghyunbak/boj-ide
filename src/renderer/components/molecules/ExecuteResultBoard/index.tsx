@@ -263,7 +263,17 @@ function TestCase({ input, output, judgeResult, type, i }: TestCaseProps) {
                     {judgeResult.stderr && (
                       <ProcessResultRow>
                         <ProcessResultData>에러</ProcessResultData>
-                        <ProcessResultData>{judgeResult.stderr}</ProcessResultData>
+                        <ProcessResultData>
+                          <pre
+                            css={css`
+                              white-space: pre-wrap;
+                              margin: 0;
+                              font-size: 1rem;
+                            `}
+                          >
+                            {judgeResult.stderr}
+                          </pre>
+                        </ProcessResultData>
                       </ProcessResultRow>
                     )}
                   </ProcessResultTbody>
