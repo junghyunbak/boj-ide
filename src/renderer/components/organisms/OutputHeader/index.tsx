@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import { Text } from '@/renderer/components/atoms/paragraphs/Text';
 import { ExecuteCodeButton } from '@/renderer/components/molecules/ExecuteCodeButton';
+import { ExecuteResultText } from '../../molecules/ExecuteResultText';
 
 export function OutputHeader() {
   return (
@@ -20,6 +21,7 @@ export function OutputHeader() {
         `}
       >
         <Text>실행 결과</Text>
+        <ExecuteResultText />
       </div>
       <ExecuteCodeButton />
     </div>

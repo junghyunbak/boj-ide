@@ -1,16 +1,20 @@
 import { Text } from '@/renderer/components/atoms/paragraphs/Text';
+import { useStore } from '@/renderer/store';
+import { useShallow } from 'zustand/shallow';
 
-interface ExecuteResultTextProps {
-  totalCount: number;
-  correctCount: number;
-}
+export function ExecuteResultText() {
+  const [judgeResults] = useStore(useShallow((s) => [s.judgeResult])); // [ ]: persist 때문에 참조 변수명만 변경
 
-export function ExecuteResultText({ totalCount, correctCount }: ExecuteResultTextProps) {
+  const totalCount = judgeResults.length;
+  const correctCount = judgeResults
+    .filter((v) => v !== undefined)
+    .reduce((a, c) => a + (c.result === '맞았습니다!!' ? 1 : 0), 0);
+
+  const isCorrect = totalCount === correctCount;
+
   if (totalCount === 0) {
     return null;
   }
-
-  const isCorrect = totalCount === correctCount;
 
   return (
     <Text

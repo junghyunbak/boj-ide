@@ -25,24 +25,23 @@ import { TextButton } from '@/renderer/components/atoms/buttons/TextButton';
 export function ExecuteResultBoard() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
   const [setIsJudging] = useStore(useShallow((s) => [s.setIsJudging]));
-  // [ ]: persist 때문에 참조 변수명만 변경
-  const [judgeResults, setJudgeResults] = useStore(useShallow((s) => [s.judgeResult, s.setJudgeResult]));
+  const [judgeResults, setJudgeResults] = useStore(useShallow((s) => [s.judgeResult, s.setJudgeResult])); // [ ]: persist 때문에 참조 변수명만 변경
   const [customTestCase] = useStore(useShallow((s) => [s.customTestCase]));
 
-  const N = (() => {
-    if (!problem) {
-      return 0;
-    }
+  const N = !problem ? 0 : problem.testCase.inputs.length + (customTestCase[problem.number] || []).length;
 
-    return problem.testCase.inputs.length + (customTestCase[problem.number] || []).length;
-  })();
-
+  /**
+   * 1. 문제 변경
+   * 2. 테스트케이스 추가
+   *
+   * 의 경우 채점 결과를 초기화
+   */
   useEffect(() => {
     setJudgeResults(() => []);
   }, [problem, customTestCase, setJudgeResults]);
 
   /**
-   * 채점 결과가 도착하는 ipc 이벤트 리스너 초기화
+   * 채점 결과를 수신하는 코드
    */
   useEffect(() => {
     window.electron.ipcRenderer.on('judge-result', ({ data }) => {
@@ -57,7 +56,8 @@ export function ExecuteResultBoard() {
   }, [setJudgeResults]);
 
   /**
-   * 채점 결과가 도착할 때 마다, 채점 결과 배열을 검사하여 채점이 종료되었는지를 판단
+   * 채점 결과가 도착할 때 마다,
+   * 채점 결과 배열을 검사하여 채점이 종료되었는지를 판단
    */
   useEffect(() => {
     const isEnd = (() => {
@@ -97,33 +97,25 @@ export function ExecuteResultBoard() {
     return tmp;
   })();
 
-  const correctCount = judgeResults
-    .filter((v) => v !== undefined)
-    .reduce((a, c) => a + (c.result === '맞았습니다!!' ? 1 : 0), 0);
-
   return (
-    <>
-      <ExecuteResultTable>
-        <ExecuteResultThead>
-          <ExecuteResultTheadRow>
-            <ExecuteResultHead style={{ width: '25%' }}>예제</ExecuteResultHead>
-            <ExecuteResultHead style={{ width: '25%' }}>결과</ExecuteResultHead>
-            <ExecuteResultHead style={{ width: '17.3%' }}>시간</ExecuteResultHead>
-            <ExecuteResultHead style={{ width: '17.3%' }}>상세</ExecuteResultHead>
-            <ExecuteResultHead style={{ width: '17.3%' }}>삭제</ExecuteResultHead>
-          </ExecuteResultTheadRow>
-        </ExecuteResultThead>
-        <ExecuteResultTbody>
-          {testCases.map((testCase, i) => {
-            const judgeResult = judgeResults[i];
+    <ExecuteResultTable>
+      <ExecuteResultThead>
+        <ExecuteResultTheadRow>
+          <ExecuteResultHead style={{ width: '25%' }}>예제</ExecuteResultHead>
+          <ExecuteResultHead style={{ width: '25%' }}>결과</ExecuteResultHead>
+          <ExecuteResultHead style={{ width: '17.3%' }}>시간</ExecuteResultHead>
+          <ExecuteResultHead style={{ width: '17.3%' }}>상세</ExecuteResultHead>
+          <ExecuteResultHead style={{ width: '17.3%' }}>삭제</ExecuteResultHead>
+        </ExecuteResultTheadRow>
+      </ExecuteResultThead>
+      <ExecuteResultTbody>
+        {testCases.map((testCase, i) => {
+          const judgeResult = judgeResults[i];
 
-            return <TestCase key={i} judgeResult={judgeResult} {...testCase} i={i} />;
-          })}
-        </ExecuteResultTbody>
-      </ExecuteResultTable>
-
-      <ExecuteResultText correctCount={correctCount} totalCount={judgeResults.length} />
-    </>
+          return <TestCase key={i} judgeResult={judgeResult} {...testCase} i={i} />;
+        })}
+      </ExecuteResultTbody>
+    </ExecuteResultTable>
   );
 }
 
