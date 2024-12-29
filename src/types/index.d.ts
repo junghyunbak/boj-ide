@@ -21,8 +21,13 @@ type ProblemInfo = {
   };
 };
 
-type EditorMode = 'vim' | 'normal';
+type BookmarkInfo = {
+  url: string;
+  title: string;
+  path?: string;
+};
 
+type EditorMode = 'vim' | 'normal';
 type Language = 'node.js' | 'C++14' | 'C++17' | 'Java11' | 'Python3';
 
 type Compiler = 'g++' | 'javac';
@@ -40,8 +45,7 @@ type JudgeInfo = {
   cli: Cli;
   ext: Partial<Record<NodeJS.Platform, string>>;
   compile?: (fileName?: string) => Partial<Record<NodeJS.Platform, `${Cli} ${string}`>>;
-  // [ ]: template literal type 적용
-  execute: (fileName?: string) => Partial<Record<NodeJS.Platform, string>>;
+  execute: (fileName?: string) => Partial<Record<NodeJS.Platform, string>>; // [ ]: template literal type 적용
 };
 
 type JudgeResult = {

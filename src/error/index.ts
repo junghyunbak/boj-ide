@@ -13,19 +13,6 @@ export class IpcError extends Error {
   }
 }
 
-export class SubmitError extends IpcError {
-  private _id: string;
-
-  constructor(message: string, errorType: IpcErrorType, id: string) {
-    super(message, errorType);
-    this._id = id;
-  }
-
-  get id() {
-    return this._id;
-  }
-}
-
 export const sentryErrorHandler = (err: Error) => {
   Sentry.captureException(err);
 };

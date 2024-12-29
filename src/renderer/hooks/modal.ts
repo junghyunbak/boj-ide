@@ -1,19 +1,43 @@
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
+import { useRef, useEffect } from 'react';
 
-export function useSubmitList() {
-  const [setSubmitListIsOpen] = useStore(useShallow((s) => [s.setSubmitListIsOpen]));
+export function useClickOutOfModal(callback: () => void) {
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const modalRef = useRef<HTMLDivElement | null>(null);
 
-  const openSubmitList = () => {
-    setSubmitListIsOpen(true);
-  };
+  useEffect(() => {
+    const handleWindowClick = (e: MouseEvent) => {
+      const modal = modalRef.current;
+      const button = buttonRef.current;
 
-  const closeSumbitList = () => {
-    setSubmitListIsOpen(false);
-  };
+      if (!modal || !button) {
+        return;
+      }
 
-  return {
-    openSubmitList,
-    closeSumbitList,
-  };
+      const isContain = (() => {
+        let $el = e.target;
+
+        while ($el instanceof HTMLElement) {
+          if ($el === modal || $el === button) {
+            return true;
+          }
+
+          $el = $el.parentElement;
+        }
+
+        return false;
+      })();
+
+      if (!isContain) {
+        callback();
+      }
+    };
+
+    window.addEventListener('click', handleWindowClick);
+
+    return () => {
+      window.removeEventListener('click', handleWindowClick);
+    };
+  }, [callback]);
+
+  return { buttonRef, modalRef };
 }

@@ -1,7 +1,6 @@
-import { customSpawn } from '../../utils/customSpawn';
 import { parentPort } from 'worker_threads';
-import { removeAnsiText } from '../../utils';
-import { MAX_BUFFER_SIZE } from '../../constants';
+import { removeAnsiText, customSpawn } from '@/utils';
+import { MAX_BUFFER_SIZE } from '@/constants';
 
 type ExecuteResult = {
   stdout: string;
@@ -31,7 +30,12 @@ function execute({
 
   const end = Date.now();
 
-  return { signal, elapsed: end - start, stdout: removeAnsiText(stdout.toString()), stderr: stderr.toString() };
+  return {
+    signal,
+    elapsed: end - start,
+    stdout: removeAnsiText(stdout.toString()),
+    stderr: removeAnsiText(stderr.toString()),
+  };
 }
 
 parentPort?.on('message', (data) => {
