@@ -38,7 +38,7 @@ export function Tab() {
       `}
     >
       {bookmarks.map((bookmarkInfo) => {
-        return <BookmarkTab bookmarkInfo={bookmarkInfo} />;
+        return <BookmarkTab key={bookmarkInfo.url} bookmarkInfo={bookmarkInfo} />;
       })}
 
       {problemHistories.map((problemInfo, index) => (
