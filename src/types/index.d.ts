@@ -21,10 +21,8 @@ type ProblemInfo = {
   };
 };
 
-type BookmarkDomain = 'www.acmicpc.net' | 'solved.ac';
-
 type BookmarkInfo = {
-  url: `https://${BookmarkDomain}`;
+  url: string;
   title: string;
   path?: string;
 };
@@ -47,8 +45,7 @@ type JudgeInfo = {
   cli: Cli;
   ext: Partial<Record<NodeJS.Platform, string>>;
   compile?: (fileName?: string) => Partial<Record<NodeJS.Platform, `${Cli} ${string}`>>;
-  // [ ]: template literal type 적용
-  execute: (fileName?: string) => Partial<Record<NodeJS.Platform, string>>;
+  execute: (fileName?: string) => Partial<Record<NodeJS.Platform, string>>; // [ ]: template literal type 적용
 };
 
 type JudgeResult = {

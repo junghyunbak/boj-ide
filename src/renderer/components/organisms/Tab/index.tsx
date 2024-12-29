@@ -4,15 +4,16 @@ import { useXScroll } from '@/renderer/hooks';
 import { css } from '@emotion/react';
 import { BookmarkTab } from '@/renderer/components/molecules/BookmarkTab';
 import { ProblemTab } from '@/renderer/components/molecules/ProblemTab';
+import { BOJ_DOMAIN, SOLVED_AC_DOMAIN } from '@/constants';
 
 const bookmarks: BookmarkInfo[] = [
   {
-    url: 'https://www.acmicpc.net',
+    url: `https://${BOJ_DOMAIN}`,
     title: 'baekjoon',
     path: '/problemset',
   },
   {
-    url: 'https://solved.ac',
+    url: `https://${SOLVED_AC_DOMAIN}`,
     title: 'solved.ac',
   },
 ];
