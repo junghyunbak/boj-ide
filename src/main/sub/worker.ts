@@ -1,7 +1,6 @@
-import { customSpawn } from '../../utils/customSpawn';
 import { parentPort } from 'worker_threads';
-import { removeAnsiText } from '../../utils';
-import { MAX_BUFFER_SIZE } from '../../constants';
+import { removeAnsiText, customSpawn } from '@/utils';
+import { MAX_BUFFER_SIZE } from '@/constants';
 
 type ExecuteResult = {
   stdout: string;
