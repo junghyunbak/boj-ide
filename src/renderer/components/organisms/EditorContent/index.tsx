@@ -20,10 +20,10 @@ export function EditorContent() {
         height: 100%;
       `}
     >
-      {!problem ? (
-        <EditorPlaceholder />
-      ) : isSetting ? (
+      {isSetting ? (
         <EditorSettings />
+      ) : !problem ? (
+        <EditorPlaceholder />
       ) : (
         <EditorCodemirror containerRef={containerRef} />
       )}
