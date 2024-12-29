@@ -1,28 +1,11 @@
-import { css } from '@emotion/react';
 import { useEffect } from 'react';
 import { useShallow } from 'zustand/shallow';
-
 import { useStore } from '@/renderer/store';
 import { BOJ_DOMAIN } from '@/constants';
-
-import { Output } from '@/renderer/components/templates/Output';
-import { Nav } from '@/renderer/components/organisms/Nav';
-import { VerticalResizer } from '@/renderer/components/atoms/lines/VerticalResizer';
-import { HorizontalResizer } from '@/renderer/components/atoms/lines/HorizontalResizer';
-import { AlertModal } from '@/renderer/components/molecules/AlertModal';
-import { ConfirmModal } from '@/renderer/components/molecules/ConfirmModal';
-import { BojView } from '@/renderer/components/molecules/BojView';
-import { Footer } from '@/renderer/components/organisms/Footer';
-import { Tab } from '@/renderer/components/organisms/Tab';
-
-import { useHorizontalLayout, useWebviewRoute } from './hooks';
-
-import { AppContentBox, AppLayout } from './App.styles';
-
+import { MainPage } from '@/renderer/components/pages/MainPage';
+import { useWebviewRoute } from '@/renderer/hooks';
 import './App.css';
 import './assets/fonts/fonts.css';
-import { Editor } from './components/templates/Editor';
-import { RowLine } from './components/atoms/lines/RowLIne';
 
 export default function App() {
   const [setJudgeResult] = useStore(useShallow((s) => [s.setJudgeResult]));
@@ -48,93 +31,5 @@ export default function App() {
     window.electron.ipcRenderer.sendMessage('open-deep-link');
   }, [setJudgeResult, setIsJudging, setMessage, gotoUrl]);
 
-  const { leftRef, containerRef, resizerRef } = useHorizontalLayout({
-    onRatioChange: (ratio) => {
-      useStore.getState().setLeftRatio(ratio);
-    },
-  });
-
-  const {
-    leftRef: leftRef2,
-    containerRef: containerRef2,
-    resizerRef: resizerRef2,
-  } = useHorizontalLayout({
-    onRatioChange: (ratio) => {
-      useStore.getState().setTopRatio(ratio);
-    },
-    reverse: true,
-  });
-
-  return (
-    <AppLayout>
-      <Tab />
-      <Nav />
-      <RowLine />
-      <AppContentBox>
-        <div
-          ref={containerRef}
-          css={css`
-            width: 100%;
-            height: 100%;
-            display: flex;
-          `}
-        >
-          <div
-            ref={leftRef}
-            css={css`
-              width: ${useStore.getState().leftRatio}%;
-              height: 100%;
-            `}
-          >
-            <BojView />
-          </div>
-
-          <VerticalResizer ref={resizerRef} />
-
-          <div
-            css={css`
-              flex: 1;
-              overflow: hidden;
-            `}
-          >
-            <div
-              ref={containerRef2}
-              css={css`
-                height: 100%;
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-              `}
-            >
-              <div
-                ref={leftRef2}
-                css={css`
-                  height: 50%;
-                  width: 100%;
-                `}
-              >
-                <Editor />
-              </div>
-
-              <HorizontalResizer ref={resizerRef2} />
-
-              <div
-                css={css`
-                  flex: 1;
-                  overflow: hidden;
-                `}
-              >
-                <Output />
-              </div>
-            </div>
-          </div>
-        </div>
-      </AppContentBox>
-
-      <Footer />
-
-      <AlertModal />
-      <ConfirmModal />
-    </AppLayout>
-  );
+  return <MainPage />;
 }
