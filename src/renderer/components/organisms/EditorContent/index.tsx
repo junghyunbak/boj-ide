@@ -12,6 +12,18 @@ export function EditorContent() {
 
   const containerRef = useRef<HTMLDivElement | null>(null);
 
+  const Content = (() => {
+    if (isSetting) {
+      return <EditorSettings />;
+    }
+
+    if (problem) {
+      return <EditorCodemirror containerRef={containerRef} />;
+    }
+
+    return <EditorPlaceholder />;
+  })();
+
   return (
     <div
       ref={containerRef}
@@ -20,13 +32,7 @@ export function EditorContent() {
         height: 100%;
       `}
     >
-      {isSetting ? (
-        <EditorSettings />
-      ) : !problem ? (
-        <EditorPlaceholder />
-      ) : (
-        <EditorCodemirror containerRef={containerRef} />
-      )}
+      {Content}
     </div>
   );
 }
