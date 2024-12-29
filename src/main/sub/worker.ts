@@ -30,7 +30,12 @@ function execute({
 
   const end = Date.now();
 
-  return { signal, elapsed: end - start, stdout: removeAnsiText(stdout.toString()), stderr: stderr.toString() };
+  return {
+    signal,
+    elapsed: end - start,
+    stdout: removeAnsiText(stdout.toString()),
+    stderr: removeAnsiText(stderr.toString()),
+  };
 }
 
 parentPort?.on('message', (data) => {

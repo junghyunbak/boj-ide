@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
-import { ExecuteResultText } from '@/renderer/components/molecules/ExecuteResultText';
 import {
   ExecuteResultTable,
   ExecuteResultThead,
@@ -250,7 +249,18 @@ function TestCase({ input, output, judgeResult, type, i }: TestCaseProps) {
                     </ProcessResultRow>
                     <ProcessResultRow>
                       <ProcessResultData>출력</ProcessResultData>
-                      <ProcessResultData>{judgeResult.stdout}</ProcessResultData>
+                      <ProcessResultData>
+                        <pre
+                          css={css`
+                            white-space: pre-wrap;
+                            margin: 0;
+                            font-size: 1rem;
+                            font-family: 'open-sans';
+                          `}
+                        >
+                          {judgeResult.stdout}
+                        </pre>
+                      </ProcessResultData>
                     </ProcessResultRow>
                     {judgeResult.stderr && (
                       <ProcessResultRow>
@@ -261,6 +271,7 @@ function TestCase({ input, output, judgeResult, type, i }: TestCaseProps) {
                               white-space: pre-wrap;
                               margin: 0;
                               font-size: 1rem;
+                              font-family: 'open-sans';
                             `}
                           >
                             {judgeResult.stderr}
