@@ -5,10 +5,17 @@ interface TextProps {
   children: React.ReactNode;
   fontSize?: React.CSSProperties['fontSize'];
   fontWeight?: React.CSSProperties['fontWeight'];
+  whiteSpace?: React.CSSProperties['whiteSpace'];
   type?: JudgeResult['result'] | '기본' | '채점 중';
 }
 
-export function Text({ children, fontSize = '1rem', fontWeight = 'normal', type = '기본' }: TextProps) {
+export function Text({
+  children,
+  fontSize = '1rem',
+  fontWeight = 'normal',
+  type = '기본',
+  whiteSpace = 'normal',
+}: TextProps) {
   const fontColor = (() => {
     switch (type) {
       case '런타임 에러':
@@ -38,6 +45,7 @@ export function Text({ children, fontSize = '1rem', fontWeight = 'normal', type 
         fontSize,
         fontWeight,
         color: fontColor,
+        whiteSpace,
       }}
     >
       {children}

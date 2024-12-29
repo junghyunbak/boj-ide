@@ -13,8 +13,8 @@ import { AlertModal } from '@/renderer/components/molecules/AlertModal';
 import { ConfirmModal } from '@/renderer/components/molecules/ConfirmModal';
 import { BojView } from '@/renderer/components/molecules/BojView';
 import { Footer } from '@/renderer/components/organisms/Footer';
+import { Tab } from '@/renderer/components/organisms/Tab';
 
-import { HistoryBar } from './components/HistoryBar';
 import { useHorizontalLayout, useWebviewRoute } from './hooks';
 
 import { AppContentBox, AppLayout } from './App.styles';
@@ -67,7 +67,7 @@ export default function App() {
 
   return (
     <AppLayout>
-      <HistoryBar />
+      <Tab />
       <Nav />
       <RowLine />
       <AppContentBox>

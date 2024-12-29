@@ -21,8 +21,15 @@ type ProblemInfo = {
   };
 };
 
-type EditorMode = 'vim' | 'normal';
+type BookmarkDomain = 'www.acmicpc.net' | 'solved.ac';
 
+type BookmarkInfo = {
+  url: `https://${BookmarkDomain}`;
+  title: string;
+  path?: string;
+};
+
+type EditorMode = 'vim' | 'normal';
 type Language = 'node.js' | 'C++14' | 'C++17' | 'Java11' | 'Python3';
 
 type Compiler = 'g++' | 'javac';
