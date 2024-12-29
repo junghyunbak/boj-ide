@@ -1,6 +1,9 @@
 import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
 import { useCompletion } from 'ai/react';
+import { LOCALHOST_DOMAIN, PRODUCTION_DOMAIN } from '@/constants';
+
+const domain = process.env.NODE_ENV === 'production' ? `https://${PRODUCTION_DOMAIN}` : `http://${LOCALHOST_DOMAIN}`;
 
 export function useFetchSolvedACProblemData(problemNumber: string) {
   const [title, setTitle] = useState('');
@@ -9,10 +12,9 @@ export function useFetchSolvedACProblemData(problemNumber: string) {
   useEffect(() => {
     (async () => {
       try {
-        // [ ]: 프로덕션 환경으로 나누기
-        const data = await fetch(`http://localhost:3000/api/solved?problemId=${problemNumber}`).then((res) =>
-          res.json(),
-        );
+        const path = `/api/solved?problemId=${problemNumber}`;
+
+        const data = await fetch(`${domain}${path}`).then((res) => res.json());
 
         setLevel(data.level ?? -1);
         setTitle(data.titleKo || '');
@@ -40,10 +42,7 @@ export function useFetchSolvedACProblemData(problemNumber: string) {
 
 export function useStreamingAICode() {
   const { complete, completion, isLoading, error } = useCompletion({
-    api:
-      process.env.NODE_ENV === 'production'
-        ? 'https://boj-ide.junghyunbak.site/api/ai/template'
-        : 'http://localhost:3000/api/ai/template',
+    api: `${domain}/api/ai/template`,
     experimental_throttle: 50,
   });
 

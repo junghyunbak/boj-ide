@@ -1,4 +1,5 @@
 export * from './release';
+export * from './url';
 
 export const MAX_BUFFER_SIZE = 1024 * 10;
 
