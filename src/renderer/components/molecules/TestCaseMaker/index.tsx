@@ -50,10 +50,22 @@ export function TestCaseMaker() {
           gap: 0.5rem;
         `}
       >
-        <TextArea value={input} onChange={(e) => setInput(e.target.value)} placeholder="예제 입력" />
-        <TextArea value={output} onChange={(e) => setOutput(e.target.value)} placeholder="예제 출력" />
+        <TextArea
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="예제 입력"
+          disabled={!problem}
+        />
+        <TextArea
+          value={output}
+          onChange={(e) => setOutput(e.target.value)}
+          placeholder="예제 출력"
+          disabled={!problem}
+        />
       </div>
-      <ActionButton onClick={handleAddTestCaseButtonClick}>테스트케이스 추가</ActionButton>
+      <ActionButton onClick={handleAddTestCaseButtonClick} disabled={!problem}>
+        테스트케이스 추가
+      </ActionButton>
     </div>
   );
 }
