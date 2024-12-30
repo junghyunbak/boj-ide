@@ -19,6 +19,7 @@ type ProblemSlice = {
 
 export const createProblemSlice: StateCreator<ProblemSlice> = (set, get): ProblemSlice => ({
   customTestCase: {},
+  // [ ]: 테스트 필요
   addCustomTestCase(number, tc) {
     set((s) => {
       const next = {

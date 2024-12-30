@@ -1,4 +1,6 @@
-import { Output } from '@/renderer/components/templates/Output';
+import { useStore } from '@/renderer/store';
+import { useHorizontalLayout } from '@/renderer/hooks';
+import { css } from '@emotion/react';
 import { Nav } from '@/renderer/components/organisms/Nav';
 import { VerticalResizer } from '@/renderer/components/atoms/lines/VerticalResizer';
 import { HorizontalResizer } from '@/renderer/components/atoms/lines/HorizontalResizer';
@@ -9,9 +11,8 @@ import { Footer } from '@/renderer/components/organisms/Footer';
 import { Tab } from '@/renderer/components/organisms/Tab';
 import { Editor } from '@/renderer/components/templates/Editor';
 import { RowLine } from '@/renderer/components/atoms/lines/RowLIne';
-import { useHorizontalLayout } from '@/renderer/hooks';
-import { useStore } from '@/renderer/store';
-import { css } from '@emotion/react';
+import { Output } from '@/renderer/components/templates/Output';
+import { OutputContent } from '@/renderer/components/organisms/OutputContent';
 
 export function MainPage() {
   const { leftRef, containerRef, resizerRef } = useHorizontalLayout({
@@ -103,6 +104,7 @@ export function MainPage() {
                   overflow: hidden;
                 `}
               >
+                <OutputContent />
                 <Output />
               </div>
             </div>

@@ -1,8 +1,8 @@
 import { css } from '@emotion/react';
 import { OutputHeader } from '@/renderer/components/organisms/OutputHeader';
-import { ExecuteResultBoard } from '@/renderer/components/molecules/ExecuteResultBoard';
 import { TestCaseMaker } from '@/renderer/components/molecules/TestCaseMaker';
 import { RowLine } from '@/renderer/components/atoms/lines/RowLIne';
+import { OutputContent } from '@/renderer/components/organisms/OutputContent';
 
 export function Output() {
   return (
@@ -27,7 +27,7 @@ export function Output() {
           gap: 1rem;
         `}
       >
-        <ExecuteResultBoard />
+        <OutputContent />
         <TestCaseMaker />
       </div>
     </div>
