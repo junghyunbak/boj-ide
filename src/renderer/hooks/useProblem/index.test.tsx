@@ -1,21 +1,12 @@
 import { renderHook } from '@testing-library/react';
 import { useStore } from '@/renderer/store';
+import { createMockProblem, createMockTestcase } from '@/renderer/mock';
 import { useProblem } from '.';
 
-const mockProblem: ProblemInfo = {
-  name: 'A + B',
-  number: '1000',
-  testCase: {
-    inputs: [],
-    outputs: [],
-  },
-};
-
-const mockCustomTestcase: TC = {
-  input: '',
-  output: '',
-  type: 'custom',
-};
+const mockProblem = createMockProblem();
+const mockCustomTestcase = createMockTestcase({ type: 'custom' });
+const mockCustomTestcase2 = createMockTestcase({ type: 'custom' });
+const mockCustomTestcase3 = createMockTestcase({ type: 'custom' });
 
 beforeAll(() => {
   useStore.getState().setProblem(mockProblem);
@@ -47,28 +38,14 @@ describe('커스텀 테스트케이스 추가/삭제', () => {
 
     setCustomTestcases(() => {
       return {
-        '1000': [
-          {
-            input: '1',
-            output: '1',
-            type: 'custom',
-          },
-          {
-            input: '2',
-            output: '2',
-            type: 'custom',
-          },
-          {
-            input: '3',
-            output: '3',
-            type: 'custom',
-          },
-        ],
+        [mockProblem.number]: [mockCustomTestcase, mockCustomTestcase2, mockCustomTestcase3],
       };
     });
 
     removeCustomTestcase(1);
 
-    expect(useStore.getState().customTestCase[mockProblem.number]?.some((v) => v.input === '2')).toBe(false);
+    expect(
+      useStore.getState().customTestCase[mockProblem.number]?.some((v) => v.input === mockCustomTestcase2.input),
+    ).toBe(false);
   });
 });

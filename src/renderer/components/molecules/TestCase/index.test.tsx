@@ -1,31 +1,17 @@
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { useStore } from '@/renderer/store';
+import { createMockProblem, createMockJudgeResult } from '@/renderer/mock';
 import { TestCase } from '.';
 
-const mockProblem: ProblemInfo = {
-  name: 'A + B',
-  number: '1000',
-  testCase: {
-    inputs: [],
-    outputs: [],
-  },
-};
-
-const mockJudgeResult: JudgeResult = {
-  id: '',
-  index: 0,
-  result: '맞았습니다!!',
-  stderr: '',
-  stdout: '',
-  elapsed: 0,
-};
+const mockProblem = createMockProblem();
+const mockJudgeResult = createMockJudgeResult();
 
 beforeAll(() => {
   useStore.getState().setProblem(mockProblem);
 });
 
-describe("[type === 'problem']", () => {
+describe("예제 채점 결과 [type === 'problem']", () => {
   it('삭제 버튼이 존재하지 않아야 한다.', () => {
     render(
       <table>
@@ -51,7 +37,7 @@ describe("[type === 'problem']", () => {
   });
 });
 
-describe("[type === 'custom']", () => {
+describe("예제 채점 결과 [type === 'custom']", () => {
   it('삭제 버튼이 존재해야한다.', () => {
     render(
       <table>
@@ -77,7 +63,7 @@ describe("[type === 'custom']", () => {
   });
 });
 
-describe("[type === 'common']", () => {
+describe("예제 채점 결과 [type === 'common']", () => {
   it('열기 버튼을 누르면 예제 입/출력이 나타난다.', () => {
     render(
       <table>

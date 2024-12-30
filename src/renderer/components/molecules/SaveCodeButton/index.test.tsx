@@ -1,21 +1,16 @@
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { useStore } from '@/renderer/store';
+import { createMockProblem } from '@/renderer/mock';
 import { SaveCodeButton } from '.';
+
+const mockProblem = createMockProblem();
 
 describe('저장 버튼이 활성화되어있는 상태', () => {
   beforeAll(() => {
     const { setProblem, setIsCodeStale } = useStore.getState();
 
-    setProblem({
-      name: 'A + B',
-      number: '1000',
-      testCase: {
-        inputs: [],
-        outputs: [],
-      },
-    });
-
+    setProblem(mockProblem);
     setIsCodeStale(true);
 
     let fn: () => void;

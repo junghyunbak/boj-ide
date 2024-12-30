@@ -1,25 +1,11 @@
 import { renderHook } from '@testing-library/react';
 import { useStore } from '@/renderer/store';
 import { act } from 'react';
+import { createMockProblem } from '@/renderer/mock';
 import { useTab } from '.';
 
-const mockProblem: ProblemInfo = {
-  name: 'A + B',
-  number: '1000',
-  testCase: {
-    inputs: [],
-    outputs: [],
-  },
-};
-
-const mockProblem2: ProblemInfo = {
-  name: 'A - B',
-  number: '1001',
-  testCase: {
-    inputs: [],
-    outputs: [],
-  },
-};
+const mockProblem = createMockProblem();
+const mockProblem2 = createMockProblem();
 
 beforeAll(() => {
   useStore.getState().setProblem(mockProblem);
