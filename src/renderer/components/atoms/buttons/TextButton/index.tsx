@@ -4,9 +4,10 @@ import { css } from '@emotion/react';
 interface TextButtonProps {
   children: string;
   onClick: React.ButtonHTMLAttributes<HTMLButtonElement>['onClick'];
+  testId?: string;
 }
 
-export function TextButton({ children, onClick }: TextButtonProps) {
+export function TextButton({ children, onClick, testId }: TextButtonProps) {
   return (
     <button
       type="button"
@@ -21,6 +22,7 @@ export function TextButton({ children, onClick }: TextButtonProps) {
         }
       `}
       onClick={onClick}
+      data-testid={testId}
     >
       {children}
     </button>

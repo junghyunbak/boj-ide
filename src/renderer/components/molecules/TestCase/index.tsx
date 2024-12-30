@@ -21,11 +21,11 @@ interface TestCaseProps extends TC {
 }
 
 // 테스트케이스
-// [ ]: type === 'problem' 접기/열기 버튼을 누르면 예제 입력/출력이 나타난다.
-// [ ]: type === 'problem' 삭제 버튼이 존재하지 않아야 한다.
-// [ ]: type === 'custom' 삭제 버튼이 존재해야한다.
+// [v]: type === 'problem' 삭제 버튼이 존재하지 않아야 한다.
+// [v]: type === 'custom' 삭제 버튼이 존재해야한다.
 // [ ]: type === 'custom' 삭제 버튼을 누를 경우 테스트케이스 목록에서 사라져야한다.
-// [ ]: judgeResult가 존재할 경우 실행 결과를 표시하는 테이블이 렌더링 되어야한다.
+// [v]: 접기/열기 버튼을 누르면 예제 입력/출력이 나타난다.
+// [v]: judgeResult가 존재할 경우 실행 결과를 표시하는 테이블이 렌더링 되어야한다.
 export function TestCase({ input, output, judgeResult, type, i }: TestCaseProps) {
   const [problem] = useStore(useShallow((s) => [s.problem]));
   const [isJudging] = useStore(useShallow((s) => [s.isJudging]));
@@ -96,12 +96,16 @@ export function TestCase({ input, output, judgeResult, type, i }: TestCaseProps)
           )}
         </ExecuteResultData>
         <ExecuteResultData>
-          <TextButton data-testid="toggle-button" onClick={handleFoldButtonClick}>
+          <TextButton onClick={handleFoldButtonClick} testId="toggle-button">
             {isOpen ? '접기' : '열기'}
           </TextButton>
         </ExecuteResultData>
         <ExecuteResultData>
-          {type === 'custom' && <TextButton onClick={handleRemoveButtonClick}>삭제</TextButton>}
+          {type === 'custom' && (
+            <TextButton onClick={handleRemoveButtonClick} testId="remove-testcase">
+              삭제
+            </TextButton>
+          )}
         </ExecuteResultData>
       </ExecuteResultRow>
 
