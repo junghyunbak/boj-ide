@@ -1,11 +1,17 @@
 import { useShallow } from 'zustand/shallow';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useStore } from '@/renderer/store';
+import { v4 as uuidv4 } from 'uuid';
 
 export function useJudge() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
   const [customTestCase] = useStore(useShallow((s) => [s.customTestCase]));
   const [judgeResults, setJudgeResults] = useStore(useShallow((s) => [s.judgeResult, s.setJudgeResult]));
+  const [judgeId, setJudgeId] = useStore(useShallow((s) => [s.judgeId, s.setJudgeId]));
+
+  useEffect(() => {
+    setJudgeId(uuidv4());
+  }, [problem, customTestCase, setJudgeId]);
 
   const startJudge = () => {
     if (!problem) {
@@ -41,6 +47,7 @@ export function useJudge() {
         code,
         language,
         number,
+        judgeId,
         testCase: {
           inputs,
           outputs,
@@ -74,5 +81,6 @@ export function useJudge() {
     judgeResults,
     setJudgeResults,
     customTestCase,
+    judgeId,
   };
 }

@@ -13,6 +13,7 @@ const mockProblem: ProblemInfo = {
 };
 
 const mockJudgeResult: JudgeResult = {
+  id: '',
   index: 0,
   result: '맞았습니다!!',
   stderr: '',

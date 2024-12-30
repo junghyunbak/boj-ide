@@ -8,7 +8,7 @@ type ChannelToMessage = {
   'load-code': MessageTemplate<MyOmit<CodeInfo, 'code'>>;
   'load-files': undefined;
   'save-code': MessageTemplate<CodeInfo & { silence?: boolean }>;
-  'judge-start': MessageTemplate<CodeInfo & Pick<ProblemInfo, 'testCase'>>;
+  'judge-start': MessageTemplate<CodeInfo & Pick<ProblemInfo, 'testCase'> & { judgeId: string }>;
   'submit-code': MessageTemplate<CodeInfo>;
   'open-source-code-folder': undefined;
   'open-deep-link': undefined;

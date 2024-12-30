@@ -83,6 +83,7 @@ export class Judge {
             number,
             code,
             language,
+            judgeId,
             testCase: { inputs, outputs },
           },
         },
@@ -157,7 +158,7 @@ export class Judge {
               }
 
               ipc.send(this.webContents, 'judge-result', {
-                data: { index, stderr, stdout: output, elapsed, result },
+                data: { index, stderr, stdout: output, elapsed, result, id: judgeId },
               });
 
               worker.terminate();

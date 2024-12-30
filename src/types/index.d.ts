@@ -49,6 +49,7 @@ type JudgeInfo = {
 };
 
 type JudgeResult = {
+  id: string;
   index: number;
   result: '맞았습니다!!' | '시간 초과' | '런타임 에러' | '틀렸습니다' | '출력 초과';
   stderr: string;

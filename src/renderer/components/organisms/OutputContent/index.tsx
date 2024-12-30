@@ -31,7 +31,7 @@ import { useJudge } from '@/renderer/hooks';
 export function OutputContent() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
 
-  const { resetJudge, judgeResults, setJudgeResults, customTestCase } = useJudge();
+  const { resetJudge, judgeResults, setJudgeResults, customTestCase, judgeId } = useJudge();
 
   useEffect(() => {
     window.electron.ipcRenderer.on('judge-reset', () => {
@@ -45,6 +45,10 @@ export function OutputContent() {
 
   useEffect(() => {
     window.electron.ipcRenderer.on('judge-result', ({ data }) => {
+      if (data.id !== judgeId) {
+        return;
+      }
+
       setJudgeResults((prev) => {
         const next = [...prev];
 
@@ -53,7 +57,11 @@ export function OutputContent() {
         return next;
       });
     });
-  }, [setJudgeResults]);
+
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners('judge-result');
+    };
+  }, [setJudgeResults, judgeId]);
 
   const testCases = ((): TC[] => {
     if (!problem) {
