@@ -1,5 +1,5 @@
 import { TabButton } from '@/renderer/components/atoms/buttons/TabButton';
-import { useWebviewRoute } from '@/renderer/hooks';
+import { useWebview } from '@/renderer/hooks';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
@@ -11,7 +11,7 @@ export function BookmarkTab({ bookmarkInfo }: BookmarkTabProps) {
   const [problem] = useStore(useShallow((s) => [s.problem]));
   const [webviewUrl] = useStore(useShallow((s) => [s.webviewUrl]));
 
-  const { gotoUrl } = useWebviewRoute();
+  const { gotoUrl } = useWebview();
 
   const handleBookmarkItemClick = () => {
     gotoUrl(bookmarkInfo.url + (bookmarkInfo.path || ''));

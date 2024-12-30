@@ -3,14 +3,14 @@ import { useShallow } from 'zustand/shallow';
 import { useStore } from '@/renderer/store';
 import { BOJ_DOMAIN } from '@/constants';
 import { MainPage } from '@/renderer/components/pages/MainPage';
-import { useWebviewRoute } from '@/renderer/hooks';
+import { useWebview } from '@/renderer/hooks';
 import './App.css';
 import './assets/fonts/fonts.css';
 
 export default function App() {
   const [setMessage] = useStore(useShallow((s) => [s.setMessage]));
 
-  const { gotoUrl } = useWebviewRoute();
+  const { gotoUrl } = useWebview();
 
   useEffect(() => {
     window.electron.ipcRenderer.on('occur-error', ({ data: { message } }) => {

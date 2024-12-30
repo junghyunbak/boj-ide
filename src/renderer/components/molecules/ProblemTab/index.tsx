@@ -1,4 +1,4 @@
-import { useFetchSolvedACProblemData, useProblem, useTab, useWebviewRoute } from '@/renderer/hooks';
+import { useFetchSolvedACProblemData, useProblem, useTab, useWebview } from '@/renderer/hooks';
 import { Text } from '@/renderer/components/atoms/paragraphs/Text';
 import { TabButton } from '@/renderer/components/atoms/buttons/TabButton';
 import { css } from '@emotion/react';
@@ -13,7 +13,7 @@ interface ProblemTabProps {
 export function ProblemTab({ problemInfo, tabIndex }: ProblemTabProps) {
   const { problem } = useProblem();
   const { removeTab } = useTab();
-  const { gotoProblem, gotoUrl } = useWebviewRoute();
+  const { gotoProblem, gotoUrl } = useWebview();
   const { TierImg } = useFetchSolvedACProblemData(problemInfo.number);
 
   const handleTabClick = () => {

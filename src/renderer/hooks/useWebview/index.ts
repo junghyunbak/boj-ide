@@ -3,7 +3,7 @@ import { useStore } from '@/renderer/store';
 import { useState } from 'react';
 import { useShallow } from 'zustand/shallow';
 
-export function useWebviewRoute() {
+export function useWebview() {
   const [webview, setWebview] = useStore(useShallow((s) => [s.webview, s.setWebview]));
   const [setWebviewUrl] = useStore(useShallow((s) => [s.setWebViewUrl]));
   const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
