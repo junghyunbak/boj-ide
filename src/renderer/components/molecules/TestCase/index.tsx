@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import { css } from '@emotion/react';
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
 import { ExecuteResultRow, ExecuteResultData } from '@/renderer/components/atoms/tables/ExecuteResultTable';
 import {
   ProcessResultTable,
@@ -14,7 +12,7 @@ import { CodeBlock } from '@/renderer/components/atoms/pres/CodeBlock';
 import { TextButton } from '@/renderer/components/atoms/buttons/TextButton';
 import { Highlight } from '@/renderer/components/atoms/spans/Highlight';
 import { TransparentPreformatted } from '@/renderer/components/atoms/pres/TransparentPreformatted';
-import { useJudge } from '@/renderer/hooks';
+import { useJudge, useProblem } from '@/renderer/hooks';
 
 interface TestCaseProps extends TC {
   judgeResult?: JudgeResult;
@@ -29,9 +27,7 @@ interface TestCaseProps extends TC {
 // [v]: [type === 'common'] 열기 버튼을 누르면 예제 입/출력이 나타난다.
 // [v]: [type === 'common'] 열기 버튼을 누르고 채점 결과가 존재할 경우, 실행 결과를 표시하는 테이블이 렌더링 되어야한다.
 export function TestCase({ input, output, judgeResult, type, i }: TestCaseProps) {
-  const [problem] = useStore(useShallow((s) => [s.problem]));
-  const [removeCustomTestCase] = useStore(useShallow((s) => [s.removeCustomTestCase]));
-
+  const { problem, removeCustomTestcase } = useProblem();
   const { isJudging } = useJudge();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -45,7 +41,7 @@ export function TestCase({ input, output, judgeResult, type, i }: TestCaseProps)
       return;
     }
 
-    removeCustomTestCase(problem.number, i - problem.testCase.inputs.length);
+    removeCustomTestcase(i - problem.testCase.inputs.length);
 
     e.stopPropagation();
   };

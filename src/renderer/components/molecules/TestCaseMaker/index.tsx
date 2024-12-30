@@ -4,21 +4,18 @@ import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 import { TextArea } from '@/renderer/components/atoms/textareas/TextArea';
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
+import { useProblem } from '@/renderer/hooks';
 
 export function TestCaseMaker() {
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
 
-  const [problem] = useStore(useShallow((s) => [s.problem]));
-  const [addCustomTestCase] = useStore(useShallow((s) => [s.addCustomTestCase]));
+  const { problem, addCustomTestcase } = useProblem();
 
+  // [ ]: 얘도 커스텀 훅으로
   const [setMessage] = useStore(useShallow((s) => [s.setMessage]));
 
   const handleAddTestCaseButtonClick = () => {
-    if (!problem) {
-      return;
-    }
-
     const item: TC = {
       input,
       output,
@@ -30,7 +27,7 @@ export function TestCaseMaker() {
       return;
     }
 
-    addCustomTestCase(problem.number, item);
+    addCustomTestcase(item);
 
     setInput('');
     setOutput('');

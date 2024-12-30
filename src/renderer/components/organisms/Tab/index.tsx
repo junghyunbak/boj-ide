@@ -1,10 +1,10 @@
-import { useShallow } from 'zustand/shallow';
-import { useStore } from '@/renderer/store';
-import { useXScroll } from '@/renderer/hooks';
+import { useTab, useXScroll } from '@/renderer/hooks';
 import { css } from '@emotion/react';
 import { BookmarkTab } from '@/renderer/components/molecules/BookmarkTab';
 import { ProblemTab } from '@/renderer/components/molecules/ProblemTab';
 import { BOJ_DOMAIN, SOLVED_AC_DOMAIN } from '@/constants';
+import { useStore } from '@/renderer/store';
+import { useShallow } from 'zustand/shallow';
 
 const bookmarks: BookmarkInfo[] = [
   {
@@ -19,8 +19,7 @@ const bookmarks: BookmarkInfo[] = [
 ];
 
 export function Tab() {
-  const [problemHistories] = useStore(useShallow((s) => [s.problemHistories, s.removeProblemHistory]));
-
+  const { tabs } = useTab();
   const { xScrollRef } = useXScroll();
 
   return (
@@ -41,7 +40,7 @@ export function Tab() {
         return <BookmarkTab key={bookmarkInfo.url} bookmarkInfo={bookmarkInfo} />;
       })}
 
-      {problemHistories.map((problemInfo, index) => (
+      {tabs.map((problemInfo, index) => (
         <ProblemTab key={problemInfo.number} problemInfo={problemInfo} tabIndex={index} />
       ))}
 

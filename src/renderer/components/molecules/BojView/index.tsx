@@ -1,8 +1,9 @@
 import { css } from '@emotion/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 import { BOJ_DOMAIN } from '@/constants';
+import { useTab, useWebviewRoute } from '@/renderer/hooks';
 import * as cheerio from 'cheerio';
 
 const getProblemInfo = (bojProblemHtml: string, url: string): ProblemInfo => {
@@ -51,16 +52,14 @@ const getProblemInfo = (bojProblemHtml: string, url: string): ProblemInfo => {
 
 export function BojView() {
   const [isDrag] = useStore(useShallow((s) => [s.isDrag]));
-  const [webview, setWebView] = useStore(useShallow((s) => [s.webview, s.setWebview]));
-  const [webviewUrl, setWebviewUrl] = useStore(useShallow((s) => [s.webviewUrl, s.setWebViewUrl]));
   const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
-  const [addProblemHistory] = useStore(useShallow((s) => [s.addProblemHistory]));
 
-  const [startUrl] = useState(webviewUrl);
+  const { webview, setWebview, updateWebviewUrl, startWebviewUrl } = useWebviewRoute();
+  const { addTab } = useTab();
 
   useEffect(() => {
-    setWebView(document.querySelector('webview') as Electron.WebviewTag);
-  }, [setWebView]);
+    setWebview(document.querySelector('webview') as Electron.WebviewTag);
+  }, [setWebview]);
 
   useEffect(() => {
     if (!webview) {
@@ -70,7 +69,7 @@ export function BojView() {
     const handleWebviewDidFinishLoad = async () => {
       const url = webview.getURL() || '';
 
-      setWebviewUrl(url);
+      updateWebviewUrl(url);
 
       if (!url.startsWith(`https://${BOJ_DOMAIN}/problem/`)) {
         setProblem(null);
@@ -82,11 +81,15 @@ export function BojView() {
       const problemInfo = getProblemInfo(html, url);
 
       setProblem(problemInfo);
-      addProblemHistory(problemInfo);
+      addTab(problemInfo);
     };
 
     webview.addEventListener('did-finish-load', handleWebviewDidFinishLoad);
-  }, [webview, setWebviewUrl, setProblem, addProblemHistory]);
+
+    return () => {
+      webview.removeEventListener('did-finish-load', handleWebviewDidFinishLoad);
+    };
+  }, [webview, setProblem, addTab]);
 
   return (
     <div
@@ -102,7 +105,7 @@ export function BojView() {
           flex: 1;
           pointer-events: ${isDrag ? 'none' : 'auto'};
         `}
-        src={startUrl}
+        src={startWebviewUrl}
       />
     </div>
   );

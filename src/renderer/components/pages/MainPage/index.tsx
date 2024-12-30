@@ -12,7 +12,6 @@ import { Tab } from '@/renderer/components/organisms/Tab';
 import { Editor } from '@/renderer/components/templates/Editor';
 import { RowLine } from '@/renderer/components/atoms/lines/RowLIne';
 import { Output } from '@/renderer/components/templates/Output';
-import { OutputContent } from '@/renderer/components/organisms/OutputContent';
 
 export function MainPage() {
   const { leftRef, containerRef, resizerRef } = useHorizontalLayout({

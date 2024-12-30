@@ -103,6 +103,7 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
 
   /**
    * 로딩 된 소스코드를 반영하는 ipc 이벤트 초기화
+   * // TODO: memory leak 존재
    */
   useEffect(() => {
     window.electron.ipcRenderer.on('load-code-result', ({ data }) => {

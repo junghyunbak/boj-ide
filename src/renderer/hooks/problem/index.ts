@@ -1,0 +1,98 @@
+import { useShallow } from 'zustand/shallow';
+import { useStore } from '@/renderer/store';
+import { useState } from 'react';
+
+export function useProblem() {
+  const [problem] = useStore(useShallow((s) => [s.problem]));
+  const [setCustomTestcases] = useStore(useShallow((s) => [s.setCustomTestcases]));
+
+  const removeCustomTestcase = (i: number) => {
+    if (!problem) {
+      return;
+    }
+
+    const { number } = problem;
+
+    setCustomTestcases((prev) => {
+      const next = { ...prev };
+
+      if (!next[number]) {
+        return next;
+      }
+
+      next[number].splice(i, 1);
+
+      return next;
+    });
+  };
+
+  const addCustomTestcase = (testcase: TC) => {
+    if (!problem) {
+      return;
+    }
+
+    const { number } = problem;
+
+    setCustomTestcases((prev) => {
+      const next = { ...prev };
+
+      if (!next[number]) {
+        next[number] = [];
+      }
+
+      next[number].push(testcase);
+
+      return next;
+    });
+  };
+
+  return {
+    problem,
+    addCustomTestcase,
+    removeCustomTestcase,
+  };
+}
+
+export function useTab() {
+  const [tabs, setTabs] = useStore(useShallow((s) => [s.problemHistories, s.setProblemHistories]));
+
+  const addTab = (problemInfo: ProblemInfo) => {
+    setTabs((prev) => {
+      const next = [...prev];
+
+      const idx = next.findIndex((v) => v.number === problemInfo.number);
+
+      if (idx !== -1) {
+        next.splice(idx, 1, problemInfo);
+        return next;
+      }
+
+      next.push(problemInfo);
+      return next;
+    });
+  };
+
+  const removeTab = (i: number): ProblemInfo | null => {
+    setTabs((prev) => {
+      const next = [...prev];
+
+      next.splice(i, 1);
+
+      return next;
+    });
+
+    const { problemHistories: nextTabs } = useStore.getState();
+
+    if (nextTabs.length === 0) {
+      return null;
+    }
+
+    return nextTabs[i] || nextTabs[i - 1];
+  };
+
+  return {
+    tabs,
+    addTab,
+    removeTab,
+  };
+}

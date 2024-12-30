@@ -12,13 +12,19 @@ export function WebviewController() {
 
   useEffect(() => {
     if (!webview) {
-      return;
+      return () => {};
     }
 
-    webview.addEventListener('did-finish-load', () => {
+    const handleWebviewDidFinishLoad = () => {
       setCanGoBack(webview.canGoBack());
       setCanGoForward(webview.canGoForward());
-    });
+    };
+
+    webview.addEventListener('did-finish-load', handleWebviewDidFinishLoad);
+
+    return () => {
+      webview.removeEventListener('did-finish-load', handleWebviewDidFinishLoad);
+    };
   }, [webview]);
 
   const handleGoBackButtonClick = () => {
