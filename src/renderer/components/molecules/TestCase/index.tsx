@@ -20,12 +20,13 @@ interface TestCaseProps extends TC {
   i: number;
 }
 
-// 테스트케이스
-// [v]: type === 'problem' 삭제 버튼이 존재하지 않아야 한다.
-// [v]: type === 'custom' 삭제 버튼이 존재해야한다.
-// [ ]: type === 'custom' 삭제 버튼을 누를 경우 테스트케이스 목록에서 사라져야한다.
-// [v]: 접기/열기 버튼을 누르면 예제 입력/출력이 나타난다.
-// [v]: judgeResult가 존재할 경우 실행 결과를 표시하는 테이블이 렌더링 되어야한다.
+// 유닛 테스트코드
+// [v]: [type === 'problem'] 예제 컬럼의 값이 "예제 입력 [숫자]" 이어야 한다.
+// [v]: [type === 'problem'] 삭제 버튼이 존재하지 않아야 한다.
+// [v]: [type === 'custom'] 예제 컬럼의 값이 "사용자 예제 입력 [숫자]" 이어야 한다.
+// [v]: [type === 'custom'] 삭제 버튼이 존재해야한다.
+// [v]: [type === 'common'] 열기 버튼을 누르면 예제 입/출력이 나타난다.
+// [v]: [type === 'common'] 열기 버튼을 누르고 채점 결과가 존재할 경우, 실행 결과를 표시하는 테이블이 렌더링 되어야한다.
 export function TestCase({ input, output, judgeResult, type, i }: TestCaseProps) {
   const [problem] = useStore(useShallow((s) => [s.problem]));
   const [isJudging] = useStore(useShallow((s) => [s.isJudging]));
@@ -59,18 +60,15 @@ export function TestCase({ input, output, judgeResult, type, i }: TestCaseProps)
     return '';
   })();
 
-  const testcaseNumber = (() => {
+  const exampleText = (() => {
     if (!problem) {
       return -1;
     }
 
-    const number = i + 1;
+    const exampleNumber = i + 1 - (type === 'problem' ? 0 : problem.testCase.inputs.length);
+    const examplePrefix = type === 'custom' ? '사용자 ' : '';
 
-    if (type === 'problem') {
-      return number;
-    }
-
-    return number - problem.testCase.inputs.length;
+    return `${examplePrefix}예제 입력 ${exampleNumber}`;
   })();
 
   if (!problem) {
@@ -81,7 +79,7 @@ export function TestCase({ input, output, judgeResult, type, i }: TestCaseProps)
     <>
       <ExecuteResultRow>
         <ExecuteResultData>
-          <Text>{testcaseNumber}</Text>
+          <Text>{exampleText}</Text>
         </ExecuteResultData>
         <ExecuteResultData>
           <Text type={status || '기본'} fontWeight="bold">
@@ -96,9 +94,7 @@ export function TestCase({ input, output, judgeResult, type, i }: TestCaseProps)
           )}
         </ExecuteResultData>
         <ExecuteResultData>
-          <TextButton onClick={handleFoldButtonClick} testId="toggle-button">
-            {isOpen ? '접기' : '열기'}
-          </TextButton>
+          <TextButton onClick={handleFoldButtonClick}>{isOpen ? '접기' : '열기'}</TextButton>
         </ExecuteResultData>
         <ExecuteResultData>
           {type === 'custom' && (

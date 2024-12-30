@@ -24,21 +24,33 @@ beforeAll(() => {
   useStore.getState().setProblem(mockProblem);
 });
 
-describe("테스트케이스 타입 'problem'", () => {
+describe("[type === 'problem']", () => {
   it('삭제 버튼이 존재하지 않아야 한다.', () => {
     render(
       <table>
         <tbody>
-          <TestCase type="problem" i={0} judgeResult={mockJudgeResult} input="" output="" />
+          <TestCase type="problem" i={0} input="" output="" />
         </tbody>
       </table>,
     );
 
     expect(screen.queryByTestId('remove-testcase')).not.toBeInTheDocument();
   });
+
+  it('예제 컬럼의 값이 "예제 입력 [숫자]" 이어야 한다.', () => {
+    render(
+      <table>
+        <tbody>
+          <TestCase type="problem" i={0} input="" output="" />
+        </tbody>
+      </table>,
+    );
+
+    expect(screen.queryByText(/^예제 입력 [0-9]+$/)).toBeInTheDocument();
+  });
 });
 
-describe("테스트케이스 타입 'custom'", () => {
+describe("[type === 'custom']", () => {
   it('삭제 버튼이 존재해야한다.', () => {
     render(
       <table>
@@ -50,10 +62,22 @@ describe("테스트케이스 타입 'custom'", () => {
 
     expect(screen.queryByTestId('remove-testcase')).toBeInTheDocument();
   });
+
+  it('예제 컬럼의 값이 "사용자 예제 입력 [숫자]" 이어야 한다.', () => {
+    render(
+      <table>
+        <tbody>
+          <TestCase type="custom" i={0} input="" output="" />
+        </tbody>
+      </table>,
+    );
+
+    expect(screen.queryByText(/^사용자 예제 입력 [0-9]+$/)).toBeInTheDocument();
+  });
 });
 
-describe('테스트케이스 타입 공통', () => {
-  it('접기/열기 버튼을 누르면 예제 입력/출력이 나타난다.', () => {
+describe("[type === 'common']", () => {
+  it('열기 버튼을 누르면 예제 입/출력이 나타난다.', () => {
     render(
       <table>
         <tbody>
@@ -62,12 +86,12 @@ describe('테스트케이스 타입 공통', () => {
       </table>,
     );
 
-    fireEvent.click(screen.getByTestId('toggle-button'));
+    fireEvent.click(screen.getByText('열기'));
 
     expect(screen.queryByText('example1')).toBeInTheDocument();
   });
 
-  it('채점 결과가 존재할경우 실행 결과를 표시하는 테이블이 렌더링되어야 한다.', () => {
+  it('열기 버튼을 누르고 채점 결과가 존재할 경우, 실행 결과를 표시하는 테이블이 렌더링 되어야한다.', () => {
     render(
       <table>
         <tbody>
@@ -76,7 +100,7 @@ describe('테스트케이스 타입 공통', () => {
       </table>,
     );
 
-    fireEvent.click(screen.getByTestId('toggle-button'));
+    fireEvent.click(screen.getByText('열기'));
 
     expect(screen.queryByText('결과')).toBeInTheDocument();
   });
