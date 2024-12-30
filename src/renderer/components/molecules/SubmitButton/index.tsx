@@ -11,7 +11,7 @@ export function SubmitButton() {
       return;
     }
 
-    // [ ]: 훅으로 분리
+    // TODO: 훅으로 분리
     setConfirm('제출하시겠습니까?', () => {
       const { code, lang } = useStore.getState();
 

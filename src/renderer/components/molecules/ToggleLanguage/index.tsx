@@ -31,7 +31,7 @@ export function ToggleLanguage() {
   return (
     <div
       css={css`
-        // [ ]: relative 요소로 인해 resizer bar 위로 겹치는 이슈 존재
+        // BUG: relative 요소로 인해 resizer bar 위로 겹치는 이슈 존재
         position: relative;
       `}
     >

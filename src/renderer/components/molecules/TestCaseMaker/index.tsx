@@ -12,7 +12,7 @@ export function TestCaseMaker() {
 
   const { problem, addCustomTestcase } = useProblem();
 
-  // [ ]: 얘도 커스텀 훅으로
+  // TODO: 얘도 커스텀 훅으로
   const [setMessage] = useStore(useShallow((s) => [s.setMessage]));
 
   const handleAddTestCaseButtonClick = () => {

@@ -45,7 +45,7 @@ type JudgeInfo = {
   cli: Cli;
   ext: Partial<Record<NodeJS.Platform, string>>;
   compile?: (fileName?: string) => Partial<Record<NodeJS.Platform, `${Cli} ${string}`>>;
-  execute: (fileName?: string) => Partial<Record<NodeJS.Platform, string>>; // [ ]: template literal type 적용
+  execute: (fileName?: string) => Partial<Record<NodeJS.Platform, string>>; // TODO: template literal type 적용
 };
 
 type JudgeResult = {

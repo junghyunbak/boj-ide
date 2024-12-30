@@ -6,11 +6,11 @@ type ProblemSlice = {
   problem: ProblemInfo | null;
   setProblem(problem: ProblemInfo | null): void;
 
-  customTestCase: CustomTestcases; // [ ]: customTestCase -> customTestcases
+  customTestCase: CustomTestcases; // TODO: customTestCase -> customTestcases
   setCustomTestcases: (fn: (prev: CustomTestcases) => CustomTestcases) => void;
 
-  problemHistories: ProblemInfo[]; // [ ]: problemHistories -> tabs
-  setProblemHistories: (fn: (prev: ProblemInfo[]) => ProblemInfo[]) => void; // [ ]: setProblemHistories -> setTabs
+  problemHistories: ProblemInfo[]; // TODO: problemHistories -> tabs
+  setProblemHistories: (fn: (prev: ProblemInfo[]) => ProblemInfo[]) => void; // TODO: setProblemHistories -> setTabs
 };
 
 export const createProblemSlice: StateCreator<ProblemSlice> = (set, get): ProblemSlice => ({

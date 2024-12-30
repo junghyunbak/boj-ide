@@ -4,7 +4,7 @@ class CustomSpawn {
   private env: NodeJS.ProcessEnv = {};
 
   constructor() {
-    // [ ]: zsh shell 을 기본적으로 사용하지 않는 맥 환경에서는 오류가 발생할 수 있다.
+    // BUG: zsh shell 을 기본적으로 사용하지 않는 맥 환경에서는 오류가 발생할 수 있다.
     const shellEnv =
       process.platform === 'darwin'
         ? execSync('zsh -i -c "printenv"', { encoding: 'utf-8' })

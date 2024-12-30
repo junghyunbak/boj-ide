@@ -163,7 +163,7 @@ export class Judge {
               worker.terminate();
             });
 
-            // [ ]: 타입 안정성 작업 필요
+            // TODO: 타입 안정성 작업 필요
             worker.postMessage({
               executeCmd,
               input: inputs[index],
