@@ -33,6 +33,7 @@ describe('저장 버튼이 활성화되어있는 상태', () => {
             fn();
           }
         },
+        removeAllListeners(channel) {},
       },
     };
   });
