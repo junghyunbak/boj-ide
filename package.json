@@ -135,7 +135,6 @@
     "react-dom": "^18.2.0",
     "react-markdown": "^9.0.1",
     "react-router-dom": "^6.16.0",
-    "web-streams-polyfill": "^4.0.0",
     "zustand": "^5.0.1"
   },
   "devDependencies": {
@@ -199,6 +198,7 @@
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "^5.2.2",
     "url-loader": "^4.1.1",
+    "web-streams-polyfill": "^4.0.0",
     "webpack": "^5.88.2",
     "webpack-bundle-analyzer": "^4.9.1",
     "webpack-cli": "^5.1.4",
