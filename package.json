@@ -51,7 +51,7 @@
     "start:preload": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.preload.dev.ts",
     "start:renderer": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack serve --config ./.erb/configs/webpack.config.renderer.dev.ts",
     "test": "jest --watchAll",
-    "test:renderer": "jest ./src/renderer"
+    "test:renderer": "jest --verbose ./src/renderer"
   },
   "browserslist": [
     "extends browserslist-config-erb"
@@ -90,7 +90,8 @@
       "^@/(.*)": "<rootDir>/src/$1"
     },
     "setupFiles": [
-      "./.erb/scripts/check-build-exists.ts"
+      "./.erb/scripts/check-build-exists.ts",
+      "./jest.setup.js"
     ],
     "testEnvironment": "jsdom",
     "testEnvironmentOptions": {
@@ -134,6 +135,7 @@
     "react-dom": "^18.2.0",
     "react-markdown": "^9.0.1",
     "react-router-dom": "^6.16.0",
+    "web-streams-polyfill": "^4.0.0",
     "zustand": "^5.0.1"
   },
   "devDependencies": {
