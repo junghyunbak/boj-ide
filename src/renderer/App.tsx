@@ -8,18 +8,11 @@ import './App.css';
 import './assets/fonts/fonts.css';
 
 export default function App() {
-  const [setJudgeResult] = useStore(useShallow((s) => [s.setJudgeResult]));
-  const [setIsJudging] = useStore(useShallow((s) => [s.setIsJudging]));
   const [setMessage] = useStore(useShallow((s) => [s.setMessage]));
 
   const { gotoUrl } = useWebviewRoute();
 
   useEffect(() => {
-    window.electron.ipcRenderer.on('judge-reset', () => {
-      setIsJudging(false);
-      setJudgeResult(() => []);
-    });
-
     window.electron.ipcRenderer.on('occur-error', ({ data: { message } }) => {
       setMessage(message);
     });
@@ -29,7 +22,7 @@ export default function App() {
     });
 
     window.electron.ipcRenderer.sendMessage('open-deep-link');
-  }, [setJudgeResult, setIsJudging, setMessage, gotoUrl]);
+  }, [setMessage, gotoUrl]);
 
   return <MainPage />;
 }

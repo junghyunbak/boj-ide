@@ -14,6 +14,7 @@ import { CodeBlock } from '@/renderer/components/atoms/pres/CodeBlock';
 import { TextButton } from '@/renderer/components/atoms/buttons/TextButton';
 import { Highlight } from '@/renderer/components/atoms/spans/Highlight';
 import { TransparentPreformatted } from '@/renderer/components/atoms/pres/TransparentPreformatted';
+import { useJudge } from '@/renderer/hooks/judge';
 
 interface TestCaseProps extends TC {
   judgeResult?: JudgeResult;
@@ -29,8 +30,9 @@ interface TestCaseProps extends TC {
 // [v]: [type === 'common'] 열기 버튼을 누르고 채점 결과가 존재할 경우, 실행 결과를 표시하는 테이블이 렌더링 되어야한다.
 export function TestCase({ input, output, judgeResult, type, i }: TestCaseProps) {
   const [problem] = useStore(useShallow((s) => [s.problem]));
-  const [isJudging] = useStore(useShallow((s) => [s.isJudging]));
   const [removeCustomTestCase] = useStore(useShallow((s) => [s.removeCustomTestCase]));
+
+  const { isJudging } = useJudge();
 
   const [isOpen, setIsOpen] = useState(false);
 

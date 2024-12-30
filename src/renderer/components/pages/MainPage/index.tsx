@@ -104,7 +104,6 @@ export function MainPage() {
                   overflow: hidden;
                 `}
               >
-                <OutputContent />
                 <Output />
               </div>
             </div>
