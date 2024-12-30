@@ -34,6 +34,10 @@ export function OutputContent() {
     window.electron.ipcRenderer.on('judge-reset', () => {
       resetJudge();
     });
+
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners('judge-reset');
+    };
   }, [resetJudge]);
 
   useEffect(() => {

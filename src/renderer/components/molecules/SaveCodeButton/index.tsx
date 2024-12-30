@@ -17,6 +17,10 @@ export function SaveCodeButton() {
       setMessage(isSaved ? '저장이 완료되었습니다.' : '저장에 실패하였습니다.');
       setIsCodeStale(false);
     });
+
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners('save-code-result');
+    };
   }, [setMessage, setIsCodeStale]);
 
   const handleSaveCodeButtonClick = () => {

@@ -22,6 +22,11 @@ export default function App() {
     });
 
     window.electron.ipcRenderer.sendMessage('open-deep-link');
+
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners('occur-error');
+      window.electron.ipcRenderer.removeAllListeners('open-problem');
+    };
   }, [setMessage, gotoUrl]);
 
   return <MainPage />;
