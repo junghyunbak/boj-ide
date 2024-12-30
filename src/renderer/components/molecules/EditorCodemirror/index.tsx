@@ -12,13 +12,17 @@ interface EditorCodemirrorProps {
   containerRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 
+// <유닛 테스트>
+// 역할:
+// [ ]: 컴포넌트가 언마운트되면 코드를 저장한다.
+// [ ]: 새롭게 코드를 로딩하면 히스토리를 제거한다.
 export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
   const [problem] = useStore(useShallow((s) => [s.problem]));
-  const [lang] = useStore(useShallow((s) => [s.lang]));
+  const [language] = useStore(useShallow((s) => [s.lang]));
   const [code, setCode] = useStore(useShallow((s) => [s.code, s.setCode]));
   const [mode] = useStore(useShallow((s) => [s.mode]));
   const [fontSize] = useStore(useShallow((s) => [s.fontSize]));
-  const [isCodeStale, setIsCodeStale] = useStore(useShallow((s) => [s.isCodeStale, s.setIsCodeStale]));
+  const [setIsCodeStale] = useStore(useShallow((s) => [s.setIsCodeStale]));
 
   const [editorHeight, setEditorHeight] = useState(0);
   const [editorWidth, setEditorWidth] = useState(0);
@@ -41,7 +45,7 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
 
     tmp.push(FontTheme);
 
-    switch (lang) {
+    switch (language) {
       case 'node.js':
         tmp.push(javascript());
         break;
@@ -103,7 +107,6 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
 
   /**
    * 로딩 된 소스코드를 반영하는 ipc 이벤트 초기화
-   * // TODO: memory leak 존재
    */
   useEffect(() => {
     window.electron.ipcRenderer.on('load-code-result', ({ data }) => {
@@ -117,6 +120,10 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
         setState(newState);
       }
     });
+
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners('load-code-result');
+    };
   }, [setCode, setState, state]);
 
   /**
@@ -134,25 +141,39 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
       return () => {};
     }
 
-    window.electron.ipcRenderer.sendMessage('load-code', { data: { number: problem.number, language: lang } });
+    if (problem) {
+      const { number } = problem;
+
+      window.electron.ipcRenderer.sendMessage('load-code', { data: { number, language } });
+    }
 
     return () => {
+      if (!problem) {
+        return;
+      }
+
+      const { number } = problem;
+
       window.electron.ipcRenderer.sendMessage('save-code', {
-        data: { number: problem.number, language: lang, code: useStore.getState().code, silence: true },
+        data: { number, language, code: useStore.getState().code, silence: true },
       });
     };
-  }, [problem, lang]);
+  }, [problem, language]);
 
   /**
    * 저장 이벤트 등록
    */
   useEffect(() => {
     const saveCode = () => {
-      if (!problem || !isCodeStale) {
+      if (!problem) {
         return;
       }
 
-      window.electron.ipcRenderer.sendMessage('save-code', { data: { number: problem.number, language: lang, code } });
+      const { number } = problem;
+
+      window.electron.ipcRenderer.sendMessage('save-code', {
+        data: { number, language, code: useStore.getState().code },
+      });
 
       setIsCodeStale(false);
     };
@@ -172,7 +193,7 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
     return () => {
       window.removeEventListener('keydown', handleSaveCode);
     };
-  }, [code, lang, problem, isCodeStale, setIsCodeStale]);
+  }, [problem, language, setIsCodeStale]);
 
   return <div ref={editorRef} />;
 }

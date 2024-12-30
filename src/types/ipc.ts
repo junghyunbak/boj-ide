@@ -210,6 +210,8 @@ declare global {
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['open-source-code-folder']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['load-files']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['open-deep-link']): void;
+
+        removeAllListeners(channel: ClientChannels): void;
       };
     };
   }
