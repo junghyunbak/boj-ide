@@ -14,7 +14,7 @@ import { CodeBlock } from '@/renderer/components/atoms/pres/CodeBlock';
 import { TextButton } from '@/renderer/components/atoms/buttons/TextButton';
 import { Highlight } from '@/renderer/components/atoms/spans/Highlight';
 import { TransparentPreformatted } from '@/renderer/components/atoms/pres/TransparentPreformatted';
-import { useJudge } from '@/renderer/hooks/judge';
+import { useJudge } from '@/renderer/hooks';
 
 interface TestCaseProps extends TC {
   judgeResult?: JudgeResult;

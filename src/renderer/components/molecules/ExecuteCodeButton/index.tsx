@@ -1,5 +1,5 @@
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
-import { useJudge } from '@/renderer/hooks/judge';
+import { useJudge } from '@/renderer/hooks';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 

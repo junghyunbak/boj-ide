@@ -1,5 +1,5 @@
 import { Text } from '@/renderer/components/atoms/paragraphs/Text';
-import { useJudge } from '@/renderer/hooks/judge';
+import { useJudge } from '@/renderer/hooks';
 
 export function ExecuteResultText() {
   const { totalCount, correctCount, isJudgingEnd, isCorrect } = useJudge();

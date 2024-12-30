@@ -11,7 +11,7 @@ import {
 } from '@/renderer/components/atoms/tables/ExecuteResultTable';
 import { TestCase } from '@/renderer/components/molecules/TestCase';
 import { TestCaseMaker } from '@/renderer/components/molecules/TestCaseMaker';
-import { useJudge } from '@/renderer/hooks/judge';
+import { useJudge } from '@/renderer/hooks';
 
 // <통합 테스트코드>
 
