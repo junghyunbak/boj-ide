@@ -3,8 +3,6 @@ import { css } from '@emotion/react';
 import { BookmarkTab } from '@/renderer/components/molecules/BookmarkTab';
 import { ProblemTab } from '@/renderer/components/molecules/ProblemTab';
 import { BOJ_DOMAIN, SOLVED_AC_DOMAIN } from '@/constants';
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
 
 const bookmarks: BookmarkInfo[] = [
   {
