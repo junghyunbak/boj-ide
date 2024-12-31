@@ -18,7 +18,7 @@ function execute({
   input: string;
   basePath: string;
 }): ExecuteResult {
-  const start = Date.now();
+  const start = process.hrtime();
 
   const { stderr, stdout, signal } = customSpawn.sync(executeCmd, {
     cwd: basePath,
@@ -28,11 +28,11 @@ function execute({
     maxBuffer: MAX_BUFFER_SIZE,
   });
 
-  const end = Date.now();
+  const end = process.hrtime(start);
 
   return {
     signal,
-    elapsed: end - start,
+    elapsed: Math.floor(end[1] / 1e6),
     stdout: removeAnsiText(stdout.toString()),
     stderr: removeAnsiText(stderr.toString()),
   };
