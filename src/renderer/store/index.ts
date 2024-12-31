@@ -9,6 +9,7 @@ import { createAlertSlice } from './slices/alert';
 import { createReleasesSlice } from './slices/releases';
 import { createConfirmSlice } from './slices/confirm';
 import { createBojViewSlice } from './slices/bojView';
+import { createTabSlice } from './slices/tab';
 
 export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createJudgeSlice> &
@@ -17,7 +18,8 @@ export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createAlertSlice> &
   ReturnType<typeof createReleasesSlice> &
   ReturnType<typeof createConfirmSlice> &
-  ReturnType<typeof createBojViewSlice>;
+  ReturnType<typeof createBojViewSlice> &
+  ReturnType<typeof createTabSlice>;
 
 export const useStore = create<StoreState>()(
   persist(
@@ -30,6 +32,7 @@ export const useStore = create<StoreState>()(
       ...createAlertSlice(...a),
       ...createReleasesSlice(...a),
       ...createConfirmSlice(...a),
+      ...createTabSlice(...a),
     }),
     {
       name: 'zustandStore',

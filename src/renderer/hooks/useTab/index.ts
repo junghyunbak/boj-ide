@@ -38,9 +38,34 @@ export function useTab() {
     return nextTabs[i] || nextTabs[i - 1];
   };
 
+  const reorderTab = (srcIndex: number, destIndex: number) => {
+    setTabs((prev) => {
+      const tmp = [...prev] as (ProblemInfo | null)[];
+
+      const [moveElement] = tmp.splice(srcIndex, 1, null);
+
+      if (!moveElement) {
+        return prev;
+      }
+
+      tmp.splice(destIndex, 0, moveElement);
+
+      const next: ProblemInfo[] = tmp.reduce<ProblemInfo[]>((acc, cur) => {
+        if (cur !== null) {
+          acc.push(cur);
+        }
+
+        return acc;
+      }, []);
+
+      return next;
+    });
+  };
+
   return {
     tabs,
     addTab,
     removeTab,
+    reorderTab,
   };
 }

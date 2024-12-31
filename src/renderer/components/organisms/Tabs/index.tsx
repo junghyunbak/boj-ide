@@ -1,7 +1,8 @@
-import { useTab, useXScroll } from '@/renderer/hooks';
+import { useTab } from '@/renderer/hooks';
 import { css } from '@emotion/react';
 import { BookmarkTab } from '@/renderer/components/molecules/BookmarkTab';
 import { ProblemTab } from '@/renderer/components/molecules/ProblemTab';
+import { MovableTab } from '@/renderer/components/molecules/MovableTab';
 import { BOJ_DOMAIN, SOLVED_AC_DOMAIN } from '@/constants';
 
 const bookmarks: BookmarkInfo[] = [
@@ -16,22 +17,18 @@ const bookmarks: BookmarkInfo[] = [
   },
 ];
 
-export function Tab() {
+export function Tabs() {
   const { tabs } = useTab();
-  const { xScrollRef } = useXScroll();
 
   return (
     <div
-      ref={xScrollRef}
       css={css`
         display: flex;
-        overflow-x: scroll;
+        width: 100%;
+        overflow-x: hidden;
         background-color: #f9f9f9;
         padding-top: 0.25rem;
-
-        &::-webkit-scrollbar {
-          display: none;
-        }
+        border-bottom: 1px solid lightgray;
       `}
     >
       {bookmarks.map((bookmarkInfo) => {
@@ -39,15 +36,18 @@ export function Tab() {
       })}
 
       {tabs.map((problemInfo, index) => (
-        <ProblemTab key={problemInfo.number} problemInfo={problemInfo} tabIndex={index} />
+        <MovableTab key={problemInfo.number} index={index}>
+          <ProblemTab problemInfo={problemInfo} tabIndex={index} />
+        </MovableTab>
       ))}
 
       <div
         css={css`
           flex: 1;
-          border-bottom: 1px solid lightgray;
         `}
-      />
+      >
+        <MovableTab index={tabs.length} polyfill />
+      </div>
     </div>
   );
 }

@@ -8,10 +8,11 @@ import { AlertModal } from '@/renderer/components/molecules/AlertModal';
 import { ConfirmModal } from '@/renderer/components/molecules/ConfirmModal';
 import { BojView } from '@/renderer/components/molecules/BojView';
 import { Footer } from '@/renderer/components/organisms/Footer';
-import { Tab } from '@/renderer/components/organisms/Tab';
+import { Tabs } from '@/renderer/components/organisms/Tabs';
 import { Editor } from '@/renderer/components/templates/Editor';
 import { RowLine } from '@/renderer/components/atoms/lines/RowLIne';
 import { Output } from '@/renderer/components/templates/Output';
+import { TabAfterImage } from '@/renderer/components/molecules/TabAfterImage';
 
 export function MainPage() {
   const { leftRef, containerRef, resizerRef } = useHorizontalLayout({
@@ -40,7 +41,7 @@ export function MainPage() {
         flex-direction: column;
       `}
     >
-      <Tab />
+      <Tabs />
       <Nav />
       <RowLine />
 
@@ -114,6 +115,7 @@ export function MainPage() {
 
       <AlertModal />
       <ConfirmModal />
+      <TabAfterImage />
     </div>
   );
 }
