@@ -21,12 +21,12 @@ export function ProblemTab({ problemInfo, tabIndex }: ProblemTabProps) {
   };
 
   const handleTabCloseButtonClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    const problem = removeTab(tabIndex);
+    const nextProblem = removeTab(tabIndex);
 
-    if (!problem) {
+    if (!nextProblem) {
       gotoUrl(`https://${BOJ_DOMAIN}/problemset`);
     } else {
-      gotoProblem(problem);
+      gotoProblem(nextProblem);
     }
 
     e.stopPropagation();
