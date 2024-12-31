@@ -19,7 +19,6 @@ export function TabButton({ onClick, children, isSelect = false }: TabButtonProp
         border-top: 1px solid ${isSelect ? color.primaryBg : 'transparent'};
         border-left: 1px solid ${isSelect ? 'lightgray' : 'transparent'};
         border-right: 1px solid ${isSelect ? 'lightgray' : 'transparent'};
-        margin-right: -1px;
         outline: none;
         cursor: pointer;
       `}

@@ -23,30 +23,37 @@ export function Tabs() {
   return (
     <div
       css={css`
-        display: flex;
         width: 100%;
-        overflow-x: hidden;
         background-color: #f9f9f9;
-        padding-top: 0.25rem;
         border-bottom: 1px solid lightgray;
       `}
     >
-      {bookmarks.map((bookmarkInfo) => {
-        return <BookmarkTab key={bookmarkInfo.url} bookmarkInfo={bookmarkInfo} />;
-      })}
-
-      {tabs.map((problemInfo, index) => (
-        <MovableTab key={problemInfo.number} index={index}>
-          <ProblemTab problemInfo={problemInfo} tabIndex={index} />
-        </MovableTab>
-      ))}
-
       <div
         css={css`
-          flex: 1;
+          display: flex;
+          width: 100%;
+          overflow-x: hidden;
+          padding-top: 0.25rem;
+          margin-bottom: -1px;
         `}
       >
-        <MovableTab index={tabs.length} polyfill />
+        {bookmarks.map((bookmarkInfo) => {
+          return <BookmarkTab key={bookmarkInfo.url} bookmarkInfo={bookmarkInfo} />;
+        })}
+
+        {tabs.map((problemInfo, index) => (
+          <MovableTab key={problemInfo.number} index={index}>
+            <ProblemTab problemInfo={problemInfo} tabIndex={index} />
+          </MovableTab>
+        ))}
+
+        <div
+          css={css`
+            flex: 1;
+          `}
+        >
+          <MovableTab index={tabs.length} polyfill />
+        </div>
       </div>
     </div>
   );
