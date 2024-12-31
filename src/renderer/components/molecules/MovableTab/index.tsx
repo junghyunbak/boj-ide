@@ -16,7 +16,7 @@ export function MovableTab({ children, index, polyfill = false }: MovableTabProp
 
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const { reorderTab } = useTab();
+  const { tabs, reorderTab } = useTab();
 
   const [afterImageUrl, setAfterImageUrl] = useState('');
 
@@ -32,7 +32,7 @@ export function MovableTab({ children, index, polyfill = false }: MovableTabProp
 
       setAfterImageUrl(imageUrl);
     })();
-  }, []);
+  }, [tabs]);
 
   useEffect(() => {
     const container = containerRef.current;
