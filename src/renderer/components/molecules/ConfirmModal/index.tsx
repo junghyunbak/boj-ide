@@ -1,33 +1,22 @@
-import { useShallow } from 'zustand/shallow';
-import { useStore } from '@/renderer/store';
 import { Modal } from '@/renderer/components/atoms/modal/Modal';
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
-import { Text } from '@/renderer/components/atoms/paragraphs/Text';
+import { Markdown } from '@/renderer/components/atoms/Markdown';
 import { css } from '@emotion/react';
+import { useConfirmModal } from '@/renderer/hooks/useConfirmModal';
 
 export function ConfirmModal() {
-  const [confirmMessage, callback, setConfirm] = useStore(
-    useShallow((s) => [s.confirmMessage, s.callback, s.setConfirm]),
-  );
+  const { isConfirmModalOpen, confirmMessage, approveConfirmModal, cancelConfirmModal } = useConfirmModal();
 
   const handleOkButtonClick = () => {
-    if (!callback) {
-      return;
-    }
-
-    callback();
-
-    setConfirm('', null);
+    approveConfirmModal();
   };
 
   const handleNoButtonClick = () => {
-    setConfirm('', null);
+    cancelConfirmModal();
   };
 
-  const isOpen = callback instanceof Function;
-
   return (
-    <Modal isOpen={isOpen} onCloseButtonClick={handleNoButtonClick}>
+    <Modal isOpen={isConfirmModalOpen} onCloseButtonClick={handleNoButtonClick}>
       <div
         css={css`
           padding: 1rem;
@@ -37,7 +26,7 @@ export function ConfirmModal() {
           gap: 0.5rem;
         `}
       >
-        <Text>{confirmMessage}</Text>
+        <Markdown>{confirmMessage}</Markdown>
 
         <div
           css={css`

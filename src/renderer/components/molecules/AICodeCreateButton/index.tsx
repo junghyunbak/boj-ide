@@ -3,7 +3,7 @@ import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 import { useStreamingAICode } from '@/renderer/hooks';
-import { AI_ERROR_MESSAGE } from '@/constants';
+import { AI_ERROR_MESSAGE, AI_EXECUTE_QUESTION_MESSAGE } from '@/constants';
 
 export function AICodeCreateButton() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
@@ -24,7 +24,7 @@ export function AICodeCreateButton() {
   }, [completion, setCode]);
 
   const handleAICodeCreateButtonClick = () => {
-    setConfirm('기존의 코드가 삭제됩니다.\n계속하시겠습니까?', async () => {
+    setConfirm(AI_EXECUTE_QUESTION_MESSAGE, async () => {
       if (!problem) {
         return;
       }
