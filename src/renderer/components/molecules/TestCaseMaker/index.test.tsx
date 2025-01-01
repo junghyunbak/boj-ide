@@ -32,6 +32,6 @@ describe('문제가 초기화 되어있는 상태', () => {
 
     fireEvent.click($addButton);
 
-    expect(typeof useStore.getState().message).toBe('string');
+    expect(typeof useStore.getState().alertContent).toBe('string');
   });
 });

@@ -1,22 +1,19 @@
 import { useEffect } from 'react';
-import { useShallow } from 'zustand/shallow';
-import { useStore } from '@/renderer/store';
 import { css } from '@emotion/react';
 import { Modal } from '@/renderer/components/atoms/modal/Modal';
-import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 import { Markdown } from '@/renderer/components/atoms/Markdown';
+import { Text } from '@/renderer/components/atoms/paragraphs/Text';
+import { TextButton } from '@/renderer/components/atoms/buttons/TextButton';
+import { useAlertModalController, useAlertModalState } from '@/renderer/hooks/useAlertModal';
 
 export function AlertModal() {
-  const [message, setMessage] = useStore(useShallow((s) => [s.message, s.setMessage]));
+  const { alertTitle, alertContent, isAlertModalOpen } = useAlertModalState();
+  const { closeAlertModal } = useAlertModalController();
 
   useEffect(() => {
-    if (!message) {
-      return () => {};
-    }
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' || e.key === 'Enter') {
-        setMessage(null);
+        closeAlertModal();
       }
     };
 
@@ -25,34 +22,51 @@ export function AlertModal() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [message, setMessage]);
+  }, [closeAlertModal]);
 
   const handleCloseButtonClick = () => {
-    setMessage(null);
+    closeAlertModal();
   };
 
-  const isOpen = message !== null;
-
   return (
-    <Modal isOpen={isOpen} onCloseButtonClick={handleCloseButtonClick}>
+    <Modal isOpen={isAlertModalOpen} onCloseButtonClick={handleCloseButtonClick}>
       <div
         css={css`
-          padding: 0.5rem;
-          border-bottom: 1px solid lightgray;
+          border: 1px solid lightgray;
           display: flex;
-          justify-content: end;
+          flex-direction: column;
+          overflow: hidden;
         `}
       >
-        <ActionButton onClick={handleCloseButtonClick}>ESC / ENTER</ActionButton>
-      </div>
+        <div
+          css={css`
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid lightgray;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          `}
+        >
+          <Text>{alertTitle}</Text>
+          <TextButton onClick={handleCloseButtonClick}>닫기</TextButton>
+        </div>
 
-      <div
-        css={css`
-          overflow-y: scroll;
-          padding: 2rem;
-        `}
-      >
-        <Markdown>{message || ''}</Markdown>
+        <div
+          css={css`
+            flex: 1;
+            overflow: hidden;
+            overflow-y: scroll;
+          `}
+        >
+          <div
+            css={css`
+              padding: 1rem;
+            `}
+          >
+            <Markdown>{alertContent || ''}</Markdown>
+          </div>
+        </div>
       </div>
     </Modal>
   );

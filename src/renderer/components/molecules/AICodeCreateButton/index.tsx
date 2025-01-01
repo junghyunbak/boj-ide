@@ -4,40 +4,37 @@ import { useShallow } from 'zustand/shallow';
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 import { useStreamingAICode } from '@/renderer/hooks';
 import { AI_ERROR_MESSAGE, AI_EXECUTE_QUESTION_MESSAGE } from '@/constants';
+import { useConfirmModalController } from '@/renderer/hooks/useConfirmModal';
+import { useAlertModalController } from '@/renderer/hooks/useAlertModal';
 
 export function AICodeCreateButton() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
-  const [setConfirm] = useStore(useShallow((s) => [s.setConfirm]));
   const [setCode] = useStore(useShallow((s) => [s.setCode]));
-  const [setMessage] = useStore(useShallow((s) => [s.setMessage]));
 
-  const { complete, completion, error, isLoading } = useStreamingAICode();
+  const { fireAlertModal } = useAlertModalController();
+  const { fireConfirmModal } = useConfirmModalController();
 
-  useEffect(() => {
-    if (error) {
-      setMessage(AI_ERROR_MESSAGE);
-    }
-  }, [error, setMessage]);
+  const { complete, completion, isLoading } = useStreamingAICode({
+    onError() {
+      fireAlertModal('에러 발생', AI_ERROR_MESSAGE);
+    },
+  });
 
   useEffect(() => {
     setCode(completion);
   }, [completion, setCode]);
 
   const handleAICodeCreateButtonClick = () => {
-    setConfirm(AI_EXECUTE_QUESTION_MESSAGE, async () => {
+    fireConfirmModal(AI_EXECUTE_QUESTION_MESSAGE, async () => {
       if (!problem) {
         return;
       }
-
-      setCode('');
-
-      const { lang } = useStore.getState();
 
       complete('', {
         body: {
           inputs: problem.testCase.inputs,
           inputDesc: problem.inputDesc,
-          language: lang,
+          language: useStore.getState().lang,
         },
       });
     });

@@ -1,19 +1,16 @@
 import { css } from '@emotion/react';
 import { useState } from 'react';
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
 import { TextArea } from '@/renderer/components/atoms/textareas/TextArea';
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 import { useProblem } from '@/renderer/hooks';
+import { useAlertModalController } from '@/renderer/hooks/useAlertModal';
 
 export function TestCaseMaker() {
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
 
   const { problem, addCustomTestcase } = useProblem();
-
-  // TODO: 얘도 커스텀 훅으로
-  const [setMessage] = useStore(useShallow((s) => [s.setMessage]));
+  const { fireAlertModal } = useAlertModalController();
 
   const handleAddTestCaseButtonClick = () => {
     const item: TC = {
@@ -23,7 +20,7 @@ export function TestCaseMaker() {
     };
 
     if (!input || !output) {
-      setMessage('입력과 출력을 모두 입력하세요.');
+      fireAlertModal('안내', '입력과 출력을 모두 입력하세요.');
       return;
     }
 

@@ -1,14 +1,18 @@
+import { css } from '@emotion/react';
 import { Modal } from '@/renderer/components/atoms/modal/Modal';
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 import { Markdown } from '@/renderer/components/atoms/Markdown';
-import { css } from '@emotion/react';
-import { useConfirmModal } from '@/renderer/hooks/useConfirmModal';
+import { useConfirmModalController, useConfirmModalState } from '@/renderer/hooks/useConfirmModal';
 
 export function ConfirmModal() {
-  const { isConfirmModalOpen, confirmMessage, approveConfirmModal, cancelConfirmModal } = useConfirmModal();
+  const { confirmCallback, confirmMessage, isConfirmModalOpen } = useConfirmModalState();
+  const { cancelConfirmModal } = useConfirmModalController();
 
   const handleOkButtonClick = () => {
-    approveConfirmModal();
+    if (confirmCallback instanceof Function) {
+      confirmCallback();
+    }
+    cancelConfirmModal();
   };
 
   const handleNoButtonClick = () => {

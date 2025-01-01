@@ -1,33 +1,35 @@
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-export function useConfirmModal() {
-  const [confirmMessage, callback, setConfirm] = useStore(
-    useShallow((s) => [s.confirmMessage, s.callback, s.setConfirm]),
-  );
+export function useConfirmModalState() {
+  const [confirmMessage] = useStore(useShallow((s) => [s.confirmMessage]));
+  const [confirmCallback] = useStore(useShallow((s) => [s.confirmCallback]));
 
-  const fireConfirmModal = (message: string, func: () => void) => {
-    setConfirm(message, func);
+  const isConfirmModalOpen = confirmCallback instanceof Function;
+
+  return {
+    confirmMessage,
+    confirmCallback,
+    isConfirmModalOpen,
   };
+}
 
-  const approveConfirmModal = () => {
-    if (callback instanceof Function) {
-      callback();
-      setConfirm('', null);
-    }
+export function useConfirmModalController() {
+  const [setConfirmMessage] = useStore(useShallow((s) => [s.setConfirmMessage]));
+  const [setConfirmCallback] = useStore(useShallow((s) => [s.setConfirmCallback]));
+
+  const fireConfirmModal = (message: string, cb: () => void) => {
+    setConfirmCallback(cb);
+    setConfirmMessage(message);
   };
 
   const cancelConfirmModal = () => {
-    setConfirm('', null);
+    setConfirmCallback(null);
+    setConfirmMessage(null);
   };
 
-  const isConfirmModalOpen = callback instanceof Function;
-
   return {
-    isConfirmModalOpen,
-    confirmMessage,
     fireConfirmModal,
-    approveConfirmModal,
     cancelConfirmModal,
   };
 }

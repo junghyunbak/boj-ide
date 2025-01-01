@@ -1,10 +1,9 @@
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
 import { RELEASE_VERSION } from '@/constants';
 import { TransparentButton } from '@/renderer/components/atoms/buttons/TransparentButton';
 import { type Endpoints } from '@octokit/types';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { useAlertModalController } from '@/renderer/hooks/useAlertModal';
 
 type GithubReleases = Endpoints['GET /repos/{owner}/{repo}/releases']['response']['data'];
 
@@ -18,20 +17,20 @@ export function ReleasesButton() {
     },
   });
 
-  const [setMessage] = useStore(useShallow((s) => [s.setMessage]));
+  const { fireAlertModal } = useAlertModalController();
 
   const handleReleaseButtonClick = () => {
     if (!releases || isError) {
       return;
     }
 
-    setMessage(
-      releases
-        .map((v) => {
-          return [`## ${v.name}`, v.body, `[다운로드](${v.html_url})`].join('\n\n');
-        })
-        .join('\n\n'),
-    );
+    const content = releases
+      .map((v) => {
+        return [`## ${v.name}`, v.body, `[다운로드](${v.html_url})`].join('\n\n');
+      })
+      .join('\n\n');
+
+    fireAlertModal('Releases', content);
   };
 
   return <TransparentButton onClick={handleReleaseButtonClick} size="small">{`v${RELEASE_VERSION}`}</TransparentButton>;

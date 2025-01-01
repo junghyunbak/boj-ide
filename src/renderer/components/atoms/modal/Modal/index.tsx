@@ -42,6 +42,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(({ children, isOpen,
           background-color: white;
           display: flex;
           flex-direction: column;
+          overflow: hidden;
         `}
       >
         {children}

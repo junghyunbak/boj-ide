@@ -1,18 +1,19 @@
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
+import { useConfirmModalController } from '@/renderer/hooks/useConfirmModal';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
 export function SubmitButton() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
-  const [setConfirm] = useStore(useShallow((s) => [s.setConfirm]));
+
+  const { fireConfirmModal } = useConfirmModalController();
 
   const handleSubmitButtonClick = () => {
     if (!problem) {
       return;
     }
 
-    // TODO: 훅으로 분리
-    setConfirm('제출하시겠습니까?', () => {
+    fireConfirmModal('제출하시겠습니까?', () => {
       const { code, lang } = useStore.getState();
 
       window.electron.ipcRenderer.sendMessage('submit-code', {

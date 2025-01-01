@@ -5,8 +5,7 @@ import { createEditorSlice } from './slices/editor';
 import { createJudgeSlice } from './slices/judge';
 import { createProblemSlice } from './slices/problem';
 import { createLayoutSlice } from './slices/layout';
-import { createAlertSlice } from './slices/alert';
-import { createConfirmSlice } from './slices/confirm';
+import { createModalSlice } from './slices/modal';
 import { createBojViewSlice } from './slices/bojView';
 import { createTabSlice } from './slices/tab';
 
@@ -14,8 +13,7 @@ export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createJudgeSlice> &
   ReturnType<typeof createProblemSlice> &
   ReturnType<typeof createLayoutSlice> &
-  ReturnType<typeof createAlertSlice> &
-  ReturnType<typeof createConfirmSlice> &
+  ReturnType<typeof createModalSlice> &
   ReturnType<typeof createBojViewSlice> &
   ReturnType<typeof createTabSlice>;
 
@@ -27,8 +25,7 @@ export const useStore = create<StoreState>()(
       ...createJudgeSlice(...a),
       ...createProblemSlice(...a),
       ...createLayoutSlice(...a),
-      ...createAlertSlice(...a),
-      ...createConfirmSlice(...a),
+      ...createModalSlice(...a),
       ...createTabSlice(...a),
     }),
     {

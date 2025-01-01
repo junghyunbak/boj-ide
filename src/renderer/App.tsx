@@ -19,13 +19,15 @@ const queryClient = new QueryClient({
 });
 
 export default function App() {
-  const [setMessage] = useStore(useShallow((s) => [s.setMessage]));
+  const [setAlertTitle] = useStore(useShallow((s) => [s.setAlertTitle]));
+  const [setAlertContent] = useStore(useShallow((s) => [s.setAlertContent]));
 
   const { gotoUrl } = useWebview();
 
   useEffect(() => {
     window.electron.ipcRenderer.on('occur-error', ({ data: { message } }) => {
-      setMessage(message);
+      setAlertTitle('에러 발생');
+      setAlertContent(message);
     });
 
     window.electron.ipcRenderer.on('open-problem', ({ data: { problemNumber } }) => {
@@ -38,7 +40,7 @@ export default function App() {
       window.electron.ipcRenderer.removeAllListeners('occur-error');
       window.electron.ipcRenderer.removeAllListeners('open-problem');
     };
-  }, [setMessage, gotoUrl]);
+  }, [gotoUrl, setAlertContent, setAlertTitle]);
 
   return (
     <QueryClientProvider client={queryClient}>

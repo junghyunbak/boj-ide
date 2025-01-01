@@ -48,6 +48,6 @@ describe('저장 버튼이 활성화되어있는 상태', () => {
 
     fireEvent.click(screen.getByRole<HTMLButtonElement>('button'));
 
-    expect(typeof useStore.getState().message).toBe('string');
+    expect(typeof useStore.getState().alertContent).toBe('string');
   });
 });
