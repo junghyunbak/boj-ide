@@ -1,6 +1,7 @@
 import { TabButton } from '@/renderer/components/atoms/buttons/TabButton';
 import { useWebview } from '@/renderer/hooks';
 import { useStore } from '@/renderer/store';
+import { useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/shallow';
 
 interface BookmarkTabProps {
@@ -13,9 +14,7 @@ export function BookmarkTab({ bookmarkInfo }: BookmarkTabProps) {
 
   const { gotoUrl } = useWebview();
 
-  const handleBookmarkItemClick = () => {
-    gotoUrl(bookmarkInfo.url + (bookmarkInfo.path || ''));
-  };
+  const ref = useRef<HTMLButtonElement>(null);
 
   const isSelect = (() => {
     if (problem) {
@@ -29,8 +28,18 @@ export function BookmarkTab({ bookmarkInfo }: BookmarkTabProps) {
     return false;
   })();
 
+  useEffect(() => {
+    if (isSelect && ref.current) {
+      ref.current.scrollIntoView();
+    }
+  }, [isSelect]);
+
+  const handleBookmarkItemClick = () => {
+    gotoUrl(bookmarkInfo.url + (bookmarkInfo.path || ''));
+  };
+
   return (
-    <TabButton onClick={handleBookmarkItemClick} isSelect={isSelect}>
+    <TabButton onClick={handleBookmarkItemClick} isSelect={isSelect} ref={ref}>
       {bookmarkInfo.title}
     </TabButton>
   );
