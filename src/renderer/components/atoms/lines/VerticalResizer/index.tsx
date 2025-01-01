@@ -14,6 +14,7 @@ export const VerticalResizer = forwardRef<HTMLDivElement>((_, ref) => {
         display: flex;
         align-items: center;
         justify-content: space-evenly;
+        background-color: #f5f5f5;
         cursor: col-resize;
       `}
     >
