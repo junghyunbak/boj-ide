@@ -32,33 +32,39 @@ export function AlertModal() {
     <Modal isOpen={isAlertModalOpen} onCloseButtonClick={handleCloseButtonClick}>
       <div
         css={css`
-          border: 1px solid lightgray;
-          display: flex;
-          flex-direction: column;
-          overflow: hidden;
+          padding: 3rem 0;
+          overflow-y: scroll;
+          max-height: 100dvh;
+          &::-webkit-scrollbar {
+            display: none;
+          }
         `}
       >
         <div
           css={css`
-            padding: 0.5rem 1rem;
-            border-bottom: 1px solid lightgray;
-            background-color: #f5f5f5;
+            border: 1px solid lightgray;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            background-color: white;
+            box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
+            max-width: 64rem;
           `}
         >
-          <Text>{alertTitle}</Text>
-          <TextButton onClick={handleCloseButtonClick}>닫기</TextButton>
-        </div>
+          <div
+            css={css`
+              padding: 0.5rem 1rem;
+              border-bottom: 1px solid lightgray;
+              background-color: #f5f5f5;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              position: sticky;
+            `}
+          >
+            <Text>{alertTitle}</Text>
+            <TextButton onClick={handleCloseButtonClick}>닫기</TextButton>
+          </div>
 
-        <div
-          css={css`
-            flex: 1;
-            overflow: hidden;
-            overflow-y: scroll;
-          `}
-        >
           <div
             css={css`
               padding: 1rem;

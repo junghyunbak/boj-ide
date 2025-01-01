@@ -58,7 +58,7 @@ export function Markdown({ children }: MarkdownProps) {
         }
 
         img {
-          width: 100%;
+          max-width: 100%;
         }
 
         a {

@@ -36,13 +36,6 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(({ children, isOpen,
       <div
         css={css`
           position: absolute;
-          max-width: 70%;
-          max-height: 90%;
-          box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
-          background-color: white;
-          display: flex;
-          flex-direction: column;
-          overflow: hidden;
         `}
       >
         {children}

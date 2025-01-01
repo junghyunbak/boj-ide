@@ -16,7 +16,7 @@ export function ActionButton({ variant = 'primary', children, onClick, disabled 
       case 'secondary':
         return color.secondaryBg;
       case 'cancel':
-        return 'lightgray';
+        return '#95a5a6';
       case 'primary':
       default:
         return color.primaryBg;
