@@ -21,7 +21,7 @@ export function TransparentButton({ children, onClick, size = 'normal' }: Transp
   const padding = (() => {
     switch (size) {
       case 'small':
-        return '0.125rem 0.25rem';
+        return '0.2rem 0.4rem';
       case 'normal':
       default:
         return '0.4rem 0.8rem';

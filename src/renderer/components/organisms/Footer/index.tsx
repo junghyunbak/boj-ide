@@ -8,7 +8,6 @@ export function Footer() {
     <div
       className={css`
         width: 100%;
-        height: 35px;
         border-top: 1px solid lightgray;
         display: flex;
         justify-content: space-between;
