@@ -4,7 +4,7 @@ import { Modal } from '@/renderer/components/atoms/modal/Modal';
 import { Markdown } from '@/renderer/components/atoms/Markdown';
 import { Text } from '@/renderer/components/atoms/paragraphs/Text';
 import { TextButton } from '@/renderer/components/atoms/buttons/TextButton';
-import { useAlertModalController, useAlertModalState } from '@/renderer/hooks/useAlertModal';
+import { useAlertModalController, useAlertModalState } from '@/renderer/hooks';
 
 export function AlertModal() {
   const { alertTitle, alertContent, isAlertModalOpen } = useAlertModalState();

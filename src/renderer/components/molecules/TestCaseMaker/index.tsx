@@ -2,8 +2,7 @@ import { css } from '@emotion/react';
 import { useState } from 'react';
 import { TextArea } from '@/renderer/components/atoms/textareas/TextArea';
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
-import { useProblem } from '@/renderer/hooks';
-import { useAlertModalController } from '@/renderer/hooks/useAlertModal';
+import { useProblem, useAlertModalController } from '@/renderer/hooks';
 
 export function TestCaseMaker() {
   const [input, setInput] = useState('');

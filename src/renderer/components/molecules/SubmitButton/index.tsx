@@ -1,5 +1,5 @@
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
-import { useConfirmModalController } from '@/renderer/hooks/useConfirmModal';
+import { useConfirmModalController } from '@/renderer/hooks';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 

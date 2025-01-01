@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import { Modal } from '@/renderer/components/atoms/modal/Modal';
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 import { Markdown } from '@/renderer/components/atoms/Markdown';
-import { useConfirmModalController, useConfirmModalState } from '@/renderer/hooks/useConfirmModal';
+import { useConfirmModalController, useConfirmModalState } from '@/renderer/hooks';
 
 export function ConfirmModal() {
   const { confirmCallback, confirmMessage, isConfirmModalOpen } = useConfirmModalState();

@@ -1,11 +1,10 @@
 import { useEffect } from 'react';
-import { useShallow } from 'zustand/shallow';
-import { useStore } from '@/renderer/store';
 import { BOJ_DOMAIN } from '@/constants';
 import { MainPage } from '@/renderer/components/pages/MainPage';
-import { useWebview } from '@/renderer/hooks';
+import { useWebview, useAlertModalController } from '@/renderer/hooks';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
 import './App.css';
 import './assets/fonts/fonts.css';
 
@@ -19,15 +18,12 @@ const queryClient = new QueryClient({
 });
 
 export default function App() {
-  const [setAlertTitle] = useStore(useShallow((s) => [s.setAlertTitle]));
-  const [setAlertContent] = useStore(useShallow((s) => [s.setAlertContent]));
-
+  const { fireAlertModal } = useAlertModalController();
   const { gotoUrl } = useWebview();
 
   useEffect(() => {
     window.electron.ipcRenderer.on('occur-error', ({ data: { message } }) => {
-      setAlertTitle('에러 발생');
-      setAlertContent(message);
+      fireAlertModal('에러 발생', message);
     });
 
     window.electron.ipcRenderer.on('open-problem', ({ data: { problemNumber } }) => {
@@ -40,7 +36,7 @@ export default function App() {
       window.electron.ipcRenderer.removeAllListeners('occur-error');
       window.electron.ipcRenderer.removeAllListeners('open-problem');
     };
-  }, [gotoUrl, setAlertContent, setAlertTitle]);
+  }, [fireAlertModal, gotoUrl]);
 
   return (
     <QueryClientProvider client={queryClient}>
