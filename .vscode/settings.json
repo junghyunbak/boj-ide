@@ -4,13 +4,10 @@
     ".prettierrc": "jsonc",
     ".eslintignore": "ignore"
   },
-  
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "html",
-    "typescriptreact"
-  ],
+
+  "eslint.validate": ["javascript", "javascriptreact", "html", "typescriptreact"],
+
+  "prettier.documentSelectors": ["**/*.svg"],
 
   "javascript.validate.enable": false,
   "javascript.format.enable": false,

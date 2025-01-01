@@ -68,6 +68,12 @@
         "options": {
           "parser": "json"
         }
+      },
+      {
+        "files": "*.svg",
+        "options": {
+          "parser": "html"
+        }
       }
     ]
   },
