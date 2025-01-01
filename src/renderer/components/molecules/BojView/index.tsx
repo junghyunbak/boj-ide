@@ -36,6 +36,10 @@ export function BojView() {
 
       const problemInfo = getProblemInfo(html, url);
 
+      if (!problemInfo) {
+        return;
+      }
+
       setProblem(problemInfo);
       addTab(problemInfo);
     };
@@ -67,12 +71,16 @@ export function BojView() {
   );
 }
 
-function getProblemInfo(bojProblemHtml: string, url: string): ProblemInfo {
+function getProblemInfo(bojProblemHtml: string, url: string): ProblemInfo | null {
   const $ = cheerio.load(bojProblemHtml);
 
   const number = (new RegExp(`https://${BOJ_DOMAIN}/problem/([0-9]+)`).exec(url) || [])[1] || '';
   const name = $('#problem_title').html() || '';
   const inputDesc = $('#problem_input').html() || '';
+
+  if (number === '' || name === '') {
+    return null;
+  }
 
   const inputs = Array.from($('[id|="sample-input"]'))
     .map((v) => {
