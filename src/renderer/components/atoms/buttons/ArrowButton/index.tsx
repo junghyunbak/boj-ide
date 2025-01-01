@@ -40,9 +40,6 @@ export function ArrowButton({ direction = 'left', disabled = false, onClick }: A
           color: lightgray;
           cursor: auto;
         }
-        &:not(:disabled):hover {
-          background-color: #ececec;
-        }
       `}
       disabled={disabled}
       onClick={onClick}
