@@ -3,6 +3,7 @@ import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 import { useStreamingAICode } from '@/renderer/hooks';
+import { AI_ERROR_MESSAGE } from '@/constants';
 
 export function AICodeCreateButton() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
@@ -14,7 +15,7 @@ export function AICodeCreateButton() {
 
   useEffect(() => {
     if (error) {
-      setMessage(`## ️오류 발생\n### 원인\n1. AI 서버 문제 발생\n2. AI 사용량 한도초과`);
+      setMessage(AI_ERROR_MESSAGE);
     }
   }, [error, setMessage]);
 
