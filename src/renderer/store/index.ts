@@ -6,7 +6,6 @@ import { createJudgeSlice } from './slices/judge';
 import { createProblemSlice } from './slices/problem';
 import { createLayoutSlice } from './slices/layout';
 import { createAlertSlice } from './slices/alert';
-import { createReleasesSlice } from './slices/releases';
 import { createConfirmSlice } from './slices/confirm';
 import { createBojViewSlice } from './slices/bojView';
 import { createTabSlice } from './slices/tab';
@@ -16,7 +15,6 @@ export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createProblemSlice> &
   ReturnType<typeof createLayoutSlice> &
   ReturnType<typeof createAlertSlice> &
-  ReturnType<typeof createReleasesSlice> &
   ReturnType<typeof createConfirmSlice> &
   ReturnType<typeof createBojViewSlice> &
   ReturnType<typeof createTabSlice>;
@@ -30,25 +28,13 @@ export const useStore = create<StoreState>()(
       ...createProblemSlice(...a),
       ...createLayoutSlice(...a),
       ...createAlertSlice(...a),
-      ...createReleasesSlice(...a),
       ...createConfirmSlice(...a),
       ...createTabSlice(...a),
     }),
     {
       name: 'zustandStore',
       partialize: (s) => {
-        const {
-          problem,
-          lang,
-          mode,
-          leftRatio,
-          topRatio,
-          problemHistories,
-          customTestCase,
-          oldReleases,
-          fontSize,
-          webviewUrl,
-        } = s;
+        const { problem, lang, mode, leftRatio, topRatio, problemHistories, customTestCase, fontSize, webviewUrl } = s;
 
         return {
           problem,
@@ -58,7 +44,6 @@ export const useStore = create<StoreState>()(
           topRatio,
           problemHistories,
           customTestCase,
-          oldReleases,
           fontSize,
           webviewUrl,
         };

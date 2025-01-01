@@ -6,6 +6,16 @@ import { MainPage } from '@/renderer/components/pages/MainPage';
 import { useWebview } from '@/renderer/hooks';
 import './App.css';
 import './assets/fonts/fonts.css';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  },
+});
 
 export default function App() {
   const [setMessage] = useStore(useShallow((s) => [s.setMessage]));
@@ -29,5 +39,9 @@ export default function App() {
     };
   }, [setMessage, gotoUrl]);
 
-  return <MainPage />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <MainPage />
+    </QueryClientProvider>
+  );
 }
