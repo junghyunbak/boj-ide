@@ -18,10 +18,10 @@ export function SettingButton({ onClick }: SettingButtonProps) {
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 0;
+        padding: 0.5rem;
       `}
     >
-      <Gear width="1.5rem" />
+      <Gear width="1rem" />
     </button>
   );
 }
