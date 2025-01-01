@@ -4,9 +4,10 @@ import { useStore } from '@/renderer/store';
 import { BOJ_DOMAIN } from '@/constants';
 import { MainPage } from '@/renderer/components/pages/MainPage';
 import { useWebview } from '@/renderer/hooks';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import './App.css';
 import './assets/fonts/fonts.css';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -42,6 +43,8 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <MainPage />
+
+      {process.env.NODE_ENV === 'development' && <ReactQueryDevtools />}
     </QueryClientProvider>
   );
 }
