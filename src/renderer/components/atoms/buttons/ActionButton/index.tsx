@@ -5,7 +5,7 @@ import Color from 'color';
 
 interface ActionButtonProps extends HTMLAttributes<HTMLButtonElement> {
   children: string;
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'cancel';
   onClick: () => void;
   disabled?: boolean;
 }
@@ -15,6 +15,8 @@ export function ActionButton({ variant = 'primary', children, onClick, disabled 
     switch (variant) {
       case 'secondary':
         return color.secondaryBg;
+      case 'cancel':
+        return 'lightgray';
       case 'primary':
       default:
         return color.primaryBg;

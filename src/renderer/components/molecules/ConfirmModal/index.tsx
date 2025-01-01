@@ -19,23 +19,29 @@ export function ConfirmModal() {
     <Modal isOpen={isConfirmModalOpen} onCloseButtonClick={handleNoButtonClick}>
       <div
         css={css`
-          padding: 1rem;
+          padding: 1rem 2rem;
           display: flex;
           flex-direction: column;
-          align-items: center;
-          gap: 0.5rem;
+          justify-content: space-between;
+          gap: 2rem;
+          min-width: 20dvw;
+          aspect-ratio: 16/9;
         `}
       >
-        <Markdown>{confirmMessage}</Markdown>
+        <Markdown>{`## 확인\n${confirmMessage}`}</Markdown>
 
         <div
           css={css`
+            width: 100%;
             display: flex;
+            justify-content: end;
             gap: 0.5rem;
           `}
         >
           <ActionButton onClick={handleOkButtonClick}>예</ActionButton>
-          <ActionButton onClick={handleNoButtonClick}>아니오</ActionButton>
+          <ActionButton onClick={handleNoButtonClick} variant="cancel">
+            아니오
+          </ActionButton>
         </div>
       </div>
     </Modal>

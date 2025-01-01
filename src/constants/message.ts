@@ -7,7 +7,7 @@ export const AI_ERROR_MESSAGE = `## ⚠️ 오류 발생
 `;
 
 export const AI_EXECUTE_QUESTION_MESSAGE = `
-기존의 코드가 삭제됩니다.
+기존 코드가 삭제됩니다.
 
 계속하시겠습니까?
 `;

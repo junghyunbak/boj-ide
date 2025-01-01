@@ -31,6 +31,8 @@ export function Markdown({ children }: MarkdownProps) {
         },
       }}
       css={css`
+        color: ${color.text};
+
         h1,
         h2,
         h3 {
