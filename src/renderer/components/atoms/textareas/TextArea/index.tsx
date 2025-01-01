@@ -17,6 +17,9 @@ export function TextArea({ ...props }: TextAreaProps) {
         padding: 0.5rem;
         outline: none;
         white-space: nowrap;
+        &:disabled {
+          background-color: #eee;
+        }
       `}
       {...props}
     />
