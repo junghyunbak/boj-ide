@@ -4,6 +4,7 @@ import { TabButton } from '@/renderer/components/atoms/buttons/TabButton';
 import { css } from '@emotion/react';
 import { XButton } from '@/renderer/components/atoms/buttons/XButton';
 import { BOJ_DOMAIN } from '@/constants';
+import { useEffect, useRef } from 'react';
 
 interface ProblemTabProps {
   problemInfo: ProblemInfo;
@@ -16,8 +17,21 @@ export function ProblemTab({ problemInfo, tabIndex }: ProblemTabProps) {
   const { gotoProblem, gotoUrl } = useWebview();
   const { TierImg } = useFetchProblem(problemInfo.number);
 
+  const ref = useRef<HTMLButtonElement>(null);
+
+  const isSelect = problem?.number === problemInfo.number;
+
+  useEffect(() => {
+    if (isSelect && ref.current) {
+      ref.current.scrollIntoView();
+    }
+  }, [isSelect]);
+
   const handleTabClick = () => {
     gotoProblem(problemInfo);
+    if (ref.current) {
+      ref.current.scrollIntoView();
+    }
   };
 
   const handleTabCloseButtonClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -32,10 +46,8 @@ export function ProblemTab({ problemInfo, tabIndex }: ProblemTabProps) {
     e.stopPropagation();
   };
 
-  const isSelect = problem?.number === problemInfo.number;
-
   return (
-    <TabButton onClick={handleTabClick} isSelect={isSelect}>
+    <TabButton onClick={handleTabClick} isSelect={isSelect} ref={ref}>
       <div
         css={css`
           display: flex;
