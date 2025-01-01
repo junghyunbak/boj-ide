@@ -1,6 +1,5 @@
 import { css } from '@emotion/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGear } from '@fortawesome/free-solid-svg-icons';
+import { ReactComponent as Gear } from '@/renderer/assets/svgs/gear.svg';
 
 interface SettingButtonProps {
   onClick: () => void;
@@ -16,9 +15,13 @@ export function SettingButton({ onClick }: SettingButtonProps) {
         background: none;
         color: gray;
         cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
       `}
     >
-      <FontAwesomeIcon icon={faGear} size="xl" />
+      <Gear width="1.5rem" />
     </button>
   );
 }

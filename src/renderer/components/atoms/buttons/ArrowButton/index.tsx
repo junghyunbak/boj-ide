@@ -45,11 +45,7 @@ export function ArrowButton({ direction = 'left', disabled = false, onClick }: A
       disabled={disabled}
       onClick={onClick}
     >
-      <LeftArrow
-        css={css`
-          width: 1.125rem;
-        `}
-      />
+      <LeftArrow width="1rem" />
     </button>
   );
 }

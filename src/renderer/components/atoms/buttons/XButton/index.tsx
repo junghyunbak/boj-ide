@@ -14,23 +14,20 @@ export function XButton({ onClick }: XButtonProps) {
       css={css`
         border: none;
         background-color: transparent;
-        border-radius: 9999px;
-        width: 15px;
-        height: 15px;
-        padding: 1px;
+        border-radius: 0.25rem;
+        padding: 0.25rem;
         display: flex;
         justify-content: center;
         align-items: center;
         &:hover {
-          background-color: lightgray;
+          background-color: rgba(0, 0, 0, 0.2);
           cursor: pointer;
         }
       `}
     >
       <X
+        width="0.6rem"
         css={css`
-          width: 100%;
-          height: 100%;
           color: ${color.text};
         `}
       />

@@ -1,7 +1,7 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { css } from '@emotion/react';
 import { color } from '@/styles';
+
+import { ReactComponent as AngleRight } from '@/renderer/assets/svgs/angle-right.svg';
 
 interface AngleButtonProps {
   onClick: () => void;
@@ -20,12 +20,7 @@ export function AngleButton({ onClick }: AngleButtonProps) {
       `}
       onClick={onClick}
     >
-      <FontAwesomeIcon
-        icon={faAngleRight}
-        css={css`
-          width: 1.125rem;
-        `}
-      />
+      <AngleRight width="0.5rem" />
     </button>
   );
 }
