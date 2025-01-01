@@ -25,12 +25,12 @@ export function useProblem() {
     });
   };
 
-  const addCustomTestcase = (testcase: TC) => {
-    if (!problem) {
+  const addCustomTestcase = (testcase: TC, problemNumber?: string) => {
+    const number = problem?.number || problemNumber;
+
+    if (!number) {
       return;
     }
-
-    const { number } = problem;
 
     setCustomTestcases((prev) => {
       const next = { ...prev };
