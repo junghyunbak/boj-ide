@@ -27,6 +27,8 @@ export function ArrowButton({ direction = 'left', disabled = false, onClick }: A
       type="button"
       css={css`
         display: flex;
+        justify-content: center;
+        align-items: center;
         background: none;
         border: none;
         padding: 0.5rem;
@@ -36,7 +38,7 @@ export function ArrowButton({ direction = 'left', disabled = false, onClick }: A
         cursor: pointer;
         &:disabled {
           color: lightgray;
-          cursor: not-allowed;
+          cursor: auto;
         }
         &:not(:disabled):hover {
           background-color: #ececec;

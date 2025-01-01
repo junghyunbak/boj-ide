@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
-import { ArrowButton } from '@/renderer/components/atoms/buttons/ArrowButton';
-import { useStore } from '@/renderer/store';
+import { useEffect, useState } from 'react';
 import { useShallow } from 'zustand/shallow';
+import { useStore } from '@/renderer/store';
+import { ArrowButton } from '@/renderer/components/atoms/buttons/ArrowButton';
+import { ExternalLinkButton } from '@/renderer/components/atoms/buttons/ExternalLinkButton';
+import { RefreshButton } from '@/renderer/components/atoms/buttons/RefreshButton';
 
 export function WebviewController() {
   const [webview] = useStore(useShallow((s) => [s.webview]));
@@ -35,6 +37,14 @@ export function WebviewController() {
     webview?.goForward();
   };
 
+  const handleRefreshButtonClick = () => {
+    webview?.reload();
+  };
+
+  const handleOpenBrowserButtonClick = () => {
+    window.open(webview?.getURL(), '_blank');
+  };
+
   return (
     <div
       css={css`
@@ -44,6 +54,8 @@ export function WebviewController() {
     >
       <ArrowButton onClick={handleGoBackButtonClick} disabled={!canGoBack} />
       <ArrowButton onClick={handleGoFrontButtonClick} disabled={!canGoForward} direction="right" />
+      <RefreshButton onClick={handleRefreshButtonClick} />
+      <ExternalLinkButton onClick={handleOpenBrowserButtonClick} />
     </div>
   );
 }
