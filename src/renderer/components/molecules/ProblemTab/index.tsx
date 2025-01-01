@@ -1,4 +1,4 @@
-import { useFetchSolvedACProblemData, useProblem, useTab, useWebview } from '@/renderer/hooks';
+import { useFetchProblem, useProblem, useTab, useWebview } from '@/renderer/hooks';
 import { Text } from '@/renderer/components/atoms/paragraphs/Text';
 import { TabButton } from '@/renderer/components/atoms/buttons/TabButton';
 import { css } from '@emotion/react';
@@ -14,7 +14,7 @@ export function ProblemTab({ problemInfo, tabIndex }: ProblemTabProps) {
   const { problem } = useProblem();
   const { removeTab } = useTab();
   const { gotoProblem, gotoUrl } = useWebview();
-  const { TierImg } = useFetchSolvedACProblemData(problemInfo.number);
+  const { TierImg } = useFetchProblem(problemInfo.number);
 
   const handleTabClick = () => {
     gotoProblem(problemInfo);

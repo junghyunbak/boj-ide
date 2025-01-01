@@ -5,7 +5,7 @@ type BojViewSlice = {
   webviewUrl: string;
   setWebViewUrl: (url: string) => void;
 
-  isDrag: boolean;
+  isResizerDrag: boolean;
   setIsDrag: (isDrag: boolean) => void;
 
   webview: Electron.WebviewTag | null;
@@ -17,12 +17,14 @@ export const createBojViewSlice: StateCreator<BojViewSlice> = (set): BojViewSlic
   setWebview(webview) {
     set(() => ({ webview }));
   },
-  isDrag: false,
+
+  isResizerDrag: false,
   setIsDrag(isDrag) {
     set(() => ({
-      isDrag,
+      isResizerDrag: isDrag,
     }));
   },
+
   webviewUrl: `https://${BOJ_DOMAIN}/problemset`,
   setWebViewUrl(url) {
     set(() => ({ webviewUrl: url }));

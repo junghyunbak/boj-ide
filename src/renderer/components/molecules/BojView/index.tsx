@@ -7,7 +7,7 @@ import { useTab, useWebview } from '@/renderer/hooks';
 import * as cheerio from 'cheerio';
 
 export function BojView() {
-  const [isDrag] = useStore(useShallow((s) => [s.isDrag]));
+  const [isResizerDrag] = useStore(useShallow((s) => [s.isResizerDrag]));
   const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
 
   const { webview, setWebview, updateWebviewUrl, startWebviewUrl } = useWebview();
@@ -59,7 +59,7 @@ export function BojView() {
       <webview
         css={css`
           flex: 1;
-          pointer-events: ${isDrag ? 'none' : 'auto'};
+          pointer-events: ${isResizerDrag ? 'none' : 'auto'};
         `}
         src={startWebviewUrl}
       />

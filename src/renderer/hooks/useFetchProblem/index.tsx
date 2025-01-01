@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import { useState, useEffect } from 'react';
 import { FETCH_DOMAIN } from '@/constants';
 
-export function useFetchSolvedACProblemData(problemNumber: string) {
+export function useFetchProblem(problemNumber: string) {
   const [title, setTitle] = useState('');
   const [level, setLevel] = useState(-1);
 
