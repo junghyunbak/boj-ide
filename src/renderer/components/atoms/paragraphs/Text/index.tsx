@@ -1,5 +1,6 @@
 import { color } from '@/styles';
 import { css } from '@emotion/react';
+import React from 'react';
 
 interface TextProps {
   children: React.ReactNode;
@@ -7,6 +8,7 @@ interface TextProps {
   fontWeight?: React.CSSProperties['fontWeight'];
   whiteSpace?: React.CSSProperties['whiteSpace'];
   type?: JudgeResult['result'] | '기본' | '채점 중';
+  userSelect?: React.CSSProperties['userSelect'];
 }
 
 export function Text({
@@ -15,6 +17,7 @@ export function Text({
   fontWeight = 'normal',
   type = '기본',
   whiteSpace = 'normal',
+  userSelect = 'auto',
 }: TextProps) {
   const fontColor = (() => {
     switch (type) {
@@ -46,6 +49,7 @@ export function Text({
         fontWeight,
         color: fontColor,
         whiteSpace,
+        userSelect,
       }}
     >
       {children}

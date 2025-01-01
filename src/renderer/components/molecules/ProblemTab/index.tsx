@@ -65,7 +65,7 @@ export function ProblemTab({ problemInfo, tabIndex }: ProblemTabProps) {
           {TierImg}
         </div>
 
-        <Text whiteSpace="nowrap">{`${problemInfo.number}번: ${problemInfo.name}`}</Text>
+        <Text whiteSpace="nowrap" userSelect="none">{`${problemInfo.number}번: ${problemInfo.name}`}</Text>
 
         <XButton onClick={handleTabCloseButtonClick} />
       </div>
