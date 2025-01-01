@@ -103,6 +103,11 @@ export function MovableTab({ children, index, polyfill = false }: MovableTabProp
       }
     };
 
+    const handleMouseRightButtonClick = (e: MouseEvent) => {
+      e.preventDefault();
+    };
+
+    container.addEventListener('contextmenu', handleMouseRightButtonClick);
     container.addEventListener('mousedown', handleTabMouseDown);
     container.addEventListener('mousemove', handleTabMouseMove);
     container.addEventListener('mouseleave', handleTabMouseLeave);
@@ -113,6 +118,7 @@ export function MovableTab({ children, index, polyfill = false }: MovableTabProp
         return;
       }
 
+      container.addEventListener('contextmenu', handleMouseRightButtonClick);
       container.removeEventListener('mousedown', handleTabMouseDown);
       container.removeEventListener('mousemove', handleTabMouseMove);
       container.removeEventListener('mouseleave', handleTabMouseLeave);
