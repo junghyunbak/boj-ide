@@ -4,6 +4,8 @@ import { BookmarkTab } from '@/renderer/components/molecules/BookmarkTab';
 import { ProblemTab } from '@/renderer/components/molecules/ProblemTab';
 import { MovableTab } from '@/renderer/components/molecules/MovableTab';
 import { BOJ_DOMAIN, SOLVED_AC_DOMAIN } from '@/constants';
+import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
+import 'overlayscrollbars/overlayscrollbars.css';
 
 const bookmarks: BookmarkInfo[] = [
   {
@@ -30,30 +32,43 @@ export function Tabs() {
     >
       <div
         css={css`
-          display: flex;
           width: 100%;
-          overflow-x: hidden;
           padding-top: 0.25rem;
           margin-bottom: -1px;
         `}
       >
-        {bookmarks.map((bookmarkInfo) => {
-          return <BookmarkTab key={bookmarkInfo.url} bookmarkInfo={bookmarkInfo} />;
-        })}
-
-        {tabs.map((problemInfo, index) => (
-          <MovableTab key={problemInfo.number} index={index}>
-            <ProblemTab problemInfo={problemInfo} tabIndex={index} />
-          </MovableTab>
-        ))}
-
-        <div
-          css={css`
-            flex: 1;
-          `}
+        <OverlayScrollbarsComponent
+          options={{
+            scrollbars: {
+              autoHide: 'leave',
+              autoHideDelay: 200,
+            },
+          }}
         >
-          <MovableTab index={tabs.length} polyfill />
-        </div>
+          <div
+            css={css`
+              display: flex;
+            `}
+          >
+            {bookmarks.map((bookmarkInfo) => {
+              return <BookmarkTab key={bookmarkInfo.url} bookmarkInfo={bookmarkInfo} />;
+            })}
+
+            {tabs.map((problemInfo, index) => (
+              <MovableTab key={problemInfo.number} index={index}>
+                <ProblemTab problemInfo={problemInfo} tabIndex={index} />
+              </MovableTab>
+            ))}
+
+            <div
+              css={css`
+                flex: 1;
+              `}
+            >
+              <MovableTab index={tabs.length} polyfill />
+            </div>
+          </div>
+        </OverlayScrollbarsComponent>
       </div>
     </div>
   );
