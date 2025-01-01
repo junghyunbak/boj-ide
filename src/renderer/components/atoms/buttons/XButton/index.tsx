@@ -20,7 +20,7 @@ export function XButton({ onClick }: XButtonProps) {
         justify-content: center;
         align-items: center;
         &:hover {
-          background-color: rgba(0, 0, 0, 0.2);
+          background-color: rgba(0, 0, 0, 0.1);
           cursor: pointer;
         }
       `}

@@ -6,6 +6,7 @@ import { MovableTab } from '@/renderer/components/molecules/MovableTab';
 import { BOJ_DOMAIN, SOLVED_AC_DOMAIN } from '@/constants';
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
 import 'overlayscrollbars/overlayscrollbars.css';
+import './index.css';
 
 const bookmarks: BookmarkInfo[] = [
   {
@@ -42,6 +43,7 @@ export function Tabs() {
             scrollbars: {
               autoHide: 'leave',
               autoHideDelay: 200,
+              theme: 'os-theme-dark os-theme-custom',
             },
           }}
         >

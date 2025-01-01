@@ -15,7 +15,7 @@ export const TabButton = forwardRef<HTMLButtonElement, TabButtonProps>(
         type="button"
         css={css`
           display: flex;
-          padding: 0.4rem 0.8rem;
+          padding: 0.5rem 0.8rem;
           border: none;
           background: ${isSelect ? 'white' : 'transparent'};
           border-top: 1px solid ${isSelect ? color.primaryBg : 'transparent'};
