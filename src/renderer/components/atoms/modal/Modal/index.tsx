@@ -20,7 +20,6 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(({ children, isOpen,
         inset: 0;
         z-index: 9999;
         overflow: hidden;
-        margin: 2px 0 0;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -30,8 +29,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(({ children, isOpen,
         css={css`
           position: absolute;
           inset: 0;
-          background-color: rgba(0, 0, 0, 0.2);
-          backdrop-filter: blur(4px);
+          background-color: rgba(0, 0, 0, 0.3);
         `}
         onClick={onCloseButtonClick}
       />
