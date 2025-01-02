@@ -18,9 +18,17 @@ type EditorSlice = {
 
   isCodeStale: boolean;
   setIsCodeStale: (isCodeStale: boolean) => void;
+
+  isPaintOpen: boolean;
+  setIsPaintOpen: (isOpen: boolean) => void;
 };
 
 export const createEditorSlice: StateCreator<EditorSlice> = (set): EditorSlice => ({
+  isPaintOpen: false,
+  setIsPaintOpen(isOpen) {
+    set(() => ({ isPaintOpen: isOpen }));
+  },
+
   isCodeStale: false,
   setIsCodeStale(isCodeStale) {
     set(() => ({ isCodeStale }));
