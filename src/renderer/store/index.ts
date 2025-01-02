@@ -43,6 +43,7 @@ export const useStore = create<StoreState>()(
           fontSize,
           webviewUrl,
           isPaintOpen,
+          problemToFabricJSON,
         } = s;
 
         return {
@@ -57,6 +58,7 @@ export const useStore = create<StoreState>()(
           fontSize,
           webviewUrl,
           isPaintOpen,
+          problemToFabricJSON,
         };
       },
     },
