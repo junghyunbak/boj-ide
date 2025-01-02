@@ -3,6 +3,7 @@ import { SaveCodeButton } from '@/renderer/components/molecules/SaveCodeButton';
 import { AICodeCreateButton } from '@/renderer/components/molecules/AICodeCreateButton';
 import { ToggleLanguage } from '@/renderer/components/molecules/ToggleLanguage';
 import { SettingToggleButton } from '@/renderer/components/molecules/SettingToggleButton';
+import { PaintButton } from '@/renderer/components/molecules/PaintButton';
 
 export function EditorHeader() {
   return (
@@ -21,6 +22,7 @@ export function EditorHeader() {
           gap: 8px;
         `}
       >
+        <PaintButton />
         <SettingToggleButton />
         <AICodeCreateButton />
         <SaveCodeButton />
