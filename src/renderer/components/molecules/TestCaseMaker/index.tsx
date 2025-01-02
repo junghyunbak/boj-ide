@@ -79,37 +79,11 @@ export function TestCaseMaker() {
         />
       </div>
 
-      <div
-        css={css`
-          display: flex;
-          gap: 0.5rem;
-          align-items: center;
-        `}
-      >
-        {!problem && (
-          <div
-            css={css`
-              width: 20%;
-            `}
-          >
-            <TextInput value={problemNumber} onChange={handleInputTextChange} />
-          </div>
-        )}
+      {!problem && <TextInput value={problemNumber} onChange={handleInputTextChange} />}
 
-        <div
-          css={css`
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-
-            background-color: black;
-          `}
-        >
-          <ActionButton onClick={handleAddTestCaseButtonClick} disabled={disabled}>
-            테스트케이스 추가
-          </ActionButton>
-        </div>
-      </div>
+      <ActionButton onClick={handleAddTestCaseButtonClick} disabled={disabled}>
+        테스트케이스 추가
+      </ActionButton>
     </div>
   );
 }
