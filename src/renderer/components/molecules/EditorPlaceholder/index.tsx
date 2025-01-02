@@ -1,5 +1,6 @@
-import { color } from '@/styles';
 import { css } from '@emotion/react';
+import { Text } from '@/renderer/components/atoms/paragraphs/Text';
+import { ReactComponent as Logo } from '@/renderer/assets/svgs/logo.svg';
 
 export function EditorPlaceholder() {
   return (
@@ -11,16 +12,16 @@ export function EditorPlaceholder() {
         align-items: center;
         justify-content: center;
         flex-direction: column;
+        gap: 1.5rem;
       `}
     >
-      <h1
+      <Logo
         css={css`
-          color: ${color.primaryBg};
+          width: 11rem;
+          color: lightgray;
         `}
-      >
-        {'/<>'}
-      </h1>
-      <p>왼쪽 브라우저에서 문제 페이지로 이동하세요.</p>
+      />
+      <Text>왼쪽 브라우저에서 문제 페이지로 이동하세요.</Text>
     </div>
   );
 }
