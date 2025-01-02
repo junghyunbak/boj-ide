@@ -39,7 +39,7 @@ export function AICodeCreateButton() {
   };
 
   return (
-    <ActionButton onClick={handleAICodeCreateButtonClick} variant="secondary" disabled={!problem}>
+    <ActionButton onClick={handleAICodeCreateButtonClick} disabled={!problem}>
       {`AI 입력 생성${isLoading ? '중...' : ''}`}
     </ActionButton>
   );
