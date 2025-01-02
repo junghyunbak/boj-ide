@@ -73,7 +73,8 @@ export function useHorizontalLayout(props?: { onRatioChange: (ratio: number) => 
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [onRatioChange, reverse, setIsDrag]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onRatioChange, reverse, setIsDrag, leftRef.current, containerRef.current, resizerRef.current]);
 
   return {
     leftRef,
