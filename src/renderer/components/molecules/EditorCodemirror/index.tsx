@@ -93,6 +93,12 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
    * 레이아웃이 달라졌을경우, 에디터의 크기 갱신을 위한 이벤트 등록
    */
   useEffect(() => {
+    const container = containerRef.current;
+
+    if (!container) {
+      return () => {};
+    }
+
     const observer = new ResizeObserver(([entry]) => {
       const { width, height } = entry.contentRect;
 
@@ -100,9 +106,12 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
       setEditorHeight(height);
     });
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
+    observer.observe(container);
+
+    return () => {
+      observer.unobserve(container);
+      observer.disconnect();
+    };
   }, [containerRef]);
 
   /**
