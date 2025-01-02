@@ -14,6 +14,9 @@ type LayoutSlice = {
 
   topRatio: number;
   setTopRatio: (topRatio: number) => void;
+
+  paintLeftRatio: number;
+  setPaintLeftRatio: (ratio: number) => void;
 };
 
 export const createLayoutSlice: StateCreator<LayoutSlice> = (set): LayoutSlice => ({
@@ -26,6 +29,13 @@ export const createLayoutSlice: StateCreator<LayoutSlice> = (set): LayoutSlice =
   setTopRatio(topRatio) {
     set(() => ({
       topRatio,
+    }));
+  },
+
+  paintLeftRatio: 50,
+  setPaintLeftRatio(ratio) {
+    set(() => ({
+      paintLeftRatio: ratio,
     }));
   },
 });
