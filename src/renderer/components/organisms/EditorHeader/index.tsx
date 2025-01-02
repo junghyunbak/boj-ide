@@ -19,11 +19,18 @@ export function EditorHeader() {
       <div
         css={css`
           display: flex;
-          gap: 8px;
+          gap: 0.5rem;
         `}
       >
-        <PaintButton />
-        <SettingToggleButton />
+        <div
+          css={css`
+            display: flex;
+            gap: 0.2rem;
+          `}
+        >
+          <PaintButton />
+          <SettingToggleButton />
+        </div>
         <AICodeCreateButton />
         <SaveCodeButton />
       </div>
