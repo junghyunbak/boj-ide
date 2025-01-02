@@ -133,8 +133,10 @@ const createWindow = async () => {
     return { action: 'deny' };
   });
 
-  // eslint-disable-next-line
-  new AppUpdater();
+  if (process.env.NODE_ENV === 'production') {
+    // eslint-disable-next-line
+    new AppUpdater();
+  }
 };
 
 /**
