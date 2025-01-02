@@ -6,40 +6,28 @@ export const VerticalResizer = forwardRef<HTMLDivElement>((_, ref) => {
     <div
       ref={ref}
       css={css`
-        width: 13px;
+        width: 1px;
         height: 100%;
         flex-shrink: 0;
         border-left: 1px solid lightgray;
-        border-right: 1px solid lightgray;
-        display: flex;
-        align-items: center;
-        justify-content: space-evenly;
-        background-color: #f5f5f5;
         cursor: col-resize;
+        position: relative;
+        z-index: 1000;
       `}
     >
       <div
         css={css`
-          height: 17px;
-          border-left: 1px solid gray;
-        `}
-      />
-      <div
-        css={css`
-          height: 17px;
-          border-left: 1px solid gray;
-        `}
-      />
-      <div
-        css={css`
-          height: 17px;
-          border-left: 1px solid gray;
-        `}
-      />
-      <div
-        css={css`
-          height: 17px;
-          border-left: 1px solid gray;
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: -2px;
+          opacity: 0;
+          width: 4px;
+          background-color: gray;
+          transition: opacity 0.1s ease 0.1s;
+          &:hover {
+            opacity: 1;
+          }
         `}
       />
     </div>

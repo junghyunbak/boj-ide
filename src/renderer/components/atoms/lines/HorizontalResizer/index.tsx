@@ -6,41 +6,28 @@ export const HorizontalResizer = forwardRef<HTMLDivElement>((_, ref) => {
     <div
       ref={ref}
       css={css`
-        height: 13px;
+        height: 1px;
         width: 100%;
         flex-shrink: 0;
-        border-top: 1px solid lightgray;
         border-bottom: 1px solid lightgray;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-evenly;
-        background-color: #f5f5f5;
         cursor: row-resize;
+        position: relative;
+        z-index: 1000;
       `}
     >
       <div
         css={css`
-          width: 17px;
-          border-bottom: 1px solid gray;
-        `}
-      />
-      <div
-        css={css`
-          width: 17px;
-          border-bottom: 1px solid gray;
-        `}
-      />
-      <div
-        css={css`
-          width: 17px;
-          border-bottom: 1px solid gray;
-        `}
-      />
-      <div
-        css={css`
-          width: 17px;
-          border-bottom: 1px solid gray;
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: -2px;
+          opacity: 0;
+          height: 4px;
+          background-color: gray;
+          transition: opacity 0.1s ease 0.1s;
+          &:hover {
+            opacity: 1;
+          }
         `}
       />
     </div>
