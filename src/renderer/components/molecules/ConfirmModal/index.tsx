@@ -46,7 +46,7 @@ export function ConfirmModal() {
           gap: 2rem;
           min-width: 20dvw;
           aspect-ratio: 16/9;
-          background-color: #fafafa;
+          background-color: white;
           border-top: 2px solid ${color.primaryBg};
         `}
       >

@@ -138,6 +138,7 @@
     "electron-updater": "^6.1.4",
     "fabric": "^5.2.4",
     "fabric-history": "^1.7.0",
+    "github-markdown-css": "^5.8.1",
     "overlayscrollbars-react": "^0.5.6",
     "puppeteer-core": "^23.6.0",
     "puppeteer-in-electron": "^3.0.5",
