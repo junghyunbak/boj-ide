@@ -1,4 +1,4 @@
-import { css } from '@emotion/css';
+import { css } from '@emotion/react';
 import { ReleasesButton } from '@/renderer/components/molecules/ReleasesButton';
 import { StorageButton } from '@/renderer/components/molecules/StorageButton';
 import { ManualButton } from '@/renderer/components/molecules/ManualButton';
@@ -6,7 +6,7 @@ import { ManualButton } from '@/renderer/components/molecules/ManualButton';
 export function Footer() {
   return (
     <div
-      className={css`
+      css={css`
         width: 100%;
         border-top: 1px solid lightgray;
         display: flex;
