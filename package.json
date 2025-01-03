@@ -229,7 +229,6 @@
       "package.json"
     ],
     "mac": {
-      "notarize": false,
       "target": {
         "target": "default",
         "arch": [
