@@ -282,7 +282,7 @@ export function EditorPaint() {
       tabIndex={0}
       ref={containerRef}
     >
-      <canvas ref={canvasRef} onClick={() => {}} />
+      <canvas ref={canvasRef} />
       <div
         css={css`
           position: absolute;

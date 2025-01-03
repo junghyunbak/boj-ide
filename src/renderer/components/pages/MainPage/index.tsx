@@ -133,9 +133,17 @@ export function MainPage() {
                     css={css`
                       flex: 1;
                       overflow: hidden;
+                      position: relative;
                     `}
                   >
-                    <Editor />
+                    <div
+                      css={css`
+                        position: absolute;
+                        inset: 0;
+                      `}
+                    >
+                      <Editor />
+                    </div>
                   </div>
                 </div>
               </div>
