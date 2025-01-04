@@ -1,16 +1,14 @@
 import { ReactComponent as X } from '@/renderer/assets/svgs/x.svg';
 import { css } from '@emotion/react';
 import { color } from '@/styles';
+import { forwardRef } from 'react';
 
-interface XButtonProps {
-  onClick: React.DOMAttributes<HTMLButtonElement>['onClick'];
-}
+interface XButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
-export function XButton({ onClick }: XButtonProps) {
+export const XButton = forwardRef<HTMLButtonElement, XButtonProps>(({ onClick, onMouseDown }, ref) => {
   return (
     <button
       type="button"
-      onClick={onClick}
       css={css`
         border: none;
         background-color: transparent;
@@ -24,6 +22,9 @@ export function XButton({ onClick }: XButtonProps) {
           cursor: pointer;
         }
       `}
+      onClick={onClick}
+      onMouseDown={onMouseDown}
+      ref={ref}
     >
       <X
         width="0.6rem"
@@ -33,4 +34,4 @@ export function XButton({ onClick }: XButtonProps) {
       />
     </button>
   );
-}
+});
