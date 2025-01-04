@@ -1,5 +1,7 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage, type StateStorage } from 'zustand/middleware';
+
+import { get, set, del } from 'idb-keyval';
 
 import { createEditorSlice } from './slices/editor';
 import { createJudgeSlice } from './slices/judge';
@@ -43,7 +45,6 @@ export const useStore = create<StoreState>()(
           fontSize,
           webviewUrl,
           isPaintOpen,
-          problemToFabricJSON,
         } = s;
 
         return {
@@ -58,9 +59,42 @@ export const useStore = create<StoreState>()(
           fontSize,
           webviewUrl,
           isPaintOpen,
-          problemToFabricJSON,
         };
       },
+    },
+  ),
+);
+
+const storage: StateStorage = {
+  getItem: async (name: string): Promise<string | null> => {
+    return (await get(name)) || null;
+  },
+  setItem: async (name: string, value: string): Promise<void> => {
+    await set(name, value);
+  },
+  removeItem: async (name: string): Promise<void> => {
+    await del(name);
+  },
+};
+
+type ProblemToFabricJSON = Partial<Record<string, ReturnType<fabric.StaticCanvas['toJSON']>>>;
+
+interface FabricStoreState {
+  problemToFabricJSON: ProblemToFabricJSON;
+  setProblemToFabricJSON: (fn: (prev: ProblemToFabricJSON) => ProblemToFabricJSON) => void;
+}
+
+export const useFabricStore = create<FabricStoreState>()(
+  persist(
+    (set, get) => ({
+      problemToFabricJSON: {},
+      setProblemToFabricJSON(fn) {
+        set((s) => ({ problemToFabricJSON: fn(s.problemToFabricJSON) }));
+      },
+    }),
+    {
+      name: 'zustand-fabric-persist-store-indexed-db',
+      storage: createJSONStorage(() => storage),
     },
   ),
 );

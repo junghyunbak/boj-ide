@@ -1,7 +1,6 @@
 import { type StateCreator } from 'zustand';
 
 type CustomTestcases = Record<string, TC[] | undefined>;
-type ProblemToFabricJSON = Partial<Record<string, ReturnType<fabric.StaticCanvas['toJSON']>>>;
 
 type ProblemSlice = {
   problem: ProblemInfo | null;
@@ -12,9 +11,6 @@ type ProblemSlice = {
 
   problemHistories: ProblemInfo[]; // TODO: problemHistories -> tabs
   setProblemHistories: (fn: (prev: ProblemInfo[]) => ProblemInfo[]) => void; // TODO: setProblemHistories -> setTabs
-
-  problemToFabricJSON: ProblemToFabricJSON;
-  setProblemToFabricJSON: (fn: (prev: ProblemToFabricJSON) => ProblemToFabricJSON) => void;
 };
 
 export const createProblemSlice: StateCreator<ProblemSlice> = (set, get): ProblemSlice => ({
@@ -31,10 +27,5 @@ export const createProblemSlice: StateCreator<ProblemSlice> = (set, get): Proble
   problemHistories: [],
   setProblemHistories(fn) {
     set((s) => ({ problemHistories: fn(s.problemHistories) }));
-  },
-
-  problemToFabricJSON: {},
-  setProblemToFabricJSON(fn) {
-    set((s) => ({ problemToFabricJSON: fn(s.problemToFabricJSON) }));
   },
 });

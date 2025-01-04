@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
+import { useFabricStore } from '@/renderer/store';
 
 import { fabric } from 'fabric';
 import 'fabric-history';
@@ -11,8 +10,6 @@ export function useFabricCanvas(problemNumber: string) {
   const isHandRef = useRef(false);
 
   const [fabricCanvas, setFabricCanvas] = useState<fabric.Canvas | null>(null);
-
-  const [setProblemToFabricJSON] = useStore(useShallow((s) => [s.setProblemToFabricJSON]));
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -74,8 +71,9 @@ export function useFabricCanvas(problemNumber: string) {
       opt.e.stopPropagation();
     };
 
-    const handleAfterRender = () => {
-      setProblemToFabricJSON((prev) => {
+    const handleObjectAdded = () => {
+      console.log('저장');
+      useFabricStore.getState().setProblemToFabricJSON((prev) => {
         const next = { ...prev };
 
         next[problemNumber] = fabricCanvas.toJSON();
@@ -88,11 +86,11 @@ export function useFabricCanvas(problemNumber: string) {
     fabricCanvas.on('mouse:move', handleMouseMove);
     fabricCanvas.on('mouse:up', handleMouseUp);
     fabricCanvas.on('mouse:wheel', handleWheelScroll);
-    fabricCanvas.on('after:render', handleAfterRender);
-  }, [fabricCanvas, problemNumber, setProblemToFabricJSON]);
+    fabricCanvas.on('object:added', handleObjectAdded);
+  }, [fabricCanvas, problemNumber]);
 
   useEffect(() => {
-    const fabricJSON = useStore.getState().problemToFabricJSON[problemNumber];
+    const fabricJSON = useFabricStore.getState().problemToFabricJSON[problemNumber];
 
     if (!fabricCanvas || !fabricJSON) {
       return;
