@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
@@ -107,79 +107,85 @@ export function useFabricCanvas(problemNumber: string) {
     }
   }, [fabricCanvas, problemNumber]);
 
-  const activeAllFabricSelection = () => {
+  const activeAllFabricSelection = useCallback(() => {
     if (fabricCanvas) {
       const selection = new fabric.ActiveSelection(fabricCanvas.getObjects(), { canvas: fabricCanvas });
       fabricCanvas.setActiveObject(selection);
       fabricCanvas.renderAll();
     }
-  };
+  }, [fabricCanvas]);
 
-  const unactiveAllFabricSelection = () => {
+  const unactiveAllFabricSelection = useCallback(() => {
     if (fabricCanvas) {
       fabricCanvas.discardActiveObject();
       fabricCanvas.renderAll();
     }
-  };
+  }, [fabricCanvas]);
 
-  const removeFabricActiveObject = () => {
+  const removeFabricActiveObject = useCallback(() => {
     if (fabricCanvas) {
       fabricCanvas.remove(...fabricCanvas.getActiveObjects());
       fabricCanvas.discardActiveObject();
     }
-  };
+  }, [fabricCanvas]);
 
-  const changeSelectMode = () => {
+  const changeSelectMode = useCallback(() => {
     if (fabricCanvas) {
       fabricCanvas.isDrawingMode = false;
       fabricCanvas.selection = true;
       fabricCanvas.defaultCursor = 'default';
       isHandRef.current = false;
     }
-  };
+  }, [fabricCanvas]);
 
-  const changeHandMode = () => {
+  const changeHandMode = useCallback(() => {
     if (fabricCanvas) {
       fabricCanvas.isDrawingMode = false;
       fabricCanvas.selection = false;
       fabricCanvas.defaultCursor = 'move';
       isHandRef.current = true;
     }
-  };
+  }, [fabricCanvas]);
 
-  const changePenMode = ({ brushWidth = 2, penColor = 'black' }: { brushWidth?: BrushWidth; penColor?: PenColor }) => {
-    if (fabricCanvas) {
-      fabricCanvas.freeDrawingBrush.width = brushWidth;
-      fabricCanvas.freeDrawingBrush.color = penColor;
-      fabricCanvas.isDrawingMode = true;
-      fabricCanvas.selection = false;
-      isHandRef.current = false;
-    }
-  };
-
-  const updateFabricCanvasSize = (width: number, height: number) => {
-    if (fabricCanvas) {
-      try {
-        fabricCanvas.setDimensions({ width, height });
-      } catch (e) {
-        // BUG: Cannot set properties of undefined (setting 'width')
-        // https://github.com/fabricjs/fabric.js/discussions/10036
-        // dispose된 fabricCanvas를 사용할 때 해당 에러 발생. React 생명주기와 관련
+  const changePenMode = useCallback(
+    ({ brushWidth = 2, penColor = 'black' }: { brushWidth?: BrushWidth; penColor?: PenColor }) => {
+      if (fabricCanvas) {
+        fabricCanvas.freeDrawingBrush.width = brushWidth;
+        fabricCanvas.freeDrawingBrush.color = penColor;
+        fabricCanvas.isDrawingMode = true;
+        fabricCanvas.selection = false;
+        isHandRef.current = false;
       }
-    }
-  };
+    },
+    [fabricCanvas],
+  );
 
-  const undo = () => {
+  const updateFabricCanvasSize = useCallback(
+    (width: number, height: number) => {
+      if (fabricCanvas) {
+        try {
+          fabricCanvas.setDimensions({ width, height });
+        } catch (e) {
+          // BUG: Cannot set properties of undefined (setting 'width')
+          // https://github.com/fabricjs/fabric.js/discussions/10036
+          // dispose된 fabricCanvas를 사용할 때 해당 에러 발생. React 생명주기와 관련
+        }
+      }
+    },
+    [fabricCanvas],
+  );
+
+  const undo = useCallback(() => {
     if (fabricCanvas && 'undo' in fabricCanvas && fabricCanvas.undo instanceof Function) {
       fabricCanvas.undo();
     }
-  };
+  }, [fabricCanvas]);
 
-  const redo = () => {
+  const redo = useCallback(() => {
     if (fabricCanvas && 'redo' in fabricCanvas && fabricCanvas.redo instanceof Function) {
       fabricCanvas.redo();
     }
-  };
+  }, [fabricCanvas]);
 
   return {
     fabricCanvas,
