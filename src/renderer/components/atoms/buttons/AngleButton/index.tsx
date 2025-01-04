@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { color } from '@/styles';
+import { color } from '@/renderer/styles';
 
 import { ReactComponent as AngleRight } from '@/renderer/assets/svgs/angle-right.svg';
 

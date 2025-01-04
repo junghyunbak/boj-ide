@@ -1,6 +1,6 @@
 import { ReactComponent as X } from '@/renderer/assets/svgs/x.svg';
 import { css } from '@emotion/react';
-import { color } from '@/styles';
+import { color } from '@/renderer/styles';
 import { forwardRef } from 'react';
 
 interface XButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}

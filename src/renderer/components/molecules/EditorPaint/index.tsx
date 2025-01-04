@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { css } from '@emotion/react';
 import { fabric } from 'fabric';
-import { color } from '@/styles';
+import { color } from '@/renderer/styles';
 import { useProblem } from '@/renderer/hooks';
 import { useStore } from '@/renderer/store';
 import { ReactComponent as Mouse } from '@/renderer/assets/svgs/mouse.svg';

@@ -2,7 +2,7 @@ import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { css } from '@emotion/react';
 import DomToImage from 'dom-to-image';
 import { useShallow } from 'zustand/shallow';
-import { color } from '@/styles';
+import { color } from '@/renderer/styles';
 import { useStore } from '@/renderer/store';
 import { useTab } from '@/renderer/hooks';
 import { XButton } from '@/renderer/components/atoms/buttons/XButton';

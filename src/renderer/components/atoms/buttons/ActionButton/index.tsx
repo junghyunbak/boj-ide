@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { color } from '@/styles';
+import { color } from '@/renderer/styles';
 import { HTMLAttributes } from 'react';
 import Color from 'color';
 
