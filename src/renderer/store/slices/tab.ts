@@ -1,8 +1,8 @@
 import { type StateCreator } from 'zustand';
 
 type TabSlice = {
-  destIndex: number | null;
-  setTargetIndex: (index: number | null) => void;
+  destTabIndex: number | null;
+  setDestTabIndex: (index: number | null) => void;
 
   isTabDrag: boolean;
   setIsTabDrag: (isDrag: boolean) => void;
@@ -12,9 +12,9 @@ type TabSlice = {
 };
 
 export const createTabSlice: StateCreator<TabSlice> = (set): TabSlice => ({
-  destIndex: null,
-  setTargetIndex(index) {
-    set(() => ({ destIndex: index }));
+  destTabIndex: null,
+  setDestTabIndex(index) {
+    set(() => ({ destTabIndex: index }));
   },
 
   isTabDrag: false,

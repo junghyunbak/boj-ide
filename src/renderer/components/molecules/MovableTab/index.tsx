@@ -1,32 +1,40 @@
 import { PropsWithChildren, useEffect, useRef, useState } from 'react';
+
 import { css } from '@emotion/react';
+
 import DomToImage from 'dom-to-image';
-import { useShallow } from 'zustand/shallow';
-import { color } from '@/renderer/styles';
+
 import { useStore } from '@/renderer/store';
+import { useShallow } from 'zustand/shallow';
+
+import { color } from '@/renderer/styles';
+
 import { useTab } from '@/renderer/hooks';
-import { XButton } from '@/renderer/components/atoms/buttons/XButton';
+
 import { isParentExist } from '@/renderer/utils';
 
+import { XButton } from '@/renderer/components/atoms/buttons/XButton';
+import { TabIndexLine } from '@/renderer/components/molecules/TabIndexLine';
+
 interface MovableTabProps extends PropsWithChildren {
-  index: number;
-  polyfill?: boolean;
+  tabIndex: number;
   isTabSelect?: boolean;
   callbackTabCloseButtonClick?: () => void;
   callbackTabButtonClick?: () => void;
+  polyfill?: boolean;
 }
 
 export function MovableTab({
-  index,
-  children,
-  polyfill = false,
+  tabIndex,
   isTabSelect = false,
   callbackTabCloseButtonClick = () => {},
   callbackTabButtonClick = () => {},
+  polyfill = false,
+  children,
 }: MovableTabProps) {
   const [setCurrentAfterImageUrl] = useStore(useShallow((s) => [s.setCurrentAfterImageUrl]));
   const [setIsTabDrag] = useStore(useShallow((s) => [s.setIsTabDrag]));
-  const [setTargetIndex] = useStore(useShallow((s) => [s.setTargetIndex]));
+  const [setDestTabIndex] = useStore(useShallow((s) => [s.setDestTabIndex]));
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -76,10 +84,10 @@ export function MovableTab({
     };
 
     const handleWindowMouseUp = () => {
-      const { destIndex } = useStore.getState();
+      const { destTabIndex } = useStore.getState();
 
-      if (isSelect && destIndex !== null) {
-        reorderTab(index, destIndex);
+      if (isSelect && destTabIndex !== null) {
+        reorderTab(tabIndex, destTabIndex);
       }
 
       isSelect = false;
@@ -104,9 +112,9 @@ export function MovableTab({
       const endX = containerX + containerWidth;
 
       if (startX < clientX && clientX <= middleX) {
-        setTargetIndex(index);
+        setDestTabIndex(tabIndex);
       } else if (middleX < clientX && clientX <= endX) {
-        setTargetIndex(index + 1);
+        setDestTabIndex(tabIndex + 1);
       }
     };
 
@@ -135,7 +143,7 @@ export function MovableTab({
       container.removeEventListener('mouseleave', handleTabMouseLeave);
       window.removeEventListener('mouseup', handleWindowMouseUp);
     };
-  }, [afterImageUrl, index, polyfill, reorderTab, setCurrentAfterImageUrl, setIsTabDrag, setTargetIndex]);
+  }, [afterImageUrl, tabIndex, polyfill, reorderTab, setCurrentAfterImageUrl, setDestTabIndex, setIsTabDrag]);
 
   useEffect(() => {
     if (isTabSelect && containerRef.current) {
@@ -170,7 +178,7 @@ export function MovableTab({
       `}
       onClick={handleTabClick}
     >
-      <TargetLine index={index} />
+      <TabIndexLine tabIndex={tabIndex} />
       {!polyfill && (
         <div
           css={css`
@@ -198,25 +206,7 @@ export function MovableTab({
           </div>
         </div>
       )}
-      <TargetLine index={index + 1} />
+      <TabIndexLine tabIndex={tabIndex + 1} />
     </div>
-  );
-}
-
-function TargetLine({ index }: { index: number }) {
-  const [isTabDrag] = useStore(useShallow((s) => [s.isTabDrag]));
-  const [destIndex] = useStore(useShallow((s) => [s.destIndex]));
-
-  const isHidden = !isTabDrag || destIndex !== index;
-
-  return (
-    <div
-      css={css`
-        border-color: ${isHidden ? 'transparent' : 'gray'};
-        border-style: solid;
-        border-width: 0;
-        border-left-width: ${index === 0 ? 2 : 1}px;
-      `}
-    />
   );
 }

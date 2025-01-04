@@ -70,7 +70,7 @@ export function Tabs() {
                 flex: 1;
               `}
             >
-              <MovableTab index={tabs.length} polyfill />
+              <MovableTab tabIndex={tabs.length} polyfill />
             </div>
           </div>
         </OverlayScrollbarsComponent>

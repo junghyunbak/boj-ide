@@ -42,7 +42,7 @@ export function ProblemTab({ problemInfo, tabIndex }: ProblemTabProps) {
     <MovableTab
       callbackTabButtonClick={handleTabClick}
       callbackTabCloseButtonClick={handleTabCloseButtonClick}
-      index={tabIndex}
+      tabIndex={tabIndex}
       isTabSelect={isSelect}
     >
       <div
