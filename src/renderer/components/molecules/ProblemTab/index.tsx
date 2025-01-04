@@ -1,16 +1,15 @@
 import { useFetchProblem, useProblem, useTab, useWebview } from '@/renderer/hooks';
 import { Text } from '@/renderer/components/atoms/paragraphs/Text';
-import { TabButton } from '@/renderer/components/atoms/buttons/TabButton';
 import { css } from '@emotion/react';
-import { XButton } from '@/renderer/components/atoms/buttons/XButton';
 import { BOJ_DOMAIN } from '@/constants';
-import { useEffect, useRef } from 'react';
+import { MovableTab } from '@/renderer/components/molecules/MovableTab';
 
 interface ProblemTabProps {
   problemInfo: ProblemInfo;
   tabIndex: number;
 }
 
+// TODO: molecule가 중첩된 구조 개선하기
 // [ ]: 닫기 버튼을 누를 때 선택 된 상태가 아니라면, 탭이 삭제된다.
 // [ ]: 닫기 버튼을 누를 때 선택라면, 탭이 삭제되고 이전 혹은 이후 탭으로 변경한다.
 export function ProblemTab({ problemInfo, tabIndex }: ProblemTabProps) {
@@ -19,24 +18,9 @@ export function ProblemTab({ problemInfo, tabIndex }: ProblemTabProps) {
   const { gotoProblem, gotoUrl } = useWebview();
   const { TierImg } = useFetchProblem(problemInfo.number);
 
-  const ref = useRef<HTMLButtonElement>(null);
-
   const isSelect = problem?.number === problemInfo.number;
 
-  useEffect(() => {
-    if (isSelect && ref.current) {
-      ref.current.scrollIntoView();
-    }
-  }, [isSelect]);
-
-  const handleTabClick = () => {
-    gotoProblem(problemInfo);
-    if (ref.current) {
-      ref.current.scrollIntoView();
-    }
-  };
-
-  const handleTabCloseButtonClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+  const handleTabCloseButtonClick = () => {
     const nextProblem = removeTab(tabIndex);
 
     if (isSelect) {
@@ -46,12 +30,19 @@ export function ProblemTab({ problemInfo, tabIndex }: ProblemTabProps) {
         gotoProblem(nextProblem);
       }
     }
+  };
 
-    e.stopPropagation();
+  const handleTabClick = () => {
+    gotoProblem(problemInfo);
   };
 
   return (
-    <TabButton onClick={handleTabClick} isSelect={isSelect} ref={ref}>
+    <MovableTab
+      callbackTabButtonClick={handleTabClick}
+      callbackTabCloseButtonClick={handleTabCloseButtonClick}
+      index={tabIndex}
+      isTabSelect={isSelect}
+    >
       <div
         css={css`
           display: flex;
@@ -70,9 +61,7 @@ export function ProblemTab({ problemInfo, tabIndex }: ProblemTabProps) {
         </div>
 
         <Text whiteSpace="nowrap" userSelect="none">{`${problemInfo.number}번: ${problemInfo.name}`}</Text>
-
-        <XButton onClick={handleTabCloseButtonClick} />
       </div>
-    </TabButton>
+    </MovableTab>
   );
 }

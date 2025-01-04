@@ -57,9 +57,7 @@ export function Tabs() {
             })}
 
             {tabs.map((problemInfo, index) => (
-              <MovableTab key={problemInfo.number} index={index}>
-                <ProblemTab problemInfo={problemInfo} tabIndex={index} />
-              </MovableTab>
+              <ProblemTab key={problemInfo.number} problemInfo={problemInfo} tabIndex={index} />
             ))}
 
             <div
