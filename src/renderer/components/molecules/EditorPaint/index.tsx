@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 
@@ -11,14 +11,14 @@ import { ReactComponent as Hand } from '@/renderer/assets/svgs/hand.svg';
 import { ReactComponent as Pencil } from '@/renderer/assets/svgs/pencil.svg';
 
 const BRUSH_WIDTHS: BrushWidth[] = [2, 4, 8];
-const PEN_COLORS: PenColor[] = ['black', 'red', 'blue'];
+const BRUSH_COLORS: BrushColor[] = ['black', 'red', 'blue'];
 
 // [ ]: 요소를 선택하고 delete 키를 입력하면 요소가 삭제되어야한다.
 // [ ]: v키를 입력하면 모드가 'select'로 변경되어야한다.
 export function EditorPaint() {
-  const [mode, setMode] = useState<PaintMode>('pen');
-  const [brushWidth, setBrushWidth] = useState<BrushWidth>(2);
-  const [penColor, setPenColor] = useState<PenColor>('black');
+  const [fabricCanvasMode, setFabricCanvasMode] = useState<FabricCanvasMode>('pen');
+  const [brushWidth, setBrushWidth] = useState<BrushWidth>(4);
+  const [brushColor, setBrushColor] = useState<BrushColor>('black');
 
   const { problem } = useProblem();
 
@@ -63,10 +63,10 @@ export function EditorPaint() {
           removeFabricActiveObject();
           break;
         case 'v':
-          setMode('select');
+          setFabricCanvasMode('select');
           break;
         case 'p':
-          setMode('pen');
+          setFabricCanvasMode('pen');
           break;
         case 'a':
           if (isCtrlKeyClick) {
@@ -113,7 +113,7 @@ export function EditorPaint() {
       return () => {};
     }
 
-    let prevMode: PaintMode = 'pen';
+    let prevMode: FabricCanvasMode = 'pen';
     let isPressed = false;
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -122,7 +122,7 @@ export function EditorPaint() {
       }
 
       if (e.key === ' ') {
-        setMode((prev) => {
+        setFabricCanvasMode((prev) => {
           prevMode = prev;
           return 'hand';
         });
@@ -135,7 +135,7 @@ export function EditorPaint() {
       isPressed = false;
 
       if (e.key === ' ') {
-        setMode(prevMode);
+        setFabricCanvasMode(prevMode);
       }
     };
 
@@ -152,7 +152,7 @@ export function EditorPaint() {
    * 모드에 따른 fabric 상태 변경
    */
   useEffect(() => {
-    switch (mode) {
+    switch (fabricCanvasMode) {
       case 'select':
         changeSelectMode();
         break;
@@ -161,10 +161,28 @@ export function EditorPaint() {
         break;
       case 'pen':
       default:
-        changePenMode({ brushWidth, penColor });
+        changePenMode({ brushWidth, brushColor });
         break;
     }
-  }, [mode, brushWidth, penColor, changeSelectMode, changePenMode, changeHandMode]);
+  }, [fabricCanvasMode, brushWidth, brushColor, changeSelectMode, changePenMode, changeHandMode]);
+
+  const handleFabricCanvasModeButtonClick = useCallback((mode: FabricCanvasMode) => {
+    return () => {
+      setFabricCanvasMode(mode);
+    };
+  }, []);
+
+  const handleBrushWidthButtonClick = useCallback((width: BrushWidth) => {
+    return () => {
+      setBrushWidth(width);
+    };
+  }, []);
+
+  const handlBrushColorButtonClick = useCallback((color: BrushColor) => {
+    return () => {
+      setBrushColor(color);
+    };
+  }, []);
 
   return (
     <div
@@ -218,20 +236,37 @@ export function EditorPaint() {
             flex-direction: column;
           `}
         >
-          <button type="button" onClick={() => setMode('pen')} disabled={mode === 'pen'}>
+          <button
+            type="button"
+            onClick={handleFabricCanvasModeButtonClick('pen')}
+            disabled={fabricCanvasMode === 'pen'}
+          >
             <Pencil width="1.5rem" />
           </button>
-          <button type="button" onClick={() => setMode('hand')} disabled={mode === 'hand'}>
+          <button
+            type="button"
+            onClick={handleFabricCanvasModeButtonClick('hand')}
+            disabled={fabricCanvasMode === 'hand'}
+          >
             <Hand width="1.5rem" />
           </button>
-          <button type="button" onClick={() => setMode('select')} disabled={mode === 'select'}>
+          <button
+            type="button"
+            onClick={handleFabricCanvasModeButtonClick('select')}
+            disabled={fabricCanvasMode === 'select'}
+          >
             <Mouse width="1.5rem" />
           </button>
         </div>
 
         <div>
           {BRUSH_WIDTHS.map((width, index) => (
-            <button key={index} type="button" onClick={() => setBrushWidth(width)} disabled={brushWidth === width}>
+            <button
+              key={index}
+              type="button"
+              onClick={handleBrushWidthButtonClick(width)}
+              disabled={brushWidth === width}
+            >
               <div
                 css={css`
                   width: 1.5rem;
@@ -255,8 +290,13 @@ export function EditorPaint() {
         </div>
 
         <div>
-          {PEN_COLORS.map((color, index) => (
-            <button key={index} type="button" onClick={() => setPenColor(color)} disabled={penColor === color}>
+          {BRUSH_COLORS.map((color, index) => (
+            <button
+              key={index}
+              type="button"
+              onClick={handlBrushColorButtonClick(color)}
+              disabled={brushColor === color}
+            >
               <div
                 css={css`
                   width: 1.5rem;

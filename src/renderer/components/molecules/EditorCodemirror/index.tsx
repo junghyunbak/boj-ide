@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { EditorState, useCodeMirror, EditorView, type Extension } from '@uiw/react-codemirror';
 
 import { css } from '@emotion/react';
@@ -31,10 +31,12 @@ export function EditorCodemirror() {
 
   const editorRef = useRef<HTMLDivElement | null>(null);
 
-  const { containerRef } = useResponsiveLayout((width, height) => {
+  const resizeEditorLayout = useCallback((width: number, height: number) => {
     setEditorWidth(width);
     setEditorHeight(height);
-  });
+  }, []);
+
+  const { containerRef } = useResponsiveLayout(resizeEditorLayout);
 
   const extensions = (() => {
     const tmp: Extension[] = [];

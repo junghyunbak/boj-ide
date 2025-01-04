@@ -1,3 +1,3 @@
-type PaintMode = 'pen' | 'select' | 'hand';
+type FabricCanvasMode = 'pen' | 'select' | 'hand';
 type BrushWidth = 2 | 4 | 8;
-type PenColor = 'red' | 'black' | 'blue';
+type BrushColor = 'red' | 'black' | 'blue';

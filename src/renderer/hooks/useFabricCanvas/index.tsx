@@ -148,10 +148,10 @@ export function useFabricCanvas(problemNumber: string) {
   }, [fabricCanvas]);
 
   const changePenMode = useCallback(
-    ({ brushWidth = 2, penColor = 'black' }: { brushWidth?: BrushWidth; penColor?: PenColor }) => {
+    ({ brushWidth = 2, brushColor = 'black' }: { brushWidth?: BrushWidth; brushColor?: BrushColor }) => {
       if (fabricCanvas) {
         fabricCanvas.freeDrawingBrush.width = brushWidth;
-        fabricCanvas.freeDrawingBrush.color = penColor;
+        fabricCanvas.freeDrawingBrush.color = brushColor;
         fabricCanvas.isDrawingMode = true;
         fabricCanvas.selection = false;
         isHandRef.current = false;
