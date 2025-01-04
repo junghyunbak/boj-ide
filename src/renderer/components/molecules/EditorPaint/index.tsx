@@ -25,6 +25,7 @@ export function EditorPaint() {
     fabricCanvas,
     canvasRef,
     activeAllFabricSelection,
+    unactiveAllFabricSelection,
     removeFabricActiveObject,
     undo,
     redo,
@@ -52,6 +53,9 @@ export function EditorPaint() {
       const isShiftKeyClick = shiftKey;
 
       switch (key) {
+        case 'Escape':
+          unactiveAllFabricSelection();
+          break;
         case 'Delete':
           removeFabricActiveObject();
           break;
@@ -150,6 +154,8 @@ export function EditorPaint() {
         break;
     }
   }, [mode, changeSelectMode, changePenMode, changeHandMode]);
+
+  console.log('모드 변경', mode);
 
   return (
     <div

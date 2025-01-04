@@ -115,6 +115,13 @@ export function useFabricCanvas(problemNumber: string) {
     }
   };
 
+  const unactiveAllFabricSelection = () => {
+    if (fabricCanvas) {
+      fabricCanvas.discardActiveObject();
+      fabricCanvas.renderAll();
+    }
+  };
+
   const removeFabricActiveObject = () => {
     if (fabricCanvas) {
       fabricCanvas.remove(...fabricCanvas.getActiveObjects());
@@ -177,6 +184,7 @@ export function useFabricCanvas(problemNumber: string) {
     fabricCanvas,
     canvasRef,
     activeAllFabricSelection,
+    unactiveAllFabricSelection,
     removeFabricActiveObject,
     undo,
     redo,
