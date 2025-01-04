@@ -1,7 +1,9 @@
 import { css } from '@emotion/react';
-import { FETCH_DOMAIN } from '@/constants';
+
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+
+import { FETCH_DOMAIN } from '@/common/constants';
 
 export function useFetchProblem(problemNumber: string): { TierImg: React.ReactNode | null; title: string } {
   const { data: solvedProblem, isError } = useQuery({

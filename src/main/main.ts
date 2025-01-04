@@ -7,16 +7,13 @@ import pie from 'puppeteer-in-electron';
 import path from 'path';
 import { spawnSync } from 'child_process';
 
-import { ipc } from '@/types/ipc';
-import { sentryErrorHandler } from '@/error';
-import { getBojProblemNumber, resolveHtmlPath } from '@/main/utils';
+import { sentryErrorHandler } from '@/main/error';
 
-import { Boj } from './sub/boj';
-import { Code } from './sub/code';
-import { Judge } from './sub/judge';
-import MenuBuilder from './menu';
+import { getBojProblemNumber, resolveHtmlPath, ipc } from '@/main/utils';
 
-import '@/error/sentry';
+import { MenuBuilder, Boj, Code, Judge } from '@/main/modules';
+
+import '@/main/error/sentry';
 
 class AppUpdater {
   constructor() {

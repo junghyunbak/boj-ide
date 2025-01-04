@@ -1,5 +1,6 @@
 import { useCompletion } from 'ai/react';
-import { FETCH_DOMAIN } from '@/constants';
+
+import { FETCH_DOMAIN } from '@/common/constants';
 
 export function useStreamingAICode(options?: { onError?: () => void }) {
   const { complete, completion, isLoading } = useCompletion({

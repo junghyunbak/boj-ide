@@ -1,7 +1,11 @@
 import { useEffect } from 'react';
-import { BOJ_DOMAIN } from '@/constants';
+
+import { BOJ_DOMAIN } from '@/common/constants';
+
 import { MainPage } from '@/renderer/components/pages/MainPage';
+
 import { useWebview, useAlertModalController } from '@/renderer/hooks';
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 

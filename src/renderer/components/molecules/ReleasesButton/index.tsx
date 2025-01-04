@@ -1,9 +1,12 @@
-import { RELEASE_VERSION } from '@/constants';
-import { TransparentButton } from '@/renderer/components/atoms/buttons/TransparentButton';
-import { type Endpoints } from '@octokit/types';
 import { useQuery } from '@tanstack/react-query';
-import { useAlertModalController } from '@/renderer/hooks';
+import { type Endpoints } from '@octokit/types';
 import axios from 'axios';
+
+import { useAlertModalController } from '@/renderer/hooks';
+
+import { RELEASE_VERSION } from '@/renderer/constants';
+
+import { TransparentButton } from '@/renderer/components/atoms/buttons/TransparentButton';
 
 type GithubReleases = Endpoints['GET /repos/{owner}/{repo}/releases']['response']['data'];
 

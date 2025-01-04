@@ -1,6 +1,8 @@
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
+
 import { useStore } from '@/renderer/store';
+
 import { TestCaseMaker } from '.';
 
 describe('문제가 초기화되지 않은 상태', () => {

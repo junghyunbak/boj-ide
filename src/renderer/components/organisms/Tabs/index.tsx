@@ -1,11 +1,16 @@
-import { useTab } from '@/renderer/hooks';
 import { css } from '@emotion/react';
+
 import { BookmarkTab } from '@/renderer/components/molecules/BookmarkTab';
 import { ProblemTab } from '@/renderer/components/molecules/ProblemTab';
 import { MovableTab } from '@/renderer/components/molecules/MovableTab';
-import { BOJ_DOMAIN, SOLVED_AC_DOMAIN } from '@/constants';
+
+import { useTab } from '@/renderer/hooks';
+
+import { BOJ_DOMAIN, SOLVED_AC_DOMAIN } from '@/common/constants';
+
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
 import 'overlayscrollbars/overlayscrollbars.css';
+
 import './index.css';
 
 const bookmarks: BookmarkInfo[] = [

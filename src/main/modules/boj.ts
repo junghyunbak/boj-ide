@@ -1,9 +1,13 @@
 import { BrowserWindow, app } from 'electron';
-import { ipc } from '@/types/ipc';
-import { BOJ_DOMAIN } from '@/constants';
-import pie from 'puppeteer-in-electron';
+
 import puppeteer from 'puppeteer-core';
-import { IpcError } from '@/error';
+import pie from 'puppeteer-in-electron';
+
+import { ipc } from '@/main/utils';
+
+import { BOJ_DOMAIN } from '@/common/constants';
+
+import { IpcError } from '@/main/error';
 
 export class Boj {
   private mainWindow: BrowserWindow;

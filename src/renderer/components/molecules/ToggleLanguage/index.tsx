@@ -1,14 +1,17 @@
 import { useState } from 'react';
-import { SelectButton } from '@/renderer/components/atoms/buttons/SelectButton';
 import { css } from '@emotion/react';
-import { LANGAUGES } from '@/constants';
+
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
-import { NonModal } from '@/renderer/components/atoms/modal/NonModal';
-import { ListButton } from '@/renderer/components/atoms/buttons/ListButton';
+
+import { LANGAUGES } from '@/renderer/constants';
+
 import { useClickOutOfModal } from '@/renderer/hooks';
 
-// 테스트
+import { NonModal } from '@/renderer/components/atoms/modal/NonModal';
+import { SelectButton } from '@/renderer/components/atoms/buttons/SelectButton';
+import { ListButton } from '@/renderer/components/atoms/buttons/ListButton';
+
 // [ ]: 언어를 고르면 텍스트가 해당 언어로 변경된다.
 export function ToggleLanguage() {
   const [lang, setLang] = useStore(useShallow((s) => [s.lang, s.setLang]));

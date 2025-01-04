@@ -1,7 +1,10 @@
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
+
 import { useStore } from '@/renderer/store';
+
 import { createMockProblem } from '@/renderer/mock';
+
 import { SaveCodeButton } from '.';
 
 const mockProblem = createMockProblem();

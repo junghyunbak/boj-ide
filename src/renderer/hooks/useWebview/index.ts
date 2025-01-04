@@ -1,7 +1,9 @@
-import { BOJ_DOMAIN } from '@/constants';
-import { useStore } from '@/renderer/store';
 import { useState } from 'react';
+
+import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
+
+import { BOJ_DOMAIN } from '@/common/constants';
 
 export function useWebview() {
   const [webview, setWebview] = useStore(useShallow((s) => [s.webview, s.setWebview]));

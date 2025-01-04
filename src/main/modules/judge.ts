@@ -4,19 +4,13 @@ import fs from 'fs';
 import path from 'path';
 import { Worker } from 'worker_threads';
 
-import { customSpawn, normalizeOutput } from '@/main/utils';
-import { MAX_BUFFER_SIZE, MAX_LINE_LENGTH } from '@/constants';
-import { ipc } from '@/types/ipc';
-import { IpcError } from '@/error';
-import { langToJudgeInfo } from '@/constants/judge';
+import { customSpawn, normalizeOutput, ipc, checkCli } from '@/main/utils';
+
+import { MAX_BUFFER_SIZE, MAX_LINE_LENGTH, langToJudgeInfo } from '@/main/constants';
+
+import { IpcError } from '@/main/error';
 
 import { Code } from './code';
-
-export function checkCli(cli: string) {
-  const { stdout } = customSpawn.sync(`${cli} --version`, { shell: true });
-
-  return /[0-9]+\.[0-9]+\.[0-9]+/.test(stdout.toString());
-}
 
 export async function compile({
   language,

@@ -33,3 +33,9 @@ class CustomSpawn {
 }
 
 export const customSpawn = new CustomSpawn();
+
+export function checkCli(cli: string) {
+  const { stdout } = customSpawn.sync(`${cli} --version`, { shell: true });
+
+  return /[0-9]+\.[0-9]+\.[0-9]+/.test(stdout.toString());
+}

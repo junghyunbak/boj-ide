@@ -1,9 +1,12 @@
 import { useEffect } from 'react';
+
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
-import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
+
 import { useStreamingAICode, useConfirmModalController, useAlertModalController } from '@/renderer/hooks';
-import { AI_ERROR_MESSAGE, AI_EXECUTE_QUESTION_MESSAGE } from '@/constants';
+import { AI_ERROR_MESSAGE, AI_EXECUTE_QUESTION_MESSAGE } from '@/renderer/constants';
+
+import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 
 export function AICodeCreateButton() {
   const [problem] = useStore(useShallow((s) => [s.problem]));

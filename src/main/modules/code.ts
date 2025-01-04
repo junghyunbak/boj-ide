@@ -1,9 +1,17 @@
 import { app, BrowserWindow, WebContents } from 'electron';
+
 import fs from 'fs';
 import path from 'path';
-import { JS_INPUT_TEMPLATE, CPP_INPUT_TEMPLATE, PY_INPUT_TEMPLATE, JAVA_CODE_TEMPLATE } from '@/constants';
-import { ipc } from '@/types/ipc';
-import { langToJudgeInfo } from '@/constants/judge';
+
+import {
+  JS_INPUT_TEMPLATE,
+  CPP_INPUT_TEMPLATE,
+  PY_INPUT_TEMPLATE,
+  JAVA_CODE_TEMPLATE,
+  langToJudgeInfo,
+} from '@/main/constants';
+
+import { ipc } from '@/main/utils';
 
 const createDefaultCode = (language: Language) => {
   switch (language) {

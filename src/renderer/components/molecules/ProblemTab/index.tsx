@@ -1,7 +1,10 @@
-import { useFetchProblem, useProblem, useTab, useWebview } from '@/renderer/hooks';
-import { Text } from '@/renderer/components/atoms/paragraphs/Text';
 import { css } from '@emotion/react';
-import { BOJ_DOMAIN } from '@/constants';
+
+import { useFetchProblem, useProblem, useTab, useWebview } from '@/renderer/hooks';
+
+import { BOJ_DOMAIN } from '@/common/constants';
+
+import { Text } from '@/renderer/components/atoms/paragraphs/Text';
 import { MovableTab } from '@/renderer/components/molecules/MovableTab';
 
 interface ProblemTabProps {
@@ -9,7 +12,6 @@ interface ProblemTabProps {
   tabIndex: number;
 }
 
-// TODO: molecule가 중첩된 구조 개선하기
 // [ ]: 닫기 버튼을 누를 때 선택 된 상태가 아니라면, 탭이 삭제된다.
 // [ ]: 닫기 버튼을 누를 때 선택라면, 탭이 삭제되고 이전 혹은 이후 탭으로 변경한다.
 export function ProblemTab({ problemInfo, tabIndex }: ProblemTabProps) {

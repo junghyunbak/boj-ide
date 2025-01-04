@@ -1,5 +1,9 @@
 import { useState } from 'react';
+
 import { css } from '@emotion/react';
+
+import { useJudge, useProblem } from '@/renderer/hooks';
+
 import { ExecuteResultRow, ExecuteResultData } from '@/renderer/components/atoms/tables/ExecuteResultTable';
 import {
   ProcessResultTable,
@@ -12,14 +16,12 @@ import { CodeBlock } from '@/renderer/components/atoms/pres/CodeBlock';
 import { TextButton } from '@/renderer/components/atoms/buttons/TextButton';
 import { Highlight } from '@/renderer/components/atoms/spans/Highlight';
 import { TransparentPreformatted } from '@/renderer/components/atoms/pres/TransparentPreformatted';
-import { useJudge, useProblem } from '@/renderer/hooks';
 
 interface TestCaseProps extends TC {
   judgeResult?: JudgeResult;
   i: number;
 }
 
-// 유닛 테스트코드
 // [v]: [type === 'problem'] 예제 컬럼의 값이 "예제 입력 [숫자]" 이어야 한다.
 // [v]: [type === 'problem'] 삭제 버튼이 존재하지 않아야 한다.
 // [v]: [type === 'custom'] 예제 컬럼의 값이 "사용자 예제 입력 [숫자]" 이어야 한다.

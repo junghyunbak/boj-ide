@@ -1,4 +1,4 @@
-import { BOJ_DOMAIN } from '@/constants';
+import { BOJ_DOMAIN } from '@/common/constants';
 import { type StateCreator } from 'zustand';
 
 type BojViewSlice = {
