@@ -184,10 +184,18 @@ export function MovableTab({
             border-left: 1px solid ${isTabSelect ? 'lightgray' : 'transparent'};
             border-right: 1px solid ${isTabSelect ? 'lightgray' : 'transparent'};
             cursor: pointer;
+            .tab-close-button {
+              opacity: ${isTabSelect ? 1 : 0};
+            }
+            &:hover .tab-close-button {
+              opacity: 1;
+            }
           `}
         >
           {children}
-          <XButton ref={closeButtonRef} onClick={handleCloseButtonClick} />
+          <div className="tab-close-button">
+            <XButton ref={closeButtonRef} onClick={handleCloseButtonClick} />
+          </div>
         </div>
       )}
       <TargetLine index={index + 1} />
