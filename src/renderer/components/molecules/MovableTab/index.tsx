@@ -6,6 +6,7 @@ import { color } from '@/styles';
 import { useStore } from '@/renderer/store';
 import { useTab } from '@/renderer/hooks';
 import { XButton } from '@/renderer/components/atoms/buttons/XButton';
+import { isParentExist } from '@/renderer/utils';
 
 interface MovableTabProps extends PropsWithChildren {
   index: number;
@@ -25,6 +26,7 @@ export function MovableTab({
 }: MovableTabProps) {
   const [setCurrentAfterImageUrl] = useStore(useShallow((s) => [s.setCurrentAfterImageUrl]));
   const [setIsTabDrag] = useStore(useShallow((s) => [s.setIsTabDrag]));
+  const [setTargetIndex] = useStore(useShallow((s) => [s.setTargetIndex]));
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -56,26 +58,11 @@ export function MovableTab({
 
     let isSelect: boolean = false;
 
-    const { setTargetIndex } = useStore.getState();
-
     const handleTabMouseDown = (e: MouseEvent) => {
-      const isContain = (() => {
-        let $el = e.target;
-
-        while ($el instanceof HTMLElement || $el instanceof SVGElement) {
-          if ($el === closeButtonRef.current) {
-            return true;
-          }
-
-          $el = $el.parentElement;
-        }
-
-        return false;
-      })();
-
-      if (isContain) {
+      if (isParentExist(e.target, closeButtonRef.current)) {
         return;
       }
+
       /**
        * 빈 공간을 채우기 위한 용도로 사용 될 경우,
        * 탭 드래그 동작이 발동해서는 안되므로 `isSelect = true`가 되기 전에 멈춘다.
@@ -148,7 +135,7 @@ export function MovableTab({
       container.removeEventListener('mouseleave', handleTabMouseLeave);
       window.removeEventListener('mouseup', handleWindowMouseUp);
     };
-  }, [afterImageUrl, index, polyfill, reorderTab, setCurrentAfterImageUrl, setIsTabDrag]);
+  }, [afterImageUrl, index, polyfill, reorderTab, setCurrentAfterImageUrl, setIsTabDrag, setTargetIndex]);
 
   useEffect(() => {
     const container = containerRef.current;

@@ -1,3 +1,4 @@
+import { isParentExist } from '@/renderer/utils';
 import { useRef, useEffect } from 'react';
 
 export function useClickOutOfModal(callback: () => void) {
@@ -6,30 +7,11 @@ export function useClickOutOfModal(callback: () => void) {
 
   useEffect(() => {
     const handleWindowClick = (e: MouseEvent) => {
-      const modal = modalRef.current;
-      const button = buttonRef.current;
-
-      if (!modal || !button) {
+      if (isParentExist(e.target, modalRef.current, buttonRef.current)) {
         return;
       }
 
-      const isContain = (() => {
-        let $el = e.target;
-
-        while ($el instanceof HTMLElement) {
-          if ($el === modal || $el === button) {
-            return true;
-          }
-
-          $el = $el.parentElement;
-        }
-
-        return false;
-      })();
-
-      if (!isContain) {
-        callback();
-      }
+      callback();
     };
 
     window.addEventListener('click', handleWindowClick);
