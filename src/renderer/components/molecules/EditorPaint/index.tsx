@@ -230,8 +230,8 @@ export function EditorPaint() {
         </div>
 
         <div>
-          {BRUSH_WIDTHS.map((width) => (
-            <button type="button" onClick={() => setBrushWidth(width)} disabled={brushWidth === width}>
+          {BRUSH_WIDTHS.map((width, index) => (
+            <button key={index} type="button" onClick={() => setBrushWidth(width)} disabled={brushWidth === width}>
               <div
                 css={css`
                   width: 1.5rem;
@@ -255,8 +255,8 @@ export function EditorPaint() {
         </div>
 
         <div>
-          {PEN_COLORS.map((color) => (
-            <button type="button" onClick={() => setPenColor(color)} disabled={penColor === color}>
+          {PEN_COLORS.map((color, index) => (
+            <button key={index} type="button" onClick={() => setPenColor(color)} disabled={penColor === color}>
               <div
                 css={css`
                   width: 1.5rem;
