@@ -147,9 +147,10 @@ export function useFabricCanvas(problemNumber: string) {
     }
   };
 
-  const changePenMode = () => {
+  const changePenMode = ({ brushWidth = 2, penColor = 'black' }: { brushWidth?: BrushWidth; penColor?: PenColor }) => {
     if (fabricCanvas) {
-      fabricCanvas.freeDrawingBrush.width = 1;
+      fabricCanvas.freeDrawingBrush.width = brushWidth;
+      fabricCanvas.freeDrawingBrush.color = penColor;
       fabricCanvas.isDrawingMode = true;
       fabricCanvas.selection = false;
       isHandRef.current = false;

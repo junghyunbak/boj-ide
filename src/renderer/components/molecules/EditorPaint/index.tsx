@@ -10,12 +10,15 @@ import { ReactComponent as Mouse } from '@/renderer/assets/svgs/mouse.svg';
 import { ReactComponent as Hand } from '@/renderer/assets/svgs/hand.svg';
 import { ReactComponent as Pencil } from '@/renderer/assets/svgs/pencil.svg';
 
-type PaintMode = 'pen' | 'select' | 'hand';
+const BRUSH_WIDTHS: BrushWidth[] = [2, 4, 8];
+const PEN_COLORS: PenColor[] = ['black', 'red', 'blue'];
 
 // [ ]: 요소를 선택하고 delete 키를 입력하면 요소가 삭제되어야한다.
 // [ ]: v키를 입력하면 모드가 'select'로 변경되어야한다.
 export function EditorPaint() {
   const [mode, setMode] = useState<PaintMode>('pen');
+  const [brushWidth, setBrushWidth] = useState<BrushWidth>(2);
+  const [penColor, setPenColor] = useState<PenColor>('black');
 
   const { problem } = useProblem();
 
@@ -90,7 +93,15 @@ export function EditorPaint() {
     return () => {
       container.removeEventListener('keydown', handleKeyDown);
     };
-  }, [containerRef, fabricCanvas, removeFabricActiveObject, activeAllFabricSelection, undo, redo]);
+  }, [
+    containerRef,
+    fabricCanvas,
+    removeFabricActiveObject,
+    activeAllFabricSelection,
+    undo,
+    redo,
+    unactiveAllFabricSelection,
+  ]);
 
   /**
    * 스페이스바 클릭 시 일시적으로 'hand' 모드로 변경
@@ -150,12 +161,10 @@ export function EditorPaint() {
         break;
       case 'pen':
       default:
-        changePenMode();
+        changePenMode({ brushWidth, penColor });
         break;
     }
-  }, [mode, changeSelectMode, changePenMode, changeHandMode]);
-
-  console.log('모드 변경', mode);
+  }, [mode, brushWidth, penColor, changeSelectMode, changePenMode, changeHandMode]);
 
   return (
     <div
@@ -177,6 +186,7 @@ export function EditorPaint() {
 
           display: flex;
           flex-direction: column;
+          gap: 0.5rem;
 
           button {
             background: none;
@@ -202,15 +212,61 @@ export function EditorPaint() {
           }
         `}
       >
-        <button type="button" onClick={() => setMode('pen')} disabled={mode === 'pen'}>
-          <Pencil width="1.5rem" />
-        </button>
-        <button type="button" onClick={() => setMode('hand')} disabled={mode === 'hand'}>
-          <Hand width="1.5rem" />
-        </button>
-        <button type="button" onClick={() => setMode('select')} disabled={mode === 'select'}>
-          <Mouse width="1.5rem" />
-        </button>
+        <div
+          css={css`
+            display: flex;
+            flex-direction: column;
+          `}
+        >
+          <button type="button" onClick={() => setMode('pen')} disabled={mode === 'pen'}>
+            <Pencil width="1.5rem" />
+          </button>
+          <button type="button" onClick={() => setMode('hand')} disabled={mode === 'hand'}>
+            <Hand width="1.5rem" />
+          </button>
+          <button type="button" onClick={() => setMode('select')} disabled={mode === 'select'}>
+            <Mouse width="1.5rem" />
+          </button>
+        </div>
+
+        <div>
+          {BRUSH_WIDTHS.map((width) => (
+            <button type="button" onClick={() => setBrushWidth(width)} disabled={brushWidth === width}>
+              <div
+                css={css`
+                  width: 1.5rem;
+                  aspect-ratio: 1/1;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                `}
+              >
+                <div
+                  css={css`
+                    width: 100%;
+                    height: ${width}px;
+                    background-color: ${brushWidth === width ? 'white' : 'gray'};
+                    border-radius: 0.25rem;
+                  `}
+                />
+              </div>
+            </button>
+          ))}
+        </div>
+
+        <div>
+          {PEN_COLORS.map((color) => (
+            <button type="button" onClick={() => setPenColor(color)} disabled={penColor === color}>
+              <div
+                css={css`
+                  width: 1.5rem;
+                  aspect-ratio: 1/1;
+                  background-color: ${color};
+                `}
+              />
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
