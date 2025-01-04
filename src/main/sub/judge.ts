@@ -1,12 +1,15 @@
 import { app, BrowserWindow, WebContents } from 'electron';
+
 import fs from 'fs';
 import path from 'path';
 import { Worker } from 'worker_threads';
-import { customSpawn, normalizeOutput } from '@/utils';
-import { ipc } from '@/types/ipc';
+
+import { customSpawn, normalizeOutput } from '@/main/utils';
 import { MAX_BUFFER_SIZE, MAX_LINE_LENGTH } from '@/constants';
+import { ipc } from '@/types/ipc';
 import { IpcError } from '@/error';
 import { langToJudgeInfo } from '@/constants/judge';
+
 import { Code } from './code';
 
 export function checkCli(cli: string) {

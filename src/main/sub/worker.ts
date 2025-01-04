@@ -1,5 +1,5 @@
 import { parentPort } from 'worker_threads';
-import { removeAnsiText, customSpawn } from '@/utils';
+import { removeAnsiText, customSpawn } from '@/main/utils';
 import { MAX_BUFFER_SIZE } from '@/constants';
 
 type ExecuteResult = {

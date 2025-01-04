@@ -1,14 +1,16 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
-
-import path from 'path';
 import { app, BrowserWindow, shell, globalShortcut } from 'electron';
-import { spawnSync } from 'child_process';
-import pie from 'puppeteer-in-electron';
-import { ipc } from '@/types/ipc';
-import { sentryErrorHandler } from '@/error';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import { getBojProblemNumber, resolveHtmlPath } from './util';
+import pie from 'puppeteer-in-electron';
+
+import path from 'path';
+import { spawnSync } from 'child_process';
+
+import { ipc } from '@/types/ipc';
+import { sentryErrorHandler } from '@/error';
+import { getBojProblemNumber, resolveHtmlPath } from '@/main/utils';
+
 import { Boj } from './sub/boj';
 import { Code } from './sub/code';
 import { Judge } from './sub/judge';
