@@ -11,6 +11,8 @@ interface ProblemTabProps {
   tabIndex: number;
 }
 
+// [ ]: 닫기 버튼을 누를 때 선택 된 상태가 아니라면, 탭이 삭제된다.
+// [ ]: 닫기 버튼을 누를 때 선택라면, 탭이 삭제되고 이전 혹은 이후 탭으로 변경한다.
 export function ProblemTab({ problemInfo, tabIndex }: ProblemTabProps) {
   const { problem } = useProblem();
   const { removeTab } = useTab();
@@ -37,10 +39,12 @@ export function ProblemTab({ problemInfo, tabIndex }: ProblemTabProps) {
   const handleTabCloseButtonClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     const nextProblem = removeTab(tabIndex);
 
-    if (!nextProblem) {
-      gotoUrl(`https://${BOJ_DOMAIN}/problemset`);
-    } else {
-      gotoProblem(nextProblem);
+    if (isSelect) {
+      if (!nextProblem) {
+        gotoUrl(`https://${BOJ_DOMAIN}/problemset`);
+      } else {
+        gotoProblem(nextProblem);
+      }
     }
 
     e.stopPropagation();
