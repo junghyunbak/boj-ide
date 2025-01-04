@@ -1,22 +1,23 @@
+import { useState, useEffect, useRef } from 'react';
+import { EditorState, useCodeMirror, EditorView, type Extension } from '@uiw/react-codemirror';
+
+import { css } from '@emotion/react';
+
 import { vim, Vim } from '@replit/codemirror-vim';
+
 import { javascript } from '@codemirror/lang-javascript';
 import { cpp } from '@codemirror/lang-cpp';
 import { python } from '@codemirror/lang-python';
 import { java } from '@codemirror/lang-java';
-import { useState, useEffect, useRef } from 'react';
-import { EditorState, useCodeMirror, EditorView, type Extension } from '@uiw/react-codemirror';
+
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-interface EditorCodemirrorProps {
-  containerRef: React.MutableRefObject<HTMLDivElement | null>;
-}
+import { useResponsiveLayout } from '@/renderer/hooks';
 
-// <유닛 테스트>
-// 역할:
 // [ ]: 컴포넌트가 언마운트되면 코드를 저장한다.
 // [ ]: 새롭게 코드를 로딩하면 히스토리를 제거한다.
-export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
+export function EditorCodemirror() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
   const [language] = useStore(useShallow((s) => [s.lang]));
   const [code, setCode] = useStore(useShallow((s) => [s.code, s.setCode]));
@@ -28,6 +29,11 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
   const [editorWidth, setEditorWidth] = useState(0);
 
   const editorRef = useRef<HTMLDivElement | null>(null);
+
+  const { containerRef } = useResponsiveLayout((width, height) => {
+    setEditorWidth(width);
+    setEditorHeight(height);
+  });
 
   const extensions = (() => {
     const tmp: Extension[] = [];
@@ -70,7 +76,7 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
     return tmp;
   })();
 
-  const { setContainer, setState, state } = useCodeMirror({
+  const { setContainer, setState, state, setView } = useCodeMirror({
     extensions,
     value: code,
     width: `${editorWidth}px`,
@@ -88,31 +94,6 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
 
     setContainer(editorRef.current);
   }, [setContainer]);
-
-  /**
-   * 레이아웃이 달라졌을경우, 에디터의 크기 갱신을 위한 이벤트 등록
-   */
-  useEffect(() => {
-    const container = containerRef.current;
-
-    if (!container) {
-      return () => {};
-    }
-
-    const observer = new ResizeObserver(([entry]) => {
-      const { width, height } = entry.contentRect;
-
-      setEditorWidth(width);
-      setEditorHeight(height);
-    });
-
-    observer.observe(container);
-
-    return () => {
-      observer.unobserve(container);
-      observer.disconnect();
-    };
-  }, [containerRef]);
 
   /**
    * 로딩 된 소스코드를 반영하는 ipc 이벤트 초기화
@@ -204,5 +185,15 @@ export function EditorCodemirror({ containerRef }: EditorCodemirrorProps) {
     };
   }, [problem, language, setIsCodeStale]);
 
-  return <div ref={editorRef} />;
+  return (
+    <div
+      css={css`
+        width: 100%;
+        height: 100%;
+      `}
+      ref={containerRef}
+    >
+      <div ref={editorRef} />
+    </div>
+  );
 }

@@ -9,3 +9,5 @@ export * from './useClickOutOfModal';
 export * from './useXScroll';
 export * from './useAlertModal';
 export * from './useConfirmModal';
+export * from './useResponsiveLayout';
+export * from './useFabricCanvas';

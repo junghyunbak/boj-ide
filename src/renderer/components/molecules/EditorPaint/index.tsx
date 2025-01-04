@@ -1,28 +1,46 @@
 import { useEffect, useRef, useState } from 'react';
+
 import { css } from '@emotion/react';
-import { fabric } from 'fabric';
+
 import { color } from '@/renderer/styles';
-import { useProblem } from '@/renderer/hooks';
-import { useStore } from '@/renderer/store';
+
+import { useProblem, useResponsiveLayout, useFabricCanvas } from '@/renderer/hooks';
+
 import { ReactComponent as Mouse } from '@/renderer/assets/svgs/mouse.svg';
 import { ReactComponent as Hand } from '@/renderer/assets/svgs/hand.svg';
 import { ReactComponent as Pencil } from '@/renderer/assets/svgs/pencil.svg';
-import 'fabric-history';
 
 type PaintMode = 'pen' | 'select' | 'hand';
 
+// [ ]: 요소를 선택하고 delete 키를 입력하면 요소가 삭제되어야한다.
+// [ ]: v키를 입력하면 모드가 'select'로 변경되어야한다.
 export function EditorPaint() {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const isHandRef = useRef(false);
+  const [mode, setMode] = useState<PaintMode>('pen');
 
   const { problem } = useProblem();
 
   const problemNumber = problem?.number || '';
 
-  const [mode, setMode] = useState<PaintMode>('pen');
-  const [fabricCanvas, setFabricCanvas] = useState<fabric.Canvas | null>(null);
+  const {
+    fabricCanvas,
+    canvasRef,
+    activeAllFabricSelection,
+    removeFabricActiveObject,
+    undo,
+    redo,
+    changeHandMode,
+    changePenMode,
+    changeSelectMode,
+  } = useFabricCanvas(problemNumber);
+  const { containerRef } = useResponsiveLayout((width, height) => {
+    if (fabricCanvas) {
+      fabricCanvas.setDimensions({ width, height });
+    }
+  });
 
+  /**
+   * 그림판 단축키 이벤트 등록
+   */
   useEffect(() => {
     const container = containerRef.current;
 
@@ -30,62 +48,52 @@ export function EditorPaint() {
       return () => {};
     }
 
-    const handler = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       const { ctrlKey, metaKey, key, shiftKey } = e;
 
-      if (key === 'Delete') {
-        if (fabricCanvas) {
-          fabricCanvas.remove(...fabricCanvas.getActiveObjects());
-          fabricCanvas.discardActiveObject();
-        }
+      const isCtrlKeyClick = ctrlKey || metaKey;
+      const isShiftKeyClick = shiftKey;
 
-        return;
-      }
-
-      if (key === 'v') {
-        setMode('select');
-        return;
-      }
-
-      if (key === 'p') {
-        setMode('pen');
-        return;
-      }
-
-      if ((ctrlKey || metaKey) && key === 'a') {
-        if (fabricCanvas) {
-          const selection = new fabric.ActiveSelection(fabricCanvas.getObjects(), { canvas: fabricCanvas });
-          fabricCanvas.setActiveObject(selection);
-          fabricCanvas.renderAll();
-        }
-
-        e.preventDefault();
-
-        return;
-      }
-
-      if ((ctrlKey || metaKey) && shiftKey && key === 'z') {
-        if (fabricCanvas && 'redo' in fabricCanvas && fabricCanvas.redo instanceof Function) {
-          fabricCanvas.redo();
-        }
-
-        return;
-      }
-
-      if ((ctrlKey || metaKey) && key === 'z') {
-        if (fabricCanvas && 'undo' in fabricCanvas && fabricCanvas.undo instanceof Function) {
-          fabricCanvas.undo();
-        }
+      switch (key) {
+        case 'Delete':
+          removeFabricActiveObject();
+          break;
+        case 'v':
+          setMode('select');
+          break;
+        case 'p':
+          setMode('pen');
+          break;
+        case 'a':
+          if (isCtrlKeyClick) {
+            activeAllFabricSelection();
+            e.preventDefault();
+          }
+          break;
+        case 'z':
+          if (isCtrlKeyClick) {
+            if (isShiftKeyClick) {
+              redo();
+            } else {
+              undo();
+            }
+          }
+          break;
+        default:
+          break;
       }
     };
 
-    container.addEventListener('keydown', handler);
+    container.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      container.removeEventListener('keydown', handler);
+      container.removeEventListener('keydown', handleKeyDown);
     };
-  }, [fabricCanvas]);
+  }, [containerRef, fabricCanvas, removeFabricActiveObject, activeAllFabricSelection, undo, redo]);
 
+  /**
+   * 스페이스바 클릭 시 일시적으로 'hand' 모드로 변경
+   */
   useEffect(() => {
     const container = containerRef.current;
 
@@ -126,150 +134,25 @@ export function EditorPaint() {
       container.removeEventListener('keydown', handleKeyDown);
       container.removeEventListener('keyup', handleKeyUp);
     };
-  }, []);
+  }, [containerRef]);
 
+  /**
+   * 모드에 따른 fabric 상태 변경
+   */
   useEffect(() => {
-    if (!fabricCanvas) {
-      return;
-    }
-
     switch (mode) {
       case 'select':
-        fabricCanvas.isDrawingMode = false;
-        fabricCanvas.selection = true;
-        fabricCanvas.defaultCursor = 'default';
-        isHandRef.current = false;
+        changeSelectMode();
         break;
       case 'hand':
-        fabricCanvas.isDrawingMode = false;
-        fabricCanvas.selection = false;
-        fabricCanvas.defaultCursor = 'move';
-        isHandRef.current = true;
+        changeHandMode();
         break;
       case 'pen':
       default:
-        fabricCanvas.freeDrawingBrush.width = 1;
-        fabricCanvas.isDrawingMode = true;
-        fabricCanvas.selection = false;
-        isHandRef.current = false;
+        changePenMode();
         break;
     }
-  }, [mode, fabricCanvas]);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    const canvas = canvasRef.current;
-
-    if (!canvas || !container) {
-      return () => {};
-    }
-
-    const newFabricCanvas = new fabric.Canvas(canvas);
-
-    setFabricCanvas(newFabricCanvas);
-
-    const observer = new ResizeObserver(([entry]) => {
-      const { width, height } = entry.contentRect;
-
-      newFabricCanvas.setDimensions({
-        width,
-        height,
-      });
-    });
-
-    observer.observe(container);
-
-    return () => {
-      newFabricCanvas.dispose();
-      observer.unobserve(container);
-      observer.disconnect();
-    };
-  }, [problemNumber]);
-
-  useEffect(() => {
-    if (!fabricCanvas) {
-      return;
-    }
-
-    let panning = false;
-
-    const handleMouseDown = () => {
-      panning = true;
-    };
-
-    const handleMouseMove = (event: fabric.IEvent<MouseEvent>) => {
-      if (!panning || !isHandRef.current) {
-        return;
-      }
-
-      const delta = new fabric.Point(event.e.movementX, event.e.movementY);
-      fabricCanvas.relativePan(delta);
-    };
-
-    const handleMouseUp = () => {
-      panning = false;
-    };
-
-    const handleWheelScroll = (opt: fabric.IEvent<WheelEvent>) => {
-      const delta = opt.e.deltaY;
-      let zoom = fabricCanvas.getZoom();
-
-      zoom *= 0.999 ** delta;
-
-      if (zoom > 20) {
-        zoom = 20;
-      }
-
-      if (zoom < 0.01) {
-        zoom = 0.01;
-      }
-
-      fabricCanvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
-
-      opt.e.preventDefault();
-      opt.e.stopPropagation();
-    };
-
-    fabricCanvas.on('mouse:down', handleMouseDown);
-    fabricCanvas.on('mouse:move', handleMouseMove);
-    fabricCanvas.on('mouse:up', handleMouseUp);
-    fabricCanvas.on('mouse:wheel', handleWheelScroll);
-    fabricCanvas.on('after:render', () => {
-      useStore.getState().setProblemToFabricJSON((prev) => {
-        const next = { ...prev };
-
-        next[problemNumber] = fabricCanvas.toJSON();
-
-        return next;
-      });
-    });
-  }, [fabricCanvas, problemNumber]);
-
-  useEffect(() => {
-    const fabricJSON = useStore.getState().problemToFabricJSON[problemNumber];
-
-    if (!fabricCanvas || !fabricJSON) {
-      return;
-    }
-
-    /**
-     * // BUG: Cannot read properties of null (reading 'clearRect')
-     *
-     * https://github.com/fabricjs/fabric.js/discussions/10036
-     *
-     * problemNumber가 변경되면 기존 fabricCanvas가 dispose된다.
-     * 하지만 dispose된다고 하더라도 fabricCanvas 객체는 살아있게된다.
-     * 유효한 fabricCanvas의 상태가 업데이트 되기전에 해당 훅이 먼저 실행되면
-     * 이미 dispose된 객체의 loadFromJSON 메서드를 호출하게 되어 에러가 발생한다.
-     *
-     * try-catch 문으로 무시해주는 방법으로 일단 해결한다.
-     */
-    try {
-      fabricCanvas.loadFromJSON(fabricJSON, () => {});
-    } catch (e) {
-      // do-nothing
-    }
-  }, [fabricCanvas, problemNumber]);
+  }, [mode, changeSelectMode, changePenMode, changeHandMode]);
 
   return (
     <div
