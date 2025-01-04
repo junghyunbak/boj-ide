@@ -11,5 +11,5 @@ export function resolveHtmlPath(htmlFileName: string) {
     return url.href;
   }
 
-  return `file://${path.resolve(__dirname, '../../renderer/', htmlFileName)}`;
+  return `file://${path.resolve(__dirname, '..', 'renderer', htmlFileName)}`;
 }
