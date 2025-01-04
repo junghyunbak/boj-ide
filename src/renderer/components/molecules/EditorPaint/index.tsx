@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 
@@ -31,12 +31,9 @@ export function EditorPaint() {
     changeHandMode,
     changePenMode,
     changeSelectMode,
+    updateFabricCanvasSize,
   } = useFabricCanvas(problemNumber);
-  const { containerRef } = useResponsiveLayout((width, height) => {
-    if (fabricCanvas) {
-      fabricCanvas.setDimensions({ width, height });
-    }
-  });
+  const { containerRef } = useResponsiveLayout(updateFabricCanvasSize);
 
   /**
    * 그림판 단축키 이벤트 등록

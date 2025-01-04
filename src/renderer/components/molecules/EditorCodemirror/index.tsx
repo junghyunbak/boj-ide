@@ -16,13 +16,14 @@ import { useShallow } from 'zustand/shallow';
 import { useResponsiveLayout } from '@/renderer/hooks';
 
 // [ ]: 컴포넌트가 언마운트되면 코드를 저장한다.
-// [ ]: 새롭게 코드를 로딩하면 히스토리를 제거한다.
+// [ ]: 새롭게 코드를 로딩하면 히스토리가 존재하지 않아야 한다.
+// [ ]: `ctrl + s` 단축키를 클릭하면 "저장되었습니다." 메세지가 출력되어야한다.
 export function EditorCodemirror() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
-  const [language] = useStore(useShallow((s) => [s.lang]));
-  const [code, setCode] = useStore(useShallow((s) => [s.code, s.setCode]));
-  const [mode] = useStore(useShallow((s) => [s.mode]));
-  const [fontSize] = useStore(useShallow((s) => [s.fontSize]));
+  const [editorMode] = useStore(useShallow((s) => [s.mode]));
+  const [editorCode, setEditorCode] = useStore(useShallow((s) => [s.code, s.setCode]));
+  const [editorLanguage] = useStore(useShallow((s) => [s.lang]));
+  const [editorFontSize] = useStore(useShallow((s) => [s.fontSize]));
   const [setIsCodeStale] = useStore(useShallow((s) => [s.setIsCodeStale]));
 
   const [editorHeight, setEditorHeight] = useState(0);
@@ -40,18 +41,18 @@ export function EditorCodemirror() {
 
     const FontTheme = EditorView.theme({
       '.cm-content': {
-        fontSize: `${fontSize}px`,
+        fontSize: `${editorFontSize}px`,
         fontFamily: 'hack',
       },
       '.cm-gutters': {
-        fontSize: `${fontSize}px`,
+        fontSize: `${editorFontSize}px`,
         fontFamily: 'hack',
       },
     });
 
     tmp.push(FontTheme);
 
-    switch (language) {
+    switch (editorLanguage) {
       case 'node.js':
         tmp.push(javascript());
         break;
@@ -69,59 +70,63 @@ export function EditorCodemirror() {
         break;
     }
 
-    if (mode === 'vim') {
+    if (editorMode === 'vim') {
       tmp.push(vim());
     }
 
     return tmp;
   })();
 
-  const { setContainer, setState, state, setView } = useCodeMirror({
+  const { setContainer, setState, state } = useCodeMirror({
     extensions,
-    value: code,
+    value: editorCode,
     width: `${editorWidth}px`,
     height: `${editorHeight}px`,
     basicSetup: { autocompletion: false },
-    onChange: (v) => {
-      setCode(v);
+    onChange: (code) => {
+      setEditorCode(code);
     },
   });
 
+  /**
+   * CodeMirror 초기화
+   */
   useEffect(() => {
-    if (!editorRef.current) {
-      return;
+    if (editorRef.current) {
+      setContainer(editorRef.current);
     }
-
-    setContainer(editorRef.current);
   }, [setContainer]);
 
   /**
    * 로딩 된 소스코드를 반영하는 ipc 이벤트 초기화
    */
   useEffect(() => {
-    window.electron.ipcRenderer.on('load-code-result', ({ data }) => {
-      setCode(data.code);
+    window.electron.ipcRenderer.on('load-code-result', ({ data: { code } }) => {
+      setEditorCode(code);
 
       if (editorRef.current) {
-        const newState = EditorState.create({
-          ...state,
-        });
-
-        setState(newState);
+        /**
+         * 이전 히스토리를 삭제하기 위해, 현재 상태를 기반으로 새로운 상태 객체를 생성
+         */
+        setState(
+          EditorState.create({
+            ...state,
+          }),
+        );
       }
     });
 
     return () => {
       window.electron.ipcRenderer.removeAllListeners('load-code-result');
     };
-  }, [setCode, setState, state]);
+  }, [setEditorCode, setState, state]);
 
   /**
    * 코드가 변경 될 경우, 코드 저장 관련 기능을 활성화
    */
   useEffect(() => {
     setIsCodeStale(true);
-  }, [code, setIsCodeStale]);
+  }, [editorCode, setIsCodeStale]);
 
   /**
    * 문제, 확장자가 변경되면 소스코드를 로딩, 기존의 코드를 저장
@@ -131,27 +136,21 @@ export function EditorCodemirror() {
       return () => {};
     }
 
-    if (problem) {
-      const { number } = problem;
-
-      window.electron.ipcRenderer.sendMessage('load-code', { data: { number, language } });
-    }
+    window.electron.ipcRenderer.sendMessage('load-code', {
+      data: { number: problem.number, language: editorLanguage },
+    });
 
     return () => {
-      if (!problem) {
-        return;
-      }
-
-      const { number } = problem;
+      const { code } = useStore.getState();
 
       window.electron.ipcRenderer.sendMessage('save-code', {
-        data: { number, language, code: useStore.getState().code, silence: true },
+        data: { number: problem.number, language: editorLanguage, code, silence: true },
       });
     };
-  }, [problem, language]);
+  }, [problem, editorLanguage]);
 
   /**
-   * 저장 이벤트 등록
+   * Vim(:w), 단축키(ctrl + s) 코드 저장 이벤트 등록
    */
   useEffect(() => {
     const saveCode = () => {
@@ -159,10 +158,10 @@ export function EditorCodemirror() {
         return;
       }
 
-      const { number } = problem;
+      const { code } = useStore.getState();
 
       window.electron.ipcRenderer.sendMessage('save-code', {
-        data: { number, language, code: useStore.getState().code },
+        data: { number: problem.number, language: editorLanguage, code },
       });
 
       setIsCodeStale(false);
@@ -183,7 +182,7 @@ export function EditorCodemirror() {
     return () => {
       window.removeEventListener('keydown', handleSaveCode);
     };
-  }, [problem, language, setIsCodeStale]);
+  }, [problem, setIsCodeStale, editorLanguage]);
 
   return (
     <div

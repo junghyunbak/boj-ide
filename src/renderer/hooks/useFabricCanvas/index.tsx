@@ -98,22 +98,12 @@ export function useFabricCanvas(problemNumber: string) {
       return;
     }
 
-    /**
-     * // BUG: Cannot read properties of null (reading 'clearRect')
-     *
-     * https://github.com/fabricjs/fabric.js/discussions/10036
-     *
-     * problemNumber가 변경되면 기존 fabricCanvas가 dispose된다.
-     * 하지만 dispose된다고 하더라도 fabricCanvas 객체는 살아있게된다.
-     * 유효한 fabricCanvas의 상태가 업데이트 되기전에 해당 훅이 먼저 실행되면
-     * 이미 dispose된 객체의 loadFromJSON 메서드를 호출하게 되어 에러가 발생한다.
-     *
-     * try-catch 문으로 무시해주는 방법으로 일단 해결한다.
-     */
     try {
       fabricCanvas.loadFromJSON(fabricJSON, () => {});
     } catch (e) {
-      // do-nothing
+      // BUG: Cannot read properties of null (reading 'clearRect')
+      // https://github.com/fabricjs/fabric.js/discussions/10036
+      // dispose된 fabricCanvas를 사용할 때 해당 에러 발생. React 생명주기와 관련
     }
   }, [fabricCanvas, problemNumber]);
 
@@ -159,6 +149,18 @@ export function useFabricCanvas(problemNumber: string) {
     }
   };
 
+  const updateFabricCanvasSize = (width: number, height: number) => {
+    if (fabricCanvas) {
+      try {
+        fabricCanvas.setDimensions({ width, height });
+      } catch (e) {
+        // BUG: Cannot set properties of undefined (setting 'width')
+        // https://github.com/fabricjs/fabric.js/discussions/10036
+        // dispose된 fabricCanvas를 사용할 때 해당 에러 발생. React 생명주기와 관련
+      }
+    }
+  };
+
   const undo = () => {
     if (fabricCanvas && 'undo' in fabricCanvas && fabricCanvas.undo instanceof Function) {
       fabricCanvas.undo();
@@ -181,5 +183,6 @@ export function useFabricCanvas(problemNumber: string) {
     changeHandMode,
     changePenMode,
     changeSelectMode,
+    updateFabricCanvasSize,
   };
 }
