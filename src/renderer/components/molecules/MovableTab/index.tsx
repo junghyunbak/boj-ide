@@ -138,10 +138,8 @@ export function MovableTab({
   }, [afterImageUrl, index, polyfill, reorderTab, setCurrentAfterImageUrl, setIsTabDrag, setTargetIndex]);
 
   useEffect(() => {
-    const container = containerRef.current;
-
-    if (isTabSelect && container) {
-      container.scrollIntoView();
+    if (isTabSelect && containerRef.current) {
+      containerRef.current.scrollIntoView();
     }
   }, [isTabSelect]);
 
