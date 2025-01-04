@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
-import { OutputHeader } from '@/renderer/components/organisms/OutputHeader';
+
 import { RowLine } from '@/renderer/components/atoms/lines/RowLIne';
+import { OutputHeader } from '@/renderer/components/organisms/OutputHeader';
 import { OutputContent } from '@/renderer/components/organisms/OutputContent';
 
 export function Output() {

@@ -1,7 +1,9 @@
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
 import { useEffect } from 'react';
+
 import { css } from '@emotion/react';
+
+import { useJudge, useProblem } from '@/renderer/hooks';
+
 import {
   ExecuteResultTable,
   ExecuteResultThead,
@@ -11,12 +13,8 @@ import {
 } from '@/renderer/components/atoms/tables/ExecuteResultTable';
 import { TestCase } from '@/renderer/components/molecules/TestCase';
 import { TestCaseMaker } from '@/renderer/components/molecules/TestCaseMaker';
-import { useJudge } from '@/renderer/hooks';
 
-// <통합 테스트코드>
-
-// 해당 컴포넌트의 역할: 채점 데이터를 상황에 맞게 가공하는 것
-
+// <통합 테스트>
 // [ ]: [채점중이 아닐 때] 사용자 테스트케이스를 추가하면 기존 채점 결과를 삭제한다.
 // [ ]: [채점중이 아닐 때] 사용자 테스트케이스를 삭제하면 기존 채점 결과를 삭제한다.
 // [ ]: [채점중이 아닐 때] 선택된 문제가 변경되면 기존 채점 결과를 삭제한다.
@@ -26,9 +24,8 @@ import { useJudge } from '@/renderer/hooks';
 // [ ]: [채점중일 때] 선택된 문제를 변경하면 기존 채점 결과를 삭제하고, 진행중인 채점 결과를 무시한다.
 // [ ]: [채점중일 때] '결과' 컬럼에 '채점중' 텍스트가 나타나야 한다.
 export function OutputContent() {
-  const [problem] = useStore(useShallow((s) => [s.problem]));
-
-  const { resetJudge, judgeResults, setJudgeResults, customTestCase, judgeId } = useJudge();
+  const { problem } = useProblem();
+  const { judgeResults, customTestCase, judgeId, resetJudge, setJudgeResults } = useJudge();
 
   useEffect(() => {
     window.electron.ipcRenderer.on('judge-reset', () => {

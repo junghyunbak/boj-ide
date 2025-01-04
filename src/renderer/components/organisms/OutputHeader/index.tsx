@@ -1,7 +1,8 @@
 import { css } from '@emotion/react';
+
 import { Text } from '@/renderer/components/atoms/paragraphs/Text';
 import { ExecuteCodeButton } from '@/renderer/components/molecules/ExecuteCodeButton';
-import { ExecuteResultText } from '../../molecules/ExecuteResultText';
+import { ExecuteResultText } from '@/renderer/components/molecules/ExecuteResultText';
 
 export function OutputHeader() {
   return (

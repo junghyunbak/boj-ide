@@ -1,7 +1,10 @@
+import { css } from '@emotion/react';
+
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
+
 import { useHorizontalLayout } from '@/renderer/hooks';
-import { css } from '@emotion/react';
+
 import { Nav } from '@/renderer/components/organisms/Nav';
 import { VerticalResizer } from '@/renderer/components/atoms/lines/VerticalResizer';
 import { HorizontalResizer } from '@/renderer/components/atoms/lines/HorizontalResizer';

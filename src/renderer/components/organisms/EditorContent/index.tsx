@@ -1,12 +1,15 @@
-import { css } from '@emotion/react';
-import { useShallow } from 'zustand/shallow';
 import { useStore } from '@/renderer/store';
+import { useShallow } from 'zustand/shallow';
+
+import { useProblem } from '@/renderer/hooks';
+
 import { EditorSettings } from '@/renderer/components/molecules/EditorSettings';
 import { EditorCodemirror } from '@/renderer/components/molecules/EditorCodemirror';
 import { EditorPlaceholder } from '@/renderer/components/molecules/EditorPlaceholder';
 
 export function EditorContent() {
-  const [problem] = useStore(useShallow((s) => [s.problem]));
+  const { problem } = useProblem();
+
   const [isSetting] = useStore(useShallow((s) => [s.isSetting]));
 
   const Content = (() => {

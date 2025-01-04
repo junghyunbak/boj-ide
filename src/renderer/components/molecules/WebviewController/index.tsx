@@ -1,13 +1,15 @@
-import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
-import { useShallow } from 'zustand/shallow';
-import { useStore } from '@/renderer/store';
+
+import { css } from '@emotion/react';
+
+import { useWebview } from '@/renderer/hooks';
+
 import { ArrowButton } from '@/renderer/components/atoms/buttons/ArrowButton';
-import { ExternalLinkButton } from '@/renderer/components/atoms/buttons/ExternalLinkButton';
 import { RefreshButton } from '@/renderer/components/atoms/buttons/RefreshButton';
+import { ExternalLinkButton } from '@/renderer/components/atoms/buttons/ExternalLinkButton';
 
 export function WebviewController() {
-  const [webview] = useStore(useShallow((s) => [s.webview]));
+  const { webview } = useWebview();
 
   const [canGoBack, setCanGoBack] = useState(true);
   const [canGoForward, setCanGoForward] = useState(true);
