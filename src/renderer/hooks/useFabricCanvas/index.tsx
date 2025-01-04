@@ -72,7 +72,6 @@ export function useFabricCanvas(problemNumber: string) {
     };
 
     const handleObjectAdded = () => {
-      console.log('저장');
       useFabricStore.getState().setProblemToFabricJSON((prev) => {
         const next = { ...prev };
 
