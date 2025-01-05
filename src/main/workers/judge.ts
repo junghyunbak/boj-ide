@@ -40,7 +40,11 @@ function execute({
   };
 }
 
-parentPort?.on('message', (data) => {
+if (!parentPort) {
+  process.exit(1);
+}
+
+parentPort.on('message', (data) => {
   const { executeCmd, input, basePath } = data;
 
   const { elapsed, stderr, stdout, signal } = execute({ executeCmd, input, basePath });

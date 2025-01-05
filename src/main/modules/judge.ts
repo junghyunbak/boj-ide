@@ -123,6 +123,14 @@ export class Judge {
           (() => {
             const worker = new Worker(path.join(__dirname, 'worker'));
 
+            worker.on('exit', () => {
+              worker.terminate();
+            });
+
+            worker.on('error', () => {
+              worker.terminate();
+            });
+
             worker.once('message', (data) => {
               const { stderr, stdout, signal, elapsed } = data;
 
