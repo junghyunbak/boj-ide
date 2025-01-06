@@ -27,6 +27,7 @@ export function EditorCodemirror() {
   const [editorCode, setEditorCode] = useStore(useShallow((s) => [s.code, s.setCode]));
   const [editorLanguage] = useStore(useShallow((s) => [s.lang]));
   const [editorFontSize] = useStore(useShallow((s) => [s.fontSize]));
+  const [editorIndentSpace] = useStore(useShallow((s) => [s.indentSpace]));
   const [setIsCodeStale] = useStore(useShallow((s) => [s.setIsCodeStale]));
 
   const [editorHeight, setEditorHeight] = useState(0);
@@ -90,6 +91,9 @@ export function EditorCodemirror() {
     width: `${editorWidth}px`,
     height: `${editorHeight}px`,
     indentWithTab: false,
+    basicSetup: {
+      tabSize: editorIndentSpace,
+    },
     onChange: (code) => {
       setEditorCode(code);
     },

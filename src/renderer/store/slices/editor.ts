@@ -19,6 +19,9 @@ type EditorSlice = {
   isCodeStale: boolean;
   setIsCodeStale: (isCodeStale: boolean) => void;
 
+  indentSpace: number;
+  setIndentSpace: (count: number) => void;
+
   isPaintOpen: boolean;
   setIsPaintOpen: (isOpen: boolean) => void;
 };
@@ -57,5 +60,10 @@ export const createEditorSlice: StateCreator<EditorSlice> = (set): EditorSlice =
   isSetting: false,
   setIsSetting(isSetting) {
     set(() => ({ isSetting }));
+  },
+
+  indentSpace: 2,
+  setIndentSpace(count) {
+    set(() => ({ indentSpace: count }));
   },
 });
