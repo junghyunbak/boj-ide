@@ -12,6 +12,9 @@ export function useFabricCanvas(problemNumber: string) {
 
   const [fabricCanvas, setFabricCanvas] = useState<fabric.Canvas | null>(null);
 
+  /**
+   * idb persist를 사용하고 있어 상태로 참조해야만 한다.
+   */
   const [problemToFabricJSON, setProblemToFabricJSON] = useFabricStore(
     useShallow((s) => [s.problemToFabricJSON, s.setProblemToFabricJSON]),
   );
@@ -31,15 +34,9 @@ export function useFabricCanvas(problemNumber: string) {
     setFabricCanvas(newFabricCanvas);
 
     return () => {
-      setProblemToFabricJSON((prev) => {
-        const next = { ...prev };
-        next[problemNumber] = newFabricCanvas.toJSON();
-        return next;
-      });
-
       newFabricCanvas.dispose();
     };
-  }, [problemNumber, setProblemToFabricJSON]);
+  }, [problemNumber]);
 
   /**
    * fabric 캔버스 초기화 시 백업 데이터 로딩
@@ -47,18 +44,36 @@ export function useFabricCanvas(problemNumber: string) {
   useEffect(() => {
     const fabricJSON = problemToFabricJSON[problemNumber];
 
-    if (!fabricCanvas || !fabricJSON) {
+    if (!fabricCanvas) {
       return;
     }
 
-    try {
-      fabricCanvas.loadFromJSON(fabricJSON, () => {});
-    } catch (e) {
-      // BUG: Cannot read properties of null (reading 'clearRect')
-      // https://github.com/fabricjs/fabric.js/discussions/10036
-      // dispose된 fabricCanvas를 사용할 때 해당 에러 발생. React 생명주기와 관련
+    if (fabricJSON && fabricCanvas.isEmpty()) {
+      try {
+        fabricCanvas.loadFromJSON(fabricJSON, () => {});
+      } catch (e) {
+        // BUG: Cannot read properties of null (reading 'clearRect')
+        // https://github.com/fabricjs/fabric.js/discussions/10036
+        // dispose된 fabricCanvas를 사용할 때 해당 에러 발생. React 생명주기와 관련
+      }
     }
-  }, [fabricCanvas, problemNumber, problemToFabricJSON]);
+
+    let timer: ReturnType<typeof setTimeout>;
+
+    fabricCanvas.on('object:added', () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+
+      timer = setTimeout(() => {
+        setProblemToFabricJSON((prev) => {
+          const next = { ...prev };
+          next[problemNumber] = fabricCanvas.toJSON();
+          return next;
+        });
+      }, 2000);
+    });
+  }, [fabricCanvas, problemNumber, problemToFabricJSON, setProblemToFabricJSON]);
 
   /**
    * fabric 캔버스 전용 이벤트 설정 (마우스 휠 스크롤 확대/축소)
