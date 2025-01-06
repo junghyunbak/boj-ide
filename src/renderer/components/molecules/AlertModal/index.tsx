@@ -32,7 +32,7 @@ export function AlertModal() {
     <Modal isOpen={isAlertModalOpen} onCloseButtonClick={handleCloseButtonClick}>
       <div
         css={css`
-          padding: 3rem 0;
+          padding: 10% 0;
           overflow-y: scroll;
           max-height: 100dvh;
           &::-webkit-scrollbar {
