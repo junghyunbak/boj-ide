@@ -1,8 +1,12 @@
-import { TabButton } from '@/renderer/components/atoms/buttons/TabButton';
-import { useWebview } from '@/renderer/hooks';
-import { useStore } from '@/renderer/store';
 import { useEffect, useRef } from 'react';
+
+import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
+
+import { useWebview } from '@/renderer/hooks';
+
+import { TabButton } from '@/renderer/components/atoms/buttons/TabButton';
+import { Text } from '@/renderer/components/atoms/paragraphs/Text';
 
 interface BookmarkTabProps {
   bookmarkInfo: BookmarkInfo;
@@ -40,7 +44,7 @@ export function BookmarkTab({ bookmarkInfo }: BookmarkTabProps) {
 
   return (
     <TabButton onClick={handleBookmarkItemClick} isSelect={isSelect} ref={ref}>
-      {bookmarkInfo.title}
+      <Text>{bookmarkInfo.title}</Text>
     </TabButton>
   );
 }
