@@ -16,6 +16,9 @@ export function useFabricCanvas(problemNumber: string) {
     useShallow((s) => [s.problemToFabricJSON, s.setProblemToFabricJSON]),
   );
 
+  /**
+   * fabric 캔버스 객체 생성, 초기화, 데이터 백업
+   */
   useEffect(() => {
     const canvas = canvasRef.current;
 
@@ -38,9 +41,31 @@ export function useFabricCanvas(problemNumber: string) {
     };
   }, [problemNumber, setProblemToFabricJSON]);
 
+  /**
+   * fabric 캔버스 초기화 시 백업 데이터 로딩
+   */
+  useEffect(() => {
+    const fabricJSON = problemToFabricJSON[problemNumber];
+
+    if (!fabricCanvas || !fabricJSON) {
+      return;
+    }
+
+    try {
+      fabricCanvas.loadFromJSON(fabricJSON, () => {});
+    } catch (e) {
+      // BUG: Cannot read properties of null (reading 'clearRect')
+      // https://github.com/fabricjs/fabric.js/discussions/10036
+      // dispose된 fabricCanvas를 사용할 때 해당 에러 발생. React 생명주기와 관련
+    }
+  }, [fabricCanvas, problemNumber, problemToFabricJSON]);
+
+  /**
+   * fabric 캔버스 전용 이벤트 설정 (마우스 휠 스크롤 확대/축소)
+   */
   useEffect(() => {
     if (!fabricCanvas) {
-      return () => {};
+      return;
     }
 
     let panning = false;
@@ -87,22 +112,6 @@ export function useFabricCanvas(problemNumber: string) {
     fabricCanvas.on('mouse:up', handleMouseUp);
     fabricCanvas.on('mouse:wheel', handleWheelScroll);
   }, [fabricCanvas, problemNumber]);
-
-  useEffect(() => {
-    const fabricJSON = problemToFabricJSON[problemNumber];
-
-    if (!fabricCanvas || !fabricJSON) {
-      return;
-    }
-
-    try {
-      fabricCanvas.loadFromJSON(fabricJSON, () => {});
-    } catch (e) {
-      // BUG: Cannot read properties of null (reading 'clearRect')
-      // https://github.com/fabricjs/fabric.js/discussions/10036
-      // dispose된 fabricCanvas를 사용할 때 해당 에러 발생. React 생명주기와 관련
-    }
-  }, [fabricCanvas, problemNumber, problemToFabricJSON]);
 
   const activeAllFabricSelection = useCallback(() => {
     if (fabricCanvas) {
