@@ -65,10 +65,16 @@ export function useFabricCanvas(problemNumber: string) {
         clearTimeout(timer);
       }
 
+      /**
+       * setTimeout 함수 내부에서 fabricCanvas.toJSON() 으로 데이터를 가져올 경우
+       * fabricCanvas가 dispose되면 아무런 값도 없어지기 때문에 미리 로드해두어야 한다.
+       */
+      const savedFabricJSON = fabricCanvas.toJSON();
+
       timer = setTimeout(() => {
         setProblemToFabricJSON((prev) => {
           const next = { ...prev };
-          next[problemNumber] = fabricCanvas.toJSON();
+          next[problemNumber] = savedFabricJSON;
           return next;
         });
       }, 2000);
