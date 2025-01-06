@@ -1,7 +1,7 @@
 {
   "name": "boj-ide",
   "version": "1.7.10",
-  "description": "Copy and paste automation tool in Baekjun Online Judge",
+  "description": "BOJ IDE",
   "keywords": [
     "electron",
     "boilerplate",
