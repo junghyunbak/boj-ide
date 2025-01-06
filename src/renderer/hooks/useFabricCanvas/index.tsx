@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useFabricStore } from '@/renderer/store';
+import { useShallow } from 'zustand/shallow';
 
 import { fabric } from 'fabric';
 import 'fabric-history';
@@ -10,6 +11,10 @@ export function useFabricCanvas(problemNumber: string) {
   const isHandRef = useRef(false);
 
   const [fabricCanvas, setFabricCanvas] = useState<fabric.Canvas | null>(null);
+
+  const [problemToFabricJSON, setProblemToFabricJSON] = useFabricStore(
+    useShallow((s) => [s.problemToFabricJSON, s.setProblemToFabricJSON]),
+  );
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -23,13 +28,19 @@ export function useFabricCanvas(problemNumber: string) {
     setFabricCanvas(newFabricCanvas);
 
     return () => {
+      setProblemToFabricJSON((prev) => {
+        const next = { ...prev };
+        next[problemNumber] = newFabricCanvas.toJSON();
+        return next;
+      });
+
       newFabricCanvas.dispose();
     };
-  }, [problemNumber]);
+  }, [problemNumber, setProblemToFabricJSON]);
 
   useEffect(() => {
     if (!fabricCanvas) {
-      return;
+      return () => {};
     }
 
     let panning = false;
@@ -71,25 +82,14 @@ export function useFabricCanvas(problemNumber: string) {
       opt.e.stopPropagation();
     };
 
-    const handleObjectAdded = () => {
-      useFabricStore.getState().setProblemToFabricJSON((prev) => {
-        const next = { ...prev };
-
-        next[problemNumber] = fabricCanvas.toJSON();
-
-        return next;
-      });
-    };
-
     fabricCanvas.on('mouse:down', handleMouseDown);
     fabricCanvas.on('mouse:move', handleMouseMove);
     fabricCanvas.on('mouse:up', handleMouseUp);
     fabricCanvas.on('mouse:wheel', handleWheelScroll);
-    fabricCanvas.on('object:added', handleObjectAdded);
   }, [fabricCanvas, problemNumber]);
 
   useEffect(() => {
-    const fabricJSON = useFabricStore.getState().problemToFabricJSON[problemNumber];
+    const fabricJSON = problemToFabricJSON[problemNumber];
 
     if (!fabricCanvas || !fabricJSON) {
       return;
@@ -102,7 +102,7 @@ export function useFabricCanvas(problemNumber: string) {
       // https://github.com/fabricjs/fabric.js/discussions/10036
       // dispose된 fabricCanvas를 사용할 때 해당 에러 발생. React 생명주기와 관련
     }
-  }, [fabricCanvas, problemNumber]);
+  }, [fabricCanvas, problemNumber, problemToFabricJSON]);
 
   const activeAllFabricSelection = useCallback(() => {
     if (fabricCanvas) {
