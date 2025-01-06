@@ -19,8 +19,8 @@ type EditorSlice = {
   isCodeStale: boolean;
   setIsCodeStale: (isCodeStale: boolean) => void;
 
-  indentSpace: number;
-  setIndentSpace: (count: number) => void;
+  indentSpace: IndentSpace;
+  setIndentSpace: (count: IndentSpace) => void;
 
   isPaintOpen: boolean;
   setIsPaintOpen: (isOpen: boolean) => void;

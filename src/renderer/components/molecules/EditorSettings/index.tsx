@@ -1,14 +1,18 @@
 import { css } from '@emotion/react';
+
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
+
 import { AngleButton } from '@/renderer/components/atoms/buttons/AngleButton';
 import { Text } from '@/renderer/components/atoms/paragraphs/Text';
 
 const EditorMode: EditorMode[] = ['normal', 'vim'];
+const EditorIndentSpace: IndentSpace[] = [2, 4];
 
 export function EditorSettings() {
   const [editorMode, setEditorMode] = useStore(useShallow((s) => [s.mode, s.setMode]));
   const [editorfontSize, setEditorFontSize] = useStore(useShallow((s) => [s.fontSize, s.setFontSize]));
+  const [editorIndentSpace, setEditorIndentSpace] = useStore(useShallow((s) => [s.indentSpace, s.setIndentSpace]));
   const [setIsSetting] = useStore(useShallow((s) => [s.setIsSetting]));
 
   const handleBackButtonClick = () => {
@@ -24,6 +28,14 @@ export function EditorSettings() {
 
     if (!Number.isNaN(fontSize)) {
       setEditorFontSize(fontSize);
+    }
+  };
+
+  const handleIndentSpaceOptionChange: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
+    const indentSpace = +e.target.value;
+
+    if (!Number.isNaN(indentSpace) && (indentSpace === 2 || indentSpace === 4)) {
+      setEditorIndentSpace(indentSpace);
     }
   };
 
@@ -102,6 +114,15 @@ export function EditorSettings() {
         <select value={editorfontSize} onChange={handleSelectOptionChange}>
           {[8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map((fontSize, i) => {
             return <option key={i}>{fontSize}</option>;
+          })}
+        </select>
+      </div>
+
+      <div>
+        <h5>들여쓰기 공백 크기</h5>
+        <select value={editorIndentSpace} onChange={handleIndentSpaceOptionChange}>
+          {EditorIndentSpace.map((indentSpace, i) => {
+            return <option key={i}>{indentSpace}</option>;
           })}
         </select>
       </div>
