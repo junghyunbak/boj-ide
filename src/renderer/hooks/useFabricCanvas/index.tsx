@@ -45,7 +45,7 @@ export function useFabricCanvas(problemNumber: string) {
     const fabricJSON = problemToFabricJSON[problemNumber];
 
     if (!fabricCanvas) {
-      return;
+      return () => {};
     }
 
     if (fabricJSON && fabricCanvas.isEmpty()) {
@@ -60,7 +60,7 @@ export function useFabricCanvas(problemNumber: string) {
 
     let timer: ReturnType<typeof setTimeout>;
 
-    fabricCanvas.on('object:added', () => {
+    const handleObjectAdded = () => {
       if (timer) {
         clearTimeout(timer);
       }
@@ -72,7 +72,13 @@ export function useFabricCanvas(problemNumber: string) {
           return next;
         });
       }, 2000);
-    });
+    };
+
+    fabricCanvas.on('object:added', handleObjectAdded);
+
+    return () => {
+      fabricCanvas.off('object:added', handleObjectAdded);
+    };
   }, [fabricCanvas, problemNumber, problemToFabricJSON, setProblemToFabricJSON]);
 
   /**
@@ -80,7 +86,7 @@ export function useFabricCanvas(problemNumber: string) {
    */
   useEffect(() => {
     if (!fabricCanvas) {
-      return;
+      return () => {};
     }
 
     let panning = false;
@@ -126,6 +132,18 @@ export function useFabricCanvas(problemNumber: string) {
     fabricCanvas.on('mouse:move', handleMouseMove);
     fabricCanvas.on('mouse:up', handleMouseUp);
     fabricCanvas.on('mouse:wheel', handleWheelScroll);
+
+    return () => {
+      /**
+       * Event의 하위 인터페이스인 EventMouse를 사용하는 fabric 이벤트이지만 off에서는 이를 타입 불일치로 판단하기 때문에 타입체크 무시
+       */
+      fabricCanvas.off('mouse:down', handleMouseDown);
+      // @ts-ignore
+      fabricCanvas.off('mouse:move', handleMouseMove);
+      fabricCanvas.off('mouse:up', handleMouseUp);
+      // @ts-ignore
+      fabricCanvas.off('mouse:wheel', handleWheelScroll);
+    };
   }, [fabricCanvas, problemNumber]);
 
   const activeAllFabricSelection = useCallback(() => {
