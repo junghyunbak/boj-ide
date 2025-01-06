@@ -18,6 +18,8 @@ import { useShallow } from 'zustand/shallow';
 
 import { useResponsiveLayout } from '@/renderer/hooks';
 
+import './index.css';
+
 // [ ]: 컴포넌트가 언마운트되면 코드를 저장한다.
 // [ ]: 새롭게 코드를 로딩하면 히스토리가 존재하지 않아야 한다.
 // [ ]: `ctrl + s` 단축키를 클릭하면 "저장되었습니다." 메세지가 출력되어야한다.
