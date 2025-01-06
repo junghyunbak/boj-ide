@@ -5,6 +5,9 @@ import { css } from '@emotion/react';
 
 import { vim, Vim } from '@replit/codemirror-vim';
 
+import { acceptCompletion } from '@codemirror/autocomplete';
+import { indentWithTab } from '@codemirror/commands';
+import { keymap } from '@codemirror/view';
 import { javascript } from '@codemirror/lang-javascript';
 import { cpp } from '@codemirror/lang-cpp';
 import { python } from '@codemirror/lang-python';
@@ -40,6 +43,8 @@ export function EditorCodemirror() {
 
   const extensions = (() => {
     const tmp: Extension[] = [];
+
+    tmp.push(keymap.of([{ key: 'Tab', run: acceptCompletion }, indentWithTab]));
 
     const FontTheme = EditorView.theme({
       '.cm-content': {
@@ -84,7 +89,7 @@ export function EditorCodemirror() {
     value: editorCode,
     width: `${editorWidth}px`,
     height: `${editorHeight}px`,
-    basicSetup: { autocompletion: false },
+    indentWithTab: false,
     onChange: (code) => {
       setEditorCode(code);
     },
