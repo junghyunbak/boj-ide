@@ -30,9 +30,13 @@ using namespace std;
 
 int main() {
   ios::sync_with_stdio(false);
+
   int a, b;
+
   cin >> a >> b;
+
   cout << a+b << endl;
+
   return 0;
 }
 `;
@@ -40,17 +44,22 @@ int main() {
 export const PY_INPUT_TEMPLATE = `import sys
 
 a, b = map(int, sys.stdin.readline().split())
+
 print(a+b)
 `;
 
 export const JAVA_CODE_TEMPLATE = `import java.util.*;
+
 public class Main{
-	public static void main(String args[]){
-		Scanner sc = new Scanner(System.in);
-		int a, b;
-		a = sc.nextInt();
-		b = sc.nextInt();
-		System.out.println(a + b);
-	}
+  public static void main(String args[]){
+    Scanner sc = new Scanner(System.in);
+
+    int a, b;
+
+    a = sc.nextInt();
+    b = sc.nextInt();
+
+    System.out.println(a + b);
+  }
 }
 `;
