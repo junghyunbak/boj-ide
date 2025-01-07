@@ -84,6 +84,11 @@ export function useFabricCanvas(problemNumber: string) {
 
     return () => {
       fabricCanvas.off('object:added', handleObjectAdded);
+
+      /**
+       * 컴포넌트 언마운트시에도 데이터 저장
+       */
+      handleObjectAdded();
     };
   }, [fabricCanvas, problemNumber, problemToFabricJSON, setProblemToFabricJSON]);
 
