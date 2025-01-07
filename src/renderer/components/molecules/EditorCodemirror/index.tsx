@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { EditorState, useCodeMirror, EditorView, type Extension } from '@uiw/react-codemirror';
 
 import { css } from '@emotion/react';
@@ -23,6 +23,7 @@ import './index.css';
 // [ ]: 컴포넌트가 언마운트되면 코드를 저장한다.
 // [ ]: 새롭게 코드를 로딩하면 히스토리가 존재하지 않아야 한다.
 // [ ]: `ctrl + s` 단축키를 클릭하면 "저장되었습니다." 메세지가 출력되어야한다.
+// [ ]: 코드가 stale하지 않은 상태라면 `ctrl + s` 단축키를 클릭하여도 "저장되었습니다." 메세지가 출력되지 않아야 한다.
 export function EditorCodemirror() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
   const [editorMode] = useStore(useShallow((s) => [s.mode]));
@@ -30,7 +31,7 @@ export function EditorCodemirror() {
   const [editorLanguage] = useStore(useShallow((s) => [s.lang]));
   const [editorFontSize] = useStore(useShallow((s) => [s.fontSize]));
   const [editorIndentSpace] = useStore(useShallow((s) => [s.indentSpace]));
-  const [setIsCodeStale] = useStore(useShallow((s) => [s.setIsCodeStale]));
+  const [isCodeStale, setIsCodeStale] = useStore(useShallow((s) => [s.isCodeStale, s.setIsCodeStale]));
 
   const [editorHeight, setEditorHeight] = useState(0);
   const [editorWidth, setEditorWidth] = useState(0);
@@ -44,10 +45,46 @@ export function EditorCodemirror() {
 
   const { containerRef } = useResponsiveLayout(resizeEditorLayout);
 
-  const extensions = (() => {
+  const saveCode = useCallback(() => {
+    if (!problem || !isCodeStale) {
+      return;
+    }
+
+    const { code } = useStore.getState();
+
+    window.electron.ipcRenderer.sendMessage('save-code', {
+      data: { number: problem.number, language: editorLanguage, code },
+    });
+
+    setIsCodeStale(false);
+  }, [editorLanguage, isCodeStale, problem, setIsCodeStale]);
+
+  const extensions = useMemo(() => {
     const tmp: Extension[] = [];
 
     tmp.push(keymap.of([{ key: 'Tab', run: acceptCompletion }, indentWithTab]));
+    tmp.push(
+      keymap.of([
+        {
+          key: 'Ctrl-s',
+          run: () => {
+            saveCode();
+            return false;
+          },
+        },
+      ]),
+    );
+    tmp.push(
+      keymap.of([
+        {
+          key: 'Meta-s',
+          run: () => {
+            saveCode();
+            return false;
+          },
+        },
+      ]),
+    );
 
     const FontTheme = EditorView.theme({
       '.cm-content': {
@@ -85,7 +122,7 @@ export function EditorCodemirror() {
     }
 
     return tmp;
-  })();
+  }, [editorFontSize, editorLanguage, editorMode, saveCode]);
 
   const { setContainer, setState, state } = useCodeMirror({
     extensions,
@@ -163,39 +200,11 @@ export function EditorCodemirror() {
   }, [problem, editorLanguage]);
 
   /**
-   * Vim(:w), 단축키(ctrl + s) 코드 저장 이벤트 등록
+   * Vim(:w) 코드 저장 이벤트 등록
    */
   useEffect(() => {
-    const saveCode = () => {
-      if (!problem) {
-        return;
-      }
-
-      const { code } = useStore.getState();
-
-      window.electron.ipcRenderer.sendMessage('save-code', {
-        data: { number: problem.number, language: editorLanguage, code },
-      });
-
-      setIsCodeStale(false);
-    };
-
     Vim.defineEx('write', 'w', saveCode);
-
-    const handleSaveCode = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-        e.preventDefault();
-
-        saveCode();
-      }
-    };
-
-    window.addEventListener('keydown', handleSaveCode);
-
-    return () => {
-      window.removeEventListener('keydown', handleSaveCode);
-    };
-  }, [problem, setIsCodeStale, editorLanguage]);
+  }, [problem, setIsCodeStale, editorLanguage, isCodeStale, saveCode]);
 
   return (
     <div
