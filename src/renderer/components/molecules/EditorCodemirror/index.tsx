@@ -206,6 +206,32 @@ export function EditorCodemirror() {
     Vim.defineEx('write', 'w', saveCode);
   }, [saveCode]);
 
+  useEffect(() => {
+    if (!view) {
+      return () => {};
+    }
+
+    // TODO: react-codemirror와 타입 다른 이슈 수정
+    // @ts-ignore
+    const cm = getCM(view);
+
+    if (!cm) {
+      return () => {};
+    }
+
+    const handleVimModeChange = (data: any) => {
+      if ('mode' in data && typeof data.mode === 'string') {
+        useStore.getState().setVimMode(data.mode);
+      }
+    };
+
+    cm.on('vim-mode-change', handleVimModeChange);
+
+    return () => {
+      cm.off('vim-mode-change', handleVimModeChange);
+    };
+  }, [view]);
+
   /**
    * autoComplete 모달이 있을 경우에도 esc키 입력 시 Vim 일반 모드로 진입되게끔 이벤트 등록
    */
@@ -218,6 +244,7 @@ export function EditorCodemirror() {
 
     const editorKeyDownHandler = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && view) {
+        // TODO: react-codemirror와 타입 다른 이슈 수정
         // @ts-ignore
         const cm = getCM(view);
 

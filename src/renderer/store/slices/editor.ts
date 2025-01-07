@@ -24,9 +24,17 @@ type EditorSlice = {
 
   isPaintOpen: boolean;
   setIsPaintOpen: (isOpen: boolean) => void;
+
+  vimMode: string;
+  setVimMode: (mode: string) => void;
 };
 
 export const createEditorSlice: StateCreator<EditorSlice> = (set): EditorSlice => ({
+  vimMode: 'NORMAL',
+  setVimMode: (mode: string) => {
+    set(() => ({ vimMode: mode }));
+  },
+
   isPaintOpen: false,
   setIsPaintOpen(isOpen) {
     set(() => ({ isPaintOpen: isOpen }));

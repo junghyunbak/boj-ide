@@ -4,6 +4,7 @@ import { ReleasesButton } from '@/renderer/components/molecules/ReleasesButton';
 import { StorageButton } from '@/renderer/components/molecules/StorageButton';
 import { ManualButton } from '@/renderer/components/molecules/ManualButton';
 import { EditorTabSize } from '@/renderer/components/molecules/EditorTabSize';
+import { VimModeText } from '@/renderer/components/molecules/VimModeText';
 
 export function Footer() {
   return (
@@ -18,9 +19,14 @@ export function Footer() {
         overflow: hidden;
       `}
     >
-      <div>
+      <div
+        css={css`
+          display: flex;
+        `}
+      >
         <StorageButton />
         <ManualButton />
+        <VimModeText />
       </div>
 
       <div
