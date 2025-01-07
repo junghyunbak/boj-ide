@@ -34,9 +34,15 @@ export function useFabricCanvas(problemNumber: string) {
     setFabricCanvas(newFabricCanvas);
 
     return () => {
+      setProblemToFabricJSON((prev) => {
+        const next = { ...prev };
+        next[problemNumber] = newFabricCanvas.toJSON();
+        return next;
+      });
+
       newFabricCanvas.dispose();
     };
-  }, [problemNumber]);
+  }, [problemNumber, setProblemToFabricJSON]);
 
   /**
    * fabric 캔버스 초기화 시 백업 데이터 로딩
@@ -60,7 +66,7 @@ export function useFabricCanvas(problemNumber: string) {
 
     let timer: ReturnType<typeof setTimeout>;
 
-    const handleObjectAdded = () => {
+    const handleFabricDataChange = () => {
       if (timer) {
         clearTimeout(timer);
       }
@@ -80,15 +86,22 @@ export function useFabricCanvas(problemNumber: string) {
       }, 2000);
     };
 
-    fabricCanvas.on('object:added', handleObjectAdded);
+    fabricCanvas.on('object:added', handleFabricDataChange);
+    fabricCanvas.on('object:modified', handleFabricDataChange);
+    fabricCanvas.on('object:moving', handleFabricDataChange);
+    fabricCanvas.on('object:removed', handleFabricDataChange);
+    fabricCanvas.on('object:resizing', handleFabricDataChange);
+    fabricCanvas.on('object:rotating', handleFabricDataChange);
+    fabricCanvas.on('object:scaling', handleFabricDataChange);
 
     return () => {
-      fabricCanvas.off('object:added', handleObjectAdded);
-
-      /**
-       * 컴포넌트 언마운트시에도 데이터 저장
-       */
-      handleObjectAdded();
+      fabricCanvas.off('object:added', handleFabricDataChange);
+      fabricCanvas.off('object:modified', handleFabricDataChange);
+      fabricCanvas.off('object:moving', handleFabricDataChange);
+      fabricCanvas.off('object:removed', handleFabricDataChange);
+      fabricCanvas.off('object:resizing', handleFabricDataChange);
+      fabricCanvas.off('object:rotating', handleFabricDataChange);
+      fabricCanvas.off('object:scaling', handleFabricDataChange);
     };
   }, [fabricCanvas, problemNumber, problemToFabricJSON, setProblemToFabricJSON]);
 
