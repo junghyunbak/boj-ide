@@ -34,12 +34,6 @@ export function useFabricCanvas(problemNumber: string) {
     setFabricCanvas(newFabricCanvas);
 
     return () => {
-      setProblemToFabricJSON((prev) => {
-        const next = { ...prev };
-        next[problemNumber] = newFabricCanvas.toJSON();
-        return next;
-      });
-
       newFabricCanvas.dispose();
     };
   }, [problemNumber, setProblemToFabricJSON]);
