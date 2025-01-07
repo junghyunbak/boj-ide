@@ -3,7 +3,7 @@ import { EditorState, useCodeMirror, EditorView, type Extension } from '@uiw/rea
 
 import { css } from '@emotion/react';
 
-import { vim, Vim } from '@replit/codemirror-vim';
+import { vim, Vim, getCM } from '@replit/codemirror-vim';
 
 import { acceptCompletion } from '@codemirror/autocomplete';
 import { indentWithTab } from '@codemirror/commands';
@@ -124,7 +124,7 @@ export function EditorCodemirror() {
     return tmp;
   }, [editorFontSize, editorLanguage, editorMode, saveCode]);
 
-  const { setContainer, setState, state } = useCodeMirror({
+  const { setContainer, setState, state, view } = useCodeMirror({
     extensions,
     value: editorCode,
     width: `${editorWidth}px`,
@@ -204,7 +204,35 @@ export function EditorCodemirror() {
    */
   useEffect(() => {
     Vim.defineEx('write', 'w', saveCode);
-  }, [problem, setIsCodeStale, editorLanguage, isCodeStale, saveCode]);
+  }, [saveCode]);
+
+  /**
+   * autoComplete 모달이 있을 경우에도 esc키 입력 시 Vim 일반 모드로 진입되게끔 이벤트 등록
+   */
+  useEffect(() => {
+    const editor = editorRef.current;
+
+    if (!editor) {
+      return () => {};
+    }
+
+    const editorKeyDownHandler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && view) {
+        // @ts-ignore
+        const cm = getCM(view);
+
+        if (cm) {
+          Vim.exitInsertMode(cm);
+        }
+      }
+    };
+
+    editor.addEventListener('keydown', editorKeyDownHandler);
+
+    return () => {
+      editor.removeEventListener('keydown', editorKeyDownHandler);
+    };
+  }, [saveCode, view]);
 
   return (
     <div
