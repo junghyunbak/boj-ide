@@ -21,6 +21,10 @@
 * 코드 실행 시간은 정확하지 않으므로 참고용으로만 사용해주세요.
 * 사용자의 모든 데이터는 앱 내 브라우저의 저장소와 pc내에 저장됩니다. 안심하시고 사용하셔도 됩니다.<br/>(로그인 쿠키 정보, 소스 코드, 테스트케이스 등이 해당)
 
+## Tip
+
+* [BOJ IDE Executor](https://chromewebstore.google.com/detail/boj-ide-executor/aegmfpcnfkmlhmlklhipladjabpncjha) 크롬 확장 프로그램을 사용하면, 외부 브라우저에서 열려있는 백준 문제 페이지에서 BOJ IDE를 곧바로 열어볼 수 있습니다.
+
 ## 프로젝트 실행 방법
 
 ```bash
