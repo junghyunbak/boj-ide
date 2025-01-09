@@ -137,8 +137,8 @@ export function useFabricCanvas(problemNumber: string) {
         zoom = 20;
       }
 
-      if (zoom < 0.01) {
-        zoom = 0.01;
+      if (zoom < 0.1) {
+        zoom = 0.1;
       }
 
       if (isCtrlKeyPressedRef.current) {
