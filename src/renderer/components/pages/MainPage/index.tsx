@@ -5,6 +5,8 @@ import { useShallow } from 'zustand/shallow';
 
 import { useHorizontalLayout } from '@/renderer/hooks';
 
+import { zIndex } from '@/renderer/styles';
+
 import { Nav } from '@/renderer/components/organisms/Nav';
 import { VerticalResizer } from '@/renderer/components/atoms/lines/VerticalResizer';
 import { HorizontalResizer } from '@/renderer/components/atoms/lines/HorizontalResizer';
@@ -87,7 +89,7 @@ export function MainPage() {
             <BojView />
           </div>
 
-          <VerticalResizer ref={resizerRef} />
+          <VerticalResizer ref={resizerRef} zIndex={zIndex.Resizer.webview} />
 
           <div
             css={css`
@@ -130,7 +132,7 @@ export function MainPage() {
                       >
                         <EditorPaint />
                       </div>
-                      <VerticalResizer ref={resizerRef3} />
+                      <VerticalResizer ref={resizerRef3} zIndex={zIndex.Resizer.paint} />
                     </>
                   )}
                   <div
@@ -152,7 +154,7 @@ export function MainPage() {
                 </div>
               </div>
 
-              <HorizontalResizer ref={resizerRef2} />
+              <HorizontalResizer ref={resizerRef2} zIndex={zIndex.Resizer.editor} />
 
               <div
                 css={css`

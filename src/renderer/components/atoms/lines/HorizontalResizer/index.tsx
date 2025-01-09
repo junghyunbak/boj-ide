@@ -1,7 +1,12 @@
-import { css } from '@emotion/react';
 import { forwardRef } from 'react';
 
-export const HorizontalResizer = forwardRef<HTMLDivElement>((_, ref) => {
+import { css } from '@emotion/react';
+
+import { zIndex } from '@/renderer/styles';
+
+interface HorizontalResizerProps extends React.CSSProperties {}
+
+export const HorizontalResizer = forwardRef<HTMLDivElement, HorizontalResizerProps>((props, ref) => {
   return (
     <div
       ref={ref}
@@ -12,8 +17,10 @@ export const HorizontalResizer = forwardRef<HTMLDivElement>((_, ref) => {
         border-bottom: 1px solid lightgray;
         cursor: row-resize;
         position: relative;
-        z-index: 1000;
       `}
+      style={{
+        zIndex: props.zIndex || zIndex.Resizer.default,
+      }}
     >
       <div
         css={css`

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import { color } from '@/renderer/styles';
+import { color, zIndex } from '@/renderer/styles';
 
 import { useProblem, useResponsiveLayout, useFabricCanvas } from '@/renderer/hooks';
 
@@ -195,7 +195,7 @@ export function EditorPaint() {
         height: 100%;
         position: ${isExpand ? 'absolute' : 'relative'};
         inset: 0;
-        z-index: 1002;
+        z-index: ${isExpand ? zIndex.paint.expanded : zIndex.paint.default};
         background-color: white;
         outline: none;
       `}

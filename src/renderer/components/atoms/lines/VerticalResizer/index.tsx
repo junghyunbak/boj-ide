@@ -1,7 +1,12 @@
-import { css } from '@emotion/react';
 import { forwardRef } from 'react';
 
-export const VerticalResizer = forwardRef<HTMLDivElement>((_, ref) => {
+import { css } from '@emotion/react';
+
+import { zIndex } from '@/renderer/styles';
+
+interface VerticalResizerProps extends React.CSSProperties {}
+
+export const VerticalResizer = forwardRef<HTMLDivElement, VerticalResizerProps>((props, ref) => {
   return (
     <div
       ref={ref}
@@ -12,8 +17,10 @@ export const VerticalResizer = forwardRef<HTMLDivElement>((_, ref) => {
         border-left: 1px solid lightgray;
         cursor: col-resize;
         position: relative;
-        z-index: 1000;
       `}
+      style={{
+        zIndex: props.zIndex || zIndex.Resizer.default,
+      }}
     >
       <div
         css={css`
