@@ -23,6 +23,7 @@ export function EditorPaint() {
   const [brushWidth, setBrushWidth] = useState<BrushWidth>(4);
   const [brushColor, setBrushColor] = useState<BrushColor>('black');
   const [isExpand, setIsExpand] = useState(false);
+  const [isFocus, setIsFocus] = useState(false);
 
   const { problem } = useProblem();
 
@@ -44,10 +45,40 @@ export function EditorPaint() {
   } = useFabricCanvas(problemNumber);
   const { containerRef } = useResponsiveLayout(updateFabricCanvasSize);
 
+  useEffect(() => {
+    const container = containerRef.current;
+
+    if (!container) {
+      return () => {};
+    }
+
+    const handleContainerFocus = () => {
+      setIsFocus(true);
+    };
+
+    const handleContainerBlur = () => {
+      setIsFocus(false);
+    };
+
+    container.addEventListener('focus', handleContainerFocus);
+    container.addEventListener('blur', handleContainerBlur);
+
+    return () => {
+      container.removeEventListener('focus', handleContainerFocus);
+      container.removeEventListener('blur', handleContainerBlur);
+    };
+  }, [containerRef]);
+
   /**
    * 그림판 단축키 이벤트 등록
    */
   useEffect(() => {
+    const container = containerRef.current;
+
+    if (!container) {
+      return () => {};
+    }
+
     const handleKeyDown = (e: KeyboardEvent) => {
       const { ctrlKey, metaKey, key, shiftKey } = e;
 
@@ -98,14 +129,15 @@ export function EditorPaint() {
       isCtrlKeyPressedRef.current = false;
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
+    container.addEventListener('keydown', handleKeyDown);
+    container.addEventListener('keyup', handleKeyUp);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
+      container.removeEventListener('keydown', handleKeyDown);
+      container.removeEventListener('keyup', handleKeyUp);
     };
   }, [
+    containerRef,
     fabricCanvas,
     removeFabricActiveObject,
     activeAllFabricSelection,
@@ -119,6 +151,12 @@ export function EditorPaint() {
    * 스페이스바 클릭 시 일시적으로 'hand' 모드로 변경
    */
   useEffect(() => {
+    const container = containerRef.current;
+
+    if (!container) {
+      return () => {};
+    }
+
     let prevMode: FabricCanvasMode = 'pen';
     let isPressed = false;
 
@@ -145,14 +183,14 @@ export function EditorPaint() {
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
+    container.addEventListener('keydown', handleKeyDown);
+    container.addEventListener('keyup', handleKeyUp);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
+      container.removeEventListener('keydown', handleKeyDown);
+      container.removeEventListener('keyup', handleKeyUp);
     };
-  }, []);
+  }, [containerRef]);
 
   /**
    * 모드에 따른 fabric 상태 변경
@@ -199,10 +237,16 @@ export function EditorPaint() {
         inset: 0;
         z-index: ${isExpand ? zIndex.paint.expanded : zIndex.paint.default};
         background-color: white;
+        outline: none;
+        &:focus {
+          box-shadow: inset 0px 0px 5px #00000036;
+        }
       `}
+      tabIndex={0}
       ref={containerRef}
     >
       <canvas ref={canvasRef} />
+
       <button
         type="button"
         css={css`
@@ -226,10 +270,23 @@ export function EditorPaint() {
         onClick={() => {
           setIsExpand(!isExpand);
         }}
+        onMouseDown={(e) => e.preventDefault()}
       >
         <Shrink style={{ display: isExpand ? 'block' : 'none' }} />
         <Expand style={{ display: isExpand ? 'none' : 'block' }} />
       </button>
+
+      {!isFocus && (
+        <div
+          css={css`
+            position: absolute;
+            inset: 0;
+            z-index: ${zIndex.paint.dimmed};
+            inset: 0;
+          `}
+        />
+      )}
+
       <div
         css={css`
           position: absolute;
@@ -275,6 +332,7 @@ export function EditorPaint() {
             type="button"
             onClick={handleFabricCanvasModeButtonClick('pen')}
             disabled={fabricCanvasMode === 'pen'}
+            onMouseDown={(e) => e.preventDefault()}
           >
             <Pencil width="1.5rem" />
           </button>
@@ -282,6 +340,7 @@ export function EditorPaint() {
             type="button"
             onClick={handleFabricCanvasModeButtonClick('hand')}
             disabled={fabricCanvasMode === 'hand'}
+            onMouseDown={(e) => e.preventDefault()}
           >
             <Hand width="1.5rem" />
           </button>
@@ -289,6 +348,7 @@ export function EditorPaint() {
             type="button"
             onClick={handleFabricCanvasModeButtonClick('select')}
             disabled={fabricCanvasMode === 'select'}
+            onMouseDown={(e) => e.preventDefault()}
           >
             <Mouse width="1.5rem" />
           </button>
@@ -301,6 +361,7 @@ export function EditorPaint() {
               type="button"
               onClick={handleBrushWidthButtonClick(width)}
               disabled={brushWidth === width}
+              onMouseDown={(e) => e.preventDefault()}
             >
               <div
                 css={css`
@@ -330,6 +391,7 @@ export function EditorPaint() {
               key={index}
               type="button"
               onClick={handlBrushColorButtonClick(color)}
+              onMouseDown={(e) => e.preventDefault()}
               disabled={brushColor === color}
             >
               <div
