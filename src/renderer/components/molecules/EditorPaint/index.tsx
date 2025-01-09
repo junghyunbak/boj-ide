@@ -238,8 +238,10 @@ export function EditorPaint() {
         z-index: ${isExpand ? zIndex.paint.expanded : zIndex.paint.default};
         background-color: white;
         outline: none;
+        box-shadow: inset 0px 0px 0px #00000036;
+        transition: box-shadow ease 0.5s;
         &:focus {
-          box-shadow: inset 0px 0px 5px #00000036;
+          box-shadow: inset 0px 0px 6px #00000036;
         }
       `}
       tabIndex={0}
