@@ -93,6 +93,7 @@ export function MainPage() {
             css={css`
               flex: 1;
               overflow: hidden;
+              position: relative;
             `}
           >
             <div

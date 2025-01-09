@@ -10,6 +10,9 @@ import { ReactComponent as Mouse } from '@/renderer/assets/svgs/mouse.svg';
 import { ReactComponent as Hand } from '@/renderer/assets/svgs/hand.svg';
 import { ReactComponent as Pencil } from '@/renderer/assets/svgs/pencil.svg';
 
+import { ReactComponent as Expand } from '@/renderer/assets/svgs/expand.svg';
+import { ReactComponent as Shrink } from '@/renderer/assets/svgs/shrink.svg';
+
 const BRUSH_WIDTHS: BrushWidth[] = [2, 4, 8];
 const BRUSH_COLORS: BrushColor[] = ['black', 'red', 'blue'];
 
@@ -19,6 +22,7 @@ export function EditorPaint() {
   const [fabricCanvasMode, setFabricCanvasMode] = useState<FabricCanvasMode>('pen');
   const [brushWidth, setBrushWidth] = useState<BrushWidth>(4);
   const [brushColor, setBrushColor] = useState<BrushColor>('black');
+  const [isExpand, setIsExpand] = useState(false);
 
   const { problem } = useProblem();
 
@@ -189,13 +193,41 @@ export function EditorPaint() {
       css={css`
         width: 100%;
         height: 100%;
-        position: relative;
+        position: ${isExpand ? 'absolute' : 'relative'};
+        inset: 0;
+        z-index: 1002;
+        background-color: white;
         outline: none;
       `}
       tabIndex={0}
       ref={containerRef}
     >
       <canvas ref={canvasRef} />
+      <button
+        type="button"
+        css={css`
+          position: absolute;
+          left: 0.5rem;
+          bottom: 0.5rem;
+          border: none;
+          background: none;
+          cursor: pointer;
+          color: gray;
+          padding: 0.5rem;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          svg {
+            width: 1rem;
+          }
+        `}
+        onClick={() => {
+          setIsExpand(!isExpand);
+        }}
+      >
+        {isExpand ? <Shrink /> : <Expand />}
+      </button>
       <div
         css={css`
           position: absolute;
