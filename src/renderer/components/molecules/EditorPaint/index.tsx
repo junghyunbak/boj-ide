@@ -40,6 +40,7 @@ export function EditorPaint() {
     changePenMode,
     changeSelectMode,
     updateFabricCanvasSize,
+    isCtrlKeyPressedRef,
   } = useFabricCanvas(problemNumber);
   const { containerRef } = useResponsiveLayout(updateFabricCanvasSize);
 
@@ -56,8 +57,12 @@ export function EditorPaint() {
     const handleKeyDown = (e: KeyboardEvent) => {
       const { ctrlKey, metaKey, key, shiftKey } = e;
 
-      const isCtrlKeyClick = ctrlKey || metaKey;
-      const isShiftKeyClick = shiftKey;
+      const isCtrlKeyDown = ctrlKey || metaKey;
+      const isShiftKeyDown = shiftKey;
+
+      if (isCtrlKeyDown) {
+        isCtrlKeyPressedRef.current = true;
+      }
 
       switch (key) {
         case 'Escape':
@@ -73,14 +78,14 @@ export function EditorPaint() {
           setFabricCanvasMode('pen');
           break;
         case 'a':
-          if (isCtrlKeyClick) {
+          if (isCtrlKeyDown) {
             activeAllFabricSelection();
             e.preventDefault();
           }
           break;
         case 'z':
-          if (isCtrlKeyClick) {
-            if (isShiftKeyClick) {
+          if (isCtrlKeyDown) {
+            if (isShiftKeyDown) {
               redo();
             } else {
               undo();
@@ -92,10 +97,16 @@ export function EditorPaint() {
       }
     };
 
+    const handleKeyUp = () => {
+      isCtrlKeyPressedRef.current = false;
+    };
+
     container.addEventListener('keydown', handleKeyDown);
+    container.addEventListener('keyup', handleKeyUp);
 
     return () => {
       container.removeEventListener('keydown', handleKeyDown);
+      container.removeEventListener('keyup', handleKeyUp);
     };
   }, [
     containerRef,
@@ -105,6 +116,7 @@ export function EditorPaint() {
     undo,
     redo,
     unactiveAllFabricSelection,
+    isCtrlKeyPressedRef,
   ]);
 
   /**

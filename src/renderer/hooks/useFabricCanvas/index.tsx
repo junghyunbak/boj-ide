@@ -9,6 +9,7 @@ import 'fabric-history';
 export function useFabricCanvas(problemNumber: string) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const isHandRef = useRef(false);
+  const isCtrlKeyPressedRef = useRef(false);
 
   const [fabricCanvas, setFabricCanvas] = useState<fabric.Canvas | null>(null);
 
@@ -127,10 +128,10 @@ export function useFabricCanvas(problemNumber: string) {
     };
 
     const handleWheelScroll = (opt: fabric.IEvent<WheelEvent>) => {
-      const delta = opt.e.deltaY;
+      const { deltaY } = opt.e;
       let zoom = fabricCanvas.getZoom();
 
-      zoom *= 0.999 ** delta;
+      zoom *= 0.999 ** deltaY;
 
       if (zoom > 20) {
         zoom = 20;
@@ -140,7 +141,11 @@ export function useFabricCanvas(problemNumber: string) {
         zoom = 0.01;
       }
 
-      fabricCanvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+      if (isCtrlKeyPressedRef.current) {
+        fabricCanvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+      } else {
+        fabricCanvas.relativePan(new fabric.Point(opt.e.movementX, opt.e.movementY - deltaY));
+      }
 
       opt.e.preventDefault();
       opt.e.stopPropagation();
@@ -256,5 +261,6 @@ export function useFabricCanvas(problemNumber: string) {
     changePenMode,
     changeSelectMode,
     updateFabricCanvasSize,
+    isCtrlKeyPressedRef,
   };
 }
