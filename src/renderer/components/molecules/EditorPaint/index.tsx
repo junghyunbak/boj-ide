@@ -23,7 +23,6 @@ export function EditorPaint() {
   const [brushWidth, setBrushWidth] = useState<BrushWidth>(4);
   const [brushColor, setBrushColor] = useState<BrushColor>('black');
   const [isExpand, setIsExpand] = useState(false);
-  const [isFoucs, setIsFocus] = useState(false);
 
   const { problem } = useProblem();
 
@@ -49,12 +48,6 @@ export function EditorPaint() {
    * 그림판 단축키 이벤트 등록
    */
   useEffect(() => {
-    const container = containerRef.current;
-
-    if (!container) {
-      return () => {};
-    }
-
     const handleKeyDown = (e: KeyboardEvent) => {
       const { ctrlKey, metaKey, key, shiftKey } = e;
 
@@ -106,29 +99,14 @@ export function EditorPaint() {
       isCtrlKeyPressedRef.current = false;
     };
 
-    const handleFocusIn = () => {
-      setIsFocus(true);
-    };
-
-    const handleFocusOut = () => {
-      setIsFocus(false);
-    };
-
-    container.addEventListener('keydown', handleKeyDown);
-    container.addEventListener('keyup', handleKeyUp);
-
-    container.addEventListener('focusin', handleFocusIn);
-    container.addEventListener('focusout', handleFocusOut);
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
 
     return () => {
-      container.removeEventListener('keydown', handleKeyDown);
-      container.removeEventListener('keyup', handleKeyUp);
-
-      container.removeEventListener('focusin', handleFocusIn);
-      container.removeEventListener('focusout', handleFocusOut);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
     };
   }, [
-    containerRef,
     fabricCanvas,
     removeFabricActiveObject,
     activeAllFabricSelection,
@@ -142,12 +120,6 @@ export function EditorPaint() {
    * 스페이스바 클릭 시 일시적으로 'hand' 모드로 변경
    */
   useEffect(() => {
-    const container = containerRef.current;
-
-    if (!container) {
-      return () => {};
-    }
-
     let prevMode: FabricCanvasMode = 'pen';
     let isPressed = false;
 
@@ -174,14 +146,14 @@ export function EditorPaint() {
       }
     };
 
-    container.addEventListener('keydown', handleKeyDown);
-    container.addEventListener('keyup', handleKeyUp);
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
 
     return () => {
-      container.removeEventListener('keydown', handleKeyDown);
-      container.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
     };
-  }, [containerRef]);
+  }, []);
 
   /**
    * 모드에 따른 fabric 상태 변경
@@ -228,20 +200,9 @@ export function EditorPaint() {
         inset: 0;
         z-index: ${isExpand ? zIndex.paint.expanded : zIndex.paint.default};
         background-color: white;
-        outline: none;
       `}
-      tabIndex={0}
       ref={containerRef}
     >
-      <div
-        css={css`
-          display: ${isFoucs ? 'none' : 'block'};
-          position: absolute;
-          inset: 0;
-          z-index: ${zIndex.paint.dimmed};
-          backdrop-filter: blur(2px);
-        `}
-      />
       <canvas ref={canvasRef} />
       <button
         type="button"
