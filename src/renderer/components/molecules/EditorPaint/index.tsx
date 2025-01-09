@@ -239,7 +239,7 @@ export function EditorPaint() {
           position: absolute;
           inset: 0;
           z-index: ${zIndex.paint.dimmed};
-          background-color: rgba(0, 0, 0, 0.05);
+          backdrop-filter: blur(2px);
         `}
       />
       <canvas ref={canvasRef} />
