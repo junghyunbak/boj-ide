@@ -58,12 +58,11 @@ export function EditorPaint() {
         isCtrlKeyPressedRef.current = true;
       }
 
-      // BUG: 'v'와 같은 단축키 이벤트가 먹히지 않을 때 있음.
-      switch (key) {
-        case 'Escape':
+      switch (key.toLowerCase()) {
+        case 'escape':
           unactiveAllFabricSelection();
           break;
-        case 'Delete':
+        case 'delete':
           removeFabricActiveObject();
           break;
         case 'm':
