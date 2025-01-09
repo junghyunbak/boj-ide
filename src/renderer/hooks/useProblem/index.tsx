@@ -2,7 +2,9 @@ import { useShallow } from 'zustand/shallow';
 import { useStore } from '@/renderer/store';
 
 export function useProblem() {
-  const [problem] = useStore(useShallow((s) => [s.problem]));
+  const [problem, setProblem, setProblemNoRerender] = useStore(
+    useShallow((s) => [s.problem, s.setProblem, s.setProblemNoRerender]),
+  );
   const [setCustomTestcases] = useStore(useShallow((s) => [s.setCustomTestcases]));
 
   const removeCustomTestcase = (i: number) => {
@@ -45,8 +47,18 @@ export function useProblem() {
     });
   };
 
+  const updateProblem = (newProblem: ProblemInfo | null) => {
+    if (problem?.number !== newProblem?.number) {
+      setProblem(newProblem);
+      return;
+    }
+
+    setProblemNoRerender(newProblem);
+  };
+
   return {
     problem,
+    updateProblem,
     addCustomTestcase,
     removeCustomTestcase,
   };

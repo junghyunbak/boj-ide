@@ -7,16 +7,16 @@ import { useShallow } from 'zustand/shallow';
 
 import { BOJ_DOMAIN } from '@/common/constants';
 
-import { useTab, useWebview } from '@/renderer/hooks';
+import { useProblem, useTab, useWebview } from '@/renderer/hooks';
 
 import { getProblemInfo } from '@/renderer/utils';
 
 export function BojView() {
   const [isResizerDrag] = useStore(useShallow((s) => [s.isResizerDrag]));
-  const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
 
-  const { webview, setWebview, updateWebviewUrl, startWebviewUrl } = useWebview();
+  const { updateProblem } = useProblem();
   const { addTab } = useTab();
+  const { webview, startWebviewUrl, setWebview, updateWebviewUrl } = useWebview();
 
   useEffect(() => {
     setWebview(document.querySelector('webview') as Electron.WebviewTag);
@@ -33,7 +33,7 @@ export function BojView() {
       updateWebviewUrl(url);
 
       if (!url.startsWith(`https://${BOJ_DOMAIN}/problem/`)) {
-        setProblem(null);
+        updateProblem(null);
         return;
       }
 
@@ -45,7 +45,7 @@ export function BojView() {
         return;
       }
 
-      setProblem(problemInfo);
+      updateProblem(problemInfo);
       addTab(problemInfo);
     };
 
@@ -54,7 +54,7 @@ export function BojView() {
     return () => {
       webview.removeEventListener('did-finish-load', handleWebviewDidFinishLoad);
     };
-  }, [webview, setProblem, addTab, updateWebviewUrl]);
+  }, [webview, addTab, updateWebviewUrl, updateProblem]);
 
   return (
     <div
