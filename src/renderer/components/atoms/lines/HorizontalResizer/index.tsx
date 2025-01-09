@@ -19,7 +19,7 @@ export const HorizontalResizer = forwardRef<HTMLDivElement, HorizontalResizerPro
         position: relative;
       `}
       style={{
-        zIndex: props.zIndex || zIndex.Resizer.default,
+        zIndex: props.zIndex || zIndex.resizer.default,
       }}
     >
       <div

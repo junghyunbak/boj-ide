@@ -18,7 +18,7 @@ import { useShallow } from 'zustand/shallow';
 
 import { useResponsiveLayout } from '@/renderer/hooks';
 
-import './index.css';
+import { zIndex } from '@/renderer/styles';
 
 // [ ]: 컴포넌트가 언마운트되면 코드를 저장한다.
 // [ ]: 새롭게 코드를 로딩하면 히스토리가 존재하지 않아야 한다.
@@ -266,6 +266,10 @@ export function EditorCodemirror() {
       css={css`
         width: 100%;
         height: 100%;
+
+        .cm-tooltip {
+          z-index: ${zIndex.editor.tooltip} !important;
+        }
       `}
       ref={containerRef}
     >

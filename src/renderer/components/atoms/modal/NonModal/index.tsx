@@ -1,5 +1,8 @@
-import { css } from '@emotion/react';
 import { type CSSProperties, forwardRef } from 'react';
+
+import { css } from '@emotion/react';
+
+import { zIndex } from '@/renderer/styles';
 
 interface NonModalProps {
   isOpen: boolean;
@@ -14,7 +17,7 @@ export const NonModal = forwardRef<HTMLDivElement, NonModalProps>(({ children, i
       css={css`
         display: ${isOpen ? 'block' : 'none'};
         position: absolute;
-        z-index: 200;
+        z-index: ${zIndex.overlay.nonModal};
         background-color: white;
         overflow: hidden;
         border: 1px solid rgba(0, 0, 0, 0.15);

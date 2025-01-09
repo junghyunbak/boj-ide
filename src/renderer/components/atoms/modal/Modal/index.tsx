@@ -1,5 +1,8 @@
-import { css } from '@emotion/react';
 import { forwardRef } from 'react';
+
+import { css } from '@emotion/react';
+
+import { zIndex } from '@/renderer/styles';
 
 interface ModalProps {
   isOpen: boolean;
@@ -18,7 +21,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(({ children, isOpen,
       css={css`
         position: fixed;
         inset: 0;
-        z-index: 9999;
+        z-index: ${zIndex.overlay.modal};
         overflow: hidden;
         display: flex;
         justify-content: center;

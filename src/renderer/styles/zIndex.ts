@@ -1,11 +1,20 @@
-export const Resizer = {
-  webview: 1003,
-  editor: 1001,
-  paint: 1000,
-  default: 1000,
+export const resizer = {
+  webview: 104,
+  editor: 101,
+  paint: 100,
+  default: 100,
 };
 
 export const paint = {
-  expanded: 1002,
-  default: 999,
+  expanded: 103,
+  default: 99,
+};
+
+export const editor = {
+  tooltip: 102,
+};
+
+export const overlay = {
+  modal: 9999,
+  nonModal: 200,
 };

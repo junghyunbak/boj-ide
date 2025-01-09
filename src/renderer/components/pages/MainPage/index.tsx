@@ -89,7 +89,7 @@ export function MainPage() {
             <BojView />
           </div>
 
-          <VerticalResizer ref={resizerRef} zIndex={zIndex.Resizer.webview} />
+          <VerticalResizer ref={resizerRef} zIndex={zIndex.resizer.webview} />
 
           <div
             css={css`
@@ -132,7 +132,7 @@ export function MainPage() {
                       >
                         <EditorPaint />
                       </div>
-                      <VerticalResizer ref={resizerRef3} zIndex={zIndex.Resizer.paint} />
+                      <VerticalResizer ref={resizerRef3} zIndex={zIndex.resizer.paint} />
                     </>
                   )}
                   <div
@@ -154,7 +154,7 @@ export function MainPage() {
                 </div>
               </div>
 
-              <HorizontalResizer ref={resizerRef2} zIndex={zIndex.Resizer.editor} />
+              <HorizontalResizer ref={resizerRef2} zIndex={zIndex.resizer.editor} />
 
               <div
                 css={css`
