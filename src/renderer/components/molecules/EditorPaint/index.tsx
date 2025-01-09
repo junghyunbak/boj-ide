@@ -6,8 +6,6 @@ import { color, zIndex } from '@/renderer/styles';
 
 import { useProblem, useResponsiveLayout, useFabricCanvas } from '@/renderer/hooks';
 
-import { isParentExist } from '@/renderer/utils';
-
 import { ReactComponent as Mouse } from '@/renderer/assets/svgs/mouse.svg';
 import { ReactComponent as Hand } from '@/renderer/assets/svgs/hand.svg';
 import { ReactComponent as Pencil } from '@/renderer/assets/svgs/pencil.svg';
@@ -67,6 +65,7 @@ export function EditorPaint() {
         isCtrlKeyPressedRef.current = true;
       }
 
+      // BUG: 'v'와 같은 단축키 이벤트가 먹히지 않을 때 있음.
       switch (key) {
         case 'Escape':
           unactiveAllFabricSelection();
@@ -107,12 +106,26 @@ export function EditorPaint() {
       isCtrlKeyPressedRef.current = false;
     };
 
+    const handleFocusIn = () => {
+      setIsFocus(true);
+    };
+
+    const handleFocusOut = () => {
+      setIsFocus(false);
+    };
+
     container.addEventListener('keydown', handleKeyDown);
     container.addEventListener('keyup', handleKeyUp);
+
+    container.addEventListener('focusin', handleFocusIn);
+    container.addEventListener('focusout', handleFocusOut);
 
     return () => {
       container.removeEventListener('keydown', handleKeyDown);
       container.removeEventListener('keyup', handleKeyUp);
+
+      container.removeEventListener('focusin', handleFocusIn);
+      container.removeEventListener('focusout', handleFocusOut);
     };
   }, [
     containerRef,
@@ -124,21 +137,6 @@ export function EditorPaint() {
     unactiveAllFabricSelection,
     isCtrlKeyPressedRef,
   ]);
-
-  /**
-   * 포커싱 상태 변경 전역 이벤트 등록
-   */
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      setIsFocus(isParentExist(e.target, containerRef.current));
-    };
-
-    window.addEventListener('click', handler);
-
-    return () => {
-      window.removeEventListener('click', handler);
-    };
-  }, [containerRef]);
 
   /**
    * 스페이스바 클릭 시 일시적으로 'hand' 모드로 변경
