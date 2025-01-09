@@ -6,6 +6,8 @@ import { color, zIndex } from '@/renderer/styles';
 
 import { useProblem, useResponsiveLayout, useFabricCanvas } from '@/renderer/hooks';
 
+import { isParentExist } from '@/renderer/utils';
+
 import { ReactComponent as Mouse } from '@/renderer/assets/svgs/mouse.svg';
 import { ReactComponent as Hand } from '@/renderer/assets/svgs/hand.svg';
 import { ReactComponent as Pencil } from '@/renderer/assets/svgs/pencil.svg';
@@ -23,6 +25,7 @@ export function EditorPaint() {
   const [brushWidth, setBrushWidth] = useState<BrushWidth>(4);
   const [brushColor, setBrushColor] = useState<BrushColor>('black');
   const [isExpand, setIsExpand] = useState(false);
+  const [isFoucs, setIsFocus] = useState(false);
 
   const { problem } = useProblem();
 
@@ -71,6 +74,9 @@ export function EditorPaint() {
         case 'Delete':
           removeFabricActiveObject();
           break;
+        case 'm':
+          setFabricCanvasMode('hand');
+          break;
         case 'v':
           setFabricCanvasMode('select');
           break;
@@ -118,6 +124,21 @@ export function EditorPaint() {
     unactiveAllFabricSelection,
     isCtrlKeyPressedRef,
   ]);
+
+  /**
+   * 포커싱 상태 변경 전역 이벤트 등록
+   */
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      setIsFocus(isParentExist(e.target, containerRef.current));
+    };
+
+    window.addEventListener('click', handler);
+
+    return () => {
+      window.removeEventListener('click', handler);
+    };
+  }, [containerRef]);
 
   /**
    * 스페이스바 클릭 시 일시적으로 'hand' 모드로 변경
@@ -214,6 +235,15 @@ export function EditorPaint() {
       tabIndex={0}
       ref={containerRef}
     >
+      <div
+        css={css`
+          display: ${isFoucs ? 'none' : 'block'};
+          position: absolute;
+          inset: 0;
+          z-index: ${zIndex.paint.dimmed};
+          background-color: rgba(0, 0, 0, 0.05);
+        `}
+      />
       <canvas ref={canvasRef} />
       <button
         type="button"
@@ -229,6 +259,7 @@ export function EditorPaint() {
           display: flex;
           justify-content: center;
           align-items: center;
+          z-index: ${zIndex.paint.expandController};
 
           svg {
             width: 1rem;
@@ -238,13 +269,15 @@ export function EditorPaint() {
           setIsExpand(!isExpand);
         }}
       >
-        {isExpand ? <Shrink /> : <Expand />}
+        <Shrink style={{ display: isExpand ? 'block' : 'none' }} />
+        <Expand style={{ display: isExpand ? 'none' : 'block' }} />
       </button>
       <div
         css={css`
           position: absolute;
           left: 0.5rem;
           top: 0.5rem;
+          z-index: ${zIndex.paint.fabricController};
 
           display: flex;
           flex-direction: column;
