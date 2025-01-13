@@ -3,6 +3,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useFabricStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
+import { valueIsNotInfinity } from '@/renderer/utils';
+
 import { fabric } from 'fabric';
 import 'fabric-history';
 
@@ -47,24 +49,29 @@ export function useFabricCanvas(problemNumber: string) {
 
         fabricCanvas.loadFromJSON(fabricJSON, () => {});
 
-        const [tlObj] = fabricCanvas.getObjects().sort((a, b) => {
-          if (!a.left || !b.left || !a.top || !b.top) {
-            return 0;
+        let l = Infinity;
+        let r = Infinity;
+        let t = Infinity;
+        let b = Infinity;
+
+        fabricCanvas.getObjects().forEach(({ aCoords }) => {
+          if (!aCoords) {
+            return;
           }
 
-          if (a.left < b.left) {
-            return -1;
-          }
+          const { tl, br } = aCoords;
 
-          if (a.left > b.left) {
-            return 1;
-          }
-
-          return a.top < b.top ? -1 : 1;
+          l = Math.min(l, tl.x);
+          r = Math.min(r, br.x);
+          t = Math.min(t, tl.y);
+          b = Math.min(b, br.y);
         });
 
-        if (tlObj && tlObj.aCoords) {
-          fabricCanvas.absolutePan(tlObj.aCoords.tl);
+        const x = (l + r) / 2;
+        const y = (t + b) / 2;
+
+        if ([x, y].every(valueIsNotInfinity)) {
+          fabricCanvas.absolutePan(new fabric.Point(x, y));
         }
       } catch (e) {
         // BUG: Cannot read properties of null (reading 'clearRect')
