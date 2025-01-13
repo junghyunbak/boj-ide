@@ -24,13 +24,11 @@ export function useFabricCanvas(problemNumber: string) {
    * fabric 캔버스 객체 생성, 초기화, 데이터 백업
    */
   useEffect(() => {
-    const canvas = canvasRef.current;
-
-    if (!canvas) {
+    if (!canvasRef.current) {
       return () => {};
     }
 
-    const newFabricCanvas = new fabric.Canvas(canvas);
+    const newFabricCanvas = new fabric.Canvas(canvasRef.current);
 
     setFabricCanvas(newFabricCanvas);
 
@@ -40,23 +38,48 @@ export function useFabricCanvas(problemNumber: string) {
   }, [problemNumber, setProblemToFabricJSON]);
 
   /**
-   * fabric 캔버스 초기화 시 백업 데이터 로딩
+   * fabric 캔버스 백업 데이터 초기화
    */
   useEffect(() => {
-    const fabricJSON = problemToFabricJSON[problemNumber];
-
-    if (!fabricCanvas) {
-      return () => {};
-    }
-
-    if (fabricJSON && fabricCanvas.isEmpty()) {
+    if (fabricCanvas && fabricCanvas.isEmpty()) {
       try {
+        const fabricJSON = problemToFabricJSON[problemNumber];
+
         fabricCanvas.loadFromJSON(fabricJSON, () => {});
+
+        const [tlObj] = fabricCanvas.getObjects().sort((a, b) => {
+          if (!a.left || !b.left || !a.top || !b.top) {
+            return 0;
+          }
+
+          if (a.left < b.left) {
+            return -1;
+          }
+
+          if (a.left > b.left) {
+            return 1;
+          }
+
+          return a.top < b.top ? -1 : 1;
+        });
+
+        if (tlObj && tlObj.aCoords) {
+          fabricCanvas.absolutePan(tlObj.aCoords.tl);
+        }
       } catch (e) {
         // BUG: Cannot read properties of null (reading 'clearRect')
         // https://github.com/fabricjs/fabric.js/discussions/10036
         // dispose된 fabricCanvas를 사용할 때 해당 에러 발생. React 생명주기와 관련
       }
+    }
+  }, [fabricCanvas, problemNumber, problemToFabricJSON]);
+
+  /**
+   * fabric 캔버스 데이터 백업
+   */
+  useEffect(() => {
+    if (!fabricCanvas) {
+      return () => {};
     }
 
     let timer: ReturnType<typeof setTimeout>;
@@ -98,7 +121,7 @@ export function useFabricCanvas(problemNumber: string) {
       fabricCanvas.off('object:rotating', handleFabricDataChange);
       fabricCanvas.off('object:scaling', handleFabricDataChange);
     };
-  }, [fabricCanvas, problemNumber, problemToFabricJSON, setProblemToFabricJSON]);
+  }, [fabricCanvas, problemNumber, setProblemToFabricJSON]);
 
   /**
    * fabric 캔버스 전용 이벤트 설정 (마우스 휠 스크롤 확대/축소)
