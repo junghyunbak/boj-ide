@@ -50,9 +50,9 @@ export function useFabricCanvas(problemNumber: string) {
         fabricCanvas.loadFromJSON(fabricJSON, () => {});
 
         let l = Infinity;
-        let r = Infinity;
+        let r = -Infinity;
         let t = Infinity;
-        let b = Infinity;
+        let b = -Infinity;
 
         fabricCanvas.getObjects().forEach(({ aCoords }) => {
           if (!aCoords) {
@@ -62,14 +62,15 @@ export function useFabricCanvas(problemNumber: string) {
           const { tl, br } = aCoords;
 
           l = Math.min(l, tl.x);
-          r = Math.min(r, br.x);
+          r = Math.max(r, br.x);
           t = Math.min(t, tl.y);
-          b = Math.min(b, br.y);
+          b = Math.max(b, br.y);
         });
 
         const x = (l + r) / 2;
         const y = (t + b) / 2;
 
+        // TODO: 중심부에 요소가 없다면 빈 화면처럼 보여질 수 있으므로, 중심에서 가장 가까운 요소로 위치를 이동하도록 수정
         if ([x, y].every(valueIsNotInfinity)) {
           fabricCanvas.absolutePan(new fabric.Point(x, y));
         }
