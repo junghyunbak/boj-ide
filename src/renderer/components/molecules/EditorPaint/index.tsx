@@ -23,7 +23,6 @@ export function EditorPaint() {
   const [brushWidth, setBrushWidth] = useState<BrushWidth>(4);
   const [brushColor, setBrushColor] = useState<BrushColor>('black');
   const [isExpand, setIsExpand] = useState(false);
-  const [isFocus, setIsFocus] = useState(false);
 
   const { problem } = useProblem();
 
@@ -45,30 +44,6 @@ export function EditorPaint() {
   } = useFabricCanvas(problemNumber);
   const { containerRef } = useResponsiveLayout(updateFabricCanvasSize);
 
-  useEffect(() => {
-    const container = containerRef.current;
-
-    if (!container) {
-      return () => {};
-    }
-
-    const handleContainerFocus = () => {
-      setIsFocus(true);
-    };
-
-    const handleContainerBlur = () => {
-      setIsFocus(false);
-    };
-
-    container.addEventListener('focus', handleContainerFocus);
-    container.addEventListener('blur', handleContainerBlur);
-
-    return () => {
-      container.removeEventListener('focus', handleContainerFocus);
-      container.removeEventListener('blur', handleContainerBlur);
-    };
-  }, [containerRef]);
-
   /**
    * 그림판 단축키 이벤트 등록
    */
@@ -89,6 +64,7 @@ export function EditorPaint() {
         isCtrlKeyPressedRef.current = true;
       }
 
+      // BUG: 한글 입력기 상태에서 m, v, p키 처리 문제 존재. Ctrl, Shift 와 같이 사용되는 a, z 단축키는 문제가 없음.
       switch (key.toLowerCase()) {
         case 'escape':
           unactiveAllFabricSelection();
@@ -242,6 +218,16 @@ export function EditorPaint() {
         transition: box-shadow ease 0.5s;
         &:focus {
           box-shadow: inset 0px 0px 6px #00000036;
+          &::before {
+            content: none;
+          }
+        }
+        &::before {
+          content: none;
+          position: absolute;
+          inset: 0;
+          z-index: ${zIndex.paint.dimmed};
+          inset: 0;
         }
       `}
       tabIndex={0}
@@ -277,17 +263,6 @@ export function EditorPaint() {
         <Shrink style={{ display: isExpand ? 'block' : 'none' }} />
         <Expand style={{ display: isExpand ? 'none' : 'block' }} />
       </button>
-
-      {!isFocus && (
-        <div
-          css={css`
-            position: absolute;
-            inset: 0;
-            z-index: ${zIndex.paint.dimmed};
-            inset: 0;
-          `}
-        />
-      )}
 
       <div
         css={css`
