@@ -223,7 +223,7 @@ export function EditorPaint() {
           }
         }
         &::before {
-          content: none;
+          content: '';
           position: absolute;
           inset: 0;
           z-index: ${zIndex.paint.dimmed};
