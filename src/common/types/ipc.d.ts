@@ -20,6 +20,7 @@ type ChannelToMessage = {
   'judge-reset': undefined;
   'occur-error': MessageTemplate<{ message: string }>;
   'open-problem': MessageTemplate<{ problemNumber: number }>;
+  'ctrl-r-pressed': undefined;
 };
 
 type ElectronChannels = keyof Pick<
@@ -42,4 +43,5 @@ type ClientChannels = keyof Pick<
   | 'judge-reset'
   | 'occur-error'
   | 'open-problem'
+  | 'ctrl-r-pressed'
 >;

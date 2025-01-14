@@ -20,4 +20,5 @@ export const CLIENT_CHANNELS: {
   'judge-reset': 'judge-reset',
   'occur-error': 'occur-error',
   'open-problem': 'open-problem',
+  'ctrl-r-pressed': 'ctrl-r-pressed',
 };

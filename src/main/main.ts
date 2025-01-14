@@ -150,7 +150,11 @@ app.on('window-all-closed', () => {
 });
 
 app.on('browser-window-focus', () => {
-  const doNothing = () => {};
+  const doNothing = () => {
+    if (mainWindow) {
+      ipc.send(mainWindow.webContents, 'ctrl-r-pressed', undefined);
+    }
+  };
 
   globalShortcut.register('CommandOrControl+R', doNothing);
   globalShortcut.register('CommandOrControl+Shift+R', doNothing);

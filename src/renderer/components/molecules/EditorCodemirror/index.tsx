@@ -6,7 +6,7 @@ import { css } from '@emotion/react';
 import { vim, Vim, getCM } from '@replit/codemirror-vim';
 
 import { acceptCompletion } from '@codemirror/autocomplete';
-import { indentWithTab } from '@codemirror/commands';
+import { indentWithTab, redo } from '@codemirror/commands';
 import { keymap } from '@codemirror/view';
 import { javascript } from '@codemirror/lang-javascript';
 import { cpp } from '@codemirror/lang-cpp';
@@ -137,6 +137,23 @@ export function EditorCodemirror() {
       setEditorCode(code);
     },
   });
+
+  /**
+   * Ctrl + R 단축키를 누르면 코드를 실행하는 이벤트 등록
+   */
+  useEffect(() => {
+    // mac의 경우 기존에 기능이 동작했다면 중복으로 동작할 수 있음.
+    // main 프로세스에서 os에 맞게 처리를 하거나, 기존 codemirror 단축키를 초기화 하는 식으로 구현
+    window.electron.ipcRenderer.on('ctrl-r-pressed', () => {
+      if (view && editorMode === 'vim') {
+        redo(view);
+      }
+    });
+
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners('ctrl-r-pressed');
+    };
+  }, [editorMode, view]);
 
   /**
    * CodeMirror 초기화

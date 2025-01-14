@@ -99,6 +99,12 @@ class Ipc {
     message: ChannelToMessage['open-problem'],
   ): void;
 
+  send(
+    webContents: WebContents,
+    channel: (typeof CLIENT_CHANNELS)['ctrl-r-pressed'],
+    message: ChannelToMessage['ctrl-r-pressed'],
+  ): void;
+
   send(webContents: WebContents, channel: string, ...args: any[]): void {
     webContents.send(channel, ...args);
   }
