@@ -101,8 +101,8 @@ class Ipc {
 
   send(
     webContents: WebContents,
-    channel: (typeof CLIENT_CHANNELS)['ctrl-r-pressed'],
-    message: ChannelToMessage['ctrl-r-pressed'],
+    channel: (typeof CLIENT_CHANNELS)['ctrl-or-cmd-r-pressed'],
+    message: ChannelToMessage['ctrl-or-cmd-r-pressed'],
   ): void;
 
   send(webContents: WebContents, channel: string, ...args: any[]): void {

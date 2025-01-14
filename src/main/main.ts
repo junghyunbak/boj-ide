@@ -150,14 +150,14 @@ app.on('window-all-closed', () => {
 });
 
 app.on('browser-window-focus', () => {
-  const doNothing = () => {
+  const handleCommandOrControlR = () => {
     if (mainWindow) {
-      ipc.send(mainWindow.webContents, 'ctrl-r-pressed', undefined);
+      ipc.send(mainWindow.webContents, 'ctrl-or-cmd-r-pressed', undefined);
     }
   };
 
-  globalShortcut.register('CommandOrControl+R', doNothing);
-  globalShortcut.register('CommandOrControl+Shift+R', doNothing);
+  globalShortcut.register('CommandOrControl+R', handleCommandOrControlR);
+  globalShortcut.register('CommandOrControl+Shift+R', handleCommandOrControlR);
 });
 
 app.on('browser-window-blur', () => {

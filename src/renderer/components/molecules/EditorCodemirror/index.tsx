@@ -140,18 +140,18 @@ export function EditorCodemirror() {
 
   /**
    * Ctrl + R 단축키를 누르면 코드를 실행하는 이벤트 등록
-   */
+   *
+   * mac의 경우 기존 ctrl+r 에 cmd+r까지 redo가 동작하게 됨.
+   * */
   useEffect(() => {
-    // mac의 경우 기존에 기능이 동작했다면 중복으로 동작할 수 있음.
-    // main 프로세스에서 os에 맞게 처리를 하거나, 기존 codemirror 단축키를 초기화 하는 식으로 구현
-    window.electron.ipcRenderer.on('ctrl-r-pressed', () => {
+    window.electron.ipcRenderer.on('ctrl-or-cmd-r-pressed', () => {
       if (view && editorMode === 'vim') {
         redo(view);
       }
     });
 
     return () => {
-      window.electron.ipcRenderer.removeAllListeners('ctrl-r-pressed');
+      window.electron.ipcRenderer.removeAllListeners('ctrl-or-cmd-r-pressed');
     };
   }, [editorMode, view]);
 
