@@ -64,7 +64,6 @@ export function EditorPaint() {
         isCtrlKeyPressedRef.current = true;
       }
 
-      // BUG: 한글 입력기 상태에서 m, v, p키 처리 문제 존재. Ctrl, Shift 와 같이 사용되는 a, z 단축키는 문제가 없음.
       switch (key.toLowerCase()) {
         case 'escape':
           unactiveAllFabricSelection();
@@ -73,21 +72,26 @@ export function EditorPaint() {
           removeFabricActiveObject();
           break;
         case 'm':
+        case 'ㅡ':
           setFabricCanvasMode('hand');
           break;
         case 'v':
+        case 'ㅍ':
           setFabricCanvasMode('select');
           break;
         case 'p':
+        case 'ㅔ':
           setFabricCanvasMode('pen');
           break;
         case 'a':
+        case 'ㅁ':
           if (isCtrlKeyDown) {
             activeAllFabricSelection();
             e.preventDefault();
           }
           break;
         case 'z':
+        case 'ㅋ':
           if (isCtrlKeyDown) {
             if (isShiftKeyDown) {
               redo();
