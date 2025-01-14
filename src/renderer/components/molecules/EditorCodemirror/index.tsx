@@ -145,7 +145,7 @@ export function EditorCodemirror() {
    * */
   useEffect(() => {
     window.electron.ipcRenderer.on('ctrl-or-cmd-r-pressed', () => {
-      if (view && editorMode === 'vim') {
+      if (view && editorMode === 'vim' && /normal/.test(useStore.getState().vimMode)) {
         redo(view);
       }
     });
