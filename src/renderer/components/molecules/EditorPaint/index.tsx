@@ -221,17 +221,15 @@ export function EditorPaint() {
         box-shadow: inset 0px 0px 0px #00000036;
         transition: box-shadow ease 0.5s;
         &:focus {
-          box-shadow: inset 0px 0px 6px #00000036;
           &::before {
-            content: none;
+            content: '';
           }
         }
         &::before {
-          content: '';
           position: absolute;
           inset: 0;
-          z-index: ${zIndex.paint.dimmed};
-          inset: 0;
+          pointer-events: none;
+          border: 1px solid ${color.primaryBg};
         }
       `}
       tabIndex={0}
