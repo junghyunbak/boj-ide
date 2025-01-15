@@ -29,7 +29,7 @@ export function ReleasesButton() {
 
     const content = releases
       .map((v) => {
-        return [`## ${v.name}`, v.body, `[다운로드](${v.html_url})`].join('\n\n');
+        return [`## ${v.name}`, v.body].join('\n\n');
       })
       .join('\n\n');
 
