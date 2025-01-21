@@ -3,8 +3,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useFabricStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { valueIsNotInfinity } from '@/renderer/utils';
-
 import { fabric } from 'fabric';
 import 'fabric-history';
 
@@ -37,7 +35,7 @@ export function useFabricCanvas(problemNumber: string) {
     return () => {
       newFabricCanvas.dispose();
     };
-  }, [problemNumber, setProblemToFabricJSON]);
+  }, [problemNumber]);
 
   /**
    * fabric 캔버스 백업 데이터 초기화
