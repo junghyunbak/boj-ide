@@ -220,6 +220,7 @@ export function EditorPaint() {
         outline: none;
         box-shadow: inset 0px 0px 0px #00000036;
         transition: box-shadow ease 0.5s;
+        overflow: hidden;
         &:focus {
           &::before {
             content: '';
@@ -269,13 +270,17 @@ export function EditorPaint() {
       <div
         css={css`
           position: absolute;
-          left: 0.5rem;
           top: 0.5rem;
+          left: 0.5rem;
+
           z-index: ${zIndex.paint.fabricController};
 
           display: flex;
+          flex-wrap: wrap;
           flex-direction: column;
           gap: 0.5rem;
+
+          height: calc(100% - 0.5rem - 0.5rem - 2rem);
 
           button {
             background: none;
