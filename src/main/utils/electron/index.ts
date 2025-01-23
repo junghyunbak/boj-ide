@@ -12,15 +12,13 @@ export const installExtensions = async (isDebug: boolean) => {
    */
   let baekjoonhubExtensionId: string = '';
 
-  if (!app.isPackaged) {
-    const extensionId = await session.defaultSession
-      .loadExtension(BAKEJOONHUB_EXTENSION_PATH)
-      .then((extension) => extension.id)
-      .catch(sentryErrorHandler);
+  const extensionId = await session.defaultSession
+    .loadExtension(BAKEJOONHUB_EXTENSION_PATH)
+    .then((extension) => extension.id)
+    .catch(sentryErrorHandler);
 
-    if (extensionId) {
-      baekjoonhubExtensionId = extensionId;
-    }
+  if (extensionId) {
+    baekjoonhubExtensionId = extensionId;
   }
 
   /**
