@@ -44,7 +44,7 @@ export function BookmarkTab({ bookmarkInfo }: BookmarkTabProps) {
 
   return (
     <TabButton onClick={handleBookmarkItemClick} isSelect={isSelect} ref={ref}>
-      <Text>{bookmarkInfo.title}</Text>
+      <Text whiteSpace="nowrap">{bookmarkInfo.title}</Text>
     </TabButton>
   );
 }

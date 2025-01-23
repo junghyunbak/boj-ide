@@ -1,5 +1,5 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
-import { app, BrowserWindow, shell, globalShortcut } from 'electron';
+import { app, BrowserWindow, shell, globalShortcut, session } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import pie from 'puppeteer-in-electron';
@@ -45,7 +45,29 @@ if (isDebug) {
   require('electron-debug')();
 }
 
+let tmp = '';
+
+const baekjoonhubChromeExtensionPath = app.isPackaged
+  ? path.join(__dirname)
+  : path.join(__dirname, '../../src/main/extensions/ccammcjdkpgjmcpijpahlehmapgmphmk');
+
 const installExtensions = async () => {
+  if (!app.isPackaged) {
+    try {
+      const { id } = await session.defaultSession.loadExtension(baekjoonhubChromeExtensionPath);
+
+      tmp = id;
+    } catch (e) {
+      console.log('익스텐션 에러 발생', e);
+    }
+  }
+
+  session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
+    details.requestHeaders['Sec-Fetch-Dest'] = 'document';
+
+    callback({ cancel: false, requestHeaders: details.requestHeaders });
+  });
+
   const installer = require('electron-devtools-installer');
   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
   const extensions = ['REACT_DEVELOPER_TOOLS'];
@@ -100,6 +122,8 @@ const createWindow = async () => {
     } else {
       mainWindow.show();
     }
+
+    ipc.send(mainWindow.webContents, 'set-baekjoonhub-id', { data: { extensionId: tmp } });
   });
 
   ipc.on('open-source-code-folder', () => {

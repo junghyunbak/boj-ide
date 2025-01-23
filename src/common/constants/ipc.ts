@@ -21,4 +21,5 @@ export const CLIENT_CHANNELS: {
   'occur-error': 'occur-error',
   'open-problem': 'open-problem',
   'ctrl-or-cmd-r-pressed': 'ctrl-or-cmd-r-pressed',
+  'set-baekjoonhub-id': 'set-baekjoonhub-id',
 };

@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { css } from '@emotion/react';
 
 import { BookmarkTab } from '@/renderer/components/molecules/BookmarkTab';
@@ -8,25 +10,41 @@ import { useTab } from '@/renderer/hooks';
 
 import { BOJ_DOMAIN, SOLVED_AC_DOMAIN } from '@/common/constants';
 
+import { useStore } from '@/renderer/store';
+import { useShallow } from 'zustand/shallow';
+
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
 import 'overlayscrollbars/overlayscrollbars.css';
 
 import './index.css';
 
-const bookmarks: BookmarkInfo[] = [
-  {
-    url: `https://${BOJ_DOMAIN}`,
-    title: 'baekjoon',
-    path: '/problemset',
-  },
-  {
-    url: `https://${SOLVED_AC_DOMAIN}`,
-    title: 'solved.ac',
-  },
-];
-
 export function Tabs() {
   const { tabs } = useTab();
+
+  const [baekjoonhubExtensionId] = useStore(useShallow((s) => [s.baekjoonhubExtensionId]));
+
+  const bookmarks: BookmarkInfo[] = useMemo(() => {
+    const ret: BookmarkInfo[] = [
+      {
+        url: `https://${BOJ_DOMAIN}`,
+        title: 'baekjoon',
+        path: '/problemset',
+      },
+      {
+        url: `https://${SOLVED_AC_DOMAIN}`,
+        title: 'solved.ac',
+      },
+    ];
+
+    if (baekjoonhubExtensionId !== null) {
+      ret.push({
+        url: `chrome-extension://${baekjoonhubExtensionId}/popup.html`,
+        title: '백준 허브',
+      });
+    }
+
+    return ret;
+  }, [baekjoonhubExtensionId]);
 
   return (
     <div
