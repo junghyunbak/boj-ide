@@ -48,6 +48,7 @@ export default function App() {
     return () => {
       window.electron.ipcRenderer.removeAllListeners('occur-error');
       window.electron.ipcRenderer.removeAllListeners('open-problem');
+      window.electron.ipcRenderer.removeAllListeners('set-baekjoonhub-id');
     };
   }, [fireAlertModal, gotoUrl, setBaekjoonhubExtensionId]);
 
