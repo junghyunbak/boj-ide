@@ -36,7 +36,7 @@ export function Tabs() {
       },
     ];
 
-    if (baekjoonhubExtensionId !== null) {
+    if (baekjoonhubExtensionId) {
       ret.push({
         url: `chrome-extension://${baekjoonhubExtensionId}`,
         title: '백준 허브',

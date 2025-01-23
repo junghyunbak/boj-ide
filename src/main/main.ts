@@ -55,6 +55,7 @@ if (isDebug) {
 const createWindow = async () => {
   setWebRequest();
 
+  // TODO: extensionId가 랜덤한 값일 경우 문제가 될 수 있음.
   const { baekjoonhubExtensionId } = await installExtensions(isDebug);
 
   mainWindow = new BrowserWindow({
