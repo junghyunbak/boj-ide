@@ -9,6 +9,16 @@ body {
   font-family: 'Helvetica Neue', 'Lucida Grande', sans-serif;
 }
 
+#btn-logout {
+  background-color: #ff3737;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
 #title {
   font-family: 'Norwester', 'Helvetica Neue', 'Lucida Grande', sans-serif;
   font-size: 30px;

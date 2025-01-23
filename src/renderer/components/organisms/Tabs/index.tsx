@@ -38,8 +38,9 @@ export function Tabs() {
 
     if (baekjoonhubExtensionId !== null) {
       ret.push({
-        url: `chrome-extension://${baekjoonhubExtensionId}/popup.html`,
+        url: `chrome-extension://${baekjoonhubExtensionId}`,
         title: '백준 허브',
+        path: '/popup.html',
       });
     }
 

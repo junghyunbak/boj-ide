@@ -3,6 +3,11 @@
 
 let action = false;
 
+document.querySelector('#btn-logout').addEventListener('click', () => {
+  chrome.storage.local.clear();
+  window.location.reload();
+});
+
 $('#authenticate').on('click', () => {
   if (action) {
     oAuth2.begin();
@@ -34,7 +39,9 @@ chrome.storage.local.get('BaekjoonHub_token', (data) => {
               chrome.storage.local.get(['stats', 'BaekjoonHub_hook'], (data3) => {
                 const BaekjoonHubHook = data3.BaekjoonHub_hook;
                 if (BaekjoonHubHook) {
-                  $('#repo_url').html(`Your Repo: <a target="blank" style="color: cadetblue !important;" href="https://github.com/${BaekjoonHubHook}">${BaekjoonHubHook}</a>`);
+                  $('#repo_url').html(
+                    `Your Repo: <a target="blank" style="color: cadetblue !important;" href="https://github.com/${BaekjoonHubHook}">${BaekjoonHubHook}</a>`,
+                  );
                 }
               });
             } else {
@@ -64,16 +71,15 @@ chrome.storage.local.get('BaekjoonHub_token', (data) => {
 chrome.storage.local.get('bjhEnable', (data4) => {
   if (data4.bjhEnable === undefined) {
     $('#onffbox').prop('checked', true);
-    chrome.storage.local.set({ 'bjhEnable': $('#onffbox').is(':checked') }, () => { });
-  }
-  else {
+    chrome.storage.local.set({ bjhEnable: $('#onffbox').is(':checked') }, () => {});
+  } else {
     $('#onffbox').prop('checked', data4.bjhEnable);
-    chrome.storage.local.set({ 'bjhEnable': $('#onffbox').is(':checked') }, () => { });
+    chrome.storage.local.set({ bjhEnable: $('#onffbox').is(':checked') }, () => {});
   }
-})
+});
 /*
   활성화 버튼 클릭 시 storage에 활성 여부 데이터를 저장.
  */
 $('#onffbox').on('click', () => {
-  chrome.storage.local.set({ 'bjhEnable': $('#onffbox').is(':checked') }, () => { });
+  chrome.storage.local.set({ bjhEnable: $('#onffbox').is(':checked') }, () => {});
 });

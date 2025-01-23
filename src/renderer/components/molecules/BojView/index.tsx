@@ -64,14 +64,11 @@ export function BojView() {
         display: flex;
         flex-direction: column;
       `}
-    >
-      <webview
-        css={css`
-          flex: 1;
-          pointer-events: ${isResizerDrag ? 'none' : 'auto'};
-        `}
-        src={startWebviewUrl}
-      />
-    </div>
+      // allowpopups 속성을 정적으로 추가하기 위해 dangerouslySetInnerHTML 사용
+      // eslint-disable-next-line react/no-danger
+      dangerouslySetInnerHTML={{
+        __html: `<webview src=${startWebviewUrl} style="flex: 1; pointer-events: ${isResizerDrag ? 'none' : 'auto'}" allowpopups/>`,
+      }}
+    />
   );
 }
