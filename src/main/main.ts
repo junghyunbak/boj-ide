@@ -189,6 +189,24 @@ app.on('browser-window-blur', () => {
   globalShortcut.unregister('CommandOrControl+Shift+R');
 });
 
+app.on('web-contents-created', (e, contents) => {
+  contents.setWindowOpenHandler(({ url }) => {
+    const newWindow = new BrowserWindow({ width: 800, height: 600 });
+
+    newWindow.loadURL(url);
+
+    newWindow.webContents.on('destroyed', () => {
+      if (contents.getURL().startsWith('chrome-extension://')) {
+        if (mainWindow) {
+          ipc.send(mainWindow.webContents, 'reload-webview');
+        }
+      }
+    });
+
+    return { action: 'deny' };
+  });
+});
+
 /**
  * 진입점 & deep links 적용을 위한 코드
  * https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app

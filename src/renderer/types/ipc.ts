@@ -34,6 +34,7 @@ declare global {
           channel: (typeof CLIENT_CHANNELS)['set-baekjoonhub-id'],
           func: (message: ChannelToMessage['set-baekjoonhub-id']) => void,
         ): () => void;
+        on(channel: (typeof CLIENT_CHANNELS)['reload-webview'], func: () => void): () => void;
 
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['load-code'], message: ChannelToMessage['load-code']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['save-code'], message: ChannelToMessage['save-code']): void;

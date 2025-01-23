@@ -22,6 +22,7 @@ type ChannelToMessage = {
   'open-problem': MessageTemplate<{ problemNumber: number }>;
   'ctrl-or-cmd-r-pressed': undefined;
   'set-baekjoonhub-id': MessageTemplate<{ extensionId: string }>;
+  'reload-webview': undefined;
 };
 
 type ElectronChannels = keyof Pick<
@@ -46,4 +47,5 @@ type ClientChannels = keyof Pick<
   | 'open-problem'
   | 'ctrl-or-cmd-r-pressed'
   | 'set-baekjoonhub-id'
+  | 'reload-webview'
 >;

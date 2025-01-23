@@ -22,4 +22,5 @@ export const CLIENT_CHANNELS: {
   'open-problem': 'open-problem',
   'ctrl-or-cmd-r-pressed': 'ctrl-or-cmd-r-pressed',
   'set-baekjoonhub-id': 'set-baekjoonhub-id',
+  'reload-webview': 'reload-webview',
 };

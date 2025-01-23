@@ -23,6 +23,18 @@ export function BojView() {
   }, [setWebview]);
 
   useEffect(() => {
+    window.electron.ipcRenderer.on('reload-webview', () => {
+      if (webview) {
+        webview.reload();
+      }
+    });
+
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners('reload-webview');
+    };
+  }, [webview]);
+
+  useEffect(() => {
     if (!webview) {
       return () => {};
     }
