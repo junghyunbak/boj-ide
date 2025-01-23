@@ -32,6 +32,7 @@ export function AlertModal() {
     <Modal isOpen={isAlertModalOpen} onCloseButtonClick={handleCloseButtonClick}>
       <div
         css={css`
+          // BUG: padding 영역 클릭 시 모달 창 닫히지 않는 문제
           padding: 10% 0;
           overflow-y: scroll;
           max-height: 100dvh;
