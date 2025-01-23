@@ -19,7 +19,11 @@ export function BojView() {
   const { webview, startWebviewUrl, setWebview, updateWebviewUrl } = useWebview();
 
   useEffect(() => {
-    setWebview(document.querySelector('webview') as Electron.WebviewTag);
+    const newWebview = document.querySelector('webview') as Electron.WebviewTag;
+
+    newWebview.addEventListener('dom-ready', () => {
+      setWebview(newWebview);
+    });
   }, [setWebview]);
 
   useEffect(() => {
@@ -76,11 +80,14 @@ export function BojView() {
         display: flex;
         flex-direction: column;
       `}
-      // allowpopups 속성을 정적으로 추가하기 위해 dangerouslySetInnerHTML 사용
-      // eslint-disable-next-line react/no-danger
-      dangerouslySetInnerHTML={{
-        __html: `<webview src=${startWebviewUrl} style="flex: 1; pointer-events: ${isResizerDrag ? 'none' : 'auto'}" allowpopups/>`,
-      }}
-    />
+    >
+      <webview
+        src={startWebviewUrl}
+        style={{ flex: 1, pointerEvents: isResizerDrag ? 'none' : 'auto' }}
+        // Warning: Received "true" for a non-boolean attribute 에러로 인해 @ts-ignore 추가
+        // @ts-ignore
+        allowpopups="true"
+      />
+    </div>
   );
 }
