@@ -1,5 +1,5 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
-import { app, BrowserWindow, shell, globalShortcut, session } from 'electron';
+import { app, BrowserWindow, shell, globalShortcut } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import pie from 'puppeteer-in-electron';
@@ -9,7 +9,14 @@ import { spawnSync } from 'child_process';
 
 import { sentryErrorHandler } from '@/main/error';
 
-import { getBojProblemNumber, resolveHtmlPath, ipc } from '@/main/utils';
+import {
+  getBojProblemNumber,
+  resolveHtmlPath,
+  ipc,
+  installExtensions,
+  getAssetPath,
+  setWebRequest,
+} from '@/main/utils';
 
 import { MenuBuilder, Boj, Code, Judge } from '@/main/modules';
 
@@ -45,53 +52,10 @@ if (isDebug) {
   require('electron-debug')();
 }
 
-let tmp = '';
-
-const baekjoonhubChromeExtensionPath = app.isPackaged
-  ? path.join(__dirname)
-  : path.join(__dirname, '../../src/main/extensions/ccammcjdkpgjmcpijpahlehmapgmphmk');
-
-const installExtensions = async () => {
-  if (!app.isPackaged) {
-    try {
-      const { id } = await session.defaultSession.loadExtension(baekjoonhubChromeExtensionPath);
-
-      tmp = id;
-    } catch (e) {
-      console.log('익스텐션 에러 발생', e);
-    }
-  }
-
-  session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
-    details.requestHeaders['Sec-Fetch-Dest'] = 'document';
-
-    callback({ cancel: false, requestHeaders: details.requestHeaders });
-  });
-
-  const installer = require('electron-devtools-installer');
-  const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-  const extensions = ['REACT_DEVELOPER_TOOLS'];
-
-  return installer
-    .default(
-      extensions.map((name) => installer[name]),
-      forceDownload,
-    )
-    .catch(console.log);
-};
-
 const createWindow = async () => {
-  if (isDebug) {
-    await installExtensions();
-  }
+  setWebRequest();
 
-  const RESOURCES_PATH = app.isPackaged
-    ? path.join(process.resourcesPath, 'assets')
-    : path.join(__dirname, '../../assets');
-
-  const getAssetPath = (...paths: string[]): string => {
-    return path.join(RESOURCES_PATH, ...paths);
-  };
+  const { baekjoonhubExtensionId } = await installExtensions(isDebug);
 
   mainWindow = new BrowserWindow({
     show: false,
@@ -123,7 +87,8 @@ const createWindow = async () => {
       mainWindow.show();
     }
 
-    ipc.send(mainWindow.webContents, 'set-baekjoonhub-id', { data: { extensionId: tmp } });
+    // TODO: ready-to-show 이벤트가 발생할 시점에, renderer의 모든 ipc 이벤트가 준비되었는지 생명주기를 확인 할 필요 있음.
+    ipc.send(mainWindow.webContents, 'set-baekjoonhub-id', { data: { extensionId: baekjoonhubExtensionId } });
   });
 
   ipc.on('open-source-code-folder', () => {
