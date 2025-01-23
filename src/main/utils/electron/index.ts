@@ -1,4 +1,4 @@
-import { app, session } from 'electron';
+import { session } from 'electron';
 
 import { BAKEJOONHUB_EXTENSION_PATH } from '@/main/constants';
 
