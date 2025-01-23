@@ -9,3 +9,5 @@ export const RESOURCES_PATH = app.isPackaged
   : path.join(__dirname, '../../assets');
 
 export const BAKEJOONHUB_EXTENSION_PATH = path.join(RESOURCES_PATH, 'extensions', BAKEJOONHUB_EXTENSION_IDENTIFIER);
+
+export const PRELOAD_PATH = path.join(__dirname, 'preload.js');

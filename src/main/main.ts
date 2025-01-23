@@ -18,6 +18,8 @@ import {
   setWebRequest,
 } from '@/main/utils';
 
+import { PRELOAD_PATH } from '@/main/constants';
+
 import { MenuBuilder, Boj, Code, Judge } from '@/main/modules';
 
 import '@/main/error/sentry';
@@ -66,7 +68,7 @@ const createWindow = async () => {
     icon: getAssetPath('icon.png'),
     webPreferences: {
       webviewTag: true,
-      preload: app.isPackaged ? path.join(__dirname, 'preload.js') : path.join(__dirname, '../../.erb/dll/preload.js'),
+      preload: PRELOAD_PATH,
     },
   });
 
