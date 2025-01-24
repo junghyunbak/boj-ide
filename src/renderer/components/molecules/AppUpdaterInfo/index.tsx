@@ -12,7 +12,9 @@ export function AppUpdaterInfo() {
       if (isDownloaded) {
         setUpdateInfo('');
       } else {
-        setUpdateInfo(`다운로드 중... ${percent}% (${bytesPerSecond}B/s)`);
+        setUpdateInfo(
+          `업데이트 다운로드 중... ${percent?.toFixed(1)}% (${(bytesPerSecond || 0 / 1024)?.toFixed(1)}KB/s)`,
+        );
       }
     });
 
