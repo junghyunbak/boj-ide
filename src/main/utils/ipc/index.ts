@@ -113,6 +113,12 @@ class Ipc {
 
   send(webContents: WebContents, channel: (typeof CLIENT_CHANNELS)['reload-webview']): void;
 
+  send(
+    webContents: WebContents,
+    channel: (typeof CLIENT_CHANNELS)['app-update-info'],
+    message: ChannelToMessage['app-update-info'],
+  ): void;
+
   send(webContents: WebContents, channel: string, ...args: any[]): void {
     webContents.send(channel, ...args);
   }

@@ -5,6 +5,7 @@ import { StorageButton } from '@/renderer/components/molecules/StorageButton';
 import { ManualButton } from '@/renderer/components/molecules/ManualButton';
 import { EditorTabSize } from '@/renderer/components/molecules/EditorTabSize';
 import { VimModeText } from '@/renderer/components/molecules/VimModeText';
+import { AppUpdaterInfo } from '@/renderer/components/molecules/AppUpdaterInfo';
 
 export function Footer() {
   return (
@@ -34,6 +35,7 @@ export function Footer() {
           display: flex;
         `}
       >
+        <AppUpdaterInfo />
         <EditorTabSize />
         <ReleasesButton />
       </div>

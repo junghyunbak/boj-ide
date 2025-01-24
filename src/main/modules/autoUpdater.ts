@@ -1,6 +1,8 @@
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 
+import { ipc } from '@/main/utils';
+
 export class AppUpdater {
   private mainBrowser: Electron.BrowserWindow;
 
@@ -30,14 +32,23 @@ export class AppUpdater {
     });
 
     autoUpdater.on('download-progress', (progressObj) => {
-      let logMessage = `Download speed: ${progressObj.bytesPerSecond}`;
-      logMessage = `${logMessage} - Downloaded ${progressObj.percent}%`;
-      logMessage = `${logMessage} (${progressObj.transferred}/${progressObj.total})`;
-      log.info(logMessage);
+      const { bytesPerSecond, percent } = progressObj;
+
+      ipc.send(this.mainBrowser.webContents, 'app-update-info', {
+        data: {
+          bytesPerSecond,
+          percent,
+          isDownloaded: false,
+        },
+      });
     });
 
     autoUpdater.on('update-downloaded', () => {
-      log.info('Update downloaded');
+      ipc.send(this.mainBrowser.webContents, 'app-update-info', {
+        data: {
+          isDownloaded: true,
+        },
+      });
     });
   }
 }

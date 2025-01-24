@@ -23,4 +23,5 @@ export const CLIENT_CHANNELS: {
   'ctrl-or-cmd-r-pressed': 'ctrl-or-cmd-r-pressed',
   'set-baekjoonhub-id': 'set-baekjoonhub-id',
   'reload-webview': 'reload-webview',
+  'app-update-info': 'app-update-info',
 };

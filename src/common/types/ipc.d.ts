@@ -23,6 +23,7 @@ type ChannelToMessage = {
   'ctrl-or-cmd-r-pressed': undefined;
   'set-baekjoonhub-id': MessageTemplate<{ extensionId: string }>;
   'reload-webview': undefined;
+  'app-update-info': MessageTemplate<{ bytesPerSecond?: number; percent?: number; isDownloaded: boolean }>;
 };
 
 type ElectronChannels = keyof Pick<
@@ -48,4 +49,5 @@ type ClientChannels = keyof Pick<
   | 'ctrl-or-cmd-r-pressed'
   | 'set-baekjoonhub-id'
   | 'reload-webview'
+  | 'app-update-info'
 >;
