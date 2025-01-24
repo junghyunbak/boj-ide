@@ -79,7 +79,8 @@ const createWindow = async () => {
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
-  mainWindow.once('ready-to-show', () => {
+  // TODO: browserWindow내 webview가 로딩될 때 마다 실행되기 때문에, 크롬 확장 프로그램 아이디 초기화를 위한 로직을 따로 분리
+  mainWindow.on('ready-to-show', () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
     }
