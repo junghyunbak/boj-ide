@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { Text } from '@/renderer/components/atoms/paragraphs/Text';
 
 export function AppUpdaterInfo() {
-  const [updateInfo, setUpdateInfo] = useState('테스트');
+  const [updateInfo, setUpdateInfo] = useState('');
 
   useEffect(() => {
     window.electron.ipcRenderer.on('app-update-info', ({ data: { bytesPerSecond, percent, isDownloaded } }) => {
