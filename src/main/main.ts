@@ -20,9 +20,9 @@ import {
 
 import { PRELOAD_PATH } from '@/main/constants';
 
-import { MenuBuilder, Boj, Code, Judge } from '@/main/modules';
+import { MenuBuilder, Boj, Code, Judge, SentryService } from '@/main/modules';
 
-import '@/main/error/sentry';
+SentryService.init();
 
 class AppUpdater {
   constructor() {
