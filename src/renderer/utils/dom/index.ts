@@ -2,6 +2,8 @@ import { BOJ_DOMAIN } from '@/common/constants';
 
 import * as cheerio from 'cheerio';
 
+import { extractCheerioElementText, valueIsNotNull } from '../functional';
+
 type PossibleElement = HTMLElement | SVGElement | EventTarget | null;
 
 export function isParentExist(child: PossibleElement, ...parents: PossibleElement[]): boolean {
@@ -33,29 +35,9 @@ export function getProblemInfo(bojProblemHtml: string, url: string): ProblemInfo
     return null;
   }
 
-  const inputs = Array.from($('[id|="sample-input"]'))
-    .map((v) => {
-      const [child] = v.children;
+  const inputs = Array.from($('[id|="sample-input"]')).map(extractCheerioElementText).filter(valueIsNotNull);
 
-      if ('data' in child) {
-        return child.data;
-      }
-
-      return '';
-    })
-    .filter((v) => v !== null);
-
-  const outputs = Array.from($('[id|="sample-output"]'))
-    .map((v) => {
-      const [child] = v.children;
-
-      if ('data' in child) {
-        return child.data;
-      }
-
-      return '';
-    })
-    .filter((v) => v !== null);
+  const outputs = Array.from($('[id|="sample-output"]')).map(extractCheerioElementText).filter(valueIsNotNull);
 
   const problemInfo: ProblemInfo = {
     name,
