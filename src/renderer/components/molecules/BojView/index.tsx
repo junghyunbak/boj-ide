@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 
@@ -14,10 +14,15 @@ import { getProblemInfo } from '@/renderer/utils';
 export function BojView() {
   const [isResizerDrag] = useStore(useShallow((s) => [s.isResizerDrag]));
 
+  const [startWebviewUrl, setStartWebviewUrl] = useState(useStore.getState().webviewUrl);
+
   const { updateProblem } = useProblem();
   const { addTab } = useTab();
-  const { webview, startWebviewUrl, setWebview, updateWebviewUrl } = useWebview();
+  const { webview, setWebview, updateWebviewUrl } = useWebview();
 
+  /**
+   * webview 상태 초기화
+   */
   useEffect(() => {
     const newWebview = document.querySelector('webview') as Electron.WebviewTag;
 
@@ -26,6 +31,18 @@ export function BojView() {
     });
   }, [setWebview]);
 
+  /**
+   * 마지막 접속 url 반영
+   */
+  useEffect(() => {
+    if (window.localStorage.getItem('webviewUrl')) {
+      setStartWebviewUrl(window.localStorage.getItem('webviewUrl') as string);
+    }
+  }, []);
+
+  /**
+   * webview 새로고침 ipc 이벤트 초기화
+   */
   useEffect(() => {
     window.electron.ipcRenderer.on('reload-webview', () => {
       if (webview) {
@@ -38,6 +55,9 @@ export function BojView() {
     };
   }, [webview]);
 
+  /**
+   * webview url 변경 이벤트 초기화
+   */
   useEffect(() => {
     if (!webview) {
       return () => {};

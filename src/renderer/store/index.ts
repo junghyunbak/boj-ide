@@ -43,7 +43,6 @@ export const useStore = create<StoreState>()(
           problemHistories,
           customTestCase,
           fontSize,
-          webviewUrl,
           isPaintOpen,
         } = s;
 
@@ -57,7 +56,6 @@ export const useStore = create<StoreState>()(
           problemHistories,
           customTestCase,
           fontSize,
-          webviewUrl,
           isPaintOpen,
         };
       },
