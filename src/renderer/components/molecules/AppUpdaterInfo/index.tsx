@@ -13,7 +13,7 @@ export function AppUpdaterInfo() {
         setUpdateInfo('');
       } else {
         setUpdateInfo(
-          `업데이트 다운로드 중... ${percent?.toFixed(1)}% (${(bytesPerSecond || 0 / 1024)?.toFixed(1)}KB/s)`,
+          `업데이트 다운로드 중... ${percent?.toFixed(1)}% (${((bytesPerSecond || 0) / 1024)?.toFixed(1)}KB/s)`,
         );
       }
     });
