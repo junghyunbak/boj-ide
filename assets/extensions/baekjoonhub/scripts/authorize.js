@@ -24,9 +24,7 @@ const localAuth = {
    */
   parseAccessCode(url) {
     if (url.match(/\?error=(.+)/)) {
-      chrome.tabs.getCurrent(function (tab) {
-        chrome.tabs.remove(tab.id, function () {});
-      });
+      // do nothing
     } else {
       // eslint-disable-next-line
       const accessCode = url.match(/\?code=([\w\/\-]+)/);

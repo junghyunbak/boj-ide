@@ -2,19 +2,10 @@
 chrome.storage.local.get('isSync', (data) => {
   keys = ['BaekjoonHub_token', 'BaekjoonHub_username', 'pipe_baekjoonhub', 'stats', 'BaekjoonHub_hook', 'mode_type'];
   if (!data || !data.isSync) {
-    keys.forEach((key) => {
-      chrome.storage.sync.get(key, (data) => {
-        chrome.storage.local.set({ [key]: data[key] });
-      });
-    });
     chrome.storage.local.set({ isSync: true }, (data) => {
-      // if (debug)
       console.log('BaekjoonHub Synced to local values');
     });
   } else {
-    // if (debug)
-    // console.log('Upload Completed. Local Storage status:', data);
-    // if (debug)
     console.log('BaekjoonHub Local storage already synced!');
   }
 });
@@ -40,7 +31,7 @@ getStats().then((stats) => {
 async function getObjectFromLocalStorage(key) {
   return new Promise((resolve, reject) => {
     try {
-      chrome.storage.local.get(key, function(value) {
+      chrome.storage.local.get(key, function (value) {
         resolve(value[key]);
       });
     } catch (ex) {
@@ -57,7 +48,7 @@ async function getObjectFromLocalStorage(key) {
 async function saveObjectInLocalStorage(obj) {
   return new Promise((resolve, reject) => {
     try {
-      chrome.storage.local.set(obj, function() {
+      chrome.storage.local.set(obj, function () {
         resolve();
       });
     } catch (ex) {
@@ -75,55 +66,7 @@ async function saveObjectInLocalStorage(obj) {
 async function removeObjectFromLocalStorage(keys) {
   return new Promise((resolve, reject) => {
     try {
-      chrome.storage.local.remove(keys, function() {
-        resolve();
-      });
-    } catch (ex) {
-      reject(ex);
-    }
-  });
-}
-
-/**
- * Chrome의 Sync StorageArea에서 개체 가져오기
- * @param {string} key
- */
-async function getObjectFromSyncStorage(key) {
-  return new Promise((resolve, reject) => {
-    try {
-      chrome.storage.sync.get(key, function(value) {
-        resolve(value[key]);
-      });
-    } catch (ex) {
-      reject(ex);
-    }
-  });
-}
-
-/**
- * Chrome의 Sync StorageArea에 개체 저장
- * @param {*} obj
- */
-async function saveObjectInSyncStorage(obj) {
-  return new Promise((resolve, reject) => {
-    try {
-      chrome.storage.sync.set(obj, function() {
-        resolve();
-      });
-    } catch (ex) {
-      reject(ex);
-    }
-  });
-}
-
-/**
- * Chrome Sync StorageArea에서 개체 제거
- * @param {string or array of string keys} keys
- */
-async function removeObjectFromSyncStorage(keys) {
-  return new Promise((resolve, reject) => {
-    try {
-      chrome.storage.sync.remove(keys, function() {
+      chrome.storage.local.remove(keys, function () {
         resolve();
       });
     } catch (ex) {
@@ -158,8 +101,8 @@ async function getOrgOption() {
     return await getObjectFromLocalStorage('BaekjoonHub_OrgOption');
   } catch (ex) {
     console.log('The way it works has changed with updates. Update your storage. ');
-    chrome.storage.local.set({ BaekjoonHub_OrgOption: "platform" }, () => {});
-    return "platform";
+    chrome.storage.local.set({ BaekjoonHub_OrgOption: 'platform' }, () => {});
+    return 'platform';
   }
 }
 
@@ -193,7 +136,9 @@ async function updateStatsSHAfromPath(path, sha) {
 function updateObjectDatafromPath(obj, path, data) {
   let current = obj;
   // split path into array and filter out empty strings
-  const pathArray = _swexpertacademyRankRemoveFilter(_baekjoonSpaceRemoverFilter(_programmersRankRemoverFilter(_baekjoonRankRemoverFilter(path))))
+  const pathArray = _swexpertacademyRankRemoveFilter(
+    _baekjoonSpaceRemoverFilter(_programmersRankRemoverFilter(_baekjoonRankRemoverFilter(path))),
+  )
     .split('/')
     .filter((p) => p !== '');
   for (const path of pathArray.slice(0, -1)) {
@@ -217,7 +162,9 @@ async function getStatsSHAfromPath(path) {
 
 function getObjectDatafromPath(obj, path) {
   let current = obj;
-  const pathArray = _swexpertacademyRankRemoveFilter(_baekjoonSpaceRemoverFilter(_programmersRankRemoverFilter(_baekjoonRankRemoverFilter(path))))
+  const pathArray = _swexpertacademyRankRemoveFilter(
+    _baekjoonSpaceRemoverFilter(_programmersRankRemoverFilter(_baekjoonRankRemoverFilter(path))),
+  )
     .split('/')
     .filter((p) => p !== '');
   for (const path of pathArray.slice(0, -1)) {
@@ -262,10 +209,9 @@ async function updateLocalStorageStats() {
  * @param {string} language - 'BaekjoonHub_disOption'이 True일 경우에 분리에 사용될 언어 입니다.
  * */
 async function getDirNameByOrgOption(dirName, language) {
-  if (await getOrgOption() === "language") dirName = `${language}/${dirName}`;
+  if ((await getOrgOption()) === 'language') dirName = `${language}/${dirName}`;
   return dirName;
 }
-
 
 /**
  * @deprecated

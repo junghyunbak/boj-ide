@@ -26,20 +26,7 @@ const oAuth2 = {
     }
 
     chrome.storage.local.set({ pipe_baekjoonhub: true }, () => {
-      // opening pipe temporarily
-
       window.open(url, '__blank');
-      /**
-       * electron에서 chrome.tabs.create 메서드 미지원 이슈
-       */
-      /*
-      chrome.tabs.create({ url, selected: true }, function () {
-        window.close();
-        chrome.tabs.getCurrent(function (tab) {
-          // chrome.tabs.remove(tab.id, function () {});
-        });
-      });
-      */
     });
   },
 };

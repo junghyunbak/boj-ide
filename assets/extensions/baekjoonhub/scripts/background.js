@@ -29,24 +29,12 @@ function handleMessage(request, sender, sendResponse) {
       console.log('Closed pipe.');
     });
 
-    // chrome.tabs.getSelected(null, function (tab) {
-    //   chrome.tabs.remove(tab.id);
-    // });
-
     /* Go to onboarding for UX */
     const urlOnboarding = `chrome-extension://${chrome.runtime.id}/welcome.html`;
-    /**
-     * electron에서 chrome.tabs.create 메서드 미지원 이슈
-     */
-    //chrome.tabs.create({ url: urlOnboarding, selected: true }); // creates new tab
   } else if (request && request.closeWebPage === true && request.isSuccess === false) {
     alert('Something went wrong while trying to authenticate your profile!');
-    chrome.tabs.getSelected(null, function (tab) {
-      chrome.tabs.remove(tab.id);
-    });
   } else if (request && request.sender == 'baekjoon' && request.task == 'SolvedApiCall') {
     SolvedApiCall(request.problemId).then((res) => sendResponse(res));
-    //sendResponse(SolvedApiCall(request.problemId))
   }
   return true;
 }
