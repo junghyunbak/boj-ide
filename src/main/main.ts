@@ -69,6 +69,10 @@ const createWindow = async () => {
   new Boj(mainWindow).build();
   new MenuBuilder(mainWindow).buildMenu();
 
+  if (isProd) {
+    new AppUpdater(mainWindow).build();
+  }
+
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
   // TODO: browserWindow내 webview가 로딩될 때 마다 실행되기 때문에, 크롬 확장 프로그램 아이디 초기화를 위한 로직을 따로 분리
@@ -90,19 +94,13 @@ const createWindow = async () => {
   ipc.on('open-source-code-folder', () => {
     if (process.platform === 'darwin') {
       spawnSync('open', [path.resolve(app.getPath('userData'))]);
-
-      return;
+    } else {
+      shell.openExternal(path.resolve(app.getPath('userData')));
     }
-
-    shell.openExternal(path.resolve(app.getPath('userData')));
   });
 
   ipc.on('open-deep-link', () => {
-    if (!mainWindow) {
-      return;
-    }
-
-    if (problemNumber) {
+    if (mainWindow && problemNumber) {
       ipc.send(mainWindow.webContents, 'open-problem', { data: { problemNumber } });
     }
   });
@@ -113,14 +111,8 @@ const createWindow = async () => {
 
   mainWindow.webContents.setWindowOpenHandler((edata) => {
     shell.openExternal(edata.url);
-
     return { action: 'deny' };
   });
-
-  if (isProd) {
-    // eslint-disable-next-line
-    new AppUpdater(mainWindow);
-  }
 };
 
 /* ============================= 앱 이벤트 리스너 할당 ============================= */
