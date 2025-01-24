@@ -1,7 +1,5 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 import { app, BrowserWindow, shell, globalShortcut } from 'electron';
-import { autoUpdater } from 'electron-updater';
-import log from 'electron-log';
 import pie from 'puppeteer-in-electron';
 
 import path from 'path';
@@ -20,20 +18,15 @@ import {
 
 import { PRELOAD_PATH } from '@/main/constants';
 
-import { MenuBuilder, Boj, Code, Judge, SentryService } from '@/main/modules';
+import { MenuBuilder, Boj, Code, Judge, SentryService, AppUpdater } from '@/main/modules';
 
 SentryService.init();
 
-class AppUpdater {
-  constructor() {
-    log.transports.file.level = 'info';
-    autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
-  }
-}
-
 let mainWindow: BrowserWindow | null = null;
 let problemNumber: number | null = null;
+
+const isProd = process.env.NODE_ENV === 'production';
+const isDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
@@ -43,21 +36,20 @@ if (process.defaultApp) {
   app.setAsDefaultProtocolClient('boj-ide');
 }
 
-if (process.env.NODE_ENV === 'production') {
+if (isProd) {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();
 }
-
-const isDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
 if (isDebug) {
   require('electron-debug')();
 }
 
+/* ============================= 메인 브라우저 생성 ============================= */
+
 const createWindow = async () => {
   setWebRequest();
 
-  // TODO: extensionId가 랜덤한 값일 경우 문제가 될 수 있음.
   const { baekjoonhubExtensionId } = await installExtensions(isDebug);
 
   mainWindow = new BrowserWindow({
@@ -119,21 +111,20 @@ const createWindow = async () => {
     app.quit();
   });
 
-  // Open urls in the user's browser
   mainWindow.webContents.setWindowOpenHandler((edata) => {
     shell.openExternal(edata.url);
+
     return { action: 'deny' };
   });
 
-  if (process.env.NODE_ENV === 'production') {
+  if (isProd) {
     // eslint-disable-next-line
-    new AppUpdater();
+    new AppUpdater(mainWindow);
   }
 };
 
-/**
- * 앱 이벤트 리스너 할당
- */
+/* ============================= 앱 이벤트 리스너 할당 ============================= */
+
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
@@ -176,8 +167,10 @@ app.on('web-contents-created', (e, contents) => {
   });
 });
 
+/* ============================= 진입점 ============================= */
+
 /**
- * 진입점 & deep links 적용을 위한 코드
+ * deep links 적용
  * https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app
  */
 const gotTheLock = app.requestSingleInstanceLock();
