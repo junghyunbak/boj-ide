@@ -1,5 +1,5 @@
 {
-"update_url": "https://clients2.google.com/service/update2/crx",
+  "update_url": "https://clients2.google.com/service/update2/crx",
 
   "manifest_version": 3,
   "name": "백준허브(BaekjoonHub)",
@@ -19,21 +19,7 @@
   "background": {
     "service_worker": "scripts/background.js"
   },
-  "declarative_net_request": {
-    "rule_resources": [
-      {
-        "id": "ruleset",
-        "enabled": true,
-        "path": "rules.json"
-      }
-    ]
-  },
-  "permissions": [
-    "unlimitedStorage",
-    "storage",
-    "declarativeNetRequest",
-    "declarativeNetRequestWithHostAccess"
-  ],
+  "permissions": ["unlimitedStorage", "storage"],
   "host_permissions": [
     "https://www.acmicpc.net/",
     "https://school.programmers.co.kr/",
@@ -44,9 +30,7 @@
   ],
   "web_accessible_resources": [
     {
-      "matches": [
-        "<all_urls>"
-      ],
+      "matches": ["<all_urls>"],
       "resources": [
         "library/jquery-3.3.1.min.js",
         "library/semantic.min.js",
@@ -59,23 +43,13 @@
   ],
   "content_scripts": [
     {
-      "matches": [
-        "https://github.com/*"
-      ],
-      "js": [
-        "scripts/util.js",
-        "scripts/Github.js",
-        "scripts/authorize.js"
-      ],
+      "matches": ["https://github.com/*"],
+      "js": ["scripts/util.js", "scripts/Github.js", "scripts/authorize.js"],
       "run_at": "document_idle"
     },
     {
-      "matches": [
-        "https://www.acmicpc.net/*"
-      ],
-      "css": [
-        "css/baekjoon/inject.css"
-      ],
+      "matches": ["https://www.acmicpc.net/*"],
+      "css": ["css/baekjoon/inject.css"],
       "js": [
         "library/sha1.min.js",
         "library/jszip.min.js",
@@ -96,12 +70,8 @@
       "run_at": "document_idle"
     },
     {
-      "matches": [
-        "https://school.programmers.co.kr/*"
-      ],
-      "css": [
-        "css/programmers/inject.css"
-      ],
+      "matches": ["https://school.programmers.co.kr/*"],
+      "css": ["css/programmers/inject.css"],
       "js": [
         "library/sha1.min.js",
         "scripts/util.js",
@@ -118,12 +88,8 @@
       "run_at": "document_idle"
     },
     {
-      "matches": [
-        "https://swexpertacademy.com/*"
-      ],
-      "css": [
-        "css/swexpertacademy/inject.css"
-      ],
+      "matches": ["https://swexpertacademy.com/*"],
+      "css": ["css/swexpertacademy/inject.css"],
       "js": [
         "library/sha1.min.js",
         "scripts/util.js",
@@ -141,12 +107,8 @@
       "run_at": "document_idle"
     },
     {
-      "matches": [
-        "https://level.goorm.io/*"
-      ],
-      "css": [
-        "css/goormlevel/inject.css"
-      ],
+      "matches": ["https://level.goorm.io/*"],
+      "css": ["css/goormlevel/inject.css"],
       "js": [
         "library/sha1.min.js",
         "scripts/util.js",

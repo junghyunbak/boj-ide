@@ -35,6 +35,7 @@ export const setWebRequest = () => {
    */
   session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
     details.requestHeaders['Sec-Fetch-Dest'] = 'document';
+    details.requestHeaders['Sec-Fetch-Mode'] = 'navigate';
 
     callback({ cancel: false, requestHeaders: details.requestHeaders });
   });
