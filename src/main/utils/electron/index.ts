@@ -2,9 +2,7 @@ import { session } from 'electron';
 
 import { BAKEJOONHUB_EXTENSION_PATH } from '@/main/constants';
 
-import { sentryErrorHandler } from '@/main/error';
-
-const electronDevtoolsInstaller = require('electron-devtools-installer');
+import electronDevtoolsInstaller, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 
 export const installExtensions = async (isDebug: boolean) => {
   /**
@@ -12,28 +10,17 @@ export const installExtensions = async (isDebug: boolean) => {
    */
   let baekjoonhubExtensionId: string = '';
 
-  const extensionId = await session.defaultSession
-    .loadExtension(BAKEJOONHUB_EXTENSION_PATH)
-    .then((extension) => extension.id)
-    .catch(sentryErrorHandler);
+  const { id } = await session.defaultSession.loadExtension(BAKEJOONHUB_EXTENSION_PATH);
 
-  if (extensionId) {
-    baekjoonhubExtensionId = extensionId;
+  if (id) {
+    baekjoonhubExtensionId = id;
   }
 
   /**
    * 개발자 도구 확장 프로그램 설치
    */
   if (isDebug) {
-    const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-    const extensions = ['REACT_DEVELOPER_TOOLS'];
-
-    electronDevtoolsInstaller
-      .default(
-        extensions.map((name) => electronDevtoolsInstaller[name]),
-        forceDownload,
-      )
-      .catch(sentryErrorHandler);
+    await electronDevtoolsInstaller(REACT_DEVELOPER_TOOLS);
   }
 
   return {
