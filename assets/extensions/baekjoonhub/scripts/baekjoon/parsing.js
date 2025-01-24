@@ -44,7 +44,6 @@ async function findData(data) {
  * @returns {Object} { directory, fileName, message, readme, code }
  */
 async function makeDetailMessageAndReadme(data) {
-  console.log('테스트', data);
   const {
     problemId,
     submissionId,
