@@ -105,6 +105,14 @@ class Ipc {
     message: ChannelToMessage['ctrl-or-cmd-r-pressed'],
   ): void;
 
+  send(
+    webContents: WebContents,
+    channel: (typeof CLIENT_CHANNELS)['set-baekjoonhub-id'],
+    message: ChannelToMessage['set-baekjoonhub-id'],
+  ): void;
+
+  send(webContents: WebContents, channel: (typeof CLIENT_CHANNELS)['reload-webview']): void;
+
   send(webContents: WebContents, channel: string, ...args: any[]): void {
     webContents.send(channel, ...args);
   }

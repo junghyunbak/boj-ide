@@ -10,6 +10,9 @@ type BojViewSlice = {
 
   webview: Electron.WebviewTag | null;
   setWebview: (webview: Electron.WebviewTag | null) => void;
+
+  baekjoonhubExtensionId: string | null;
+  setBaekjoonhubExtensionId: (extensionId: string) => void;
 };
 
 export const createBojViewSlice: StateCreator<BojViewSlice> = (set): BojViewSlice => ({
@@ -28,5 +31,10 @@ export const createBojViewSlice: StateCreator<BojViewSlice> = (set): BojViewSlic
   webviewUrl: `https://${BOJ_DOMAIN}/problemset`,
   setWebViewUrl(url) {
     set(() => ({ webviewUrl: url }));
+  },
+
+  baekjoonhubExtensionId: null,
+  setBaekjoonhubExtensionId(extensionId) {
+    set(() => ({ baekjoonhubExtensionId: extensionId }));
   },
 });

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 
@@ -14,14 +14,50 @@ import { getProblemInfo } from '@/renderer/utils';
 export function BojView() {
   const [isResizerDrag] = useStore(useShallow((s) => [s.isResizerDrag]));
 
+  const [startWebviewUrl, setStartWebviewUrl] = useState(useStore.getState().webviewUrl);
+
   const { updateProblem } = useProblem();
   const { addTab } = useTab();
-  const { webview, startWebviewUrl, setWebview, updateWebviewUrl } = useWebview();
+  const { webview, setWebview, updateWebviewUrl } = useWebview();
 
+  /**
+   * webview 상태 초기화
+   */
   useEffect(() => {
-    setWebview(document.querySelector('webview') as Electron.WebviewTag);
+    const newWebview = document.querySelector('webview') as Electron.WebviewTag;
+
+    newWebview.addEventListener('dom-ready', () => {
+      setWebview(newWebview);
+    });
   }, [setWebview]);
 
+  /**
+   * 마지막 접속 url 반영
+   */
+  useEffect(() => {
+    if (window.localStorage.getItem('webviewUrl')) {
+      setStartWebviewUrl(window.localStorage.getItem('webviewUrl') as string);
+    }
+  }, []);
+
+  /**
+   * webview 새로고침 ipc 이벤트 초기화
+   */
+  useEffect(() => {
+    window.electron.ipcRenderer.on('reload-webview', () => {
+      if (webview) {
+        webview.reload();
+      }
+    });
+
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners('reload-webview');
+    };
+  }, [webview]);
+
+  /**
+   * webview url 변경 이벤트 초기화
+   */
   useEffect(() => {
     if (!webview) {
       return () => {};
@@ -66,11 +102,11 @@ export function BojView() {
       `}
     >
       <webview
-        css={css`
-          flex: 1;
-          pointer-events: ${isResizerDrag ? 'none' : 'auto'};
-        `}
         src={startWebviewUrl}
+        style={{ flex: 1, pointerEvents: isResizerDrag ? 'none' : 'auto' }}
+        // Warning: Received "true" for a non-boolean attribute 에러로 인해 @ts-ignore 추가
+        // @ts-ignore
+        allowpopups="true"
       />
     </div>
   );

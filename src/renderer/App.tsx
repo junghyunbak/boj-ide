@@ -9,6 +9,9 @@ import { useWebview, useAlertModalController } from '@/renderer/hooks';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
+import { useStore } from '@/renderer/store';
+import { useShallow } from 'zustand/shallow';
+
 import './App.css';
 import './assets/fonts/fonts.css';
 
@@ -25,6 +28,8 @@ export default function App() {
   const { fireAlertModal } = useAlertModalController();
   const { gotoUrl } = useWebview();
 
+  const [setBaekjoonhubExtensionId] = useStore(useShallow((s) => [s.setBaekjoonhubExtensionId]));
+
   useEffect(() => {
     window.electron.ipcRenderer.on('occur-error', ({ data: { message } }) => {
       fireAlertModal('에러 발생', message);
@@ -34,13 +39,18 @@ export default function App() {
       gotoUrl(`https://${BOJ_DOMAIN}/problem/${problemNumber}`);
     });
 
+    window.electron.ipcRenderer.on('set-baekjoonhub-id', ({ data: { extensionId } }) => {
+      setBaekjoonhubExtensionId(extensionId);
+    });
+
     window.electron.ipcRenderer.sendMessage('open-deep-link');
 
     return () => {
       window.electron.ipcRenderer.removeAllListeners('occur-error');
       window.electron.ipcRenderer.removeAllListeners('open-problem');
+      window.electron.ipcRenderer.removeAllListeners('set-baekjoonhub-id');
     };
-  }, [fireAlertModal, gotoUrl]);
+  }, [fireAlertModal, gotoUrl, setBaekjoonhubExtensionId]);
 
   return (
     <QueryClientProvider client={queryClient}>

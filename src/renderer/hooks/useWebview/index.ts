@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
@@ -10,9 +8,15 @@ export function useWebview() {
   const [setWebviewUrl] = useStore(useShallow((s) => [s.setWebViewUrl]));
   const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
 
-  const [startWebviewUrl] = useState(useStore.getState().webviewUrl);
-
   const updateWebviewUrl = (url: string) => {
+    /**
+     * zustand persist를 사용하지 않는 이유
+     * : chrome-extsion:// 으로 시작하는 url을 마지막 접속 url에서 거르기 위함.
+     */
+    if (!url.startsWith('chrome-extension://')) {
+      window.localStorage.setItem('webviewUrl', url);
+    }
+
     setWebviewUrl(url);
   };
 
@@ -47,6 +51,5 @@ export function useWebview() {
     gotoUrl,
     gotoProblem,
     updateWebviewUrl,
-    startWebviewUrl,
   };
 }

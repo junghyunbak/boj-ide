@@ -9,7 +9,16 @@ import { spawnSync } from 'child_process';
 
 import { sentryErrorHandler } from '@/main/error';
 
-import { getBojProblemNumber, resolveHtmlPath, ipc } from '@/main/utils';
+import {
+  getBojProblemNumber,
+  resolveHtmlPath,
+  ipc,
+  installExtensions,
+  getAssetPath,
+  setWebRequest,
+} from '@/main/utils';
+
+import { PRELOAD_PATH } from '@/main/constants';
 
 import { MenuBuilder, Boj, Code, Judge } from '@/main/modules';
 
@@ -45,31 +54,11 @@ if (isDebug) {
   require('electron-debug')();
 }
 
-const installExtensions = async () => {
-  const installer = require('electron-devtools-installer');
-  const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-  const extensions = ['REACT_DEVELOPER_TOOLS'];
-
-  return installer
-    .default(
-      extensions.map((name) => installer[name]),
-      forceDownload,
-    )
-    .catch(console.log);
-};
-
 const createWindow = async () => {
-  if (isDebug) {
-    await installExtensions();
-  }
+  setWebRequest();
 
-  const RESOURCES_PATH = app.isPackaged
-    ? path.join(process.resourcesPath, 'assets')
-    : path.join(__dirname, '../../assets');
-
-  const getAssetPath = (...paths: string[]): string => {
-    return path.join(RESOURCES_PATH, ...paths);
-  };
+  // TODO: extensionId가 랜덤한 값일 경우 문제가 될 수 있음.
+  const { baekjoonhubExtensionId } = await installExtensions(isDebug);
 
   mainWindow = new BrowserWindow({
     show: false,
@@ -79,7 +68,7 @@ const createWindow = async () => {
     icon: getAssetPath('icon.png'),
     webPreferences: {
       webviewTag: true,
-      preload: app.isPackaged ? path.join(__dirname, 'preload.js') : path.join(__dirname, '../../.erb/dll/preload.js'),
+      preload: PRELOAD_PATH,
     },
   });
 
@@ -90,6 +79,7 @@ const createWindow = async () => {
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
+  // TODO: browserWindow내 webview가 로딩될 때 마다 실행되기 때문에, 크롬 확장 프로그램 아이디 초기화를 위한 로직을 따로 분리
   mainWindow.on('ready-to-show', () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
@@ -100,6 +90,9 @@ const createWindow = async () => {
     } else {
       mainWindow.show();
     }
+
+    // TODO: ready-to-show 이벤트가 발생할 시점에, renderer의 모든 ipc 이벤트가 준비되었는지 생명주기를 확인 할 필요 있음.
+    ipc.send(mainWindow.webContents, 'set-baekjoonhub-id', { data: { extensionId: baekjoonhubExtensionId } });
   });
 
   ipc.on('open-source-code-folder', () => {
@@ -165,6 +158,24 @@ app.on('browser-window-blur', () => {
   globalShortcut.unregister('CommandOrControl+Shift+R');
 });
 
+app.on('web-contents-created', (e, contents) => {
+  contents.setWindowOpenHandler(({ url }) => {
+    const newWindow = new BrowserWindow({ width: 800, height: 600 });
+
+    newWindow.loadURL(url);
+
+    newWindow.webContents.on('destroyed', () => {
+      if (contents.getURL().startsWith('chrome-extension://')) {
+        if (mainWindow) {
+          ipc.send(mainWindow.webContents, 'reload-webview');
+        }
+      }
+    });
+
+    return { action: 'deny' };
+  });
+});
+
 /**
  * 진입점 & deep links 적용을 위한 코드
  * https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app
@@ -218,7 +229,7 @@ if (!gotTheLock) {
     app
       .whenReady()
       .then(async () => {
-        createWindow();
+        await createWindow();
 
         app.on('activate', () => {
           // On macOS it's common to re-create a window in the app when the
