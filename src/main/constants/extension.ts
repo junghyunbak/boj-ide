@@ -1,1 +1,1 @@
-export const BAKEJOONHUB_EXTENSION_IDENTIFIER = 'ccammcjdkpgjmcpijpahlehmapgmphmk';
+export const BAKEJOONHUB_EXTENSION_IDENTIFIER = 'baekjoonhub';
