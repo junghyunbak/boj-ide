@@ -1,6 +1,8 @@
-import { useShallow } from 'zustand/shallow';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
+
 import { useStore } from '@/renderer/store';
+import { useShallow } from 'zustand/shallow';
+
 import { v4 as uuidv4 } from 'uuid';
 
 export function useJudge() {
