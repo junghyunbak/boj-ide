@@ -8,14 +8,14 @@ export function useTab() {
     setTabs((prev) => {
       const next = [...prev];
 
-      const idx = next.findIndex((v) => v.number === problemInfo.number);
+      const idx = next.findIndex((tab) => tab.number === problemInfo.number);
 
       if (idx !== -1) {
         next.splice(idx, 1, problemInfo);
-        return next;
+      } else {
+        next.splice(next.length, 1, problemInfo);
       }
 
-      next.push(problemInfo);
       return next;
     });
   };
