@@ -119,6 +119,12 @@ class Ipc {
     message: ChannelToMessage['app-update-info'],
   ): void;
 
+  send(
+    webContents: WebContents,
+    channel: (typeof CLIENT_CHANNELS)['judge-request'],
+    message: ChannelToMessage['judge-request'],
+  ): void;
+
   send(webContents: WebContents, channel: string, ...args: any[]): void {
     webContents.send(channel, ...args);
   }

@@ -132,13 +132,18 @@ app.on('browser-window-focus', () => {
     }
   };
 
+  globalShortcut.register('F5', () => {
+    if (mainWindow) {
+      ipc.send(mainWindow.webContents, 'judge-request', undefined);
+    }
+  });
+
   globalShortcut.register('CommandOrControl+R', handleCommandOrControlR);
   globalShortcut.register('CommandOrControl+Shift+R', handleCommandOrControlR);
 });
 
 app.on('browser-window-blur', () => {
-  globalShortcut.unregister('CommandOrControl+R');
-  globalShortcut.unregister('CommandOrControl+Shift+R');
+  globalShortcut.unregisterAll();
 });
 
 app.on('web-contents-created', (e, contents) => {

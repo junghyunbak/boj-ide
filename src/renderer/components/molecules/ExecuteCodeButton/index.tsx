@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { useJudge, useProblem } from '@/renderer/hooks';
 
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
@@ -7,6 +9,18 @@ import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 export function ExecuteCodeButton() {
   const { problem } = useProblem();
   const { isJudging, startJudge } = useJudge();
+
+  useEffect(() => {
+    window.electron.ipcRenderer.on('judge-request', () => {
+      if (!isJudging) {
+        startJudge();
+      }
+    });
+
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners('judge-request');
+    };
+  }, [isJudging, startJudge]);
 
   const handleExecuteButtonClick = () => {
     startJudge();

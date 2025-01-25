@@ -16,6 +16,7 @@ export const CLIENT_CHANNELS: {
   'load-code-result': 'load-code-result',
   'load-files-result': 'load-files-result',
   'save-code-result': 'save-code-result',
+  'judge-request': 'judge-request',
   'judge-result': 'judge-result',
   'judge-reset': 'judge-reset',
   'occur-error': 'occur-error',

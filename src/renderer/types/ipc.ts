@@ -39,6 +39,7 @@ declare global {
           channel: (typeof CLIENT_CHANNELS)['app-update-info'],
           func: (message: ChannelToMessage['app-update-info']) => void,
         ): () => void;
+        on(channel: (typeof CLIENT_CHANNELS)['judge-request'], func: () => void): () => void;
 
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['load-code'], message: ChannelToMessage['load-code']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['save-code'], message: ChannelToMessage['save-code']): void;

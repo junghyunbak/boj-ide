@@ -15,9 +15,10 @@ type ChannelToMessage = {
    */
   'load-code-result': MessageTemplate<Pick<CodeInfo, 'code'>>;
   'load-files-result': MessageTemplate<{ problemNumbers: number[] }>;
-  'save-code-result': MessageTemplate<SaveResult>;
   'judge-result': MessageTemplate<JudgeResult>;
   'judge-reset': undefined;
+  'judge-request': undefined;
+  'save-code-result': MessageTemplate<SaveResult>;
   'occur-error': MessageTemplate<{ message: string }>;
   'open-problem': MessageTemplate<{ problemNumber: number }>;
   'ctrl-or-cmd-r-pressed': undefined;
@@ -41,11 +42,12 @@ type ClientChannels = keyof Pick<
   ChannelToMessage,
   | 'load-code-result'
   | 'load-files-result'
-  | 'judge-result'
-  | 'save-code-result'
   | 'judge-reset'
-  | 'occur-error'
+  | 'judge-result'
+  | 'judge-request'
+  | 'save-code-result'
   | 'open-problem'
+  | 'occur-error'
   | 'ctrl-or-cmd-r-pressed'
   | 'set-baekjoonhub-id'
   | 'reload-webview'
