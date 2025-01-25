@@ -50,7 +50,9 @@ export function useFabricCanvas(problemNumber: string) {
         const [obj] = fabricCanvas.getObjects();
 
         if (obj) {
-          fabricCanvas.absolutePan(obj.getCenterPoint());
+          const { x, y } = obj.getCenterPoint();
+
+          fabricCanvas.absolutePan(new fabric.Point(x - fabricCanvas.getWidth() / 2, y - fabricCanvas.getHeight() / 2));
         }
       } catch (e) {
         // BUG: Cannot read properties of null (reading 'clearRect')
