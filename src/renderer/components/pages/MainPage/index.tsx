@@ -21,10 +21,58 @@ import { Output } from '@/renderer/components/templates/Output';
 import { TabAfterImage } from '@/renderer/components/molecules/TabAfterImage';
 import { EditorPaint } from '@/renderer/components/molecules/EditorPaint';
 
-export function MainPage() {
-  // TODO: layout 관련 상태, 훅 템플릿 단위로 찢기
+function PaintAndEditor() {
   const [isPaintOpen] = useStore(useShallow((s) => [s.isPaintOpen]));
 
+  const { leftRef, resizerRef, containerRef } = useHorizontalLayout({
+    onRatioChange(ratio) {
+      useStore.getState().setPaintLeftRatio(ratio);
+    },
+  });
+
+  return (
+    <div
+      css={css`
+        width: 100%;
+        height: 100%;
+        display: flex;
+      `}
+      ref={containerRef}
+    >
+      {isPaintOpen && (
+        <>
+          <div
+            ref={leftRef}
+            css={css`
+              width: ${useStore.getState().paintLeftRatio}%;
+            `}
+          >
+            <EditorPaint />
+          </div>
+          <VerticalResizer ref={resizerRef} zIndex={zIndex.resizer.paint} />
+        </>
+      )}
+      <div
+        css={css`
+          flex: 1;
+          overflow: hidden;
+          position: relative;
+        `}
+      >
+        <div
+          css={css`
+            position: absolute;
+            inset: 0;
+          `}
+        >
+          <Editor />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function MainPage() {
   const { leftRef, containerRef, resizerRef } = useHorizontalLayout({
     onRatioChange: (ratio) => {
       useStore.getState().setLeftRatio(ratio);
@@ -40,16 +88,6 @@ export function MainPage() {
       useStore.getState().setTopRatio(ratio);
     },
     reverse: true,
-  });
-
-  const {
-    leftRef: leftRef3,
-    resizerRef: resizerRef3,
-    containerRef: containerRef3,
-  } = useHorizontalLayout({
-    onRatioChange(ratio) {
-      useStore.getState().setPaintLeftRatio(ratio);
-    },
   });
 
   return (
@@ -114,44 +152,7 @@ export function MainPage() {
                   width: 100%;
                 `}
               >
-                <div
-                  css={css`
-                    width: 100%;
-                    height: 100%;
-                    display: flex;
-                  `}
-                  ref={containerRef3}
-                >
-                  {isPaintOpen && (
-                    <>
-                      <div
-                        ref={leftRef3}
-                        css={css`
-                          width: ${useStore.getState().paintLeftRatio}%;
-                        `}
-                      >
-                        <EditorPaint />
-                      </div>
-                      <VerticalResizer ref={resizerRef3} zIndex={zIndex.resizer.paint} />
-                    </>
-                  )}
-                  <div
-                    css={css`
-                      flex: 1;
-                      overflow: hidden;
-                      position: relative;
-                    `}
-                  >
-                    <div
-                      css={css`
-                        position: absolute;
-                        inset: 0;
-                      `}
-                    >
-                      <Editor />
-                    </div>
-                  </div>
-                </div>
+                <PaintAndEditor />
               </div>
 
               <HorizontalResizer ref={resizerRef2} zIndex={zIndex.resizer.editor} />
