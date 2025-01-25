@@ -219,11 +219,13 @@ export function EditorPaint() {
     setIsExpand(!isExpand);
   };
 
-  /**
-   * 버튼 클릭으로 인한 fabric canvas의 focus blur를 방지하기 위한 핸들러
-   */
-  const handlePreventDefaultMouseDown: MouseEventHandler<HTMLButtonElement> = (e) => {
+  const handleButtonMouseDown: MouseEventHandler<HTMLButtonElement> = (e) => {
+    /**
+     * 버튼 클릭으로 인한 fabric canvas의 focus blur를 방지
+     */
     e.preventDefault();
+
+    containerRef.current?.focus();
   };
 
   return (
@@ -235,21 +237,21 @@ export function EditorPaint() {
           <PaintFabricControllerButtonGroupBox>
             <PaintFabricControllerButton
               onClick={handleFabricCanvasModeButtonClick('pen')}
-              onMouseDown={handlePreventDefaultMouseDown}
+              onMouseDown={handleButtonMouseDown}
               disabled={fabricCanvasMode === 'pen'}
             >
               <Pencil width="1.5rem" />
             </PaintFabricControllerButton>
             <PaintFabricControllerButton
               onClick={handleFabricCanvasModeButtonClick('hand')}
-              onMouseDown={handlePreventDefaultMouseDown}
+              onMouseDown={handleButtonMouseDown}
               disabled={fabricCanvasMode === 'hand'}
             >
               <Hand width="1.5rem" />
             </PaintFabricControllerButton>
             <PaintFabricControllerButton
               onClick={handleFabricCanvasModeButtonClick('select')}
-              onMouseDown={handlePreventDefaultMouseDown}
+              onMouseDown={handleButtonMouseDown}
               disabled={fabricCanvasMode === 'select'}
             >
               <Mouse width="1.5rem" />
@@ -261,7 +263,7 @@ export function EditorPaint() {
               <PaintFabricControllerButton
                 key={index}
                 onClick={handleBrushWidthButtonClick(width)}
-                onMouseDown={handlePreventDefaultMouseDown}
+                onMouseDown={handleButtonMouseDown}
                 disabled={brushWidth === width}
               >
                 <div
@@ -291,7 +293,7 @@ export function EditorPaint() {
               <PaintFabricControllerButton
                 key={index}
                 onClick={handlBrushColorButtonClick(color)}
-                onMouseDown={handlePreventDefaultMouseDown}
+                onMouseDown={handleButtonMouseDown}
                 disabled={brushColor === color}
               >
                 <div
@@ -306,7 +308,7 @@ export function EditorPaint() {
           </PaintFabricControllerButtonGroupBox>
         </PaintFabricControllerBox>
 
-        <ExpandShrinkButton onClick={handleExpandButtonClick} onMouseDown={handlePreventDefaultMouseDown}>
+        <ExpandShrinkButton onClick={handleExpandButtonClick} onMouseDown={handleButtonMouseDown}>
           {isExpand ? <Shrink /> : <Expand />}
         </ExpandShrinkButton>
       </PaintControllerBox>
