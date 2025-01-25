@@ -27,8 +27,12 @@ export class AppUpdater {
       log.info('Update not available');
     });
 
-    autoUpdater.on('error', (error) => {
-      log.error(`Error in auto-updater. ${error}`);
+    autoUpdater.on('error', () => {
+      ipc.send(this.mainBrowser.webContents, 'app-update-info', {
+        data: {
+          isDownloaded: true,
+        },
+      });
     });
 
     autoUpdater.on('download-progress', (progressObj) => {
