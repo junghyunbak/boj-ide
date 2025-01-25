@@ -16,7 +16,7 @@ import {
   setWebRequest,
 } from '@/main/utils';
 
-import { PRELOAD_PATH } from '@/main/constants';
+import { PRELOAD_PATH, USER_DATA_PATH } from '@/main/constants';
 
 import { MenuBuilder, Boj, Code, Judge, SentryService, AppUpdater } from '@/main/modules';
 
@@ -93,9 +93,9 @@ const createWindow = async () => {
 
   ipc.on('open-source-code-folder', () => {
     if (process.platform === 'darwin') {
-      spawnSync('open', [path.resolve(app.getPath('userData'))]);
+      spawnSync('open', [USER_DATA_PATH]);
     } else {
-      shell.openExternal(path.resolve(app.getPath('userData')));
+      shell.openExternal(USER_DATA_PATH);
     }
   });
 
