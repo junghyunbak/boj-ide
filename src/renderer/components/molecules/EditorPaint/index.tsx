@@ -1,8 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { MouseEventHandler, useCallback, useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
-
-import { color, zIndex } from '@/renderer/styles';
 
 import { useProblem, useResponsiveLayout, useFabricCanvas } from '@/renderer/hooks';
 
@@ -12,6 +10,15 @@ import { ReactComponent as Pencil } from '@/renderer/assets/svgs/pencil.svg';
 
 import { ReactComponent as Expand } from '@/renderer/assets/svgs/expand.svg';
 import { ReactComponent as Shrink } from '@/renderer/assets/svgs/shrink.svg';
+
+import {
+  PaintLayout,
+  PaintControllerBox,
+  PaintFabricControllerBox,
+  PaintFabricControllerButton,
+  PaintFabricControllerButtonGroupBox,
+  ExpandShrinkButton,
+} from './index.style';
 
 const BRUSH_WIDTHS: BrushWidth[] = [2, 4, 8];
 const BRUSH_COLORS: BrushColor[] = ['black', 'red', 'blue'];
@@ -208,187 +215,101 @@ export function EditorPaint() {
     };
   }, []);
 
+  const handleExpandButtonClick = () => {
+    setIsExpand(!isExpand);
+  };
+
+  /**
+   * 버튼 클릭으로 인한 fabric canvas의 focus blur를 방지하기 위한 핸들러
+   */
+  const handlePreventDefaultMouseDown: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+  };
+
   return (
-    <div
-      css={css`
-        width: 100%;
-        height: 100%;
-        position: ${isExpand ? 'absolute' : 'relative'};
-        inset: 0;
-        z-index: ${isExpand ? zIndex.paint.expanded : zIndex.paint.default};
-        background-color: white;
-        outline: none;
-        box-shadow: inset 0px 0px 0px #00000036;
-        transition: box-shadow ease 0.5s;
-        overflow: hidden;
-        &:focus {
-          &::before {
-            content: '';
-          }
-        }
-        &::before {
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          border: 1px solid ${color.primaryBg};
-        }
-      `}
-      tabIndex={0}
-      ref={containerRef}
-    >
+    <PaintLayout isExpand={isExpand} tabIndex={0} ref={containerRef}>
       <canvas ref={canvasRef} />
 
-      <button
-        type="button"
-        css={css`
-          position: absolute;
-          left: 0.5rem;
-          bottom: 0.5rem;
-          border: none;
-          background: none;
-          cursor: pointer;
-          color: gray;
-          padding: 0.5rem;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          z-index: ${zIndex.paint.expandController};
-
-          svg {
-            width: 1rem;
-          }
-        `}
-        onClick={() => {
-          setIsExpand(!isExpand);
-        }}
-        onMouseDown={(e) => e.preventDefault()}
-      >
-        <Shrink style={{ display: isExpand ? 'block' : 'none' }} />
-        <Expand style={{ display: isExpand ? 'none' : 'block' }} />
-      </button>
-
-      <div
-        css={css`
-          position: absolute;
-          top: 0.5rem;
-          left: 0.5rem;
-
-          z-index: ${zIndex.paint.fabricController};
-
-          display: flex;
-          flex-wrap: wrap;
-          flex-direction: column;
-          gap: 0.5rem;
-
-          height: calc(100% - 0.5rem - 0.5rem - 2rem);
-
-          button {
-            background: none;
-            border: 0;
-            border-left: 1px solid lightgray;
-            border-right: 1px solid lightgray;
-            border-top: 1px solid lightgray;
-            padding: 0.5rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: gray;
-            background-color: white;
-            outline: none;
-            cursor: pointer;
-            &:last-of-type {
-              border-bottom: 1px solid lightgray;
-            }
-            &:disabled {
-              background-color: ${color.primaryBg};
-              color: white;
-            }
-          }
-        `}
-      >
-        <div
-          css={css`
-            display: flex;
-            flex-direction: column;
-          `}
-        >
-          <button
-            type="button"
-            onClick={handleFabricCanvasModeButtonClick('pen')}
-            disabled={fabricCanvasMode === 'pen'}
-            onMouseDown={(e) => e.preventDefault()}
-          >
-            <Pencil width="1.5rem" />
-          </button>
-          <button
-            type="button"
-            onClick={handleFabricCanvasModeButtonClick('hand')}
-            disabled={fabricCanvasMode === 'hand'}
-            onMouseDown={(e) => e.preventDefault()}
-          >
-            <Hand width="1.5rem" />
-          </button>
-          <button
-            type="button"
-            onClick={handleFabricCanvasModeButtonClick('select')}
-            disabled={fabricCanvasMode === 'select'}
-            onMouseDown={(e) => e.preventDefault()}
-          >
-            <Mouse width="1.5rem" />
-          </button>
-        </div>
-
-        <div>
-          {BRUSH_WIDTHS.map((width, index) => (
-            <button
-              key={index}
-              type="button"
-              onClick={handleBrushWidthButtonClick(width)}
-              disabled={brushWidth === width}
-              onMouseDown={(e) => e.preventDefault()}
+      <PaintControllerBox>
+        <PaintFabricControllerBox>
+          <PaintFabricControllerButtonGroupBox>
+            <PaintFabricControllerButton
+              onClick={handleFabricCanvasModeButtonClick('pen')}
+              onMouseDown={handlePreventDefaultMouseDown}
+              disabled={fabricCanvasMode === 'pen'}
             >
-              <div
-                css={css`
-                  width: 1.5rem;
-                  aspect-ratio: 1/1;
-                  display: flex;
-                  justify-content: center;
-                  align-items: center;
-                `}
+              <Pencil width="1.5rem" />
+            </PaintFabricControllerButton>
+            <PaintFabricControllerButton
+              onClick={handleFabricCanvasModeButtonClick('hand')}
+              onMouseDown={handlePreventDefaultMouseDown}
+              disabled={fabricCanvasMode === 'hand'}
+            >
+              <Hand width="1.5rem" />
+            </PaintFabricControllerButton>
+            <PaintFabricControllerButton
+              onClick={handleFabricCanvasModeButtonClick('select')}
+              onMouseDown={handlePreventDefaultMouseDown}
+              disabled={fabricCanvasMode === 'select'}
+            >
+              <Mouse width="1.5rem" />
+            </PaintFabricControllerButton>
+          </PaintFabricControllerButtonGroupBox>
+
+          <PaintFabricControllerButtonGroupBox>
+            {BRUSH_WIDTHS.map((width, index) => (
+              <PaintFabricControllerButton
+                key={index}
+                onClick={handleBrushWidthButtonClick(width)}
+                onMouseDown={handlePreventDefaultMouseDown}
+                disabled={brushWidth === width}
               >
                 <div
                   css={css`
-                    width: 100%;
-                    height: ${width}px;
-                    background-color: ${brushWidth === width ? 'white' : 'gray'};
-                    border-radius: 0.25rem;
+                    width: 1.5rem;
+                    aspect-ratio: 1/1;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  `}
+                >
+                  <div
+                    css={css`
+                      width: 100%;
+                      height: ${width}px;
+                      background-color: ${brushWidth === width ? 'white' : 'gray'};
+                      border-radius: 0.25rem;
+                    `}
+                  />
+                </div>
+              </PaintFabricControllerButton>
+            ))}
+          </PaintFabricControllerButtonGroupBox>
+
+          <PaintFabricControllerButtonGroupBox>
+            {BRUSH_COLORS.map((color, index) => (
+              <PaintFabricControllerButton
+                key={index}
+                onClick={handlBrushColorButtonClick(color)}
+                onMouseDown={handlePreventDefaultMouseDown}
+                disabled={brushColor === color}
+              >
+                <div
+                  css={css`
+                    width: 1.5rem;
+                    aspect-ratio: 1/1;
+                    background-color: ${color};
                   `}
                 />
-              </div>
-            </button>
-          ))}
-        </div>
+              </PaintFabricControllerButton>
+            ))}
+          </PaintFabricControllerButtonGroupBox>
+        </PaintFabricControllerBox>
 
-        <div>
-          {BRUSH_COLORS.map((color, index) => (
-            <button
-              key={index}
-              type="button"
-              onClick={handlBrushColorButtonClick(color)}
-              onMouseDown={(e) => e.preventDefault()}
-              disabled={brushColor === color}
-            >
-              <div
-                css={css`
-                  width: 1.5rem;
-                  aspect-ratio: 1/1;
-                  background-color: ${color};
-                `}
-              />
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
+        <ExpandShrinkButton onClick={handleExpandButtonClick} onMouseDown={handlePreventDefaultMouseDown}>
+          {isExpand ? <Shrink /> : <Expand />}
+        </ExpandShrinkButton>
+      </PaintControllerBox>
+    </PaintLayout>
   );
 }
