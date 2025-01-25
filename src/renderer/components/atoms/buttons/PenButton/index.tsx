@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { ReactComponent as Pen } from '@/renderer/assets/svgs/pen.svg';
+import { ReactComponent as Pen } from '@/renderer/assets/svgs/palette.svg';
 
 interface PenButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
