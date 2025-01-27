@@ -9,6 +9,8 @@ type ChannelToMessage = {
   'submit-code': MessageTemplate<CodeInfo>;
   'open-source-code-folder': undefined;
   'open-deep-link': undefined;
+  'log-add-testcase': undefined;
+  'log-execute-ai-create': undefined;
 
   /**
    * client
@@ -36,6 +38,8 @@ type ElectronChannels = keyof Pick<
   | 'open-source-code-folder'
   | 'submit-code'
   | 'open-deep-link'
+  | 'log-add-testcase'
+  | 'log-execute-ai-create'
 >;
 
 type ClientChannels = keyof Pick<

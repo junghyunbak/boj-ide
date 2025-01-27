@@ -8,6 +8,8 @@ export const ElECTRON_CHANNELS: {
   'submit-code': 'submit-code',
   'open-source-code-folder': 'open-source-code-folder',
   'open-deep-link': 'open-deep-link',
+  'log-add-testcase': 'log-add-testcase',
+  'log-execute-ai-create': 'log-execute-ai-create',
 };
 
 export const CLIENT_CHANNELS: {

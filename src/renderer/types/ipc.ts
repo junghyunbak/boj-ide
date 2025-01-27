@@ -48,6 +48,8 @@ declare global {
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['open-source-code-folder']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['load-files']): void;
         sendMessage(channel: (typeof ElECTRON_CHANNELS)['open-deep-link']): void;
+        sendMessage(channel: (typeof ElECTRON_CHANNELS)['log-add-testcase']): void;
+        sendMessage(channel: (typeof ElECTRON_CHANNELS)['log-execute-ai-create']): void;
 
         removeAllListeners(channel: ClientChannels): void;
       };

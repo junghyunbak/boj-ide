@@ -31,6 +31,8 @@ export function AICodeCreateButton() {
         return;
       }
 
+      window.electron.ipcRenderer.sendMessage('log-execute-ai-create');
+
       complete('', {
         body: {
           inputs: problem.testCase.inputs,

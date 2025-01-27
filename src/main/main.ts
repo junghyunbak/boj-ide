@@ -18,7 +18,7 @@ import {
 
 import { PRELOAD_PATH, USER_DATA_PATH } from '@/main/constants';
 
-import { MenuBuilder, Boj, Code, Judge, SentryService, AppUpdater } from '@/main/modules';
+import { MenuBuilder, Boj, Code, Judge, SentryService, AppUpdater, Logger } from '@/main/modules';
 
 SentryService.init();
 
@@ -67,6 +67,7 @@ const createWindow = async () => {
   new Judge(mainWindow).build();
   new Code(mainWindow).build();
   new Boj(mainWindow).build();
+  new Logger().build();
   new MenuBuilder(mainWindow).buildMenu();
 
   if (isProd) {

@@ -4,6 +4,8 @@ import { ElECTRON_CHANNELS, CLIENT_CHANNELS } from '@/common/constants';
 
 import { IpcError, sentryErrorHandler } from '@/main/error';
 
+import * as Sentry from '@sentry/node';
+
 class Ipc {
   on(
     channel: (typeof ElECTRON_CHANNELS)['load-code'],
@@ -34,8 +36,32 @@ class Ipc {
 
   on(channel: (typeof ElECTRON_CHANNELS)['open-deep-link'], listener: (e: Electron.IpcMainEvent) => void): void;
 
+  on(channel: (typeof ElECTRON_CHANNELS)['log-add-testcase'], listener: (e: Electron.IpcMainEvent) => void): void;
+
+  on(channel: (typeof ElECTRON_CHANNELS)['log-execute-ai-create'], listener: (e: Electron.IpcMainEvent) => void): void;
+
   on(channel: string, listener: (e: Electron.IpcMainEvent, ...args: any[]) => void | Promise<void>): void {
     const fn: typeof listener = async (e, ...args) => {
+      const isProd = process.env.NODE_ENV === 'production';
+
+      if (isProd) {
+        switch (channel as ElectronChannels) {
+          case 'judge-start':
+          case 'open-source-code-folder':
+          case 'submit-code':
+          case 'log-add-testcase':
+          case 'log-execute-ai-create':
+            Sentry.captureMessage(channel, 'log');
+            break;
+          case 'open-deep-link':
+          case 'save-code':
+          case 'load-code':
+          case 'load-files':
+          default:
+            break;
+        }
+      }
+
       try {
         const result = listener(e, ...args);
 
@@ -51,7 +77,7 @@ class Ipc {
             return;
           }
 
-          if (process.env.NODE_ENV === 'production') {
+          if (isProd) {
             sentryErrorHandler(err);
           }
         }
