@@ -62,6 +62,8 @@ export function EditorPaint() {
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      e.preventDefault();
+
       const { ctrlKey, metaKey, key, shiftKey } = e;
 
       const isCtrlKeyDown = ctrlKey || metaKey;
@@ -94,7 +96,6 @@ export function EditorPaint() {
         case 'ㅁ':
           if (isCtrlKeyDown) {
             activeAllFabricSelection();
-            e.preventDefault();
           }
           break;
         case 'z':
