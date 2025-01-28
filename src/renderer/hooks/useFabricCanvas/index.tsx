@@ -18,6 +18,19 @@ export function useFabricCanvas(problemNumber: string) {
    */
   const [problemToFabricJSON] = useFabricStore(useShallow((s) => [s.problemToFabricJSON, s.setProblemToFabricJSON]));
 
+  const backupFabricCanvasData = useCallback(
+    (canvas: fabric.Canvas) => {
+      const savedFabricJSON = canvas.toJSON();
+
+      useFabricStore.getState().setProblemToFabricJSON((prev) => {
+        const next = { ...prev };
+        next[problemNumber] = savedFabricJSON;
+        return next;
+      });
+    },
+    [problemNumber],
+  );
+
   /**
    * fabric 캔버스 객체 생성, 초기화, 데이터 백업
    */
@@ -31,17 +44,11 @@ export function useFabricCanvas(problemNumber: string) {
     setFabricCanvas(newFabricCanvas);
 
     return () => {
-      const savedFabricJSON = newFabricCanvas.toJSON();
-
-      useFabricStore.getState().setProblemToFabricJSON((prev) => {
-        const next = { ...prev };
-        next[problemNumber] = savedFabricJSON;
-        return next;
-      });
+      backupFabricCanvasData(newFabricCanvas);
 
       newFabricCanvas.dispose();
     };
-  }, [problemNumber]);
+  }, [backupFabricCanvasData]);
 
   /**
    * fabric 캔버스 백업 데이터 초기화
@@ -230,5 +237,6 @@ export function useFabricCanvas(problemNumber: string) {
     changeSelectMode,
     updateFabricCanvasSize,
     isCtrlKeyPressedRef,
+    backupFabricCanvasData,
   };
 }
