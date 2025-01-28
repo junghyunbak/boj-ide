@@ -16,9 +16,7 @@ export function useFabricCanvas(problemNumber: string) {
   /**
    * idb persist를 사용하고 있어 상태로 참조해야만 한다.
    */
-  const [problemToFabricJSON, setProblemToFabricJSON] = useFabricStore(
-    useShallow((s) => [s.problemToFabricJSON, s.setProblemToFabricJSON]),
-  );
+  const [problemToFabricJSON] = useFabricStore(useShallow((s) => [s.problemToFabricJSON, s.setProblemToFabricJSON]));
 
   /**
    * fabric 캔버스 객체 생성, 초기화, 데이터 백업
@@ -33,6 +31,14 @@ export function useFabricCanvas(problemNumber: string) {
     setFabricCanvas(newFabricCanvas);
 
     return () => {
+      const savedFabricJSON = newFabricCanvas.toJSON();
+
+      useFabricStore.getState().setProblemToFabricJSON((prev) => {
+        const next = { ...prev };
+        next[problemNumber] = savedFabricJSON;
+        return next;
+      });
+
       newFabricCanvas.dispose();
     };
   }, [problemNumber]);
@@ -61,55 +67,6 @@ export function useFabricCanvas(problemNumber: string) {
       }
     }
   }, [fabricCanvas, problemNumber, problemToFabricJSON]);
-
-  /**
-   * fabric 캔버스 데이터 백업
-   */
-  useEffect(() => {
-    if (!fabricCanvas) {
-      return () => {};
-    }
-
-    let timer: ReturnType<typeof setTimeout>;
-
-    const handleFabricDataChange = () => {
-      if (timer) {
-        clearTimeout(timer);
-      }
-
-      /**
-       * setTimeout 함수 내부에서 fabricCanvas.toJSON() 으로 데이터를 가져올 경우
-       * fabricCanvas가 dispose되면 아무런 값도 없어지기 때문에 미리 로드해두어야 한다.
-       */
-      const savedFabricJSON = fabricCanvas.toJSON();
-
-      timer = setTimeout(() => {
-        setProblemToFabricJSON((prev) => {
-          const next = { ...prev };
-          next[problemNumber] = savedFabricJSON;
-          return next;
-        });
-      }, 2000);
-    };
-
-    fabricCanvas.on('object:added', handleFabricDataChange);
-    fabricCanvas.on('object:modified', handleFabricDataChange);
-    fabricCanvas.on('object:moving', handleFabricDataChange);
-    fabricCanvas.on('object:removed', handleFabricDataChange);
-    fabricCanvas.on('object:resizing', handleFabricDataChange);
-    fabricCanvas.on('object:rotating', handleFabricDataChange);
-    fabricCanvas.on('object:scaling', handleFabricDataChange);
-
-    return () => {
-      fabricCanvas.off('object:added', handleFabricDataChange);
-      fabricCanvas.off('object:modified', handleFabricDataChange);
-      fabricCanvas.off('object:moving', handleFabricDataChange);
-      fabricCanvas.off('object:removed', handleFabricDataChange);
-      fabricCanvas.off('object:resizing', handleFabricDataChange);
-      fabricCanvas.off('object:rotating', handleFabricDataChange);
-      fabricCanvas.off('object:scaling', handleFabricDataChange);
-    };
-  }, [fabricCanvas, problemNumber, setProblemToFabricJSON]);
 
   /**
    * fabric 캔버스 전용 이벤트 설정 (마우스 휠 스크롤 확대/축소)
