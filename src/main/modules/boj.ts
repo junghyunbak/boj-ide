@@ -135,9 +135,9 @@ export class Boj {
 
       await clipboard.write(code);
 
-      await page.keyboard.down('Control');
-      await page.keyboard.press('V');
-      await page.keyboard.up('Control');
+      await page.keyboard.down('Shift');
+      await page.keyboard.press('Insert');
+      await page.keyboard.up('Shift');
 
       const $submitButton = await page.$('#submit_button');
 
