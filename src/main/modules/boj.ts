@@ -8,6 +8,7 @@ import { ipc } from '@/main/utils';
 import { BOJ_DOMAIN } from '@/common/constants';
 
 import { IpcError } from '@/main/error';
+import clipboard from 'clipboardy';
 
 export class Boj {
   private mainWindow: BrowserWindow;
@@ -132,25 +133,11 @@ export class Boj {
 
       await $editorEl.click();
 
-      const lines = code.split('\n');
+      await clipboard.write(code);
 
-      // eslint-disable-next-line no-restricted-syntax
-      for (const line of lines) {
-        await page.keyboard.down('Shift');
-        await page.keyboard.press('Home');
-        await page.keyboard.press('Delete');
-        await page.keyboard.up('Shift');
-
-        await $editorEl.type(line);
-
-        await page.keyboard.press('Enter');
-      }
-
-      await page.keyboard.press('Enter');
-      await page.keyboard.down('Shift');
-      await page.keyboard.press('PageDown');
-      await page.keyboard.press('Delete');
-      await page.keyboard.up('Shift');
+      await page.keyboard.down('Control');
+      await page.keyboard.press('V');
+      await page.keyboard.up('Control');
 
       const $submitButton = await page.$('#submit_button');
 
