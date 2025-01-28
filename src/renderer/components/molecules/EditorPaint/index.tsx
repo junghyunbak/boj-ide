@@ -47,6 +47,7 @@ export function EditorPaint() {
     changePenMode,
     changeSelectMode,
     updateFabricCanvasSize,
+    backupFabricCanvasData,
     isCtrlKeyPressedRef,
   } = useFabricCanvas(problemNumber);
   const { containerRef } = useResponsiveLayout(updateFabricCanvasSize);
@@ -229,8 +230,14 @@ export function EditorPaint() {
     containerRef.current?.focus();
   };
 
+  const handleCanvasBlur = () => {
+    if (fabricCanvas) {
+      backupFabricCanvasData(fabricCanvas);
+    }
+  };
+
   return (
-    <PaintLayout isExpand={isExpand} tabIndex={0} ref={containerRef}>
+    <PaintLayout isExpand={isExpand} tabIndex={0} ref={containerRef} onBlur={handleCanvasBlur}>
       <canvas ref={canvasRef} />
 
       <PaintControllerBox>
