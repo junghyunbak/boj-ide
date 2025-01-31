@@ -14,8 +14,6 @@ export function useEditorCodeSave(silence = false) {
 
     const code = useStore.getState().problemToCode.get(problem.number) || '';
 
-    console.log('테스트', problem.number, code);
-
     window.electron.ipcRenderer.sendMessage('save-code', {
       data: { number: problem.number, language: lang, code, silence },
     });
