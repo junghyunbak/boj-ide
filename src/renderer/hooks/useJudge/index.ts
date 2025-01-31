@@ -41,8 +41,9 @@ export function useJudge() {
 
     setJudgeResults(() => Array(n).fill(undefined));
 
-    const { code, lang: language } = useStore.getState();
     const { number } = problem;
+    const { problemToCode, lang: language } = useStore.getState();
+    const code = problemToCode.get(number) || '';
 
     window.electron.ipcRenderer.sendMessage('judge-start', {
       data: {

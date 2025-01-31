@@ -5,6 +5,10 @@ export const valueIsNotInfinity = (v: any) => v !== Infinity;
 export const valueIsNotNull = (v: any) => v !== null;
 
 export const extractCheerioElementText = (cel: cheerio.Element): string => {
+  if (!('children' in cel)) {
+    return '';
+  }
+
   const [child] = cel.children;
 
   if (!child) {

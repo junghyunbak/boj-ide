@@ -16,7 +16,9 @@ export function SubmitButton() {
     }
 
     fireConfirmModal('제출하시겠습니까?', () => {
-      const { code, lang } = useStore.getState();
+      const { problemToCode, lang } = useStore.getState();
+
+      const code = problemToCode.get(problem.number) || '';
 
       window.electron.ipcRenderer.sendMessage('submit-code', {
         data: {

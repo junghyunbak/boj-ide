@@ -4,6 +4,9 @@ type EditorSlice = {
   fontSize: number;
   setFontSize: (fontSize: number) => void;
 
+  problemToCode: Map<string | undefined, string>;
+  setProblemToCode: (number: string, code: string) => void;
+
   code: string;
   setCode: (code: string) => void;
 
@@ -29,7 +32,14 @@ type EditorSlice = {
   setVimMode: (mode: string) => void;
 };
 
-export const createEditorSlice: StateCreator<EditorSlice> = (set): EditorSlice => ({
+export const createEditorSlice: StateCreator<EditorSlice> = (set, get): EditorSlice => ({
+  problemToCode: new Map(),
+  setProblemToCode(number, code) {
+    const { problemToCode } = get();
+
+    problemToCode.set(number, code);
+  },
+
   vimMode: 'NORMAL',
   setVimMode: (mode: string) => {
     set(() => ({ vimMode: mode }));

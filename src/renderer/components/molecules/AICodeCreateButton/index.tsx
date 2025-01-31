@@ -4,13 +4,14 @@ import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
 import { useStreamingAICode, useConfirmModalController, useAlertModalController } from '@/renderer/hooks';
+
 import { AI_ERROR_MESSAGE, AI_EXECUTE_QUESTION_MESSAGE } from '@/renderer/constants';
 
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 
 export function AICodeCreateButton() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
-  const [setCode] = useStore(useShallow((s) => [s.setCode]));
+  const [setEditorCode] = useStore(useShallow((s) => [s.setCode]));
 
   const { fireAlertModal } = useAlertModalController();
   const { fireConfirmModal } = useConfirmModalController();
@@ -22,8 +23,8 @@ export function AICodeCreateButton() {
   });
 
   useEffect(() => {
-    setCode(completion);
-  }, [completion, setCode]);
+    setEditorCode(completion);
+  }, [completion, setEditorCode]);
 
   const handleAICodeCreateButtonClick = () => {
     fireConfirmModal(AI_EXECUTE_QUESTION_MESSAGE, async () => {
