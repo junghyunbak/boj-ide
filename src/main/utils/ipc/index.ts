@@ -154,6 +154,18 @@ class Ipc {
   send(webContents: WebContents, channel: string, ...args: any[]): void {
     webContents.send(channel, ...args);
   }
+
+  handle(
+    channel: (typeof ElECTRON_CHANNELS)['load-code'],
+    listener: (
+      e: Electron.IpcMainInvokeEvent,
+      message: ChannelToMessage['load-code'],
+    ) => Promise<ChannelToMessage['load-code-result']>,
+  ): void;
+
+  handle(channel: string, listener: (e: Electron.IpcMainInvokeEvent, ...args: any[]) => Promise<any>): void {
+    ipcMain.handle(channel, listener);
+  }
 }
 
 export const ipc = new Ipc();

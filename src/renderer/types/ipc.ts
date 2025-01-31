@@ -4,6 +4,11 @@ declare global {
   interface Window {
     electron: {
       ipcRenderer: {
+        invoke(
+          channel: (typeof ElECTRON_CHANNELS)['load-code'],
+          message: ChannelToMessage['load-code'],
+        ): Promise<ChannelToMessage['load-code-result']> | undefined;
+
         on(
           channel: (typeof CLIENT_CHANNELS)['load-code-result'],
           func: (message: ChannelToMessage['load-code-result']) => void,
