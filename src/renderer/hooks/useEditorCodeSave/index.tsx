@@ -12,7 +12,13 @@ export function useEditorCodeSave(silence = false) {
       return;
     }
 
-    const code = useStore.getState().problemToCode.get(problem.number) || '';
+    const { problemToCode, isCodeStale } = useStore.getState();
+
+    if (!isCodeStale) {
+      return;
+    }
+
+    const code = problemToCode.get(problem.number) || '';
 
     window.electron.ipcRenderer.sendMessage('save-code', {
       data: { number: problem.number, language: lang, code, silence },
