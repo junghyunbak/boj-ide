@@ -22,7 +22,7 @@ export function useEditor({ width, height }: { width: number; height: number }) 
   const [indentSpace] = useStore(useShallow((s) => [s.indentSpace]));
   const [editorCode] = useStore(useShallow((s) => [s.code]));
 
-  const { saveEditorCode, initialEditorCode, updateEditorCode } = useEditorController(true);
+  const { saveEditorCode, initialEditorCode, updateEditorCode } = useEditorController();
   const { extensions } = useEditorExtensions();
 
   const editorRef = useRef<HTMLDivElement | null>(null);
@@ -81,7 +81,7 @@ export function useEditor({ width, height }: { width: number; height: number }) 
    */
   useEffect(() => {
     return () => {
-      saveEditorCode();
+      saveEditorCode({ silence: true });
     };
   }, [problem, lang, saveEditorCode]);
 

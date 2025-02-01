@@ -5,7 +5,7 @@ import { useShallow } from 'zustand/shallow';
 
 import { useAlertModalController } from '@/renderer/hooks';
 
-export function useEditorController(silence = false) {
+export function useEditorController() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
   const [lang] = useStore(useShallow((s) => [s.lang]));
   const [setIsCodeStale] = useStore(useShallow((s) => [s.setIsCodeStale]));
@@ -68,28 +68,38 @@ export function useEditorController(silence = false) {
   /**
    * 코드가 오래되지 않았을 경우에만 저장하는 함수
    */
-  const saveEditorCode = useCallback(async () => {
-    if (!problem) {
-      return;
-    }
+  const saveEditorCode = useCallback(
+    async (opt?: { silence?: boolean }) => {
+      if (!problem) {
+        return;
+      }
 
-    const { isCodeStale } = useStore.getState();
+      const { isCodeStale } = useStore.getState();
 
-    if (!isCodeStale) {
-      return;
-    }
+      if (!isCodeStale) {
+        return;
+      }
 
-    const code = getProblemCode();
+      const code = getProblemCode();
 
-    const res = await window.electron.ipcRenderer.invoke('save-code', {
-      data: { number: problem.number, language: lang, code },
-    });
+      const res = await window.electron.ipcRenderer.invoke('save-code', {
+        data: { number: problem.number, language: lang, code },
+      });
 
-    if (!silence && res && res.data.isSaved) {
-      fireAlertModal('안내', '저장이 완료되었습니다.');
+      if (!res || !res.data.isSaved) {
+        return;
+      }
+
       freshingEditorCode();
-    }
-  }, [problem, lang, silence, getProblemCode, fireAlertModal, freshingEditorCode]);
+
+      if (opt && opt.silence) {
+        return;
+      }
+
+      fireAlertModal('안내', '저장이 완료되었습니다.');
+    },
+    [problem, lang, getProblemCode, fireAlertModal, freshingEditorCode],
+  );
 
   return {
     getProblemCode,
