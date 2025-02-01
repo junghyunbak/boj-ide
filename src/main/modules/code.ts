@@ -103,27 +103,5 @@ export class Code {
 
       return { data: { code } };
     });
-
-    ipc.on('load-code', (e, { data: { number, language } }) => {
-      const ext = langToJudgeInfo[language].ext[process.platform];
-
-      if (!ext) {
-        throw new Error('지원하지 않는 플랫폼입니다.');
-      }
-
-      const filePath = path.join(this.basePath, `${number}.${ext}`);
-
-      if (!fs.existsSync(filePath)) {
-        const code = createDefaultCode(language);
-
-        fs.writeFileSync(filePath, code, { encoding: 'utf-8' });
-      }
-
-      const code = fs.readFileSync(filePath, {
-        encoding: 'utf-8',
-      });
-
-      ipc.send(this.webContents, 'load-code-result', { data: { code } });
-    });
   }
 }
