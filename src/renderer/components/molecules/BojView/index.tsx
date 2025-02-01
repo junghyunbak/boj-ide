@@ -75,7 +75,12 @@ export function BojView() {
 
       const html = await webview.executeJavaScript('document.documentElement.outerHTML');
 
-      const problemInfo = getProblemInfo(html, url);
+      /**
+       * 실제 url과 webview.getURL() 값이 다를 수 있어 해당 방식을 사용
+       */
+      const realUrl = await webview.executeJavaScript('window.location.href');
+
+      const problemInfo = getProblemInfo(html, realUrl);
 
       if (!problemInfo) {
         return;
