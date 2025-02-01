@@ -30,7 +30,7 @@ export function useEditor({ width, height }: { width: number; height: number }) 
 
   const editorRef = useRef<HTMLDivElement | null>(null);
 
-  const { setContainer, setState, view } = useCodeMirror({
+  const { setContainer, setState, state, view } = useCodeMirror({
     value: editorCode,
     extensions,
     width: `${width}px`,
@@ -66,6 +66,7 @@ export function useEditor({ width, height }: { width: number; height: number }) 
   /**
    * 문제/언어가 변경되면
    *
+   * - 히스토리 제거
    * - 새로운 문제/언어의 코드를 불러와 초기화
    */
   useEffect(() => {
@@ -80,25 +81,26 @@ export function useEditor({ width, height }: { width: number; height: number }) 
             data: { code },
           } = res;
 
+          setState(EditorState.create({ ...state }));
           setEditorCode(code);
           setProblemToCode(problem.number, code);
         }
       }
     })();
+    // 처음 생성된 codemirror의 state를, 히스토리 초기화에 이용하기 위해 의존성 배열에 추가히자 않음.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [problem, lang, setState, setProblemToCode, setEditorCode]);
 
   /**
    * 문제/언어가 변경되면
    *
    * - 기존 문제/언어의 코드를 저장
-   * - 히스토리 제거
    */
   useEffect(() => {
     return () => {
-      setState(EditorState.create());
       saveEditorCode();
     };
-  }, [problem, lang, setState, saveEditorCode]);
+  }, [problem, lang, saveEditorCode]);
 
   return { editorRef, view };
 }
