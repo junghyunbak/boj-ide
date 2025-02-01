@@ -5,6 +5,7 @@ import { css } from '@emotion/react';
 import { BookmarkTab } from '@/renderer/components/molecules/BookmarkTab';
 import { ProblemTab } from '@/renderer/components/molecules/ProblemTab';
 import { MovableTab } from '@/renderer/components/molecules/MovableTab';
+import { TabOptions } from '@/renderer/components/molecules/TabOptions';
 
 import { useTab } from '@/renderer/hooks';
 
@@ -60,6 +61,9 @@ export function Tabs() {
           width: 100%;
           padding-top: 0.25rem;
           margin-bottom: -1px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
         `}
       >
         <OverlayScrollbarsComponent
@@ -93,6 +97,8 @@ export function Tabs() {
             </div>
           </div>
         </OverlayScrollbarsComponent>
+
+        <TabOptions />
       </div>
     </div>
   );

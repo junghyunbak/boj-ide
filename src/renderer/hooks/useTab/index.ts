@@ -1,6 +1,9 @@
+import { useCallback } from 'react';
+
 import { useShallow } from 'zustand/shallow';
 import { useStore } from '@/renderer/store';
 
+// TODO: useCallback 적용
 export function useTab() {
   const [tabs, setTabs] = useStore(useShallow((s) => [s.problemHistories, s.setProblemHistories]));
 
@@ -46,10 +49,15 @@ export function useTab() {
     });
   };
 
+  const clearTab = useCallback(() => {
+    setTabs(() => []);
+  }, [setTabs]);
+
   return {
     tabs,
     addTab,
     removeTab,
     reorderTab,
+    clearTab,
   };
 }
