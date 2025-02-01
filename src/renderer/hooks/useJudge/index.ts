@@ -3,6 +3,8 @@ import { useCallback, useEffect } from 'react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
+import { useEditorController } from '@/renderer/hooks';
+
 import { v4 as uuidv4 } from 'uuid';
 
 export function useJudge() {
@@ -10,6 +12,8 @@ export function useJudge() {
   const [customTestCase] = useStore(useShallow((s) => [s.customTestCase]));
   const [judgeResults, setJudgeResults] = useStore(useShallow((s) => [s.judgeResult, s.setJudgeResult]));
   const [judgeId, setJudgeId] = useStore(useShallow((s) => [s.judgeId, s.setJudgeId]));
+
+  const { getProblemCode } = useEditorController();
 
   useEffect(() => {
     setJudgeId(uuidv4());
@@ -42,8 +46,8 @@ export function useJudge() {
     setJudgeResults(() => Array(n).fill(undefined));
 
     const { number } = problem;
-    const { problemToCode, lang: language } = useStore.getState();
-    const code = problemToCode.get(number) || '';
+    const { lang: language } = useStore.getState();
+    const code = getProblemCode();
 
     window.electron.ipcRenderer.sendMessage('judge-start', {
       data: {

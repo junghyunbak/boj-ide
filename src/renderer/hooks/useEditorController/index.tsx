@@ -14,6 +14,23 @@ export function useEditorController(silence = false) {
 
   const { fireAlertModal } = useAlertModalController();
 
+  const getProblemCode = useCallback(() => {
+    if (!problem) {
+      return '';
+    }
+
+    return useStore.getState().problemToCode.get(problem.number) || '';
+  }, [problem]);
+
+  const setProblemCode = useCallback(
+    (code: string) => {
+      if (problem) {
+        setProblemToCode(problem.number, code);
+      }
+    },
+    [problem, setProblemToCode],
+  );
+
   const stalingEditorCode = useCallback(() => {
     setIsCodeStale(true);
   }, [setIsCodeStale]);
@@ -24,23 +41,19 @@ export function useEditorController(silence = false) {
 
   const updateEditorCode = useCallback(
     (code: string) => {
-      if (problem) {
-        setProblemToCode(problem.number, code);
-        stalingEditorCode();
-      }
+      setProblemCode(code);
+      stalingEditorCode();
     },
-    [problem, setProblemToCode, stalingEditorCode],
+    [setProblemCode, stalingEditorCode],
   );
 
   const initialEditorCode = useCallback(
     (code: string) => {
-      if (problem) {
-        setEditorCode(code);
-        setProblemToCode(problem.number, code);
-        stalingEditorCode();
-      }
+      setEditorCode(code);
+      setProblemCode(code);
+      stalingEditorCode();
     },
-    [setEditorCode, setProblemToCode, stalingEditorCode, problem],
+    [setEditorCode, setProblemCode, stalingEditorCode],
   );
 
   const saveEditorCode = useCallback(async () => {
@@ -48,13 +61,13 @@ export function useEditorController(silence = false) {
       return;
     }
 
-    const { problemToCode, isCodeStale } = useStore.getState();
+    const { isCodeStale } = useStore.getState();
 
     if (!isCodeStale) {
       return;
     }
 
-    const code = problemToCode.get(problem.number) || '';
+    const code = getProblemCode();
 
     const res = await window.electron.ipcRenderer.invoke('save-code', {
       data: { number: problem.number, language: lang, code },
@@ -64,9 +77,10 @@ export function useEditorController(silence = false) {
       fireAlertModal('안내', '저장이 완료되었습니다.');
       freshingEditorCode();
     }
-  }, [problem, lang, silence, fireAlertModal, freshingEditorCode]);
+  }, [problem, getProblemCode, lang, silence, fireAlertModal, freshingEditorCode]);
 
   return {
+    getProblemCode,
     saveEditorCode,
     stalingEditorCode,
     freshingEditorCode,
