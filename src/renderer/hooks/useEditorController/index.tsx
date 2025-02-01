@@ -43,7 +43,7 @@ export function useEditorController(silence = false) {
     [setEditorCode, setProblemToCode, stalingEditorCode, problem],
   );
 
-  const saveEditorCode = useCallback(() => {
+  const saveEditorCode = useCallback(async () => {
     if (!problem) {
       return;
     }
@@ -56,12 +56,11 @@ export function useEditorController(silence = false) {
 
     const code = problemToCode.get(problem.number) || '';
 
-    // TODO: invoke로 변경한 후 결과에 따라 메세지 출력
-    window.electron.ipcRenderer.sendMessage('save-code', {
+    const res = await window.electron.ipcRenderer.invoke('save-code', {
       data: { number: problem.number, language: lang, code },
     });
 
-    if (!silence) {
+    if (!silence && res && res.data.isSaved) {
       fireAlertModal('안내', '저장이 완료되었습니다.');
       freshingEditorCode();
     }

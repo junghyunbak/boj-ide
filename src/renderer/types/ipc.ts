@@ -9,6 +9,11 @@ declare global {
           message: ChannelToMessage['load-code'],
         ): Promise<ChannelToMessage['load-code-result']> | undefined;
 
+        invoke(
+          channel: (typeof ElECTRON_CHANNELS)['save-code'],
+          message: ChannelToMessage['save-code'],
+        ): Promise<ChannelToMessage['save-code-result']> | undefined;
+
         on(
           channel: (typeof CLIENT_CHANNELS)['load-code-result'],
           func: (message: ChannelToMessage['load-code-result']) => void,

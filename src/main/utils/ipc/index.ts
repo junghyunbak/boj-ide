@@ -6,6 +6,59 @@ import { IpcError, sentryErrorHandler } from '@/main/error';
 
 import * as Sentry from '@sentry/node';
 
+function IpcErrorHandler<T extends Electron.IpcMainEvent | Electron.IpcMainInvokeEvent>(
+  channel: string,
+  listener: (e: T, ...args: any[]) => Promise<any> | any,
+  send: Ipc['send'],
+) {
+  return async (e: T, ...args: any[]): Promise<any> => {
+    const isProd = process.env.NODE_ENV === 'production';
+
+    if (isProd) {
+      switch (channel as ElectronChannels) {
+        case 'judge-start':
+        case 'open-source-code-folder':
+        case 'submit-code':
+        case 'log-add-testcase':
+        case 'log-execute-ai-create':
+          Sentry.captureMessage(channel, 'log');
+          break;
+        case 'open-deep-link':
+        case 'save-code':
+        case 'load-code':
+        case 'load-files':
+        default:
+          break;
+      }
+    }
+
+    try {
+      const result = listener(e, ...args);
+
+      if (result instanceof Promise) {
+        return await result;
+      }
+
+      return result;
+    } catch (err) {
+      if (err instanceof Error) {
+        send(e.sender, 'judge-reset');
+        send(e.sender, 'occur-error', { data: { message: err.message } });
+
+        if (err instanceof IpcError && err.errorType !== 'personal' && isProd) {
+          return null;
+        }
+
+        if (isProd) {
+          sentryErrorHandler(err);
+        }
+      }
+
+      return null;
+    }
+  };
+}
+
 class Ipc {
   on(
     channel: (typeof ElECTRON_CHANNELS)['load-code'],
@@ -41,50 +94,27 @@ class Ipc {
   on(channel: (typeof ElECTRON_CHANNELS)['log-execute-ai-create'], listener: (e: Electron.IpcMainEvent) => void): void;
 
   on(channel: string, listener: (e: Electron.IpcMainEvent, ...args: any[]) => void | Promise<void>): void {
-    const fn: typeof listener = async (e, ...args) => {
-      const isProd = process.env.NODE_ENV === 'production';
+    ipcMain.on(channel, IpcErrorHandler(channel, listener, this.send));
+  }
 
-      if (isProd) {
-        switch (channel as ElectronChannels) {
-          case 'judge-start':
-          case 'open-source-code-folder':
-          case 'submit-code':
-          case 'log-add-testcase':
-          case 'log-execute-ai-create':
-            Sentry.captureMessage(channel, 'log');
-            break;
-          case 'open-deep-link':
-          case 'save-code':
-          case 'load-code':
-          case 'load-files':
-          default:
-            break;
-        }
-      }
+  handle(
+    channel: (typeof ElECTRON_CHANNELS)['load-code'],
+    listener: (
+      e: Electron.IpcMainInvokeEvent,
+      message: ChannelToMessage['load-code'],
+    ) => Promise<ChannelToMessage['load-code-result']>,
+  ): void;
 
-      try {
-        const result = listener(e, ...args);
+  handle(
+    channel: (typeof ElECTRON_CHANNELS)['save-code'],
+    listener: (
+      e: Electron.IpcMainInvokeEvent,
+      message: ChannelToMessage['save-code'],
+    ) => Promise<ChannelToMessage['save-code-result']>,
+  ): void;
 
-        if (result instanceof Promise) {
-          await result;
-        }
-      } catch (err) {
-        if (err instanceof Error) {
-          this.send(e.sender, 'judge-reset');
-          this.send(e.sender, 'occur-error', { data: { message: err.message } });
-
-          if (err instanceof IpcError && err.errorType === 'personal') {
-            return;
-          }
-
-          if (isProd) {
-            sentryErrorHandler(err);
-          }
-        }
-      }
-    };
-
-    ipcMain.on(channel, fn);
+  handle(channel: string, listener: (e: Electron.IpcMainInvokeEvent, ...args: any[]) => Promise<any>): void {
+    ipcMain.handle(channel, IpcErrorHandler(channel, listener, this.send));
   }
 
   send(
@@ -153,18 +183,6 @@ class Ipc {
 
   send(webContents: WebContents, channel: string, ...args: any[]): void {
     webContents.send(channel, ...args);
-  }
-
-  handle(
-    channel: (typeof ElECTRON_CHANNELS)['load-code'],
-    listener: (
-      e: Electron.IpcMainInvokeEvent,
-      message: ChannelToMessage['load-code'],
-    ) => Promise<ChannelToMessage['load-code-result']>,
-  ): void;
-
-  handle(channel: string, listener: (e: Electron.IpcMainInvokeEvent, ...args: any[]) => Promise<any>): void {
-    ipcMain.handle(channel, listener);
   }
 }
 

@@ -66,7 +66,7 @@ export class Code {
       });
     });
 
-    ipc.on('save-code', (e, { data: { number, language, code, silence } }) => {
+    ipc.handle('save-code', async (e, { data: { code, number, language } }) => {
       const ext = langToJudgeInfo[language].ext[process.platform];
 
       if (!ext) {
@@ -75,13 +75,11 @@ export class Code {
 
       try {
         Code.saveFile(this.basePath, number, ext, code);
-
-        if (!silence) {
-          ipc.send(this.webContents, 'save-code-result', { data: { isSaved: true } });
-        }
       } catch (_) {
         throw new Error('코드 저장에 실패하였습니다.');
       }
+
+      return { data: { isSaved: true } };
     });
 
     ipc.handle('load-code', async (e, { data: { number, language } }) => {
