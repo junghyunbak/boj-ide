@@ -137,7 +137,7 @@ export function MovableTab({
         return;
       }
 
-      container.addEventListener('contextmenu', handleMouseRightButtonClick);
+      container.removeEventListener('contextmenu', handleMouseRightButtonClick);
       container.removeEventListener('mousedown', handleTabMouseDown);
       container.removeEventListener('mousemove', handleTabMouseMove);
       container.removeEventListener('mouseleave', handleTabMouseLeave);
