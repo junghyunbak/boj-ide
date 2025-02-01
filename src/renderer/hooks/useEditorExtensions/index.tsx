@@ -13,14 +13,14 @@ import { cpp } from '@codemirror/lang-cpp';
 import { python } from '@codemirror/lang-python';
 import { java } from '@codemirror/lang-java';
 
-import { useEditorCodeSave } from '@/renderer/hooks/useEditorCodeSave';
+import { useEditorController } from '@/renderer/hooks';
 
 export function useEditorExtensions() {
   const [editorMode] = useStore(useShallow((s) => [s.mode]));
   const [editorFontSize] = useStore(useShallow((s) => [s.fontSize]));
   const [editorLanguage] = useStore(useShallow((s) => [s.lang]));
 
-  const { saveEditorCode } = useEditorCodeSave();
+  const { saveEditorCode } = useEditorController();
 
   const extensions = useMemo(
     () =>

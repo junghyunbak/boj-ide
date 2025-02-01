@@ -7,7 +7,7 @@ import { Vim, getCM } from '@replit/codemirror-vim';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useEditorCodeSave } from '@/renderer/hooks/useEditorCodeSave';
+import { useEditorController } from '@/renderer/hooks';
 
 export function useEditorVim({
   editorRef,
@@ -18,7 +18,7 @@ export function useEditorVim({
 }) {
   const [setVimMode] = useStore(useShallow((s) => [s.setVimMode]));
 
-  const { saveEditorCode } = useEditorCodeSave();
+  const { saveEditorCode } = useEditorController();
 
   /**
    * Vim(:w) 코드 저장 이벤트 등록

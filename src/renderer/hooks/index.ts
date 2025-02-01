@@ -17,6 +17,6 @@ export * from './useClickOutOfModal';
 export * from './useResponsiveLayout';
 
 export * from './useEditor';
-export * from './useEditorCodeSave';
+export * from './useEditorController';
 export * from './useEditorExtensions';
 export * from './useEditorVim';
