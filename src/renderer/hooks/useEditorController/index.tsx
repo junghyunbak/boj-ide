@@ -10,15 +10,9 @@ export function useEditorController(silence = false) {
   const [lang] = useStore(useShallow((s) => [s.lang]));
   const [setIsCodeStale] = useStore(useShallow((s) => [s.setIsCodeStale]));
   const [setEditorCode] = useStore(useShallow((s) => [s.setCode]));
+  const [setProblemToCode] = useStore(useShallow((s) => [s.setProblemToCode]));
 
   const { fireAlertModal } = useAlertModalController();
-
-  const updateEditorCode = useCallback(
-    (code: string) => {
-      setEditorCode(code);
-    },
-    [setEditorCode],
-  );
 
   const stalingEditorCode = useCallback(() => {
     setIsCodeStale(true);
@@ -27,6 +21,27 @@ export function useEditorController(silence = false) {
   const freshingEditorCode = useCallback(() => {
     setIsCodeStale(false);
   }, [setIsCodeStale]);
+
+  const updateEditorCode = useCallback(
+    (code: string) => {
+      if (problem) {
+        setProblemToCode(problem.number, code);
+        stalingEditorCode();
+      }
+    },
+    [problem, setProblemToCode, stalingEditorCode],
+  );
+
+  const initialEditorCode = useCallback(
+    (code: string) => {
+      if (problem) {
+        setEditorCode(code);
+        setProblemToCode(problem.number, code);
+        stalingEditorCode();
+      }
+    },
+    [setEditorCode, setProblemToCode, stalingEditorCode, problem],
+  );
 
   const saveEditorCode = useCallback(() => {
     if (!problem) {
@@ -57,5 +72,6 @@ export function useEditorController(silence = false) {
     stalingEditorCode,
     freshingEditorCode,
     updateEditorCode,
+    initialEditorCode,
   };
 }

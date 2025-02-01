@@ -23,7 +23,7 @@ export function useEditor({ width, height }: { width: number; height: number }) 
   const [editorCode] = useStore(useShallow((s) => [s.code]));
   const [setProblemToCode] = useStore(useShallow((s) => [s.setProblemToCode]));
 
-  const { saveEditorCode, stalingEditorCode, updateEditorCode } = useEditorController(true);
+  const { saveEditorCode, initialEditorCode, updateEditorCode } = useEditorController(true);
   const { extensions } = useEditorExtensions();
 
   const editorRef = useRef<HTMLDivElement | null>(null);
@@ -37,12 +37,7 @@ export function useEditor({ width, height }: { width: number; height: number }) 
     basicSetup: {
       tabSize: indentSpace,
     },
-    onChange: (value) => {
-      if (problem) {
-        stalingEditorCode();
-        setProblemToCode(problem.number, value);
-      }
-    },
+    onChange: updateEditorCode,
   });
 
   /**
@@ -73,14 +68,14 @@ export function useEditor({ width, height }: { width: number; height: number }) 
           } = res;
 
           //setState(EditorState.create({ ...state }));
-          updateEditorCode(code);
+          initialEditorCode(code);
           setProblemToCode(problem.number, code);
         }
       }
     })();
     // 처음 생성된 codemirror의 state를, 히스토리 초기화에 이용하기 위해 의존성 배열에 추가히자 않음.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [problem, lang, setState, setProblemToCode, updateEditorCode]);
+  }, [problem, lang, setState, setProblemToCode, initialEditorCode]);
 
   /**
    * 문제/언어가 변경되면

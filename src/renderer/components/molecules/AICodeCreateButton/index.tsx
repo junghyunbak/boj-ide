@@ -19,7 +19,7 @@ export function AICodeCreateButton() {
 
   const { fireAlertModal } = useAlertModalController();
   const { fireConfirmModal } = useConfirmModalController();
-  const { stalingEditorCode, updateEditorCode } = useEditorController();
+  const { initialEditorCode } = useEditorController();
   const { complete, completion, isLoading } = useStreamingAICode({
     onError() {
       fireAlertModal('에러 발생', AI_ERROR_MESSAGE);
@@ -30,9 +30,8 @@ export function AICodeCreateButton() {
    * 결과가 변경될 때 마다 에디터 갱신
    */
   useEffect(() => {
-    updateEditorCode(completion);
-    stalingEditorCode();
-  }, [completion, stalingEditorCode, updateEditorCode]);
+    initialEditorCode(completion);
+  }, [completion, initialEditorCode]);
 
   const handleAICodeCreateButtonClick = () => {
     fireConfirmModal(AI_EXECUTE_QUESTION_MESSAGE, async () => {
