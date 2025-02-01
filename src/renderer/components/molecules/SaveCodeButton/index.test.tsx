@@ -32,7 +32,9 @@ describe('저장 버튼이 활성화되어있는 상태', () => {
           }
         },
         removeAllListeners(channel) {},
-        invoke: async (channel: string, message: any): Promise<any> => {},
+        invoke: async (channel: string, message: any): Promise<any> => {
+          return { data: { isSaved: true } };
+        },
       },
     };
   });
