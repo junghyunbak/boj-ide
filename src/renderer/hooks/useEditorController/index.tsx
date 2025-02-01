@@ -6,8 +6,6 @@ import { useShallow } from 'zustand/shallow';
 import { useAlertModalController } from '@/renderer/hooks';
 
 export function useEditorController() {
-  const [problem] = useStore(useShallow((s) => [s.problem]));
-  const [lang] = useStore(useShallow((s) => [s.lang]));
   const [setIsCodeStale] = useStore(useShallow((s) => [s.setIsCodeStale]));
   const [setEditorCode] = useStore(useShallow((s) => [s.setCode]));
   const [setProblemToCode] = useStore(useShallow((s) => [s.setProblemToCode]));
@@ -15,20 +13,24 @@ export function useEditorController() {
   const { fireAlertModal } = useAlertModalController();
 
   const getProblemCode = useCallback(() => {
+    const { problem, problemToCode } = useStore.getState();
+
     if (!problem) {
       return '';
     }
 
-    return useStore.getState().problemToCode.get(problem.number) || '';
-  }, [problem]);
+    return problemToCode.get(problem.number) || '';
+  }, []);
 
   const setProblemCode = useCallback(
     (code: string) => {
+      const { problem } = useStore.getState();
+
       if (problem) {
         setProblemToCode(problem.number, code);
       }
     },
-    [problem, setProblemToCode],
+    [setProblemToCode],
   );
 
   const stalingEditorCode = useCallback(() => {
@@ -40,9 +42,9 @@ export function useEditorController() {
   }, [setIsCodeStale]);
 
   /**
-   * 에디터 입력에 의해 코드가 업데이트 될 때 사용
+   * - 에디터 입력
    */
-  const updateEditorCode = useCallback(
+  const syncEditorCode = useCallback(
     (code: string) => {
       setProblemCode(code);
       stalingEditorCode();
@@ -51,12 +53,9 @@ export function useEditorController() {
   );
 
   /**
-   * 코드를 덮어쓰기 할 때 사용
-   *
    * - AI 입력 템플릿 생성
-   * - 문제/언어 변경 시 코드 로딩
    */
-  const initialEditorCode = useCallback(
+  const updateEditorCode = useCallback(
     (code: string) => {
       setEditorCode(code);
       setProblemCode(code);
@@ -66,17 +65,25 @@ export function useEditorController() {
   );
 
   /**
+   * - 문제/언어 변경 시 코드 로딩
+   */
+  const initialEditorCode = useCallback(
+    (code: string) => {
+      setEditorCode(code);
+      setProblemCode(code);
+      freshingEditorCode();
+    },
+    [setEditorCode, setProblemCode, freshingEditorCode],
+  );
+
+  /**
    * 코드가 오래되지 않았을 경우에만 저장하는 함수
    */
   const saveEditorCode = useCallback(
     async (opt?: { silence?: boolean }) => {
-      if (!problem) {
-        return;
-      }
+      const { problem, isCodeStale, lang } = useStore.getState();
 
-      const { isCodeStale } = useStore.getState();
-
-      if (!isCodeStale) {
+      if (!problem || !isCodeStale) {
         return;
       }
 
@@ -98,12 +105,13 @@ export function useEditorController() {
 
       fireAlertModal('안내', '저장이 완료되었습니다.');
     },
-    [problem, lang, getProblemCode, fireAlertModal, freshingEditorCode],
+    [getProblemCode, fireAlertModal, freshingEditorCode],
   );
 
   return {
     getProblemCode,
     saveEditorCode,
+    syncEditorCode,
     stalingEditorCode,
     freshingEditorCode,
     updateEditorCode,

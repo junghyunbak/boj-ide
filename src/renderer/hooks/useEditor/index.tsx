@@ -22,7 +22,7 @@ export function useEditor({ width, height }: { width: number; height: number }) 
   const [indentSpace] = useStore(useShallow((s) => [s.indentSpace]));
   const [editorCode] = useStore(useShallow((s) => [s.code]));
 
-  const { saveEditorCode, initialEditorCode, updateEditorCode } = useEditorController();
+  const { saveEditorCode, initialEditorCode, syncEditorCode } = useEditorController();
   const { extensions } = useEditorExtensions();
 
   const editorRef = useRef<HTMLDivElement | null>(null);
@@ -36,7 +36,7 @@ export function useEditor({ width, height }: { width: number; height: number }) 
     basicSetup: {
       tabSize: indentSpace,
     },
-    onChange: updateEditorCode,
+    onChange: syncEditorCode,
   });
 
   /**
@@ -60,7 +60,7 @@ export function useEditor({ width, height }: { width: number; height: number }) 
         data: { number: problem.number, language: lang },
       });
     }
-  }, [problem, lang, setState, initialEditorCode]);
+  }, [problem, lang]);
 
   useEffect(() => {
     // invoke 반환값을 사용하지 않고, 채널을 만들어 초기화하는 이유는 useEffect 순환 실행을 피하기 위함.
