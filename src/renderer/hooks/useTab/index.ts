@@ -6,27 +6,15 @@ export function useTab() {
 
   const addTab = (problemInfo: ProblemInfo) => {
     setTabs((prev) => {
-      const next = [...prev];
-
-      const idx = next.findIndex((tab) => tab.number === problemInfo.number);
-
-      if (idx !== -1) {
-        next.splice(idx, 1, problemInfo);
-      } else {
-        next.splice(next.length, 1, problemInfo);
-      }
-
-      return next;
+      return prev.some((tab) => tab.number === problemInfo.number)
+        ? prev.map((tab) => (tab.number === problemInfo.number ? problemInfo : tab))
+        : [...prev, problemInfo];
     });
   };
 
   const removeTab = (i: number): ProblemInfo | null => {
     setTabs((prev) => {
-      const next = [...prev];
-
-      next.splice(i, 1);
-
-      return next;
+      return prev.filter((_, idx) => idx !== i);
     });
 
     const { problemHistories: nextTabs } = useStore.getState();
@@ -40,23 +28,19 @@ export function useTab() {
 
   const reorderTab = (srcIndex: number, destIndex: number) => {
     setTabs((prev) => {
-      const tmp = [...prev] as (ProblemInfo | null)[];
-
-      const [moveElement] = tmp.splice(srcIndex, 1, null);
-
-      if (!moveElement) {
+      if (srcIndex === destIndex) {
         return prev;
       }
 
-      tmp.splice(destIndex, 0, moveElement);
+      const next = [...prev];
 
-      const next: ProblemInfo[] = tmp.reduce<ProblemInfo[]>((acc, cur) => {
-        if (cur !== null) {
-          acc.push(cur);
-        }
+      const [moveElement] = next.splice(srcIndex, 1);
 
-        return acc;
-      }, []);
+      if (destIndex > srcIndex) {
+        next.splice(destIndex - 1, 0, moveElement);
+      } else {
+        next.splice(destIndex, 0, moveElement);
+      }
 
       return next;
     });
