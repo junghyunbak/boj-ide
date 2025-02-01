@@ -101,6 +101,10 @@ export class Code {
         encoding: 'utf-8',
       });
 
+      ipc.send(this.webContents, 'load-code-result', {
+        data: { code },
+      });
+
       return { data: { code } };
     });
   }

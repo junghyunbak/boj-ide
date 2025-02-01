@@ -21,7 +21,6 @@ export function useEditor({ width, height }: { width: number; height: number }) 
   const [lang] = useStore(useShallow((s) => [s.lang]));
   const [indentSpace] = useStore(useShallow((s) => [s.indentSpace]));
   const [editorCode] = useStore(useShallow((s) => [s.code]));
-  const [setProblemToCode] = useStore(useShallow((s) => [s.setProblemToCode]));
 
   const { saveEditorCode, initialEditorCode, updateEditorCode } = useEditorController(true);
   const { extensions } = useEditorExtensions();
@@ -56,26 +55,24 @@ export function useEditor({ width, height }: { width: number; height: number }) 
    * - 새로운 문제/언어의 코드를 불러와 초기화
    */
   useEffect(() => {
-    (async () => {
-      if (problem) {
-        const res = await window.electron.ipcRenderer.invoke('load-code', {
-          data: { number: problem.number, language: lang },
-        });
+    if (problem) {
+      window.electron.ipcRenderer.invoke('load-code', {
+        data: { number: problem.number, language: lang },
+      });
+    }
+  }, [problem, lang, setState, initialEditorCode]);
 
-        if (res) {
-          const {
-            data: { code },
-          } = res;
+  useEffect(() => {
+    // invoke 반환값을 사용하지 않고, 채널을 만들어 초기화하는 이유는 useEffect 순환 실행을 피하기 위함.
+    window.electron.ipcRenderer.on('load-code-result', ({ data: { code } }) => {
+      initialEditorCode(code);
+      setState(EditorState.create({ ...state }));
+    });
 
-          //setState(EditorState.create({ ...state }));
-          initialEditorCode(code);
-          setProblemToCode(problem.number, code);
-        }
-      }
-    })();
-    // 처음 생성된 codemirror의 state를, 히스토리 초기화에 이용하기 위해 의존성 배열에 추가히자 않음.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [problem, lang, setState, setProblemToCode, initialEditorCode]);
+    return function cleanup() {
+      window.electron.ipcRenderer.removeAllListeners('load-code-result');
+    };
+  }, [state, setState, initialEditorCode]);
 
   /**
    * 문제/언어가 변경되면
