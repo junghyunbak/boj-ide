@@ -39,6 +39,9 @@ export function useEditorController(silence = false) {
     setIsCodeStale(false);
   }, [setIsCodeStale]);
 
+  /**
+   * 에디터 입력에 의해 코드가 업데이트 될 때 사용
+   */
   const updateEditorCode = useCallback(
     (code: string) => {
       setProblemCode(code);
@@ -47,6 +50,12 @@ export function useEditorController(silence = false) {
     [setProblemCode, stalingEditorCode],
   );
 
+  /**
+   * 코드를 덮어쓰기 할 때 사용
+   *
+   * - AI 입력 템플릿 생성
+   * - 문제/언어 변경 시 코드 로딩
+   */
   const initialEditorCode = useCallback(
     (code: string) => {
       setEditorCode(code);
@@ -56,6 +65,9 @@ export function useEditorController(silence = false) {
     [setEditorCode, setProblemCode, stalingEditorCode],
   );
 
+  /**
+   * 코드가 오래되지 않았을 경우에만 저장하는 함수
+   */
   const saveEditorCode = useCallback(async () => {
     if (!problem) {
       return;
@@ -77,7 +89,7 @@ export function useEditorController(silence = false) {
       fireAlertModal('안내', '저장이 완료되었습니다.');
       freshingEditorCode();
     }
-  }, [problem, getProblemCode, lang, silence, fireAlertModal, freshingEditorCode]);
+  }, [problem, lang, silence, getProblemCode, fireAlertModal, freshingEditorCode]);
 
   return {
     getProblemCode,
