@@ -43,13 +43,19 @@ export function ToggleLanguage() {
       </SelectButton>
 
       <NonModal ref={modalRef} isOpen={isLanguageModalOpen} inset="100% 0 auto auto">
-        {LANGAUGES.map((LANGUAGE) => {
-          return (
-            <ListButton key={LANGUAGE} onClick={handleLanguageButtonClick(LANGUAGE)}>
-              {LANGUAGE}
-            </ListButton>
-          );
-        })}
+        <div
+          css={css`
+            padding: 0.25rem 0;
+          `}
+        >
+          {LANGAUGES.map((LANGUAGE) => {
+            return (
+              <ListButton key={LANGUAGE} onClick={handleLanguageButtonClick(LANGUAGE)}>
+                {LANGUAGE}
+              </ListButton>
+            );
+          })}
+        </div>
       </NonModal>
     </div>
   );
