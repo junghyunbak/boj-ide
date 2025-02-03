@@ -21,6 +21,7 @@ export * from './useResponsiveLayout';
  */
 export * from './useWebview';
 export * from './useWebviewController';
+export * from './useWebviewNavigation';
 
 /**
  * editor
