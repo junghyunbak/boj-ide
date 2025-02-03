@@ -13,7 +13,7 @@ export function useJudge() {
   const [judgeResults, setJudgeResults] = useStore(useShallow((s) => [s.judgeResult, s.setJudgeResult]));
   const [judgeId, setJudgeId] = useStore(useShallow((s) => [s.judgeId, s.setJudgeId]));
 
-  const { getProblemCode } = useEditorController();
+  const { getProblemCode, saveEditorCode } = useEditorController();
 
   useEffect(() => {
     setJudgeId(uuidv4());
@@ -44,6 +44,7 @@ export function useJudge() {
     const n = Math.min(inputs.length, outputs.length);
 
     setJudgeResults(() => Array(n).fill(undefined));
+    saveEditorCode({ silence: true });
 
     const { number } = problem;
     const { lang: language } = useStore.getState();
