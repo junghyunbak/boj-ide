@@ -13,7 +13,7 @@ import { cpp } from '@codemirror/lang-cpp';
 import { python } from '@codemirror/lang-python';
 import { java } from '@codemirror/lang-java';
 
-import { useEditorController } from '@/renderer/hooks';
+import { useEditorController } from '../useEditorController';
 
 export function useEditorExtensions() {
   const [editorMode] = useStore(useShallow((s) => [s.mode]));

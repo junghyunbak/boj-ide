@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useAlertModalController } from '@/renderer/hooks';
+import { useAlertModalController } from '../useAlertModal';
 
 export function useEditorController() {
   const [setIsCodeStale] = useStore(useShallow((s) => [s.setIsCodeStale]));

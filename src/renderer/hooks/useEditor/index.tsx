@@ -4,7 +4,8 @@ import { useCodeMirror, EditorState } from '@uiw/react-codemirror';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useEditorController, useEditorExtensions } from '@/renderer/hooks';
+import { useEditorExtensions } from '../useEditorExtensions';
+import { useEditorController } from '../useEditorController';
 
 /**
  * code mirror 주요 기능과 관련된 로직만 처리

@@ -7,7 +7,7 @@ import { Vim, getCM } from '@replit/codemirror-vim';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useEditorController } from '@/renderer/hooks';
+import { useEditorController } from '../useEditorController';
 
 export function useEditorVim({
   editorRef,

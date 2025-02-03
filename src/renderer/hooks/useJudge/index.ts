@@ -3,9 +3,9 @@ import { useCallback, useEffect } from 'react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useEditorController } from '@/renderer/hooks';
-
 import { v4 as uuidv4 } from 'uuid';
+
+import { useEditorController } from '../useEditorController';
 
 export function useJudge() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
