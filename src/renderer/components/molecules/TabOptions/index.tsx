@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import { useClickOutOfModal, useTab, useWebview } from '@/renderer/hooks';
+import { useClickOutOfModal, useTab, useWebviewController } from '@/renderer/hooks';
 
 import { ReactComponent as ThreeDots } from '@/renderer/assets/svgs/three-dots.svg';
 
@@ -15,7 +15,7 @@ export function TabOptions() {
   const [isOpen, setIsOpen] = useState(false);
 
   const { clearTab, tabs } = useTab();
-  const { gotoUrl } = useWebview();
+  const { gotoUrl } = useWebviewController();
   const { modalRef, buttonRef } = useClickOutOfModal(() => {
     setIsOpen(false);
   });

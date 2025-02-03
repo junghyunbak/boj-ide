@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import { useFetchProblem, useProblem, useTab, useWebview } from '@/renderer/hooks';
+import { useFetchProblem, useProblem, useTab, useWebviewController } from '@/renderer/hooks';
 
 import { BOJ_DOMAIN } from '@/common/constants';
 
@@ -17,7 +17,7 @@ interface ProblemTabProps {
 export function ProblemTab({ problemInfo, tabIndex }: ProblemTabProps) {
   const { problem } = useProblem();
   const { removeTab } = useTab();
-  const { gotoProblem, gotoUrl } = useWebview();
+  const { gotoProblem, gotoUrl } = useWebviewController();
   const { TierImg } = useFetchProblem(problemInfo.number);
 
   const isSelect = problem?.number === problemInfo.number;
