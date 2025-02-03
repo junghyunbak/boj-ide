@@ -14,7 +14,7 @@ import { BOJ_DOMAIN } from '@/common/constants';
 export function TabOptions() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { clearTab } = useTab();
+  const { clearTab, tabs } = useTab();
   const { gotoUrl } = useWebview();
   const { modalRef, buttonRef } = useClickOutOfModal(() => {
     setIsOpen(false);
@@ -22,8 +22,11 @@ export function TabOptions() {
 
   const handleAllTabCloseButtonClick = () => {
     clearTab();
-    gotoUrl(`https://${BOJ_DOMAIN}/problemset`);
     setIsOpen(false);
+
+    if (tabs.length > 0) {
+      gotoUrl(`https://${BOJ_DOMAIN}/problemset`);
+    }
   };
 
   return (
@@ -67,7 +70,13 @@ export function TabOptions() {
       </button>
 
       <NonModal ref={modalRef} isOpen={isOpen} inset="100% 0 auto auto">
-        <ListButton onClick={handleAllTabCloseButtonClick}>탭 모두 닫기</ListButton>
+        <div
+          css={css`
+            padding: 0.25rem 0;
+          `}
+        >
+          <ListButton onClick={handleAllTabCloseButtonClick}>탭 모두 닫기</ListButton>
+        </div>
       </NonModal>
     </div>
   );
