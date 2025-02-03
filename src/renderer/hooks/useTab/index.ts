@@ -3,51 +3,59 @@ import { useCallback } from 'react';
 import { useShallow } from 'zustand/shallow';
 import { useStore } from '@/renderer/store';
 
-// TODO: useCallback 적용
 export function useTab() {
   const [tabs, setTabs] = useStore(useShallow((s) => [s.problemHistories, s.setProblemHistories]));
 
-  const addTab = (problemInfo: ProblemInfo) => {
-    setTabs((prev) => {
-      return prev.some((tab) => tab.number === problemInfo.number)
-        ? prev.map((tab) => (tab.number === problemInfo.number ? problemInfo : tab))
-        : [...prev, problemInfo];
-    });
-  };
+  const addTab = useCallback(
+    (problemInfo: ProblemInfo) => {
+      setTabs((prev) => {
+        return prev.some((tab) => tab.number === problemInfo.number)
+          ? prev.map((tab) => (tab.number === problemInfo.number ? problemInfo : tab))
+          : [...prev, problemInfo];
+      });
+    },
+    [setTabs],
+  );
 
-  const removeTab = (i: number): ProblemInfo | null => {
-    setTabs((prev) => {
-      return prev.filter((_, idx) => idx !== i);
-    });
+  const removeTab = useCallback(
+    (i: number): ProblemInfo | null => {
+      setTabs((prev) => {
+        return prev.filter((_, idx) => idx !== i);
+      });
 
-    const { problemHistories: nextTabs } = useStore.getState();
+      const { problemHistories: nextTabs } = useStore.getState();
 
-    if (nextTabs.length === 0) {
-      return null;
-    }
-
-    return nextTabs[i] || nextTabs[i - 1];
-  };
-
-  const reorderTab = (srcIndex: number, destIndex: number) => {
-    setTabs((prev) => {
-      if (srcIndex === destIndex) {
-        return prev;
+      if (nextTabs.length === 0) {
+        return null;
       }
 
-      const next = [...prev];
+      return nextTabs[i] || nextTabs[i - 1];
+    },
+    [setTabs],
+  );
 
-      const [moveElement] = next.splice(srcIndex, 1);
+  const reorderTab = useCallback(
+    (srcIndex: number, destIndex: number) => {
+      setTabs((prev) => {
+        if (srcIndex === destIndex) {
+          return prev;
+        }
 
-      if (destIndex > srcIndex) {
-        next.splice(destIndex - 1, 0, moveElement);
-      } else {
-        next.splice(destIndex, 0, moveElement);
-      }
+        const next = [...prev];
 
-      return next;
-    });
-  };
+        const [moveElement] = next.splice(srcIndex, 1);
+
+        if (destIndex > srcIndex) {
+          next.splice(destIndex - 1, 0, moveElement);
+        } else {
+          next.splice(destIndex, 0, moveElement);
+        }
+
+        return next;
+      });
+    },
+    [setTabs],
+  );
 
   const clearTab = useCallback(() => {
     setTabs(() => []);
