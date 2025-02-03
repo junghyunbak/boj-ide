@@ -66,37 +66,44 @@ export function Tabs() {
           align-items: center;
         `}
       >
-        <OverlayScrollbarsComponent
-          options={{
-            scrollbars: {
-              autoHide: 'leave',
-              autoHideDelay: 200,
-              theme: 'os-theme-dark os-theme-custom',
-            },
-          }}
+        <div
+          css={css`
+            flex: 1;
+            overflow: hidden;
+          `}
         >
-          <div
-            css={css`
-              display: flex;
-            `}
+          <OverlayScrollbarsComponent
+            options={{
+              scrollbars: {
+                autoHide: 'leave',
+                autoHideDelay: 200,
+                theme: 'os-theme-dark os-theme-custom',
+              },
+            }}
           >
-            {bookmarks.map((bookmarkInfo) => {
-              return <BookmarkTab key={bookmarkInfo.url} bookmarkInfo={bookmarkInfo} />;
-            })}
-
-            {tabs.map((problemInfo, index) => (
-              <ProblemTab key={problemInfo.number} problemInfo={problemInfo} tabIndex={index} />
-            ))}
-
             <div
               css={css`
-                flex: 1;
+                display: flex;
               `}
             >
-              <MovableTab tabIndex={tabs.length} polyfill />
+              {bookmarks.map((bookmarkInfo) => {
+                return <BookmarkTab key={bookmarkInfo.url} bookmarkInfo={bookmarkInfo} />;
+              })}
+
+              {tabs.map((problemInfo, index) => (
+                <ProblemTab key={problemInfo.number} problemInfo={problemInfo} tabIndex={index} />
+              ))}
+
+              <div
+                css={css`
+                  flex: 1;
+                `}
+              >
+                <MovableTab tabIndex={tabs.length} polyfill />
+              </div>
             </div>
-          </div>
-        </OverlayScrollbarsComponent>
+          </OverlayScrollbarsComponent>
+        </div>
 
         <TabOptions />
       </div>
