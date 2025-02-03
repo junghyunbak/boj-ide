@@ -3,9 +3,7 @@ import { useStore } from '@/renderer/store';
 import { useCallback } from 'react';
 
 export function useProblem() {
-  const [problem, setProblem, setProblemNoRerender] = useStore(
-    useShallow((s) => [s.problem, s.setProblem, s.setProblemNoRerender]),
-  );
+  const [problem, setProblem] = useStore(useShallow((s) => [s.problem, s.setProblem]));
 
   const updateProblem = useCallback(
     (newProblem: ProblemInfo | null) => {
@@ -15,13 +13,15 @@ export function useProblem() {
       }
 
       if (problem && problem.number === newProblem.number) {
-        setProblemNoRerender(newProblem);
+        problem.name = newProblem.name;
+        problem.testCase = newProblem.testCase;
+        problem.inputDesc = newProblem.inputDesc;
         return;
       }
 
       setProblem(newProblem);
     },
-    [problem, setProblem, setProblemNoRerender],
+    [problem, setProblem],
   );
 
   return {
