@@ -8,11 +8,12 @@ export const createMockProblem = (() => {
 
     return {
       name: values?.name || 'A + B',
-      number: number.toString(),
+      number: values?.number || number.toString(),
       testCase: values?.testCase || {
         inputs: [],
         outputs: [],
       },
+      inputDesc: values?.inputDesc || faker.string.alpha(20),
     };
   };
 })();
