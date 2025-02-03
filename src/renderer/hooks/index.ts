@@ -3,6 +3,7 @@ export * from './useProblem';
 export * from './useTab';
 export * from './useJudge';
 export * from './useFabricCanvas';
+export * from './useTestcase';
 
 export * from './useFetchProblem';
 export * from './useStreamingAICode';
