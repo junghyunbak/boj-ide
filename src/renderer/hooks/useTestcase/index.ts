@@ -16,7 +16,9 @@ export function useTestcase() {
 
       const { number } = problem;
 
-      if (!customTestcase[i]) {
+      const testcases = customTestcase[number];
+
+      if (!(testcases && testcases[i])) {
         return false;
       }
 
