@@ -7,24 +7,24 @@ import { useStore } from '@/renderer/store';
 
 import { useTestcase } from '.';
 
-const problem = createMockProblem();
+const mockProblem = createMockProblem();
 const mockTestcase = createMockTestcase();
 const mockTestcase2 = createMockTestcase();
 
 beforeEach(() => {
   const { setProblem, setCustomTestcases } = useStore.getState();
 
-  setProblem(problem);
+  setProblem(mockProblem);
   setCustomTestcases(() => ({
-    [problem.number]: [mockTestcase, mockTestcase2],
+    [mockProblem.number]: [mockTestcase, mockTestcase2],
   }));
 });
 
-describe('[커스텀 훅] 커스텀 테스트케이스 추가/삭제', () => {
-  it('테스트케이스 추가', () => {
+describe('[커스텀 훅] 커스텀 테스트케이스를 관리하는 훅', () => {
+  it('테스트케이스를 추가할 경우, 추가한 테스트케이스가 존재해야한다.', () => {
     const { result } = renderHook(() => useTestcase());
 
-    let isSuccess = false;
+    let isSuccess: boolean | null = null;
 
     const newMockTestcase = createMockTestcase();
 
@@ -34,17 +34,17 @@ describe('[커스텀 훅] 커스텀 테스트케이스 추가/삭제', () => {
 
     expect(isSuccess).toBe(true);
     expect(
-      result.current.customTestcase[problem.number]?.some((testcase) => testcase.input === newMockTestcase.input),
+      result.current.customTestcase[mockProblem.number]?.some((testcase) => testcase.input === newMockTestcase.input),
     ).toBe(true);
   });
 
-  it('테스트케이스 삭제 (범위 안)', () => {
+  it('범위 내 테스트케이스를 삭제할 경우, 삭제 결과가 true 이며 해당 테스트케이스가 존재하지 않아야 한다.', () => {
     const { result } = renderHook(() => useTestcase());
 
-    let isSuccess = false;
+    let isSuccess: boolean | null = null;
 
     const removeIdx = 0;
-    const removeMockTestcase = (result.current.customTestcase[problem.number] as (TC | undefined)[])[removeIdx];
+    const removeMockTestcase = (result.current.customTestcase[mockProblem.number] as (TC | undefined)[])[removeIdx];
 
     act(() => {
       isSuccess = result.current.removeCustomTestcase(removeIdx);
@@ -53,23 +53,25 @@ describe('[커스텀 훅] 커스텀 테스트케이스 추가/삭제', () => {
     expect(isSuccess).toBe(true);
     expect(
       typeof removeMockTestcase === 'object' &&
-        !result.current.customTestcase[problem.number]?.some((testcase) => testcase.input === removeMockTestcase.input),
+        !result.current.customTestcase[mockProblem.number]?.some(
+          (testcase) => testcase.input === removeMockTestcase.input,
+        ),
     ).toBe(true);
   });
 
-  it('테스트케이스 삭제 (범위 밖)', () => {
+  it('범위 밖 테스트케이스를 삭제할 경우, 삭제 결과가 false 이며 개수가 그대로여야 한다.', () => {
     const { result } = renderHook(() => useTestcase());
 
-    let isSuccess = false;
+    let isSuccess: boolean | null = null;
 
     const removeIdx = 100;
-    const testcaseCount = result.current.customTestcase[problem.number]?.length || 0;
+    const testcaseCount = result.current.customTestcase[mockProblem.number]?.length || 0;
 
     act(() => {
       isSuccess = result.current.removeCustomTestcase(removeIdx);
     });
 
     expect(isSuccess).toBe(false);
-    expect(result.current.customTestcase[problem.number]?.length === testcaseCount).toBe(true);
+    expect(result.current.customTestcase[mockProblem.number]?.length === testcaseCount).toBe(true);
   });
 });

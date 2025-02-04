@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 
 export const createMockProblem = (() => {
-  let number = -1;
+  let number = 100000;
 
   return (values?: Partial<ProblemInfo>): ProblemInfo => {
     number += 1;
