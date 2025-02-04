@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import { useJudge, useProblem } from '@/renderer/hooks';
+import { useJudge, useProblem, useTestcase } from '@/renderer/hooks';
 
 import { ExecuteResultRow, ExecuteResultData } from '@/renderer/components/atoms/tables/ExecuteResultTable';
 import {
@@ -29,8 +29,9 @@ interface TestCaseProps extends TC {
 // [v]: [type === 'common'] 열기 버튼을 누르면 예제 입/출력이 나타난다.
 // [v]: [type === 'common'] 열기 버튼을 누르고 채점 결과가 존재할 경우, 실행 결과를 표시하는 테이블이 렌더링 되어야한다.
 export function TestCase({ input, output, judgeResult, type, i }: TestCaseProps) {
-  const { problem, removeCustomTestcase } = useProblem();
+  const { problem } = useProblem();
   const { isJudging } = useJudge();
+  const { removeCustomTestcase } = useTestcase();
 
   const [isOpen, setIsOpen] = useState(false);
 

@@ -18,6 +18,7 @@ export function ListButton({ onClick, children }: ListButtonProps) {
         border: none;
         padding: 0.3rem 0.9rem;
         color: ${color.text};
+        white-space: nowrap;
         cursor: pointer;
         &:hover {
           background-color: #f5f5f5;

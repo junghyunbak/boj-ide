@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useWebview } from '@/renderer/hooks';
+import { useWebviewController } from '@/renderer/hooks';
 
 import { TabButton } from '@/renderer/components/atoms/buttons/TabButton';
 import { Text } from '@/renderer/components/atoms/paragraphs/Text';
@@ -16,7 +16,7 @@ export function BookmarkTab({ bookmarkInfo }: BookmarkTabProps) {
   const [problem] = useStore(useShallow((s) => [s.problem]));
   const [webviewUrl] = useStore(useShallow((s) => [s.webviewUrl]));
 
-  const { gotoUrl } = useWebview();
+  const { gotoUrl } = useWebviewController();
 
   const ref = useRef<HTMLButtonElement>(null);
 

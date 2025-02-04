@@ -4,7 +4,7 @@ import { BOJ_DOMAIN } from '@/common/constants';
 
 import { MainPage } from '@/renderer/components/pages/MainPage';
 
-import { useWebview, useAlertModalController } from '@/renderer/hooks';
+import { useAlertModalController, useWebviewController } from '@/renderer/hooks';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -26,7 +26,7 @@ const queryClient = new QueryClient({
 
 export default function App() {
   const { fireAlertModal } = useAlertModalController();
-  const { gotoUrl } = useWebview();
+  const { gotoUrl } = useWebviewController();
 
   const [setBaekjoonhubExtensionId] = useStore(useShallow((s) => [s.setBaekjoonhubExtensionId]));
 

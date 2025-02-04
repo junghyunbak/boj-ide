@@ -1,71 +1,71 @@
+import { useCallback } from 'react';
+
 import { useShallow } from 'zustand/shallow';
 import { useStore } from '@/renderer/store';
 
 export function useTab() {
   const [tabs, setTabs] = useStore(useShallow((s) => [s.problemHistories, s.setProblemHistories]));
 
-  const addTab = (problemInfo: ProblemInfo) => {
-    setTabs((prev) => {
-      const next = [...prev];
+  const addTab = useCallback(
+    (problemInfo: ProblemInfo) => {
+      setTabs((prev) => {
+        return prev.some((tab) => tab.number === problemInfo.number)
+          ? prev.map((tab) => (tab.number === problemInfo.number ? problemInfo : tab))
+          : [...prev, problemInfo];
+      });
+    },
+    [setTabs],
+  );
 
-      const idx = next.findIndex((tab) => tab.number === problemInfo.number);
+  const removeTab = useCallback(
+    (i: number): ProblemInfo | null => {
+      setTabs((prev) => {
+        return prev.filter((_, idx) => idx !== i);
+      });
 
-      if (idx !== -1) {
-        next.splice(idx, 1, problemInfo);
-      } else {
-        next.splice(next.length, 1, problemInfo);
+      const { problemHistories: nextTabs } = useStore.getState();
+
+      if (nextTabs.length === 0) {
+        return null;
       }
 
-      return next;
-    });
-  };
+      return nextTabs[i] || nextTabs[i - 1];
+    },
+    [setTabs],
+  );
 
-  const removeTab = (i: number): ProblemInfo | null => {
-    setTabs((prev) => {
-      const next = [...prev];
-
-      next.splice(i, 1);
-
-      return next;
-    });
-
-    const { problemHistories: nextTabs } = useStore.getState();
-
-    if (nextTabs.length === 0) {
-      return null;
-    }
-
-    return nextTabs[i] || nextTabs[i - 1];
-  };
-
-  const reorderTab = (srcIndex: number, destIndex: number) => {
-    setTabs((prev) => {
-      const tmp = [...prev] as (ProblemInfo | null)[];
-
-      const [moveElement] = tmp.splice(srcIndex, 1, null);
-
-      if (!moveElement) {
-        return prev;
-      }
-
-      tmp.splice(destIndex, 0, moveElement);
-
-      const next: ProblemInfo[] = tmp.reduce<ProblemInfo[]>((acc, cur) => {
-        if (cur !== null) {
-          acc.push(cur);
+  const reorderTab = useCallback(
+    (srcIndex: number, destIndex: number) => {
+      setTabs((prev) => {
+        if (srcIndex === destIndex) {
+          return prev;
         }
 
-        return acc;
-      }, []);
+        const next = [...prev];
 
-      return next;
-    });
-  };
+        const [moveElement] = next.splice(srcIndex, 1);
+
+        if (destIndex > srcIndex) {
+          next.splice(destIndex - 1, 0, moveElement);
+        } else {
+          next.splice(destIndex, 0, moveElement);
+        }
+
+        return next;
+      });
+    },
+    [setTabs],
+  );
+
+  const clearTab = useCallback(() => {
+    setTabs(() => []);
+  }, [setTabs]);
 
   return {
     tabs,
     addTab,
     removeTab,
     reorderTab,
+    clearTab,
   };
 }

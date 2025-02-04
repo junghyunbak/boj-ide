@@ -66,7 +66,7 @@ export class Code {
       });
     });
 
-    ipc.on('save-code', (e, { data: { number, language, code, silence } }) => {
+    ipc.handle('save-code', async (e, { data: { code, number, language } }) => {
       const ext = langToJudgeInfo[language].ext[process.platform];
 
       if (!ext) {
@@ -75,13 +75,11 @@ export class Code {
 
       try {
         Code.saveFile(this.basePath, number, ext, code);
-
-        if (!silence) {
-          ipc.send(this.webContents, 'save-code-result', { data: { isSaved: true } });
-        }
       } catch (_) {
         throw new Error('코드 저장에 실패하였습니다.');
       }
+
+      return { data: { isSaved: true } };
     });
 
     ipc.handle('load-code', async (e, { data: { number, language } }) => {
@@ -103,29 +101,11 @@ export class Code {
         encoding: 'utf-8',
       });
 
-      return { data: { code } };
-    });
-
-    ipc.on('load-code', (e, { data: { number, language } }) => {
-      const ext = langToJudgeInfo[language].ext[process.platform];
-
-      if (!ext) {
-        throw new Error('지원하지 않는 플랫폼입니다.');
-      }
-
-      const filePath = path.join(this.basePath, `${number}.${ext}`);
-
-      if (!fs.existsSync(filePath)) {
-        const code = createDefaultCode(language);
-
-        fs.writeFileSync(filePath, code, { encoding: 'utf-8' });
-      }
-
-      const code = fs.readFileSync(filePath, {
-        encoding: 'utf-8',
+      ipc.send(this.webContents, 'load-code-result', {
+        data: { code },
       });
 
-      ipc.send(this.webContents, 'load-code-result', { data: { code } });
+      return { data: { code } };
     });
   }
 }

@@ -1,4 +1,4 @@
-import { useConfirmModalController } from '@/renderer/hooks';
+import { useConfirmModalController, useEditorController } from '@/renderer/hooks';
 
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
@@ -9,6 +9,7 @@ export function SubmitButton() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
 
   const { fireConfirmModal } = useConfirmModalController();
+  const { getProblemCode } = useEditorController();
 
   const handleSubmitButtonClick = () => {
     if (!problem) {
@@ -16,7 +17,8 @@ export function SubmitButton() {
     }
 
     fireConfirmModal('제출하시겠습니까?', () => {
-      const { code, lang } = useStore.getState();
+      const { lang } = useStore.getState();
+      const code = getProblemCode();
 
       window.electron.ipcRenderer.sendMessage('submit-code', {
         data: {

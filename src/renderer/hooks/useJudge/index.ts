@@ -5,11 +5,15 @@ import { useShallow } from 'zustand/shallow';
 
 import { v4 as uuidv4 } from 'uuid';
 
+import { useEditorController } from '../useEditorController';
+
 export function useJudge() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
   const [customTestCase] = useStore(useShallow((s) => [s.customTestCase]));
   const [judgeResults, setJudgeResults] = useStore(useShallow((s) => [s.judgeResult, s.setJudgeResult]));
   const [judgeId, setJudgeId] = useStore(useShallow((s) => [s.judgeId, s.setJudgeId]));
+
+  const { getProblemCode, saveEditorCode } = useEditorController();
 
   useEffect(() => {
     setJudgeId(uuidv4());
@@ -40,9 +44,11 @@ export function useJudge() {
     const n = Math.min(inputs.length, outputs.length);
 
     setJudgeResults(() => Array(n).fill(undefined));
+    saveEditorCode({ silence: true });
 
-    const { code, lang: language } = useStore.getState();
     const { number } = problem;
+    const { lang: language } = useStore.getState();
+    const code = getProblemCode();
 
     window.electron.ipcRenderer.sendMessage('judge-start', {
       data: {

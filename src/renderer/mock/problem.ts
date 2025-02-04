@@ -1,18 +1,19 @@
 import { faker } from '@faker-js/faker';
 
 export const createMockProblem = (() => {
-  let number = -1;
+  let number = 100000;
 
   return (values?: Partial<ProblemInfo>): ProblemInfo => {
     number += 1;
 
     return {
       name: values?.name || 'A + B',
-      number: number.toString(),
+      number: values?.number || number.toString(),
       testCase: values?.testCase || {
         inputs: [],
         outputs: [],
       },
+      inputDesc: values?.inputDesc || faker.string.alpha(20),
     };
   };
 })();

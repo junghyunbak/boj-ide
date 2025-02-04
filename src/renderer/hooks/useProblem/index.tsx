@@ -1,65 +1,31 @@
 import { useShallow } from 'zustand/shallow';
 import { useStore } from '@/renderer/store';
+import { useCallback } from 'react';
 
 export function useProblem() {
-  const [problem, setProblem, setProblemNoRerender] = useStore(
-    useShallow((s) => [s.problem, s.setProblem, s.setProblemNoRerender]),
-  );
-  const [setCustomTestcases] = useStore(useShallow((s) => [s.setCustomTestcases]));
+  const [problem, setProblem] = useStore(useShallow((s) => [s.problem, s.setProblem]));
 
-  const removeCustomTestcase = (i: number) => {
-    if (!problem) {
-      return;
-    }
-
-    const { number } = problem;
-
-    setCustomTestcases((prev) => {
-      const next = { ...prev };
-
-      if (!next[number]) {
-        return next;
+  const updateProblem = useCallback(
+    (newProblem: ProblemInfo | null) => {
+      if (!newProblem) {
+        setProblem(newProblem);
+        return;
       }
 
-      next[number].splice(i, 1);
-
-      return next;
-    });
-  };
-
-  const addCustomTestcase = (testcase: TC, problemNumber?: string) => {
-    const number = problem?.number || problemNumber;
-
-    if (!number) {
-      return;
-    }
-
-    setCustomTestcases((prev) => {
-      const next = { ...prev };
-
-      if (!next[number]) {
-        next[number] = [];
+      if (problem && problem.number === newProblem.number) {
+        problem.name = newProblem.name;
+        problem.testCase = newProblem.testCase;
+        problem.inputDesc = newProblem.inputDesc;
+        return;
       }
 
-      next[number].push(testcase);
-
-      return next;
-    });
-  };
-
-  const updateProblem = (newProblem: ProblemInfo | null) => {
-    if (problem?.number !== newProblem?.number) {
       setProblem(newProblem);
-      return;
-    }
-
-    setProblemNoRerender(newProblem);
-  };
+    },
+    [problem, setProblem],
+  );
 
   return {
     problem,
     updateProblem,
-    addCustomTestcase,
-    removeCustomTestcase,
   };
 }
