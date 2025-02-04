@@ -15,6 +15,7 @@ export * from './useFabricCanvas';
  * modal
  */
 export * from './useAlertModal';
+export * from './useAlertModalController';
 export * from './useConfirmModal';
 export * from './useClickOutOfModal';
 
