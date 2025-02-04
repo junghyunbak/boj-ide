@@ -23,6 +23,7 @@ export const PaintLayout = styled.div<{ isExpand: boolean }>`
   &::before {
     position: absolute;
     inset: 0;
+    z-index: ${zIndex.paint.focusLine};
     pointer-events: none;
     border: 1px solid ${color.primaryBg};
   }

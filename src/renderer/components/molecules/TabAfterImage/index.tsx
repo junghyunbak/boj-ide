@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { css } from '@emotion/react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
+import { zIndex } from '@/renderer/styles';
 
 export function TabAfterImage() {
   const [isTabDrag] = useStore(useShallow((s) => [s.isTabDrag]));
@@ -32,6 +33,7 @@ export function TabAfterImage() {
       css={css`
         position: fixed;
         pointer-events: none;
+        z-index: ${zIndex.overlay.afterImage};
         opacity: 0.8;
       `}
     >
