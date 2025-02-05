@@ -28,7 +28,7 @@ export function useEditor({ width, height }: { width: number; height: number }) 
 
   const editorRef = useRef<HTMLDivElement | null>(null);
 
-  const { setContainer, setState, state, view } = useCodeMirror({
+  const { setContainer, setState, state, view, container } = useCodeMirror({
     value: editorCode,
     extensions,
     width: `${width}px`,
@@ -48,6 +48,35 @@ export function useEditor({ width, height }: { width: number; height: number }) 
       setContainer(editorRef.current);
     }
   }, [setContainer]);
+
+  /**
+   * codemirror -> <webview/> 포커스 이동 시에도,
+   * 여전히 포커스가 남아있는 문제를 해결하기 위한 blur 이벤트 등록
+   */
+  useEffect(() => {
+    const $cmContent = document.querySelector('.cm-content');
+
+    if (!($cmContent instanceof HTMLElement)) {
+      return function cleanup() {};
+    }
+
+    const handleCmContentBlur = () => {
+      /**
+       * console.log(document.activeElement);
+       * // <div class="cm-content">...</div>
+       *
+       * focus 이벤트 보다 blur 이벤트가 먼저 실행된다는 점을 이용하여,
+       * blur() 메서드를 실행시켜 확실하게 포커스를 제거해 줌.
+       */
+      $cmContent.blur();
+    };
+
+    $cmContent.addEventListener('blur', handleCmContentBlur);
+
+    return function cleanup() {
+      $cmContent.removeEventListener('blur', handleCmContentBlur);
+    };
+  }, [container]);
 
   /**
    * 문제/언어가 변경되면
