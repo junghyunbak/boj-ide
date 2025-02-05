@@ -43,11 +43,7 @@ export function useTestcase() {
     (testcase: TC, problemNumber?: string): boolean => {
       const { problem } = useStore.getState();
 
-      if (!problem) {
-        return false;
-      }
-
-      const number = problem.number || problemNumber;
+      const number = problem ? problem.number : problemNumber;
 
       if (!number) {
         return false;
