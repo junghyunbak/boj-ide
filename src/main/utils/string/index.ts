@@ -17,7 +17,11 @@ export function getBojProblemNumber(url: string): number | null {
 }
 
 export function normalizeOutput(output: string) {
-  return output.trim();
+  return output
+    .split('\n')
+    .map((v) => v.trimEnd())
+    .join('\n')
+    .trim();
 }
 
 export const removeAnsiText = (text: string) => stripAnsi(text);
