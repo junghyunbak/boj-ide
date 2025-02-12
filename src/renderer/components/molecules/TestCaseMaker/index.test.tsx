@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { useStore } from '@/renderer/store';
 
@@ -14,6 +15,18 @@ describe('문제가 초기화되지 않은 상태', () => {
     const $addButton = screen.getByRole<HTMLButtonElement>('button');
 
     expect($addButton.disabled).toBe(true);
+  });
+
+  it('문제 번호가 입력되면, 추가 버튼이 활성화 되어야 한다.', async () => {
+    render(<TestCaseMaker />);
+
+    const $input = screen.getByPlaceholderText<HTMLInputElement>('문제 번호');
+
+    await userEvent.type($input, '1000');
+
+    const $addButton = screen.getByRole<HTMLButtonElement>('button');
+
+    expect($addButton.disabled).toBe(false);
   });
 });
 
