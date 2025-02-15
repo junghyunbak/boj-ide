@@ -28,7 +28,7 @@ export function useEditor({ width, height }: { width: number; height: number }) 
 
   const editorRef = useRef<HTMLDivElement | null>(null);
 
-  const { setContainer, setState, state, view, container } = useCodeMirror({
+  const { setContainer, setState, state, view } = useCodeMirror({
     value: editorCode,
     extensions,
     width: `${width}px`,
@@ -76,7 +76,7 @@ export function useEditor({ width, height }: { width: number; height: number }) 
     return function cleanup() {
       $cmContent.removeEventListener('blur', handleCmContentBlur);
     };
-  }, [container]);
+  }, [view]);
 
   /**
    * 문제/언어가 변경되면
