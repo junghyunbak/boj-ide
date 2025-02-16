@@ -8,7 +8,7 @@ export function TextArea({ ...props }: TextAreaProps) {
       css={css`
         width: 50%;
         min-height: 100px;
-        resize: none;
+        resize: vertical;
         font-size: 1.125rem;
         line-height: 1.4;
         font-family: 'menlo';
