@@ -3,12 +3,13 @@ import { BrowserWindow, app } from 'electron';
 import puppeteer from 'puppeteer-core';
 import pie from 'puppeteer-in-electron';
 
+import clipboard from 'clipboardy';
+
 import { ipc } from '@/main/utils';
 
 import { BOJ_DOMAIN } from '@/common/constants';
 
 import { IpcError } from '@/main/error';
-import clipboard from 'clipboardy';
 
 export class Boj {
   private mainWindow: BrowserWindow;
@@ -25,11 +26,15 @@ export class Boj {
 
       // @ts-ignore
       const browser = await pie.connect(app, puppeteer);
-
       const page = await pie.getPage(browser, browserWindow);
 
       page.goto(`https://${BOJ_DOMAIN}/submit/${number}`);
 
+      /**
+       * 1. 로그인 여부 확인
+       *
+       * #login_form 요소를 기다리는 과정이 곧 페이지 로딩을 기다리는 것과 같으므로 제일 먼저 실행되어야 함.
+       */
       const isLogin = await new Promise<boolean>((resolve) => {
         page
           .waitForSelector('#login_form')
@@ -58,29 +63,47 @@ export class Boj {
         throw new IpcError('로그인이 되어있지 않습니다.', 'system');
       }
 
-      await page.evaluate(() => {
-        const $body = document.querySelector('body');
+      /**
+       * 2. 클립보드에 코드 복사
+       */
+      const isClipboardCopySuccess = await new Promise((resolve) => {
+        clipboard
+          .write(code)
+          .then(() => resolve(true))
+          .catch(() => resolve(false));
+      });
 
-        if (!($body instanceof HTMLElement)) {
-          return;
-        }
+      /**
+       * 3. 안내 메세지 삽입
+       */
+      await page.evaluate(
+        (params) => {
+          const $body = document.querySelector('body');
 
-        const $modal = document.createElement('div');
+          if (!($body instanceof HTMLElement)) {
+            return;
+          }
 
-        $modal.innerHTML = `
+          const $modal = document.createElement('div');
+
+          $modal.innerHTML = `
           <div style="position: fixed; inset: 0; background: rgba(0,0,0,0.2); z-index:9999; display: flex; justify-content: center; align-items: center; pointer-events: none">
             <p style="font-size: 5rem; color: white; text-align: center">
-              제출중입니다.
+              ${!params.isClipboardCopySuccess ? '클립보드 복사에 실패하여 한줄씩 입력중입니다.' : '제출중입니다.'}
               <br/>
               <br/>
               클릭 시 문제가 발생할 수 있습니다.
             </p>
           </div>
         `;
+          $body.appendChild($modal);
+        },
+        { isClipboardCopySuccess },
+      );
 
-        $body.appendChild($modal);
-      });
-
+      /**
+       * 4. 제출 언어 선택
+       */
       const $langChosen = await page.$('#language_chosen');
 
       if (!$langChosen) {
@@ -125,6 +148,9 @@ export class Boj {
 
       await $targetLangEl.click();
 
+      /**
+       * 5. 에디터에 코드 입력
+       */
       const $editorEl = await page.$('#submit_form > div:nth-child(5) > div > div');
 
       if (!$editorEl) {
@@ -133,12 +159,35 @@ export class Boj {
 
       await $editorEl.click();
 
-      await clipboard.write(code);
+      if (isClipboardCopySuccess) {
+        await page.keyboard.down('Shift');
+        await page.keyboard.press('Insert');
+        await page.keyboard.up('Shift');
+      } else {
+        const lines = code.split('\n');
 
-      await page.keyboard.down('Shift');
-      await page.keyboard.press('Insert');
-      await page.keyboard.up('Shift');
+        // eslint-disable-next-line no-restricted-syntax
+        for (const line of lines) {
+          await page.keyboard.down('Shift');
+          await page.keyboard.press('Home');
+          await page.keyboard.press('Delete');
+          await page.keyboard.up('Shift');
 
+          await $editorEl.type(line);
+
+          await page.keyboard.press('Enter');
+        }
+
+        await page.keyboard.press('Enter');
+        await page.keyboard.down('Shift');
+        await page.keyboard.press('PageDown');
+        await page.keyboard.press('Delete');
+        await page.keyboard.up('Shift');
+      }
+
+      /**
+       * 6. 제출 버튼 클릭
+       */
       const $submitButton = await page.$('#submit_button');
 
       if (!$submitButton) {
