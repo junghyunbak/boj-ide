@@ -9,6 +9,7 @@ export function CodeBlock({ children }: CodeBlockProps) {
     <pre
       css={css`
         width: 100%;
+        height: 100%;
         padding: 0.5rem;
         margin: 0;
         background-color: #f7f7f9;
