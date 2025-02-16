@@ -17,6 +17,16 @@ import { TextButton } from '@/renderer/components/atoms/buttons/TextButton';
 import { Highlight } from '@/renderer/components/atoms/spans/Highlight';
 import { TransparentPreformatted } from '@/renderer/components/atoms/pres/TransparentPreformatted';
 
+import clipboard from 'clipboardy';
+
+import {
+  ExampleContentLayout,
+  ExampleContentTitleContentLayout,
+  ExampleContentTitleLayout,
+  ExampleLayout,
+  ExecuteResultContentBox,
+} from './index.style';
+
 interface TestCaseProps extends TC {
   judgeResult?: JudgeResult;
   i: number;
@@ -64,13 +74,13 @@ export function TestCase({ input, output, judgeResult, type, i }: TestCaseProps)
 
   const exampleText = (() => {
     if (!problem) {
-      return -1;
+      return '';
     }
 
     const exampleNumber = i + 1 - (type === 'problem' ? 0 : problem.testCase.inputs.length);
     const examplePrefix = type === 'custom' ? '사용자 ' : '';
 
-    return `${examplePrefix}예제 입력 ${exampleNumber}`;
+    return `${examplePrefix}테스트케이스 ${exampleNumber}`;
   })();
 
   const fontWeight: React.CSSProperties['fontWeight'] = (() => {
@@ -145,25 +155,28 @@ export function TestCase({ input, output, judgeResult, type, i }: TestCaseProps)
               padding: 0.5rem;
             `}
           >
-            <div
-              css={css`
-                display: flex;
-                flex-direction: column;
-                gap: 0.5rem;
-                padding: 0.5rem;
-                border-top: 1px solid #ddd;
-              `}
-            >
-              <div
-                css={css`
-                  width: 100%;
-                  display: flex;
-                  gap: 0.5rem;
-                `}
-              >
-                <CodeBlock>{input}</CodeBlock>
-                <CodeBlock>{output}</CodeBlock>
-              </div>
+            <ExecuteResultContentBox>
+              <ExampleLayout>
+                <ExampleContentLayout>
+                  <ExampleContentTitleLayout>
+                    <ExampleContentTitleContentLayout>
+                      <Text fontSize="1.25rem">예제 입력</Text>
+                      <TextButton onClick={() => clipboard.write(input)}>복사</TextButton>
+                    </ExampleContentTitleContentLayout>
+                  </ExampleContentTitleLayout>
+                  <CodeBlock>{input}</CodeBlock>
+                </ExampleContentLayout>
+
+                <ExampleContentLayout>
+                  <ExampleContentTitleLayout>
+                    <ExampleContentTitleContentLayout>
+                      <Text fontSize="1.25rem">예제 출력</Text>
+                      <TextButton onClick={() => clipboard.write(output)}>복사</TextButton>
+                    </ExampleContentTitleContentLayout>
+                  </ExampleContentTitleLayout>
+                  <CodeBlock>{output}</CodeBlock>
+                </ExampleContentLayout>
+              </ExampleLayout>
 
               {judgeResult && (
                 <ProcessResultTable data-testid="result-table">
@@ -203,7 +216,7 @@ export function TestCase({ input, output, judgeResult, type, i }: TestCaseProps)
                   </ProcessResultTbody>
                 </ProcessResultTable>
               )}
-            </div>
+            </ExecuteResultContentBox>
           </ExecuteResultData>
         )}
       </ExecuteResultRow>
