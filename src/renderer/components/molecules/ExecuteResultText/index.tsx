@@ -11,7 +11,7 @@ export function ExecuteResultText() {
 
   return (
     <Text
-      fontWeight="bold"
+      fontWeight={isCorrect ? 'bold' : 'normal'}
       type={isCorrect ? '맞았습니다!!' : '틀렸습니다'}
     >{`${totalCount}개 중 ${correctCount}개 성공`}</Text>
   );
