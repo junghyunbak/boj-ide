@@ -28,6 +28,7 @@ interface TestCaseProps extends TC {
 // [v]: [type === 'custom'] 삭제 버튼이 존재해야한다.
 // [v]: [type === 'common'] 열기 버튼을 누르면 예제 입/출력이 나타난다.
 // [v]: [type === 'common'] 열기 버튼을 누르고 채점 결과가 존재할 경우, 실행 결과를 표시하는 테이블이 렌더링 되어야한다.
+// [v]: [type === 'common'] 결과 '컴파일 에러'인 경우 시간이 출력되지 않아야 한다.
 export function TestCase({ input, output, judgeResult, type, i }: TestCaseProps) {
   const { problem } = useProblem();
   const { isJudging } = useJudge();
@@ -72,6 +73,36 @@ export function TestCase({ input, output, judgeResult, type, i }: TestCaseProps)
     return `${examplePrefix}예제 입력 ${exampleNumber}`;
   })();
 
+  const fontWeight: React.CSSProperties['fontWeight'] = (() => {
+    switch (status) {
+      case '맞았습니다!!':
+        return 'bold';
+      case '런타임 에러':
+      case '시간 초과':
+      case '출력 초과':
+      case '틀렸습니다':
+      case '채점 중':
+      case '컴파일 에러':
+      default:
+        return 'normal';
+    }
+  })();
+
+  const showElapsed: boolean = (() => {
+    switch (status) {
+      case '맞았습니다!!':
+        return true;
+      case '런타임 에러':
+      case '시간 초과':
+      case '출력 초과':
+      case '틀렸습니다':
+      case '채점 중':
+      case '컴파일 에러':
+      default:
+        return false;
+    }
+  })();
+
   if (!problem) {
     return null;
   }
@@ -83,12 +114,12 @@ export function TestCase({ input, output, judgeResult, type, i }: TestCaseProps)
           <Text>{exampleText}</Text>
         </ExecuteResultData>
         <ExecuteResultData>
-          <Text type={status || '기본'} fontWeight="bold">
+          <Text type={status || '기본'} fontWeight={fontWeight}>
             {status}
           </Text>
         </ExecuteResultData>
         <ExecuteResultData>
-          {judgeResult && (
+          {judgeResult && showElapsed && (
             <Text>
               {judgeResult.elapsed} <Highlight>ms</Highlight>
             </Text>
@@ -140,7 +171,7 @@ export function TestCase({ input, output, judgeResult, type, i }: TestCaseProps)
                     <ProcessResultRow>
                       <ProcessResultData>결과</ProcessResultData>
                       <ProcessResultData>
-                        <Text fontWeight="bold" type={judgeResult.result}>
+                        <Text type={judgeResult.result} fontWeight={fontWeight}>
                           {judgeResult.result}
                         </Text>
                       </ProcessResultData>
@@ -148,7 +179,11 @@ export function TestCase({ input, output, judgeResult, type, i }: TestCaseProps)
                     <ProcessResultRow>
                       <ProcessResultData>실행 시간</ProcessResultData>
                       <ProcessResultData>
-                        {judgeResult.elapsed} <Highlight>ms</Highlight>
+                        {showElapsed && (
+                          <>
+                            {judgeResult.elapsed} <Highlight>ms</Highlight>
+                          </>
+                        )}
                       </ProcessResultData>
                     </ProcessResultRow>
                     <ProcessResultRow>

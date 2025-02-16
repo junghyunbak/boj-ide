@@ -94,4 +94,20 @@ describe("예제 채점 결과 [type === 'common']", () => {
 
     expect(screen.queryByText('결과')).toBeInTheDocument();
   });
+
+  it("결과 '컴파일 에러'인 경우 시간이 출력되지 않아야 한다.", () => {
+    const ceMockJudgeResult = createMockJudgeResult({ result: '컴파일 에러' });
+
+    render(
+      <table>
+        <tbody>
+          <TestCase type="problem" i={0} input="" output="" judgeResult={ceMockJudgeResult} />
+        </tbody>
+      </table>,
+    );
+
+    fireEvent.click(screen.getByText('열기'));
+
+    expect(screen.queryByText('ms')).not.toBeInTheDocument();
+  });
 });

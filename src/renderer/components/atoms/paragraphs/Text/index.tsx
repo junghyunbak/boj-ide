@@ -32,6 +32,8 @@ export function Text({
         return color.correct;
       case '채점 중':
         return color.judging;
+      case '컴파일 에러':
+        return color.compileError;
       case '기본':
       default:
         return color.text;

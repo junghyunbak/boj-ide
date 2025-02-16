@@ -24,39 +24,39 @@ export async function compile({
   fileName: string;
   basePath: string;
   ext: string;
-}) {
-  if (langToJudgeInfo[language].compile) {
-    fs.writeFileSync(path.join(basePath, `${fileName}.${ext}`), code, { encoding: 'utf-8' });
+}): Promise<string> {
+  if (!langToJudgeInfo[language].compile) {
+    return '';
+  }
 
-    // BUG: java 파일이 비어있을 경우에도 Main.java 파일이 갱신되지 않음.
-    if (language === 'Java11') {
-      fs.writeFileSync(path.join(basePath, 'Main.java'), code, { encoding: 'utf-8' });
-    }
+  fs.writeFileSync(path.join(basePath, `${fileName}.${ext}`), code, { encoding: 'utf-8' });
 
-    const compileCmd = langToJudgeInfo[language].compile(fileName)[process.platform];
+  // BUG: java 파일이 비어있을 경우에도 Main.java 파일이 갱신되지 않음.
+  if (language === 'Java11') {
+    fs.writeFileSync(path.join(basePath, 'Main.java'), code, { encoding: 'utf-8' });
+  }
 
-    if (compileCmd === undefined) {
-      throw new Error('지원하지 않는 플랫폼입니다.');
-    }
+  const compileCmd = langToJudgeInfo[language].compile(fileName)[process.platform];
 
-    const stderr = await new Promise((resolve) => {
-      let error = '';
+  if (compileCmd === undefined) {
+    throw new Error('지원하지 않는 플랫폼입니다.');
+  }
 
-      const ps = customSpawn.async(compileCmd, { cwd: basePath, shell: true });
+  const stderr = await new Promise<string>((resolve) => {
+    let error = '';
 
-      ps.stderr.on('data', (buf) => {
-        error += buf.toString();
-      });
+    const ps = customSpawn.async(compileCmd, { cwd: basePath, shell: true });
 
-      ps.on('close', () => {
-        resolve(error);
-      });
+    ps.stderr.on('data', (buf) => {
+      error += buf.toString();
     });
 
-    if (stderr !== '') {
-      throw new IpcError(`컴파일 에러\n\n${stderr}`, 'personal');
-    }
-  }
+    ps.on('close', () => {
+      resolve(error);
+    });
+  });
+
+  return stderr;
 }
 
 export class Judge {
@@ -108,7 +108,17 @@ export class Judge {
         /**
          * 컴파일
          */
-        await compile({ language, code, fileName: number, basePath: this.basePath, ext });
+        const error = await compile({ language, code, fileName: number, basePath: this.basePath, ext });
+
+        if (error) {
+          for (let index = 0; index < inputs.length; index += 1) {
+            ipc.send(this.webContents, 'judge-result', {
+              data: { index, stderr: error, stdout: '', elapsed: 0, result: '컴파일 에러', id: judgeId },
+            });
+          }
+
+          return;
+        }
 
         /**
          * 채점 시작
