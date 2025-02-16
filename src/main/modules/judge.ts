@@ -8,7 +8,7 @@ import { customSpawn, normalizeOutput, ipc, checkCli } from '@/main/utils';
 
 import { MAX_BUFFER_SIZE, MAX_LINE_LENGTH, langToJudgeInfo } from '@/main/constants';
 
-import { IpcError } from '@/main/error';
+import { sentryLogging } from '@/main/error';
 
 import { Code } from './code';
 
@@ -85,6 +85,13 @@ export class Judge {
           },
         },
       ) => {
+        sentryLogging('[로그] 사용자가 코드를 실행하였습니다.', {
+          tags: {
+            number,
+            language,
+          },
+        });
+
         const ext = langToJudgeInfo[language].ext[process.platform];
 
         if (!ext) {

@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
 import { useShallow } from 'zustand/shallow';
+
 import { useStore } from '@/renderer/store';
 
 export function useTestcase() {
@@ -48,6 +49,15 @@ export function useTestcase() {
       if (!number) {
         return false;
       }
+
+      const { lang } = useStore.getState();
+
+      window.electron.ipcRenderer.sendMessage('log-add-testcase', {
+        data: {
+          number,
+          language: lang,
+        },
+      });
 
       setCustomTestcases((prev) => {
         const next = { ...prev };

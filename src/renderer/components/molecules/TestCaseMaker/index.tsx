@@ -38,8 +38,6 @@ export function TestCaseMaker() {
       return;
     }
 
-    window.electron.ipcRenderer.sendMessage('log-add-testcase');
-
     addCustomTestcase(item, problemNumber);
 
     setInput('');

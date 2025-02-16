@@ -39,7 +39,14 @@ export function AICodeCreateButton() {
         return;
       }
 
-      window.electron.ipcRenderer.sendMessage('log-execute-ai-create');
+      const { lang } = useStore.getState();
+
+      window.electron.ipcRenderer.sendMessage('log-execute-ai-create', {
+        data: {
+          number: problem.number,
+          language: lang,
+        },
+      });
 
       complete('', {
         body: {

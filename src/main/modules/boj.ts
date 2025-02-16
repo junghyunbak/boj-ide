@@ -9,7 +9,7 @@ import { ipc } from '@/main/utils';
 
 import { BOJ_DOMAIN } from '@/common/constants';
 
-import { IpcError } from '@/main/error';
+import { IpcError, sentryLogging } from '@/main/error';
 
 export class Boj {
   private mainWindow: BrowserWindow;
@@ -20,6 +20,13 @@ export class Boj {
 
   build() {
     ipc.on('submit-code', async (e, { data: { code, language, number } }) => {
+      sentryLogging('[로그] 사용자가 백준에 코드를 제출하였습니다.', {
+        tags: {
+          language,
+          number,
+        },
+      });
+
       const browserWindow = new BrowserWindow({
         webPreferences: {},
       });

@@ -12,26 +12,6 @@ function IpcErrorHandler<T extends Electron.IpcMainEvent | Electron.IpcMainInvok
   send: Ipc['send'],
 ) {
   return async (e: T, ...args: any[]): Promise<any> => {
-    const isProd = process.env.NODE_ENV === 'production';
-
-    if (isProd) {
-      switch (channel as ElectronChannels) {
-        case 'judge-start':
-        case 'open-source-code-folder':
-        case 'submit-code':
-        case 'log-add-testcase':
-        case 'log-execute-ai-create':
-          Sentry.captureMessage(channel, 'log');
-          break;
-        case 'open-deep-link':
-        case 'save-code':
-        case 'load-code':
-        case 'load-files':
-        default:
-          break;
-      }
-    }
-
     try {
       const result = listener(e, ...args);
 
@@ -44,6 +24,8 @@ function IpcErrorHandler<T extends Electron.IpcMainEvent | Electron.IpcMainInvok
       if (err instanceof Error) {
         send(e.sender, 'judge-reset');
         send(e.sender, 'occur-error', { data: { message: err.message } });
+
+        const isProd = process.env.NODE_ENV === 'production';
 
         if (err instanceof IpcError && err.errorType !== 'personal' && isProd) {
           return null;
@@ -89,9 +71,15 @@ class Ipc {
 
   on(channel: (typeof ElECTRON_CHANNELS)['open-deep-link'], listener: (e: Electron.IpcMainEvent) => void): void;
 
-  on(channel: (typeof ElECTRON_CHANNELS)['log-add-testcase'], listener: (e: Electron.IpcMainEvent) => void): void;
+  on(
+    channel: (typeof ElECTRON_CHANNELS)['log-add-testcase'],
+    listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['log-add-testcase']) => void,
+  ): void;
 
-  on(channel: (typeof ElECTRON_CHANNELS)['log-execute-ai-create'], listener: (e: Electron.IpcMainEvent) => void): void;
+  on(
+    channel: (typeof ElECTRON_CHANNELS)['log-execute-ai-create'],
+    listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['log-execute-ai-create']) => void,
+  ): void;
 
   on(channel: string, listener: (e: Electron.IpcMainEvent, ...args: any[]) => void | Promise<void>): void {
     ipcMain.on(channel, IpcErrorHandler(channel, listener, this.send));

@@ -9,8 +9,8 @@ type ChannelToMessage = {
   'submit-code': MessageTemplate<CodeInfo>;
   'open-source-code-folder': undefined;
   'open-deep-link': undefined;
-  'log-add-testcase': undefined;
-  'log-execute-ai-create': undefined;
+  'log-add-testcase': MessageTemplate<MyOmit<CodeInfo, 'code'>>;
+  'log-execute-ai-create': MessageTemplate<MyOmit<CodeInfo, 'code'>>;
 
   /**
    * client

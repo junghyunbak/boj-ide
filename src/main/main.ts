@@ -5,7 +5,7 @@ import pie from 'puppeteer-in-electron';
 import path from 'path';
 import { spawnSync } from 'child_process';
 
-import { sentryErrorHandler } from '@/main/error';
+import { sentryErrorHandler, sentryLogging } from '@/main/error';
 
 import {
   getBojProblemNumber,
@@ -93,6 +93,8 @@ const createWindow = async () => {
   });
 
   ipc.on('open-source-code-folder', () => {
+    sentryLogging('[로그] 사용자가 코드 저장소를 열었습니다.');
+
     if (process.platform === 'darwin') {
       spawnSync('open', [USER_DATA_PATH]);
     } else {
