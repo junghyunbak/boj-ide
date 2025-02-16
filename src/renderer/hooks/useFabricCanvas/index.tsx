@@ -103,7 +103,8 @@ export function useFabricCanvas(problemNumber: string) {
     };
 
     const handleWheelScroll = (opt: fabric.IEvent<WheelEvent>) => {
-      const { deltaY } = opt.e;
+      const { deltaY, deltaX } = opt.e;
+
       let zoom = fabricCanvas.getZoom();
 
       zoom *= 0.999 ** deltaY;
@@ -119,7 +120,7 @@ export function useFabricCanvas(problemNumber: string) {
       if (isCtrlKeyPressedRef.current) {
         fabricCanvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
       } else {
-        fabricCanvas.relativePan(new fabric.Point(opt.e.movementX, opt.e.movementY - deltaY));
+        fabricCanvas.relativePan(new fabric.Point(opt.e.movementX - deltaX, opt.e.movementY - deltaY));
       }
 
       opt.e.preventDefault();
