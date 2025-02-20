@@ -10,28 +10,20 @@ export function Output() {
       css={css`
         width: 100%;
         height: 100%;
-        position: relative;
+        display: flex;
+        flex-direction: column;
+        background-color: white;
       `}
     >
+      <OutputHeader />
+      <RowLine />
       <div
         css={css`
-          position: absolute;
-          inset: 0;
-          display: flex;
-          flex-direction: column;
-          background-color: white;
+          flex: 1;
+          overflow-y: scroll;
         `}
       >
-        <OutputHeader />
-        <RowLine />
-        <div
-          css={css`
-            flex: 1;
-            overflow-y: scroll;
-          `}
-        >
-          <OutputContent />
-        </div>
+        <OutputContent />
       </div>
     </div>
   );
