@@ -40,7 +40,7 @@ export function MainPage() {
         <SplitLayout
           initialLeftRatio={useStore.getState().leftRatio}
           onRatioChange={useStore.getState().setLeftRatio}
-          zIndex={zIndex.resizer.webview}
+          resizerZIndex={zIndex.resizer.webview}
         >
           <SplitLayout.Left>
             <BojView />
@@ -50,7 +50,7 @@ export function MainPage() {
             <SplitLayout
               initialLeftRatio={useStore.getState().topRatio}
               onRatioChange={useStore.getState().setTopRatio}
-              zIndex={zIndex.resizer.editor}
+              resizerZIndex={zIndex.resizer.editor}
               reverse
             >
               <SplitLayout.Left>
@@ -80,7 +80,7 @@ function PaintAndEditor() {
     <SplitLayout
       initialLeftRatio={useStore.getState().paintLeftRatio}
       onRatioChange={useStore.getState().setPaintLeftRatio}
-      zIndex={zIndex.resizer.paint}
+      resizerZIndex={zIndex.resizer.paint}
       hiddenLeft={!isPaintOpen}
     >
       <SplitLayout.Left>

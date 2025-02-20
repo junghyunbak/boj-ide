@@ -1,4 +1,3 @@
-/* eslint-disable react/require-default-props */
 import React from 'react';
 
 import { css } from '@emotion/react';
@@ -19,10 +18,14 @@ function Right({ children }: React.PropsWithChildren) {
 const LeftType = (<Left />).type;
 const RightType = (<Right />).type;
 
+function getElementFromChildren(children: React.ReactNode, type: unknown) {
+  return React.Children.toArray(children).filter((child) => React.isValidElement(child) && child.type === type)[0];
+}
+
 type LayoutProps = {
   initialLeftRatio?: number;
   hiddenLeft?: boolean;
-  zIndex?: number;
+  resizerZIndex?: number;
 } & ExtractParams<typeof useHorizontalLayout>[0];
 
 function Layout({
@@ -30,7 +33,7 @@ function Layout({
 
   initialLeftRatio = 50,
   hiddenLeft = false,
-  zIndex,
+  resizerZIndex,
 
   onRatioChange = () => {},
   reverse = false,
@@ -40,12 +43,8 @@ function Layout({
     reverse,
   });
 
-  const [LeftElement] = React.Children.toArray(children).filter(
-    (child) => React.isValidElement(child) && child.type === LeftType,
-  );
-  const [RightElement] = React.Children.toArray(children).filter(
-    (child) => React.isValidElement(child) && child.type === RightType,
-  );
+  const LeftElement = getElementFromChildren(children, LeftType);
+  const RightElement = getElementFromChildren(children, RightType);
 
   const Resizer = reverse ? HorizontalResizer : VerticalResizer;
 
@@ -85,7 +84,7 @@ function Layout({
             {LeftElement}
           </div>
 
-          <Resizer ref={resizerRef} zIndex={zIndex} />
+          <Resizer ref={resizerRef} zIndex={resizerZIndex} />
         </>
       )}
 
