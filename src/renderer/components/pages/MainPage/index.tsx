@@ -46,11 +46,13 @@ export function MainPage() {
           >
             <BojView />
           </SplitLayout.Left>
+
           <SplitLayout.Resizer
             onDragStart={() => useStore.getState().setIsDrag(true)}
             onDragEnd={() => useStore.getState().setIsDrag(false)}
             zIndex={zIndex.resizer.webview}
           />
+
           <SplitLayout.Right>
             <ExpandedPaintStandardBox>
               <SplitLayout vertical>
@@ -60,7 +62,9 @@ export function MainPage() {
                 >
                   <PaintAndEditor />
                 </SplitLayout.Left>
+
                 <SplitLayout.Resizer zIndex={zIndex.resizer.editor} />
+
                 <SplitLayout.Right>
                   <Output />
                 </SplitLayout.Right>
@@ -89,7 +93,9 @@ function PaintAndEditor() {
       >
         <EditorPaint />
       </SplitLayout.Left>
+
       <SplitLayout.Resizer zIndex={zIndex.resizer.paint} />
+
       <SplitLayout.Right>
         <Editor />
       </SplitLayout.Right>
