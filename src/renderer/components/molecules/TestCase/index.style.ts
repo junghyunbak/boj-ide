@@ -17,7 +17,7 @@ export const ExampleLayout = styled.div`
 `;
 
 export const ExampleContentLayout = styled.div`
-  width: 50%;
+  width: calc(50% - 0.25rem);
   display: flex;
   flex-direction: column;
 `;
