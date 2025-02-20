@@ -18,6 +18,8 @@ import { TabAfterImage } from '@/renderer/components/molecules/TabAfterImage';
 import { EditorPaint } from '@/renderer/components/molecules/EditorPaint';
 import { SplitLayout } from '@/renderer/components/molecules/SplitLayout';
 
+import { ExpandedPaintStandardBox } from './index.style';
+
 export function MainPage() {
   return (
     <div
@@ -50,18 +52,20 @@ export function MainPage() {
             zIndex={zIndex.resizer.webview}
           />
           <SplitLayout.Right>
-            <SplitLayout vertical>
-              <SplitLayout.Left
-                initialRatio={useStore.getState().topRatio}
-                onRatioChange={useStore.getState().setTopRatio}
-              >
-                <PaintAndEditor />
-              </SplitLayout.Left>
-              <SplitLayout.Resizer zIndex={zIndex.resizer.editor} />
-              <SplitLayout.Right>
-                <Output />
-              </SplitLayout.Right>
-            </SplitLayout>
+            <ExpandedPaintStandardBox>
+              <SplitLayout vertical>
+                <SplitLayout.Left
+                  initialRatio={useStore.getState().topRatio}
+                  onRatioChange={useStore.getState().setTopRatio}
+                >
+                  <PaintAndEditor />
+                </SplitLayout.Left>
+                <SplitLayout.Resizer zIndex={zIndex.resizer.editor} />
+                <SplitLayout.Right>
+                  <Output />
+                </SplitLayout.Right>
+              </SplitLayout>
+            </ExpandedPaintStandardBox>
           </SplitLayout.Right>
         </SplitLayout>
       </div>
