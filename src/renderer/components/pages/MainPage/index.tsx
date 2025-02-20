@@ -37,26 +37,27 @@ export function MainPage() {
           overflow: hidden;
         `}
       >
-        <SplitLayout
-          initialLeftRatio={useStore.getState().leftRatio}
-          onRatioChange={useStore.getState().setLeftRatio}
-          resizerZIndex={zIndex.resizer.webview}
-        >
-          <SplitLayout.Left>
+        <SplitLayout>
+          <SplitLayout.Left
+            initialRatio={useStore.getState().leftRatio}
+            onRatioChange={useStore.getState().setLeftRatio}
+          >
             <BojView />
           </SplitLayout.Left>
-
+          <SplitLayout.Resizer
+            onDragStart={() => useStore.getState().setIsDrag(true)}
+            onDragEnd={() => useStore.getState().setIsDrag(false)}
+            zIndex={zIndex.resizer.webview}
+          />
           <SplitLayout.Right>
-            <SplitLayout
-              initialLeftRatio={useStore.getState().topRatio}
-              onRatioChange={useStore.getState().setTopRatio}
-              resizerZIndex={zIndex.resizer.editor}
-              reverse
-            >
-              <SplitLayout.Left>
+            <SplitLayout vertical>
+              <SplitLayout.Left
+                initialRatio={useStore.getState().topRatio}
+                onRatioChange={useStore.getState().setTopRatio}
+              >
                 <PaintAndEditor />
               </SplitLayout.Left>
-
+              <SplitLayout.Resizer zIndex={zIndex.resizer.editor} />
               <SplitLayout.Right>
                 <Output />
               </SplitLayout.Right>
@@ -77,15 +78,14 @@ function PaintAndEditor() {
   const [isPaintOpen] = useStore(useShallow((s) => [s.isPaintOpen]));
 
   return (
-    <SplitLayout
-      initialLeftRatio={useStore.getState().paintLeftRatio}
-      onRatioChange={useStore.getState().setPaintLeftRatio}
-      resizerZIndex={zIndex.resizer.paint}
-      hiddenLeft={!isPaintOpen}
-    >
-      <SplitLayout.Left>
+    <SplitLayout hiddenLeft={!isPaintOpen}>
+      <SplitLayout.Left
+        initialRatio={useStore.getState().paintLeftRatio}
+        onRatioChange={useStore.getState().setPaintLeftRatio}
+      >
         <EditorPaint />
       </SplitLayout.Left>
+      <SplitLayout.Resizer zIndex={zIndex.resizer.paint} />
       <SplitLayout.Right>
         <Editor />
       </SplitLayout.Right>

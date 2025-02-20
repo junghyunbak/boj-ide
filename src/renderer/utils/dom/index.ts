@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { BOJ_DOMAIN } from '@/common/constants';
 
 import * as cheerio from 'cheerio';
@@ -50,4 +52,8 @@ export function getProblemInfo(bojProblemHtml: string, url: string): ProblemInfo
   };
 
   return problemInfo;
+}
+
+export function getElementFromChildren(children: React.ReactNode, type: unknown) {
+  return React.Children.toArray(children).filter((child) => React.isValidElement(child) && child.type === type)[0];
 }

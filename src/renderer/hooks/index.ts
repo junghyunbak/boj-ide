@@ -22,7 +22,6 @@ export * from './useClickOutOfModal';
 /**
  * layout
  */
-export * from './useHorizontalLayout';
 export * from './useResponsiveLayout';
 
 /**
