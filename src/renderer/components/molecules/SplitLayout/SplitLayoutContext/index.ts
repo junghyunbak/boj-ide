@@ -14,12 +14,12 @@ export type SplitLayoutStoreState = {
   leftWidth: number;
 };
 
-export const LayoutContext = createContext<{
+export const SplitLayoutContext = createContext<{
   splitLayoutStore: UseBoundStore<StoreApi<SplitLayoutStoreState>> | null;
 }>({ splitLayoutStore: null });
 
 export function useSplitLayoutStoreContext() {
-  const { splitLayoutStore } = useContext(LayoutContext);
+  const { splitLayoutStore } = useContext(SplitLayoutContext);
 
   if (!splitLayoutStore) {
     throw new Error('[LayoutStore] store를 초기화한 후 사용해야 합니다.');

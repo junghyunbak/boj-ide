@@ -11,7 +11,7 @@ import { Left } from './SplitLayoutLeft';
 import { Resizer } from './SplitLayoutResizer';
 import { Right } from './SplitLayoutRight';
 
-import { LayoutContext, type SplitLayoutStoreState } from './SplitLayoutContext';
+import { SplitLayoutContext, type SplitLayoutStoreState } from './SplitLayoutContext';
 
 const LeftType = (<Left />).type;
 const ResizerType = (<Resizer />).type;
@@ -44,7 +44,7 @@ function Layout({ children, hiddenLeft = false, vertical = false }: React.PropsW
   const RightElement = getElementFromChildren(children, RightType);
 
   return (
-    <LayoutContext.Provider value={{ splitLayoutStore }}>
+    <SplitLayoutContext.Provider value={{ splitLayoutStore }}>
       <div
         ref={containerRef}
         css={css`
@@ -69,7 +69,7 @@ function Layout({ children, hiddenLeft = false, vertical = false }: React.PropsW
         )}
         {RightElement}
       </div>
-    </LayoutContext.Provider>
+    </SplitLayoutContext.Provider>
   );
 }
 
