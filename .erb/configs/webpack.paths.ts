@@ -23,6 +23,8 @@ const distRendererPath = path.join(distPath, 'renderer');
 
 const buildPath = path.join(releasePath, 'build');
 
+const splitLayoutPath = path.join(srcRendererPath, 'components/molecules/SplitLayout');
+
 export default {
   rootPath,
   erbNodeModulesPath,
@@ -39,4 +41,5 @@ export default {
   distMainPath,
   distRendererPath,
   buildPath,
+  splitLayoutPath,
 };
