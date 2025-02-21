@@ -17,10 +17,10 @@ export function usePaintEvent() {
    * 그림판 단축키 이벤트 등록
    */
   useEffect(() => {
-    const container = paintRef.current;
+    const paint = paintRef.current;
 
-    if (!container) {
-      return () => {};
+    if (!paint) {
+      return function cleanup() {};
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -79,14 +79,15 @@ export function usePaintEvent() {
       setIsCtrlKeyPressed(false);
     };
 
-    container.addEventListener('keydown', handleKeyDown);
-    container.addEventListener('keyup', handleKeyUp);
+    paint.addEventListener('keydown', handleKeyDown);
+    paint.addEventListener('keyup', handleKeyUp);
 
-    return () => {
-      container.removeEventListener('keydown', handleKeyDown);
-      container.removeEventListener('keyup', handleKeyUp);
+    return function cleanup() {
+      paint.removeEventListener('keydown', handleKeyDown);
+      paint.removeEventListener('keyup', handleKeyUp);
     };
   }, [
+    paintRef,
     removeFabricActiveObject,
     activeAllFabricSelection,
     undo,
@@ -94,17 +95,16 @@ export function usePaintEvent() {
     unactiveAllFabricSelection,
     setIsCtrlKeyPressed,
     setMode,
-    paintRef,
   ]);
 
   /**
    * 스페이스바 클릭 시 일시적으로 'hand' 모드로 변경
    */
   useEffect(() => {
-    const container = paintRef.current;
+    const paint = paintRef.current;
 
-    if (!container) {
-      return () => {};
+    if (!paint) {
+      return function cleanup() {};
     }
 
     let prevMode: FabricCanvasMode = 'pen';
@@ -133,12 +133,12 @@ export function usePaintEvent() {
       }
     };
 
-    container.addEventListener('keydown', handleKeyDown);
-    container.addEventListener('keyup', handleKeyUp);
+    paint.addEventListener('keydown', handleKeyDown);
+    paint.addEventListener('keyup', handleKeyUp);
 
-    return () => {
-      container.removeEventListener('keydown', handleKeyDown);
-      container.removeEventListener('keyup', handleKeyUp);
+    return function cleanup() {
+      paint.removeEventListener('keydown', handleKeyDown);
+      paint.removeEventListener('keyup', handleKeyUp);
     };
   }, [paintRef, setMode]);
 }
