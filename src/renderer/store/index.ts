@@ -81,9 +81,12 @@ export const useFabricStore = create<FabricStoreState>()(
       name: 'zustand-fabric-persist-store-indexed-db',
       storage: createJSONStorage(() => idbStorage),
       partialize(s) {
-        const { problemToFabricJSON } = s;
+        const { problemToFabricJSON, brushColor, brushWidth, mode } = s;
 
         return {
+          mode,
+          brushColor,
+          brushWidth,
           problemToFabricJSON,
         };
       },
