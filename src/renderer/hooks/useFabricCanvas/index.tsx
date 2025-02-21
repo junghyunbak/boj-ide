@@ -1,243 +1,45 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-
-import { useFabricStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
+import { useEffect, useRef } from 'react';
 
 import { fabric } from 'fabric';
+
+import { useFabricStore, useStore } from '@/renderer/store';
+import { useShallow } from 'zustand/shallow';
+
+import { useFabricCanvasController } from '../useFabricCanvasController';
+import { useFabricCanvasEvent } from '../useFabricCanvasEvent';
+import { useFabricCanvasInit } from '../useFabricCanvasInit';
+
 import 'fabric-history';
 
-export function useFabricCanvas(problemNumber: string) {
+export function useFabricCanvas() {
+  const [problem] = useStore(useShallow((s) => [s.problem]));
+  const [setCanvas] = useFabricStore(useShallow((s) => [s.setCanvas]));
+
+  const { backupFabricCanvasData } = useFabricCanvasController();
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const isHandRef = useRef(false);
-  const isCtrlKeyPressedRef = useRef(false);
 
-  const [fabricCanvas, setFabricCanvas] = useState<fabric.Canvas | null>(null);
-
-  /**
-   * idb persist를 사용하고 있어 상태로 참조해야만 한다.
-   */
-  const [problemToFabricJSON] = useFabricStore(useShallow((s) => [s.problemToFabricJSON, s.setProblemToFabricJSON]));
-
-  const backupFabricCanvasData = useCallback(
-    (canvas: fabric.Canvas) => {
-      const savedFabricJSON = canvas.toJSON();
-
-      useFabricStore.getState().setProblemToFabricJSON((prev) => {
-        const next = { ...prev };
-        next[problemNumber] = savedFabricJSON;
-        return next;
-      });
-    },
-    [problemNumber],
-  );
+  useFabricCanvasInit();
+  useFabricCanvasEvent();
 
   /**
-   * fabric 캔버스 객체 생성, 초기화, 데이터 백업
+   * fabric canvas 초기화
    */
   useEffect(() => {
     if (!canvasRef.current) {
-      return () => {};
+      return function cleanup() {};
     }
 
-    const newFabricCanvas = new fabric.Canvas(canvasRef.current);
+    const newCanvas = new fabric.Canvas(canvasRef.current);
+    setCanvas(newCanvas);
 
-    setFabricCanvas(newFabricCanvas);
-
-    return () => {
-      backupFabricCanvasData(newFabricCanvas);
-
-      newFabricCanvas.dispose();
+    return function cleanup() {
+      backupFabricCanvasData(problem?.number || '', newCanvas);
+      newCanvas.dispose();
     };
-  }, [backupFabricCanvasData]);
-
-  /**
-   * fabric 캔버스 백업 데이터 초기화
-   */
-  useEffect(() => {
-    if (fabricCanvas && fabricCanvas.isEmpty()) {
-      try {
-        const fabricJSON = problemToFabricJSON[problemNumber];
-
-        fabricCanvas.loadFromJSON(fabricJSON, () => {});
-
-        const [obj] = fabricCanvas.getObjects();
-
-        if (obj) {
-          const { x, y } = obj.getCenterPoint();
-
-          fabricCanvas.absolutePan(new fabric.Point(x - fabricCanvas.getWidth() / 2, y - fabricCanvas.getHeight() / 2));
-        }
-      } catch (e) {
-        // BUG: Cannot read properties of null (reading 'clearRect')
-        // https://github.com/fabricjs/fabric.js/discussions/10036
-        // dispose된 fabricCanvas를 사용할 때 해당 에러 발생. React 생명주기와 관련
-      }
-    }
-  }, [fabricCanvas, problemNumber, problemToFabricJSON]);
-
-  /**
-   * fabric 캔버스 전용 이벤트 설정 (마우스 휠 스크롤 확대/축소)
-   */
-  useEffect(() => {
-    if (!fabricCanvas) {
-      return () => {};
-    }
-
-    let panning = false;
-
-    const handleMouseDown = () => {
-      panning = true;
-    };
-
-    const handleMouseMove = (event: fabric.IEvent<MouseEvent>) => {
-      if (!panning || !isHandRef.current) {
-        return;
-      }
-
-      const delta = new fabric.Point(event.e.movementX, event.e.movementY);
-      fabricCanvas.relativePan(delta);
-    };
-
-    const handleMouseUp = () => {
-      panning = false;
-    };
-
-    const handleWheelScroll = (opt: fabric.IEvent<WheelEvent>) => {
-      const { deltaY, deltaX } = opt.e;
-
-      let zoom = fabricCanvas.getZoom();
-
-      zoom *= 0.999 ** deltaY;
-
-      if (zoom > 20) {
-        zoom = 20;
-      }
-
-      if (zoom < 0.1) {
-        zoom = 0.1;
-      }
-
-      if (isCtrlKeyPressedRef.current) {
-        fabricCanvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
-      } else {
-        fabricCanvas.relativePan(new fabric.Point(opt.e.movementX - deltaX, opt.e.movementY - deltaY));
-      }
-
-      opt.e.preventDefault();
-      opt.e.stopPropagation();
-    };
-
-    fabricCanvas.on('mouse:down', handleMouseDown);
-    fabricCanvas.on('mouse:move', handleMouseMove);
-    fabricCanvas.on('mouse:up', handleMouseUp);
-    fabricCanvas.on('mouse:wheel', handleWheelScroll);
-
-    return () => {
-      /**
-       * Event의 하위 인터페이스인 EventMouse를 사용하는 fabric 이벤트이지만 off에서는 이를 타입 불일치로 판단하기 때문에 타입체크 무시
-       */
-      fabricCanvas.off('mouse:down', handleMouseDown);
-      // @ts-ignore
-      fabricCanvas.off('mouse:move', handleMouseMove);
-      fabricCanvas.off('mouse:up', handleMouseUp);
-      // @ts-ignore
-      fabricCanvas.off('mouse:wheel', handleWheelScroll);
-    };
-  }, [fabricCanvas, problemNumber]);
-
-  const activeAllFabricSelection = useCallback(() => {
-    if (fabricCanvas) {
-      const selection = new fabric.ActiveSelection(fabricCanvas.getObjects(), { canvas: fabricCanvas });
-      fabricCanvas.setActiveObject(selection);
-      fabricCanvas.renderAll();
-    }
-  }, [fabricCanvas]);
-
-  const unactiveAllFabricSelection = useCallback(() => {
-    if (fabricCanvas) {
-      fabricCanvas.discardActiveObject();
-      fabricCanvas.renderAll();
-    }
-  }, [fabricCanvas]);
-
-  const removeFabricActiveObject = useCallback(() => {
-    if (fabricCanvas) {
-      fabricCanvas.remove(...fabricCanvas.getActiveObjects());
-      fabricCanvas.discardActiveObject();
-    }
-  }, [fabricCanvas]);
-
-  const changeSelectMode = useCallback(() => {
-    if (fabricCanvas) {
-      fabricCanvas.isDrawingMode = false;
-      fabricCanvas.selection = true;
-      fabricCanvas.defaultCursor = 'default';
-      isHandRef.current = false;
-    }
-  }, [fabricCanvas]);
-
-  const changeHandMode = useCallback(() => {
-    if (fabricCanvas) {
-      fabricCanvas.isDrawingMode = false;
-      fabricCanvas.selection = false;
-      fabricCanvas.defaultCursor = 'move';
-      isHandRef.current = true;
-    }
-  }, [fabricCanvas]);
-
-  const changePenMode = useCallback(
-    ({ brushWidth = 2, brushColor = 'black' }: { brushWidth?: BrushWidth; brushColor?: BrushColor }) => {
-      if (fabricCanvas) {
-        fabricCanvas.freeDrawingBrush.width = brushWidth;
-        fabricCanvas.freeDrawingBrush.color = brushColor;
-        fabricCanvas.isDrawingMode = true;
-        fabricCanvas.selection = false;
-        isHandRef.current = false;
-      }
-    },
-    [fabricCanvas],
-  );
-
-  const updateFabricCanvasSize = useCallback(
-    (width: number, height: number) => {
-      if (fabricCanvas) {
-        try {
-          fabricCanvas.setDimensions({ width, height });
-        } catch (e) {
-          // BUG: Cannot set properties of undefined (setting 'width')
-          // https://github.com/fabricjs/fabric.js/discussions/10036
-          // dispose된 fabricCanvas를 사용할 때 해당 에러 발생. React 생명주기와 관련
-        }
-      }
-    },
-    [fabricCanvas],
-  );
-
-  const undo = useCallback(() => {
-    if (fabricCanvas && 'undo' in fabricCanvas && fabricCanvas.undo instanceof Function) {
-      fabricCanvas.undo();
-    }
-  }, [fabricCanvas]);
-
-  const redo = useCallback(() => {
-    if (fabricCanvas && 'redo' in fabricCanvas && fabricCanvas.redo instanceof Function) {
-      fabricCanvas.redo();
-    }
-  }, [fabricCanvas]);
+  }, [problem, backupFabricCanvasData, setCanvas]);
 
   return {
-    fabricCanvas,
     canvasRef,
-    activeAllFabricSelection,
-    unactiveAllFabricSelection,
-    removeFabricActiveObject,
-    undo,
-    redo,
-    changeHandMode,
-    changePenMode,
-    changeSelectMode,
-    updateFabricCanvasSize,
-    isCtrlKeyPressedRef,
-    backupFabricCanvasData,
   };
 }

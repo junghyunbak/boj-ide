@@ -1,3 +1,5 @@
+import exp from 'node:constants';
+
 /**
  * baekjoon problem
  */
@@ -7,9 +9,16 @@ export * from './useJudge';
 export * from './useTestcase';
 
 /**
- * canvas
+ * paint
  */
 export * from './useFabricCanvas';
+export * from './useFabricCanvasEvent';
+export * from './useFabricCanvasInit';
+export * from './useFabricCanvasController';
+
+export * from './usePaint';
+export * from './usePaintEvent';
+export * from './usePaintController';
 
 /**
  * modal
