@@ -73,8 +73,11 @@ export function useFabricCanvasController() {
   }, [setIsHand]);
 
   const changePenMode = useCallback(
-    ({ brushWidth = 2, brushColor = 'black' }: { brushWidth?: BrushWidth; brushColor?: BrushColor }) => {
+    (opt?: { brushWidth?: BrushWidth; brushColor?: BrushColor }) => {
       const { canvas } = useFabricStore.getState();
+
+      const brushWidth: BrushWidth = opt?.brushWidth || 4;
+      const brushColor: BrushColor = opt?.brushColor || 'black';
 
       if (canvas) {
         canvas.freeDrawingBrush.width = brushWidth;
