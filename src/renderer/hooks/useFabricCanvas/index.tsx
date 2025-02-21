@@ -19,11 +19,8 @@ export function useFabricCanvas() {
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  useFabricCanvasInit();
-  useFabricCanvasEvent();
-
   /**
-   * fabric canvas 초기화
+   * problem이 변경될 때 마다 새로운 캔버스를 생성하여 초기화한다.
    */
   useEffect(() => {
     if (!canvasRef.current) {
@@ -38,6 +35,9 @@ export function useFabricCanvas() {
       newCanvas.dispose();
     };
   }, [problem, backupFabricCanvasData, setCanvas]);
+
+  useFabricCanvasInit();
+  useFabricCanvasEvent();
 
   return {
     canvasRef,

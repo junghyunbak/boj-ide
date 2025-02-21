@@ -8,15 +8,19 @@ import { useShallow } from 'zustand/shallow';
 import { useFabricCanvasController } from '../useFabricCanvasController';
 
 export function useFabricCanvasEvent() {
-  const [canvas] = useFabricStore(useShallow((s) => [s.canvas]));
   const [mode] = useFabricStore(useShallow((s) => [s.mode]));
+  const [canvas] = useFabricStore(useShallow((s) => [s.canvas]));
   const [brushWidth] = useFabricStore(useShallow((s) => [s.brushWidth]));
   const [brushColor] = useFabricStore(useShallow((s) => [s.brushColor]));
 
   const { changeHandMode, changeSelectMode, changePenMode } = useFabricCanvasController();
 
   /**
-   * 모드에 따른 fabric 상태 변경
+   * - 모드 (select, hand, pen)
+   * - 펜 두께
+   * - 펜 색상
+   *
+   * 이 변경될 때 마다 fabric 상태 업데이트
    */
   useEffect(() => {
     switch (mode) {
@@ -38,14 +42,16 @@ export function useFabricCanvasEvent() {
     changeSelectMode,
     changePenMode,
     changeHandMode,
-    /**
-     * 캔버스가 초기화 되기 이전에 실행될 수 있으므로, 의존성에 canvas를 꼭 추가해야 함.
-     */
-    canvas,
+    canvas, // 캔버스가 초기화 되기 이전에 실행될 수 있으므로, 의존성에 canvas를 꼭 추가해야 함.
   ]);
 
   /**
-   * fabric 캔버스 이벤트 등록
+   * fabric 캔버스에
+   *
+   * - 마우스
+   * - 휠
+   *
+   * 이벤트 등록
    */
   useEffect(() => {
     if (!canvas) {
@@ -76,7 +82,6 @@ export function useFabricCanvasEvent() {
 
     const handleWheelScroll = (opt: fabric.IEvent<WheelEvent>) => {
       const { isCtrlKeyPressed } = useFabricStore.getState();
-
       const { deltaY, deltaX } = opt.e;
 
       let zoom = canvas.getZoom();
@@ -109,13 +114,8 @@ export function useFabricCanvasEvent() {
     return () => {
       canvas.off('mouse:down', handleMouseDown);
       canvas.off('mouse:up', handleMouseUp);
-      /**
-       * Event의 하위 인터페이스인 EventMouse를 사용하는 fabric 이벤트이지만 off에서는 이를 타입 불일치로 판단하기 때문에 타입체크 무시
-       */
-      // @ts-ignore
-      canvas.off('mouse:move', handleMouseMove);
-      // @ts-ignore
-      canvas.off('mouse:wheel', handleWheelScroll);
+      canvas.off('mouse:move', handleMouseMove as (event: fabric.IEvent) => void);
+      canvas.off('mouse:wheel', handleWheelScroll as (event: fabric.IEvent) => void);
     };
   }, [canvas]);
 }
