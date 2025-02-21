@@ -1,8 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-import { fabric } from 'fabric';
-
 import { idbStorage } from './storage/idb';
 
 import { createEditorSlice } from './slices/editor';
@@ -12,6 +10,9 @@ import { createLayoutSlice } from './slices/layout';
 import { createModalSlice } from './slices/modal';
 import { createBojViewSlice } from './slices/bojView';
 import { createTabSlice } from './slices/tab';
+
+import { createFabricSlice } from './slices/fabric';
+import { createPaintSlice } from './slices/paint';
 
 export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createJudgeSlice> &
@@ -68,89 +69,13 @@ export const useStore = create<StoreState>()(
 /**
  * fabric canvas store
  */
-
-type ProblemToFabricJSON = Partial<Record<string, ReturnType<fabric.StaticCanvas['toJSON']>>>;
-
-interface FabricStoreState {
-  problemToFabricJSON: ProblemToFabricJSON;
-  setProblemToFabricJSON: (fn: (prev: ProblemToFabricJSON) => ProblemToFabricJSON) => void;
-
-  canvas: fabric.Canvas | null;
-  setCanvas: (canvas: fabric.Canvas) => void;
-
-  mode: FabricCanvasMode;
-  setMode: (mode: FabricCanvasMode | ((prev: FabricCanvasMode) => FabricCanvasMode)) => void;
-
-  isExpand: boolean;
-  setIsExpand: (isExpand: boolean) => void;
-
-  brushWidth: BrushWidth;
-  setBrushWidth: (width: BrushWidth) => void;
-
-  brushColor: BrushColor;
-  setBrushColor: (color: BrushColor) => void;
-
-  isHand: boolean;
-  setIsHand: (isHand: boolean) => void;
-
-  isCtrlKeyPressed: boolean;
-  setIsCtrlKeyPressed: (isCtrlKeyPressed: boolean) => void;
-
-  paintRef: React.RefObject<HTMLDivElement>;
-  setPaintRef: (ref: React.RefObject<HTMLDivElement>) => void;
-}
+type FabricStoreState = ReturnType<typeof createFabricSlice> & ReturnType<typeof createPaintSlice>;
 
 export const useFabricStore = create<FabricStoreState>()(
   persist(
-    (set, get) => ({
-      problemToFabricJSON: {},
-      setProblemToFabricJSON(fn) {
-        set((s) => ({ problemToFabricJSON: fn(s.problemToFabricJSON) }));
-      },
-
-      canvas: null,
-      setCanvas: (canvas: fabric.Canvas) => {
-        set((s) => ({ canvas }));
-      },
-
-      mode: 'pen',
-      setMode: (mode) => {
-        if (typeof mode === 'function') {
-          set((s) => ({ mode: mode(s.mode) }));
-        } else {
-          set((s) => ({ mode }));
-        }
-      },
-
-      isExpand: false,
-      setIsExpand: (isExpand: boolean) => {
-        set((s) => ({ isExpand }));
-      },
-
-      brushColor: 'black',
-      setBrushColor: (color: BrushColor) => {
-        set((s) => ({ brushColor: color }));
-      },
-
-      brushWidth: 4,
-      setBrushWidth: (width: BrushWidth) => {
-        set((s) => ({ brushWidth: width }));
-      },
-
-      isHand: false,
-      setIsHand: (isHand: boolean) => {
-        get().isHand = isHand;
-      },
-
-      isCtrlKeyPressed: false,
-      setIsCtrlKeyPressed: (isCtrlKeyPressed: boolean) => {
-        get().isCtrlKeyPressed = isCtrlKeyPressed;
-      },
-
-      paintRef: { current: null },
-      setPaintRef: (ref: React.RefObject<HTMLDivElement>) => {
-        set((s) => ({ paintRef: ref }));
-      },
+    (...a) => ({
+      ...createFabricSlice(...a),
+      ...createPaintSlice(...a),
     }),
     {
       name: 'zustand-fabric-persist-store-indexed-db',
