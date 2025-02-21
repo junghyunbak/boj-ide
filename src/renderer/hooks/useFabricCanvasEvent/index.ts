@@ -32,12 +32,12 @@ export function useFabricCanvasEvent() {
         break;
     }
   }, [
+    mode,
     brushWidth,
     brushColor,
     changeSelectMode,
     changePenMode,
     changeHandMode,
-    mode,
     /**
      * 캔버스가 초기화 되기 이전에 실행될 수 있으므로, 의존성에 canvas를 꼭 추가해야 함.
      */
