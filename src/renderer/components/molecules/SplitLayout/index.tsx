@@ -1,5 +1,4 @@
-/* eslint-disable react/jsx-no-constructed-context-values */
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 
 import { css } from '@emotion/react';
 
@@ -43,8 +42,10 @@ function Layout({ children, hiddenLeft = false, vertical = false }: React.PropsW
   const ResizerElement = getElementFromChildren(children, ResizerType);
   const RightElement = getElementFromChildren(children, RightType);
 
+  const contextValue = useMemo(() => ({ splitLayoutStore }), [splitLayoutStore]);
+
   return (
-    <SplitLayoutContext.Provider value={{ splitLayoutStore }}>
+    <SplitLayoutContext.Provider value={contextValue}>
       <div
         ref={containerRef}
         css={css`
