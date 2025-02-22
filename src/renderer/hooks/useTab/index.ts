@@ -33,6 +33,24 @@ export function useTab() {
           });
         }
 
+        if (newTab.url.startsWith('chrome-extension:')) {
+          if (!bookmarkTabs.some((tab) => tab.url.startsWith('chrome-extension:'))) {
+            return [newTab, ...prev];
+          }
+
+          return prev.map((tab) => {
+            if (isProblemTab(tab)) {
+              return tab;
+            }
+
+            if (tab.url.startsWith('chrome-extension:')) {
+              return newTab;
+            }
+
+            return tab;
+          });
+        }
+
         if (!bookmarkTabs.some((tab) => tab.url === newTab.url)) {
           return [newTab, ...prev];
         }
