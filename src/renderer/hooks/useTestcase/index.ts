@@ -50,18 +50,6 @@ export function useTestcase() {
         return false;
       }
 
-      const { lang } = useStore.getState();
-
-      /**
-       * TODO: 로깅을 위한 ipc 로직으로 인해 테스트 코드 에러 발생. 코드 위치 수정 필요.
-       */
-      window.electron.ipcRenderer.sendMessage('log-add-testcase', {
-        data: {
-          number,
-          language: lang,
-        },
-      });
-
       setCustomTestcases((prev) => {
         const next = { ...prev };
 

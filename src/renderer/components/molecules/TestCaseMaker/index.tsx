@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 
+import { useStore } from '@/renderer/store';
+
 import { useProblem, useAlertModalController, useTestcase } from '@/renderer/hooks';
 
 import { TextArea } from '@/renderer/components/atoms/textareas/TextArea';
@@ -37,6 +39,13 @@ export function TestCaseMaker() {
       fireAlertModal('안내', '입력과 출력을 모두 입력하세요.');
       return;
     }
+
+    window.electron.ipcRenderer.sendMessage('log-add-testcase', {
+      data: {
+        number: problemNumber,
+        language: useStore.getState().lang,
+      },
+    });
 
     addCustomTestcase(item, problemNumber);
 
