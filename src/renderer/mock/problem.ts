@@ -18,6 +18,20 @@ export const createMockProblem = (() => {
   };
 })();
 
+export const createMockBookmark = (() => {
+  let number = 0;
+
+  return (values?: Partial<BookmarkInfo>): BookmarkInfo => {
+    number += 1;
+
+    return {
+      url: values?.url || `https://test${number}.com`,
+      title: values?.title || '',
+      path: values?.path,
+    };
+  };
+})();
+
 export const createMockTestcase = (values?: Partial<TC>): TC => {
   return {
     input: values?.input || faker.string.alpha(10),

@@ -1,15 +1,17 @@
-import { useMemo } from 'react';
+import { useEffect } from 'react';
 
 import { css } from '@emotion/react';
 
-import { BookmarkTab } from '@/renderer/components/molecules/BookmarkTab';
-import { ProblemTab } from '@/renderer/components/molecules/ProblemTab';
+import { BOJ_DOMAIN, SOLVED_AC_DOMAIN } from '@/common/constants';
+
 import { MovableTab } from '@/renderer/components/molecules/MovableTab';
 import { TabOptions } from '@/renderer/components/molecules/TabOptions';
+import { ProblemTab } from '@/renderer/components/molecules/ProblemTab';
+import { BookmarkTab } from '@/renderer/components/molecules/BookmarkTab';
 
 import { useTab } from '@/renderer/hooks';
 
-import { BOJ_DOMAIN, SOLVED_AC_DOMAIN } from '@/common/constants';
+import { isProblemTab } from '@/renderer/utils/typeGuard';
 
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
@@ -18,52 +20,67 @@ import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
 import 'overlayscrollbars/overlayscrollbars.css';
 
 import './index.css';
+import { baekjoonhubLogo, baekjoonLogo, solvedACLogo } from '@/renderer/assets/base64Images';
 
 export function Tabs() {
-  const { tabs } = useTab();
+  const { tabs, addTab } = useTab();
 
   const [baekjoonhubExtensionId] = useStore(useShallow((s) => [s.baekjoonhubExtensionId]));
 
-  const bookmarks: BookmarkInfo[] = useMemo(() => {
-    const ret: BookmarkInfo[] = [
+  /**
+   * 탭을 동적으로 추가하는 이유는, 기존 사용자들은 persist 상태를 동기화하기 때문에
+   * 탭 기본 값에 default 북마크 데이터를 추가한다고 해도 반영되지 않기 때문.
+   *
+   * persist와 동기화 된 전역 상태의 데이터를, 다른 이름의 전역 상태로 문제없이 마이그레이션 할 수 있는 방법을 찾기 전까진,
+   * 중복된 데이터를 거를 수 있는 addTab 메서드를 이용하여 렌더링마다 동적으로 추가하도록 함.
+   */
+  useEffect(() => {
+    const bookmarks: BookmarkInfo[] = [
       {
         url: `https://${BOJ_DOMAIN}`,
-        title: 'baekjoon',
-        path: '/problemset',
+        title: '백준 검색',
+        path: '/search',
+        logoImgBase64: baekjoonLogo,
       },
       {
         url: `https://${SOLVED_AC_DOMAIN}`,
         title: 'solved.ac',
+        logoImgBase64: solvedACLogo,
       },
     ];
 
-    if (baekjoonhubExtensionId) {
-      ret.push({
-        url: `chrome-extension://${baekjoonhubExtensionId}`,
-        title: '백준 허브',
-        path: '/popup.html',
-      });
+    bookmarks.forEach((bookmark) => {
+      addTab(bookmark);
+    });
+  }, [addTab]);
+
+  useEffect(() => {
+    if (typeof baekjoonhubExtensionId !== 'string') {
+      return;
     }
 
-    return ret;
-  }, [baekjoonhubExtensionId]);
+    addTab({
+      url: `chrome-extension://${baekjoonhubExtensionId}`,
+      title: '백준 허브',
+      path: '/popup.html',
+      logoImgBase64: baekjoonhubLogo,
+    });
+  }, [baekjoonhubExtensionId, addTab]);
 
   return (
     <div
       css={css`
         width: 100%;
         background-color: #f9f9f9;
-        border-bottom: 1px solid lightgray;
       `}
     >
       <div
         css={css`
           width: 100%;
           padding-top: 0.25rem;
-          margin-bottom: -1px;
           display: flex;
           justify-content: space-between;
-          align-items: center;
+          align-items: end;
         `}
       >
         <div
@@ -86,26 +103,29 @@ export function Tabs() {
                 display: flex;
               `}
             >
-              {bookmarks.map((bookmarkInfo) => {
-                return <BookmarkTab key={bookmarkInfo.url} bookmarkInfo={bookmarkInfo} />;
-              })}
+              {tabs
+                .filter((tab) => tab)
+                .map((tab, index) => {
+                  if (isProblemTab(tab)) {
+                    return <ProblemTab index={index} tab={tab} key={tab.number} />;
+                  }
+                  return <BookmarkTab index={index} tab={tab} key={tab.url} />;
+                })}
 
-              {tabs.map((problemInfo, index) => (
-                <ProblemTab key={problemInfo.number} problemInfo={problemInfo} tabIndex={index} />
-              ))}
-
-              <div
-                css={css`
-                  flex: 1;
-                `}
-              >
-                <MovableTab tabIndex={tabs.length} polyfill />
-              </div>
+              <MovableTab tabIndex={tabs.length} polyfill />
             </div>
           </OverlayScrollbarsComponent>
         </div>
 
-        <TabOptions />
+        <div
+          css={css`
+            height: 100%;
+            border-bottom: 1px solid lightgray;
+            padding: 0.375rem;
+          `}
+        >
+          <TabOptions />
+        </div>
       </div>
     </div>
   );

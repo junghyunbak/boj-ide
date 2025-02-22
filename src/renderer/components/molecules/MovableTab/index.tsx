@@ -1,27 +1,36 @@
-import { PropsWithChildren, useEffect, useRef, useState } from 'react';
-
-import { css } from '@emotion/react';
+import { useEffect, useRef, useState } from 'react';
 
 import DomToImage from 'dom-to-image';
 
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { color } from '@/renderer/styles';
-
 import { useTab } from '@/renderer/hooks';
 
 import { isParentExist } from '@/renderer/utils';
 
 import { XButton } from '@/renderer/components/atoms/buttons/XButton';
-import { TabIndexLine } from '@/renderer/components/molecules/TabIndexLine';
 
-interface MovableTabProps extends PropsWithChildren {
+import { MovableTabLine } from './MovableTabLine';
+
+import {
+  BottomBorder,
+  TabLayout,
+  LeftBorder,
+  RightBorder,
+  SelectTopBorder,
+  TabContent,
+  TopBorder,
+  TabCloseButtonBox,
+} from './index.style';
+
+interface MovableTabProps {
   tabIndex: number;
   isTabSelect?: boolean;
   callbackTabCloseButtonClick?: () => void;
   callbackTabButtonClick?: () => void;
   polyfill?: boolean;
+  disableClose?: boolean;
 }
 
 export function MovableTab({
@@ -31,7 +40,8 @@ export function MovableTab({
   callbackTabButtonClick = () => {},
   polyfill = false,
   children,
-}: MovableTabProps) {
+  disableClose = false,
+}: React.PropsWithChildren<MovableTabProps>) {
   const [setCurrentAfterImageUrl] = useStore(useShallow((s) => [s.setCurrentAfterImageUrl]));
   const [setIsTabDrag] = useStore(useShallow((s) => [s.setIsTabDrag]));
   const [setDestTabIndex] = useStore(useShallow((s) => [s.setDestTabIndex]));
@@ -79,6 +89,8 @@ export function MovableTab({
         return;
       }
 
+      useStore.getState().setIsDrag(true);
+
       isSelect = true;
       setCurrentAfterImageUrl(afterImageUrl);
     };
@@ -89,6 +101,8 @@ export function MovableTab({
       if (isSelect && destTabIndex !== null) {
         reorderTab(tabIndex, destTabIndex);
       }
+
+      useStore.getState().setIsDrag(false);
 
       isSelect = false;
       setIsTabDrag(false);
@@ -118,10 +132,6 @@ export function MovableTab({
       }
     };
 
-    const handleTabMouseLeave = () => {
-      container.style.border = 'none';
-    };
-
     const handleMouseRightButtonClick = (e: MouseEvent) => {
       e.preventDefault();
     };
@@ -129,7 +139,6 @@ export function MovableTab({
     container.addEventListener('contextmenu', handleMouseRightButtonClick);
     container.addEventListener('mousedown', handleTabMouseDown);
     container.addEventListener('mousemove', handleTabMouseMove);
-    container.addEventListener('mouseleave', handleTabMouseLeave);
     window.addEventListener('mouseup', handleWindowMouseUp);
 
     return () => {
@@ -140,7 +149,6 @@ export function MovableTab({
       container.removeEventListener('contextmenu', handleMouseRightButtonClick);
       container.removeEventListener('mousedown', handleTabMouseDown);
       container.removeEventListener('mousemove', handleTabMouseMove);
-      container.removeEventListener('mouseleave', handleTabMouseLeave);
       window.removeEventListener('mouseup', handleWindowMouseUp);
     };
   }, [afterImageUrl, tabIndex, polyfill, reorderTab, setCurrentAfterImageUrl, setDestTabIndex, setIsTabDrag]);
@@ -169,44 +177,23 @@ export function MovableTab({
   };
 
   return (
-    <div
-      ref={containerRef}
-      css={css`
-        display: flex;
-        width: ${polyfill ? '100%' : 'auto'};
-        height: ${polyfill ? '100%' : 'auto'};
-      `}
-      onClick={handleTabClick}
-    >
-      <TabIndexLine tabIndex={tabIndex} />
-      {!polyfill && (
-        <div
-          css={css`
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            background-color: white;
-            padding: 0.5rem 0.8rem;
-            background: ${isTabSelect ? 'white' : 'transparent'};
-            border-top: 1px solid ${isTabSelect ? color.primaryBg : 'transparent'};
-            border-left: 1px solid ${isTabSelect ? 'lightgray' : 'transparent'};
-            border-right: 1px solid ${isTabSelect ? 'lightgray' : 'transparent'};
-            cursor: pointer;
-            .tab-close-button {
-              opacity: ${isTabSelect ? 1 : 0};
-            }
-            &:hover .tab-close-button {
-              opacity: 1;
-            }
-          `}
-        >
-          {children}
-          <div className="tab-close-button">
+    <TabLayout ref={containerRef} onClick={handleTabClick} isSelect={isTabSelect} polyfill={polyfill}>
+      {!polyfill && isTabSelect && <SelectTopBorder />}
+      <TopBorder polyfill={polyfill} />
+      <BottomBorder polyfill={polyfill} isSelect={isTabSelect} />
+      <LeftBorder polyfill={polyfill} />
+      <RightBorder polyfill={polyfill} />
+
+      <MovableTabLine tabIndex={tabIndex} dir="left" />
+      <TabContent>
+        {children}
+        {!polyfill && !disableClose && (
+          <TabCloseButtonBox isSelect={isTabSelect}>
             <XButton ref={closeButtonRef} onClick={handleCloseButtonClick} />
-          </div>
-        </div>
-      )}
-      <TabIndexLine tabIndex={tabIndex + 1} />
-    </div>
+          </TabCloseButtonBox>
+        )}
+      </TabContent>
+      {!polyfill && <MovableTabLine tabIndex={tabIndex + 1} dir="right" />}
+    </TabLayout>
   );
 }

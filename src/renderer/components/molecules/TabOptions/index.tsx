@@ -2,20 +2,18 @@ import { useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import { useClickOutOfModal, useTab, useWebviewController } from '@/renderer/hooks';
+import { useClickOutOfModal, useTab } from '@/renderer/hooks';
 
 import { ReactComponent as ThreeDots } from '@/renderer/assets/svgs/three-dots.svg';
 
 import { NonModal } from '@/renderer/components/atoms/modal/NonModal';
 import { ListButton } from '@/renderer/components/atoms/buttons/ListButton';
 
-import { BOJ_DOMAIN } from '@/common/constants';
-
 export function TabOptions() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { clearTab, tabs } = useTab();
-  const { gotoUrl } = useWebviewController();
+  const { clearTab } = useTab();
+
   const { modalRef, buttonRef } = useClickOutOfModal(() => {
     setIsOpen(false);
   });
@@ -23,10 +21,6 @@ export function TabOptions() {
   const handleAllTabCloseButtonClick = () => {
     clearTab();
     setIsOpen(false);
-
-    if (tabs.length > 0) {
-      gotoUrl(`https://${BOJ_DOMAIN}/problemset`);
-    }
   };
 
   return (
@@ -37,7 +31,6 @@ export function TabOptions() {
         align-items: center;
         height: fit-content;
         position: relative;
-        margin-right: 0.5rem;
       `}
     >
       <button

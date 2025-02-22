@@ -21,3 +21,7 @@ export const overlay = {
   modal: 9999,
   nonModal: 200,
 };
+
+export const tab = {
+  indexLine: 200,
+};

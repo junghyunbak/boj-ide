@@ -1,50 +1,66 @@
-import { useEffect, useRef } from 'react';
-
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
+import { css } from '@emotion/react';
+
 import { useWebviewController } from '@/renderer/hooks';
 
-import { TabButton } from '@/renderer/components/atoms/buttons/TabButton';
 import { Text } from '@/renderer/components/atoms/paragraphs/Text';
 
+import { MovableTab } from '../MovableTab';
+
 interface BookmarkTabProps {
-  bookmarkInfo: BookmarkInfo;
+  tab: BookmarkInfo;
+  index: number;
 }
 
-export function BookmarkTab({ bookmarkInfo }: BookmarkTabProps) {
+export function BookmarkTab({ tab, index }: BookmarkTabProps) {
   const [problem] = useStore(useShallow((s) => [s.problem]));
   const [webviewUrl] = useStore(useShallow((s) => [s.webviewUrl]));
 
   const { gotoUrl } = useWebviewController();
-
-  const ref = useRef<HTMLButtonElement>(null);
 
   const isSelect = (() => {
     if (problem) {
       return false;
     }
 
-    if (webviewUrl.startsWith(bookmarkInfo.url)) {
+    if (webviewUrl.startsWith(tab.url)) {
       return true;
     }
 
     return false;
   })();
 
-  useEffect(() => {
-    if (isSelect && ref.current) {
-      ref.current.scrollIntoView();
-    }
-  }, [isSelect]);
-
   const handleBookmarkItemClick = () => {
-    gotoUrl(bookmarkInfo.url + (bookmarkInfo.path || ''));
+    gotoUrl(tab.url + (tab.path || ''));
   };
 
   return (
-    <TabButton onClick={handleBookmarkItemClick} isSelect={isSelect} ref={ref}>
-      <Text whiteSpace="nowrap">{bookmarkInfo.title}</Text>
-    </TabButton>
+    <MovableTab tabIndex={index} isTabSelect={isSelect} callbackTabButtonClick={handleBookmarkItemClick} disableClose>
+      {tab.logoImgBase64 && (
+        <div
+          css={css`
+            display: flex;
+            width: 0.75rem;
+            flex-shrink: 0;
+          `}
+        >
+          <img
+            src={tab.logoImgBase64}
+            css={css`
+              width: 100%;
+              height: 100%;
+              user-select: none;
+            `}
+            draggable={false}
+          />
+        </div>
+      )}
+
+      <Text whiteSpace="nowrap" userSelect="none">
+        {tab.title}
+      </Text>
+    </MovableTab>
   );
 }
