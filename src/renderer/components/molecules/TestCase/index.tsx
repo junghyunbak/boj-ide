@@ -17,8 +17,6 @@ import { TextButton } from '@/renderer/components/atoms/buttons/TextButton';
 import { Highlight } from '@/renderer/components/atoms/spans/Highlight';
 import { TransparentPreformatted } from '@/renderer/components/atoms/pres/TransparentPreformatted';
 
-import clipboard from 'clipboardy';
-
 import {
   ExampleContentLayout,
   ExampleContentTitleContentLayout,
@@ -161,7 +159,7 @@ export function TestCase({ input, output, judgeResult, type, i }: TestCaseProps)
                   <ExampleContentTitleLayout>
                     <ExampleContentTitleContentLayout>
                       <Text fontSize="1.25rem">예제 입력</Text>
-                      <TextButton onClick={() => clipboard.write(input)}>복사</TextButton>
+                      <TextButton onClick={() => navigator.clipboard.writeText(input)}>복사</TextButton>
                     </ExampleContentTitleContentLayout>
                   </ExampleContentTitleLayout>
                   <CodeBlock>{input}</CodeBlock>
@@ -171,7 +169,7 @@ export function TestCase({ input, output, judgeResult, type, i }: TestCaseProps)
                   <ExampleContentTitleLayout>
                     <ExampleContentTitleContentLayout>
                       <Text fontSize="1.25rem">예제 출력</Text>
-                      <TextButton onClick={() => clipboard.write(output)}>복사</TextButton>
+                      <TextButton onClick={() => navigator.clipboard.writeText(output)}>복사</TextButton>
                     </ExampleContentTitleContentLayout>
                   </ExampleContentTitleLayout>
                   <CodeBlock>{output}</CodeBlock>

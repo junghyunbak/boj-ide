@@ -27,7 +27,7 @@ describe("예제 채점 결과 [type === 'problem']", () => {
     expect(screen.queryByTestId('remove-testcase')).not.toBeInTheDocument();
   });
 
-  it('예제 컬럼의 값이 "예제 입력 [숫자]" 이어야 한다.', () => {
+  it('예제 컬럼의 값이 "테스트케이스 [숫자]" 이어야 한다.', () => {
     render(
       <table>
         <tbody>
@@ -36,7 +36,7 @@ describe("예제 채점 결과 [type === 'problem']", () => {
       </table>,
     );
 
-    expect(screen.queryByText(/^예제 입력 [0-9]+$/)).toBeInTheDocument();
+    expect(screen.queryByText(/^테스트케이스 [0-9]+$/)).toBeInTheDocument();
   });
 });
 
@@ -53,7 +53,7 @@ describe("예제 채점 결과 [type === 'custom']", () => {
     expect(screen.queryByTestId('remove-testcase')).toBeInTheDocument();
   });
 
-  it('예제 컬럼의 값이 "사용자 예제 입력 [숫자]" 이어야 한다.', () => {
+  it('예제 컬럼의 값이 "사용자 테스트케이스 [숫자]" 이어야 한다.', () => {
     render(
       <table>
         <tbody>
@@ -62,7 +62,7 @@ describe("예제 채점 결과 [type === 'custom']", () => {
       </table>,
     );
 
-    expect(screen.queryByText(/^사용자 예제 입력 [0-9]+$/)).toBeInTheDocument();
+    expect(screen.queryByText(/^사용자 테스트케이스 [0-9]+$/)).toBeInTheDocument();
   });
 });
 
