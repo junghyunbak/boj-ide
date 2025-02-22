@@ -5,7 +5,7 @@ import { useStore } from '@/renderer/store';
 
 import { isBookmarkTab, isProblemTab } from '@/renderer/utils/typeGuard';
 
-import { BOJ_DOMAIN } from '@/common/constants';
+import { WEBVIEW_HOME_URL } from '@/renderer/constants';
 
 import { useWebviewController } from '../useWebviewController';
 
@@ -107,7 +107,7 @@ export function useTab() {
     setTabs((prev) => prev.filter(isBookmarkTab));
 
     if (currentTabs.filter(isProblemTab).length > 0) {
-      gotoUrl(`https://${BOJ_DOMAIN}/problemset`);
+      gotoUrl(WEBVIEW_HOME_URL);
     }
   }, [gotoUrl, setTabs]);
 

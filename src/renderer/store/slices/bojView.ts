@@ -1,5 +1,6 @@
-import { BOJ_DOMAIN } from '@/common/constants';
 import { type StateCreator } from 'zustand';
+
+import { WEBVIEW_HOME_URL } from '@/renderer/constants';
 
 type BojViewSlice = {
   webviewUrl: string;
@@ -28,7 +29,7 @@ export const createBojViewSlice: StateCreator<BojViewSlice> = (set): BojViewSlic
     }));
   },
 
-  webviewUrl: `https://${BOJ_DOMAIN}/problemset`,
+  webviewUrl: WEBVIEW_HOME_URL,
   setWebViewUrl(url) {
     set(() => ({ webviewUrl: url }));
   },
