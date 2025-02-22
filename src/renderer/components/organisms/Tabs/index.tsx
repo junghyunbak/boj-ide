@@ -16,11 +16,12 @@ import { isProblemTab } from '@/renderer/utils/typeGuard';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
+import { baekjoonhubLogo, baekjoonLogo, solvedACLogo } from '@/renderer/assets/base64Images';
+
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
 import 'overlayscrollbars/overlayscrollbars.css';
 
 import './index.css';
-import { baekjoonhubLogo, baekjoonLogo, solvedACLogo } from '@/renderer/assets/base64Images';
 
 export function Tabs() {
   const { tabs, addTab } = useTab();
@@ -38,7 +39,7 @@ export function Tabs() {
     const bookmarks: BookmarkInfo[] = [
       {
         url: `https://${BOJ_DOMAIN}`,
-        title: '백준 검색',
+        title: '백준',
         path: '/search',
         logoImgBase64: baekjoonLogo,
       },
