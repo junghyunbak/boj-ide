@@ -32,11 +32,11 @@ export const TabLayout = styled.div<TabState>`
 
 export const SelectTopBorder = styled.div`
   position: absolute;
-  top: 1px;
+  top: 0;
   left: 0;
   right: 0;
 
-  border-top: 1px solid ${color.primaryBg};
+  border-top: 2px solid ${color.primaryBg};
 `;
 
 export const TopBorder = styled.div<TabState>`
@@ -59,9 +59,16 @@ export const BottomBorder = styled.div<TabState>`
   position: absolute;
   bottom: 0;
   left: 0;
-  right: ${({ isSelect = false }) => (isSelect ? 'calc(100% - 1px)' : 0)};
+  right: 0;
 
-  border-top: 1px solid lightgray;
+  ${({ isSelect }) =>
+    isSelect
+      ? css`
+          border-left: 0;
+        `
+      : css`
+          border-top: 1px solid lightgray;
+        `}
 `;
 
 export const LeftBorder = styled.div<TabState>`
@@ -70,14 +77,14 @@ export const LeftBorder = styled.div<TabState>`
   bottom: 0;
   left: 0;
 
-  border-left: 1px solid lightgray;
-
   ${({ polyfill = false }) =>
     polyfill
       ? css`
           border-left: 0;
         `
-      : css``}
+      : css`
+          border-left: 1px solid lightgray;
+        `}
 `;
 
 export const RightBorder = styled.div<TabState>`
