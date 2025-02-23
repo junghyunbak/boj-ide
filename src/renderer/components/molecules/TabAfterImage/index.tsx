@@ -37,7 +37,14 @@ export function TabAfterImage() {
         opacity: 0.8;
       `}
     >
-      {isTabDrag && currentAfterImageUrl && <img src={currentAfterImageUrl} />}
+      {isTabDrag && currentAfterImageUrl && (
+        <img
+          src={currentAfterImageUrl}
+          css={css`
+            box-shadow: 0 3px 5px rgb(0 0 0 / 30%);
+          `}
+        />
+      )}
     </div>
   );
 }
