@@ -4,9 +4,9 @@ import { zIndex } from '@/renderer/styles';
 
 export const LineLayout = styled.div<{ dir: 'left' | 'right' }>`
   position: absolute;
+  top: 0;
   bottom: 0;
 
-  top: 0;
   ${({ dir }) =>
     dir === 'left'
       ? css`
@@ -23,7 +23,7 @@ export const LineBox = styled.div<{ isHidden: boolean }>`
   bottom: 0;
   left: -1px;
 
-  border: 2px solid gray;
+  border-left: 3px solid gray;
 
   ${({ isHidden }) =>
     isHidden
