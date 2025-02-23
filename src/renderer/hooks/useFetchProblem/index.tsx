@@ -1,11 +1,9 @@
-import { css } from '@emotion/react';
-
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 import { FETCH_DOMAIN } from '@/common/constants';
 
-export function useFetchProblem(problemNumber: string): { TierImg: React.ReactNode | null; title: string } {
+export function useFetchProblem(problemNumber: string): { tierBase64: string | null; title: string } {
   const { data: solvedProblem, isError } = useQuery({
     queryKey: ['solved.ac', problemNumber],
     queryFn: async () => {
@@ -19,28 +17,15 @@ export function useFetchProblem(problemNumber: string): { TierImg: React.ReactNo
 
   if (isError || !solvedProblem) {
     return {
-      TierImg: null,
+      tierBase64: null,
       title: '',
     };
   }
 
   const { titleKo, tierBase64 } = solvedProblem;
 
-  const TierImg = (
-    <img
-      src={tierBase64}
-      alt=""
-      css={css`
-        width: 100%;
-        height: 100%;
-        user-select: none;
-      `}
-      draggable={false}
-    />
-  );
-
   return {
-    TierImg,
+    tierBase64,
     title: titleKo,
   };
 }

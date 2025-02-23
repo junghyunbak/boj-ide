@@ -113,7 +113,9 @@ export function Tabs() {
                   return <BookmarkTab index={index} tab={tab} key={tab.url} />;
                 })}
 
-              <MovableTab tabIndex={tabs.length} polyfill />
+              <MovableTab tabIndex={tabs.length} polyfill>
+                <MovableTab.MovableTabBottomBorder />
+              </MovableTab>
             </div>
           </OverlayScrollbarsComponent>
         </div>

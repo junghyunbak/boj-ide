@@ -24,6 +24,7 @@ const distRendererPath = path.join(distPath, 'renderer');
 const buildPath = path.join(releasePath, 'build');
 
 const splitLayoutPath = path.join(srcRendererPath, 'components/molecules/SplitLayout');
+const movableTabPath = path.join(srcRendererPath, 'components/molecules/MovableTab');
 
 export default {
   rootPath,
@@ -41,5 +42,7 @@ export default {
   distMainPath,
   distRendererPath,
   buildPath,
+
   splitLayoutPath,
+  movableTabPath,
 };

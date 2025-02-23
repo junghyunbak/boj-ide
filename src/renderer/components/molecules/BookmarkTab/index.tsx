@@ -37,30 +37,43 @@ export function BookmarkTab({ tab, index }: BookmarkTabProps) {
   };
 
   return (
-    <MovableTab tabIndex={index} isTabSelect={isSelect} callbackTabButtonClick={handleBookmarkItemClick} disableClose>
-      {tab.logoImgBase64 && (
-        <div
-          css={css`
-            display: flex;
-            width: 0.75rem;
-            flex-shrink: 0;
-          `}
-        >
-          <img
-            src={tab.logoImgBase64}
-            css={css`
-              width: 100%;
-              height: 100%;
-              user-select: none;
-            `}
-            draggable={false}
-          />
-        </div>
-      )}
+    <MovableTab tabIndex={index} isSelect={isSelect} onClick={handleBookmarkItemClick}>
+      <MovableTab.MovableTabTopBorder />
+      <MovableTab.MovableTabBottomBorder />
+      <MovableTab.MovableTabLeftBorder />
+      <MovableTab.MovableTabRightBorder />
 
-      <Text whiteSpace="nowrap" userSelect="none">
-        {tab.title}
-      </Text>
+      <MovableTab.MovableTabLeftLine />
+
+      <MovableTab.MovableTabContent>
+        <MovableTab.MovableTabContent.MovableTabContentDetail>
+          {tab.logoImgBase64 && (
+            <div
+              css={css`
+                display: flex;
+                width: 0.75rem;
+                flex-shrink: 0;
+              `}
+            >
+              <img
+                src={tab.logoImgBase64}
+                css={css`
+                  width: 100%;
+                  height: 100%;
+                  user-select: none;
+                `}
+                draggable={false}
+              />
+            </div>
+          )}
+
+          <Text whiteSpace="nowrap" userSelect="none">
+            {tab.title}
+          </Text>
+        </MovableTab.MovableTabContent.MovableTabContentDetail>
+      </MovableTab.MovableTabContent>
+
+      <MovableTab.MovableTabRightLine />
     </MovableTab>
   );
 }

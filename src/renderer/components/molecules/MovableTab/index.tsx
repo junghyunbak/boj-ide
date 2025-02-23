@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-constructed-context-values */
 import { useEffect, useRef, useState } from 'react';
 
 import DomToImage from 'dom-to-image';
@@ -7,114 +8,89 @@ import { useShallow } from 'zustand/shallow';
 
 import { useTab } from '@/renderer/hooks';
 
-import { isParentExist } from '@/renderer/utils';
+import { getElementFromChildren } from '@/renderer/utils';
 
-import { XButton } from '@/renderer/components/atoms/buttons/XButton';
+import { MovableTabTopBorder } from './MovableTabTopBorder';
+import { MovableTabContext, MovableTabValue } from './MovableTabContext';
+import { MovableTabBottomBorder } from './MovableTabBottomBorder';
+import { MovableTabLeftBorder } from './MovableTabLeftBorder';
+import { MovableTabRightBorder } from './MovableTabRightBorder';
+import { MovableTabContent } from './MovableTabContent';
+import { MovableTabLeftLine, MovableTabRightLine } from './MovableTabLine';
 
-import { MovableTabLine } from './MovableTabLine';
+import { TabLayout } from './index.style';
 
-import {
-  BottomBorder,
-  TabLayout,
-  LeftBorder,
-  RightBorder,
-  SelectTopBorder,
-  TabContent,
-  TopBorder,
-  TabCloseButtonBox,
-} from './index.style';
+const TopBorderType = (<MovableTabTopBorder />).type;
+const BottomBorderType = (<MovableTabBottomBorder />).type;
+const LeftBorderType = (<MovableTabLeftBorder />).type;
+const RightBorderType = (<MovableTabRightBorder />).type;
+const ContentType = (<MovableTabContent />).type;
+const LeftLineType = (<MovableTabLeftLine />).type;
+const RightLineType = (<MovableTabRightLine />).type;
 
-interface MovableTabProps {
-  tabIndex: number;
-  isTabSelect?: boolean;
-  callbackTabCloseButtonClick?: () => void;
-  callbackTabButtonClick?: () => void;
+interface MovableTabImplProps extends MovableTabValue {
   polyfill?: boolean;
-  disableClose?: boolean;
+  onClick?: () => void;
 }
 
-export function MovableTab({
+function MovableTabImpl({
   tabIndex,
-  isTabSelect = false,
-  callbackTabCloseButtonClick = () => {},
-  callbackTabButtonClick = () => {},
+  isSelect = false,
   polyfill = false,
   children,
-  disableClose = false,
-}: React.PropsWithChildren<MovableTabProps>) {
-  const [setCurrentAfterImageUrl] = useStore(useShallow((s) => [s.setCurrentAfterImageUrl]));
-  const [setIsTabDrag] = useStore(useShallow((s) => [s.setIsTabDrag]));
-  const [setDestTabIndex] = useStore(useShallow((s) => [s.setDestTabIndex]));
+  onClick = () => {},
+}: React.PropsWithChildren<MovableTabImplProps>) {
+  const [afterImageUrl, setAfterImageUrl] = useState('');
 
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  const [setCurrentAfterImageUrl] = useStore(useShallow((s) => [s.setCurrentAfterImageUrl]));
+  const [setIsTabDrag] = useStore(useShallow((s) => [s.setIsTabDrag])); // for tabs
+  const [setIsDrag] = useStore(useShallow((s) => [s.setIsDrag])); // for webview
+  const [setDestTabIndex] = useStore(useShallow((s) => [s.setDestTabIndex]));
 
   const { tabs, reorderTab } = useTab();
 
-  const [afterImageUrl, setAfterImageUrl] = useState('');
-
+  /**
+   * 이미지 잔상 초기화
+   */
   useEffect(() => {
-    const container = containerRef.current;
-
-    if (!container) {
-      return;
-    }
-
     (async () => {
-      const imageUrl = await DomToImage.toPng(container);
+      if (containerRef.current) {
+        const imageUrl = await DomToImage.toPng(containerRef.current);
 
-      setAfterImageUrl(imageUrl);
+        setAfterImageUrl(imageUrl);
+      }
     })();
   }, [tabs]);
 
+  /**
+   * 드래그 이벤트 등록
+   */
   useEffect(() => {
     const container = containerRef.current;
 
     if (!container) {
-      return () => {};
+      return function cleanup() {};
     }
 
-    let isSelect: boolean = false;
+    let isClicked: boolean = false;
 
-    const handleTabMouseDown = (e: MouseEvent) => {
-      if (isParentExist(e.target, closeButtonRef.current)) {
-        return;
-      }
-
-      /**
-       * 빈 공간을 채우기 위한 용도로 사용 될 경우,
-       * 탭 드래그 동작이 발동해서는 안되므로 `isSelect = true`가 되기 전에 멈춘다.
-       */
+    const handleTabMouseDown = () => {
       if (polyfill) {
         return;
       }
 
-      useStore.getState().setIsDrag(true);
-
-      isSelect = true;
+      isClicked = true;
+      setIsDrag(true);
       setCurrentAfterImageUrl(afterImageUrl);
-    };
-
-    const handleWindowMouseUp = () => {
-      const { destTabIndex } = useStore.getState();
-
-      if (isSelect && destTabIndex !== null) {
-        reorderTab(tabIndex, destTabIndex);
-      }
-
-      useStore.getState().setIsDrag(false);
-
-      isSelect = false;
-      setIsTabDrag(false);
-      setCurrentAfterImageUrl('');
     };
 
     const handleTabMouseMove = (e: MouseEvent) => {
       /**
-       * 요소 위에서 마우스 왼쪽 버튼을 클릭한 채 움직여야 발동되므로,
-       * 요소 내에서 발동하는 mousemove 이벤트일지언정, 드래그중임을 설정하기에 충분하다.
+       * 드래그 중 일때 잔상이 보이도록 드래그 중임을 mousemove에서 처리
        */
-      if (isSelect) {
+      if (isClicked) {
         setIsTabDrag(true);
       }
 
@@ -132,6 +108,19 @@ export function MovableTab({
       }
     };
 
+    const handleWindowMouseUp = () => {
+      const { destTabIndex } = useStore.getState();
+
+      if (isClicked && destTabIndex !== null) {
+        reorderTab(tabIndex, destTabIndex);
+      }
+
+      isClicked = false;
+      setIsDrag(false);
+      setIsTabDrag(false);
+      setCurrentAfterImageUrl('');
+    };
+
     const handleMouseRightButtonClick = (e: MouseEvent) => {
       e.preventDefault();
     };
@@ -141,7 +130,7 @@ export function MovableTab({
     container.addEventListener('mousemove', handleTabMouseMove);
     window.addEventListener('mouseup', handleWindowMouseUp);
 
-    return () => {
+    return function cleanup() {
       if (!container) {
         return;
       }
@@ -151,49 +140,69 @@ export function MovableTab({
       container.removeEventListener('mousemove', handleTabMouseMove);
       window.removeEventListener('mouseup', handleWindowMouseUp);
     };
-  }, [afterImageUrl, tabIndex, polyfill, reorderTab, setCurrentAfterImageUrl, setDestTabIndex, setIsTabDrag]);
+  }, [
+    afterImageUrl,
+    tabIndex,
+    polyfill,
+    reorderTab,
+    setCurrentAfterImageUrl,
+    setDestTabIndex,
+    setIsTabDrag,
+    setIsDrag,
+  ]);
 
+  /**
+   * 탭 생성 시 스크롤을 요소 위치로 이동
+   */
   useEffect(() => {
-    if (isTabSelect && containerRef.current) {
+    if (isSelect && containerRef.current) {
       containerRef.current.scrollIntoView();
     }
-  }, [isTabSelect]);
+  }, [isSelect]);
 
+  /**
+   * 탭 클릭 시 스크롤을 요소 위치로 이동
+   */
   const handleTabClick = () => {
-    callbackTabButtonClick();
+    onClick();
 
     if (containerRef.current) {
       containerRef.current.scrollIntoView();
     }
   };
 
-  const handleCloseButtonClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    callbackTabCloseButtonClick();
+  const TopBorder = getElementFromChildren(children, TopBorderType);
+  const BottomBorder = getElementFromChildren(children, BottomBorderType);
+  const LeftBorder = getElementFromChildren(children, LeftBorderType);
+  const RightBorder = getElementFromChildren(children, RightBorderType);
 
-    /**
-     * 버블링을 차단하지 않으면 닫기 동작 뿐만 아니라 탭 클릭 동작도 발생하기 때문에 중요한 코드
-     */
-    e.stopPropagation();
-  };
+  const Content = getElementFromChildren(children, ContentType);
+
+  const LeftLine = getElementFromChildren(children, LeftLineType);
+  const RightLine = getElementFromChildren(children, RightLineType);
 
   return (
-    <TabLayout ref={containerRef} onClick={handleTabClick} isSelect={isTabSelect} polyfill={polyfill}>
-      {!polyfill && isTabSelect && <SelectTopBorder />}
-      <TopBorder polyfill={polyfill} />
-      <BottomBorder polyfill={polyfill} isSelect={isTabSelect} />
-      <LeftBorder polyfill={polyfill} />
-      <RightBorder polyfill={polyfill} />
+    <MovableTabContext.Provider value={{ isSelect, tabIndex }}>
+      <TabLayout ref={containerRef} onClick={handleTabClick} isSelect={isSelect} polyfill={polyfill}>
+        {TopBorder}
+        {BottomBorder}
+        {LeftBorder}
+        {RightBorder}
 
-      <MovableTabLine tabIndex={tabIndex} dir="left" />
-      <TabContent>
-        {children}
-        {!polyfill && !disableClose && (
-          <TabCloseButtonBox isSelect={isTabSelect}>
-            <XButton ref={closeButtonRef} onClick={handleCloseButtonClick} />
-          </TabCloseButtonBox>
-        )}
-      </TabContent>
-      {!polyfill && <MovableTabLine tabIndex={tabIndex + 1} dir="right" />}
-    </TabLayout>
+        {LeftLine}
+        {Content}
+        {RightLine}
+      </TabLayout>
+    </MovableTabContext.Provider>
   );
 }
+
+export const MovableTab = Object.assign(MovableTabImpl, {
+  MovableTabTopBorder,
+  MovableTabBottomBorder,
+  MovableTabLeftBorder,
+  MovableTabRightBorder,
+  MovableTabLeftLine,
+  MovableTabRightLine,
+  MovableTabContent,
+});

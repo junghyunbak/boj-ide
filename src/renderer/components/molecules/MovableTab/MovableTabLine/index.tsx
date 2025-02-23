@@ -1,62 +1,36 @@
-import { css } from '@emotion/react';
-
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { zIndex } from '@/renderer/styles';
+import { useMovableTabContext } from '../MovableTabContext';
 
-interface MovableTabLineProps {
-  tabIndex: number;
-  dir: 'left' | 'right';
-}
+import { LineBox, LineLayout } from './index.style';
 
-export function MovableTabLine({ tabIndex, dir }: MovableTabLineProps) {
+export function MovableTabLeftLine() {
+  const { tabIndex } = useMovableTabContext();
+
   const [isTabDrag] = useStore(useShallow((s) => [s.isTabDrag]));
   const [destTabIndex] = useStore(useShallow((s) => [s.destTabIndex]));
 
   const isHidden = !isTabDrag || destTabIndex !== tabIndex;
 
   return (
-    <div
-      css={css`
-        position: absolute;
-        top: 0;
-        bottom: 0;
+    <LineLayout dir="left">
+      <LineBox isHidden={isHidden} />
+    </LineLayout>
+  );
+}
 
-        ${dir === 'left'
-          ? css`
-              left: 0;
-            `
-          : css`
-              right: 0;
-            `}
-      `}
-    >
-      <div
-        css={css`
-          position: absolute;
-          top: 0;
-          bottom: 0;
+export function MovableTabRightLine() {
+  const { tabIndex } = useMovableTabContext();
 
-          ${isHidden
-            ? css``
-            : css`
-                background-color: gray;
-              `}
+  const [isTabDrag] = useStore(useShallow((s) => [s.isTabDrag]));
+  const [destTabIndex] = useStore(useShallow((s) => [s.destTabIndex]));
 
-          ${dir === 'left'
-            ? css`
-                left: -1px;
-              `
-            : css`
-                left: -1px;
-              `}
+  const isHidden = !isTabDrag || destTabIndex !== tabIndex + 1;
 
-          width: 3px;
-
-          z-index: ${zIndex.tab.indexLine};
-        `}
-      />
-    </div>
+  return (
+    <LineLayout dir="right">
+      <LineBox isHidden={isHidden} />
+    </LineLayout>
   );
 }

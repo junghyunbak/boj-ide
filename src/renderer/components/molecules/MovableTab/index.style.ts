@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
+
 import { css } from '@emotion/react';
-import { color } from '@/renderer/styles';
 
 type TabState = {
   isSelect?: boolean;
@@ -9,9 +9,8 @@ type TabState = {
 
 export const TabLayout = styled.div<TabState>`
   position: relative;
-  cursor: pointer;
 
-  ${({ isSelect = false }) =>
+  ${({ isSelect }) =>
     isSelect
       ? css`
           background-color: white;
@@ -20,108 +19,14 @@ export const TabLayout = styled.div<TabState>`
           background-color: #f9f9f9;
         `};
 
-  ${({ polyfill = false }) =>
+  ${({ polyfill }) =>
     polyfill
       ? css`
           flex: 1;
           cursor: auto;
           background-color: transparent;
         `
-      : css``}
-`;
-
-export const SelectTopBorder = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-
-  border-top: 2px solid ${color.primaryBg};
-`;
-
-export const TopBorder = styled.div<TabState>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-
-  border-top: 1px solid lightgray;
-
-  ${({ polyfill = false }) =>
-    polyfill
-      ? css`
-          border-top: 0;
-        `
-      : css``}
-`;
-
-export const BottomBorder = styled.div<TabState>`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-
-  ${({ isSelect }) =>
-    isSelect
-      ? css`
-          border-left: 0;
-        `
       : css`
-          border-top: 1px solid lightgray;
-        `}
-`;
-
-export const LeftBorder = styled.div<TabState>`
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-
-  ${({ polyfill = false }) =>
-    polyfill
-      ? css`
-          border-left: 0;
-        `
-      : css`
-          border-left: 1px solid lightgray;
-        `}
-`;
-
-export const RightBorder = styled.div<TabState>`
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: -1px;
-
-  border-left: 1px solid lightgray;
-
-  ${({ polyfill = false }) =>
-    polyfill
-      ? css`
-          border-left: 0;
-        `
-      : css``}
-`;
-
-export const TabContent = styled.div<TabState>`
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-
-  padding: 0.5rem 0.8rem;
-
-  &:hover * {
-    opacity: 1;
-  }
-`;
-
-export const TabCloseButtonBox = styled.div<TabState>`
-  ${({ isSelect }) =>
-    isSelect
-      ? css`
-          opacity: 1;
-        `
-      : css`
-          opacity: 0;
+          cursor: pointer;
         `}
 `;
