@@ -36,9 +36,7 @@ export const SelectTopBorder = styled.div`
   left: 0;
   right: 0;
 
-  background-color: ${color.primaryBg};
-
-  height: 1px;
+  border-top: 1px solid ${color.primaryBg};
 `;
 
 export const TopBorder = styled.div<TabState>`
@@ -47,14 +45,12 @@ export const TopBorder = styled.div<TabState>`
   left: 0;
   right: 0;
 
-  background-color: lightgray;
-
-  height: 1px;
+  border-top: 1px solid lightgray;
 
   ${({ polyfill = false }) =>
     polyfill
       ? css`
-          height: 0;
+          border-top: 0;
         `
       : css``}
 `;
@@ -65,9 +61,7 @@ export const BottomBorder = styled.div<TabState>`
   left: 0;
   right: ${({ isSelect = false }) => (isSelect ? 'calc(100% - 1px)' : 0)};
 
-  background-color: lightgray;
-
-  height: 1px;
+  border-top: 1px solid lightgray;
 `;
 
 export const LeftBorder = styled.div<TabState>`
@@ -76,14 +70,12 @@ export const LeftBorder = styled.div<TabState>`
   bottom: 0;
   left: 0;
 
-  background-color: lightgray;
-
-  width: 1px;
+  border-left: 1px solid lightgray;
 
   ${({ polyfill = false }) =>
     polyfill
       ? css`
-          width: 0px;
+          border-left: 0;
         `
       : css``}
 `;
@@ -94,14 +86,12 @@ export const RightBorder = styled.div<TabState>`
   bottom: 0;
   right: -1px;
 
-  background-color: lightgray;
-
-  width: 1px;
+  border-left: 1px solid lightgray;
 
   ${({ polyfill = false }) =>
     polyfill
       ? css`
-          width: 0px;
+          border-left: 0;
         `
       : css``}
 `;
