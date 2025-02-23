@@ -19,6 +19,15 @@ export const TabLayout = styled.div<TabState>`
           background-color: #f9f9f9;
         `};
 
+  ${({ isSelect, polyfill }) =>
+    !polyfill && !isSelect
+      ? css`
+          &:hover {
+            background-color: #fdfdfd;
+          }
+        `
+      : ''}
+
   ${({ polyfill }) =>
     polyfill
       ? css`
