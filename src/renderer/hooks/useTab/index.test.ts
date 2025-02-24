@@ -43,7 +43,9 @@ describe('[커스텀 훅] 탭 요소 관리', () => {
       });
 
       expect(result.current.tabs.length).toBe(4);
-      expect(result.current.tabs.filter(isProblemTab).some((tab) => tab.name === updatedProblemName)).toBe(true);
+      expect(result.current.tabs.find((tab) => isProblemTab(tab) && tab.name === updatedProblemName)).not.toBe(
+        undefined,
+      );
     });
 
     it('같은 북마크가 존재하지 않을 경우, 맨 앞에 북마크가 추가되어야 한다.', () => {
@@ -72,7 +74,9 @@ describe('[커스텀 훅] 탭 요소 관리', () => {
       });
 
       expect(result.current.tabs.length).toBe(4);
-      expect(result.current.tabs.filter(isBookmarkTab).some((tab) => tab.title === updatedBookmarkTitle)).toBe(true);
+      expect(result.current.tabs.find((tab) => isBookmarkTab(tab) && tab.title === updatedBookmarkTitle)).not.toBe(
+        undefined,
+      );
     });
 
     it('같은 크롬 익스텐션이 존재하지 않을 경우, 맨 앞에 익스텐션이 추가되어야 한다.', () => {
@@ -111,14 +115,13 @@ describe('[커스텀 훅] 탭 요소 관리', () => {
       const { result } = renderHook(() => useTab());
 
       const removeIdx = 1;
-
       const willRemovedTab = result.current.tabs[removeIdx];
 
       act(() => {
         result.current.removeTab(removeIdx, false);
       });
 
-      expect(result.current.tabs.some((tab) => tab === willRemovedTab)).toBe(false);
+      expect(result.current.tabs.find((tab) => tab === willRemovedTab)).toBe(undefined);
     });
 
     it('범위 밖의 탭을 제거 할 경우, 탭 개수에 변화가 없어야 한다.', () => {
