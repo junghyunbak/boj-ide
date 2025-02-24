@@ -24,12 +24,13 @@ describe('[커스텀 훅] 탭 요소 관리', () => {
       const { result } = renderHook(() => useTab());
 
       const newMockTab = createMockProblem();
+      const tabLength = result.current.tabs.length;
 
       act(() => {
         result.current.addProblemTab(newMockTab);
       });
 
-      expect(result.current.tabs.length).toBe(5);
+      expect(result.current.tabs.length).toBe(tabLength + 1);
     });
 
     it('같은 문제가 존재 할 경우, 데이터만 갱신되어야 한다.', () => {
@@ -37,12 +38,13 @@ describe('[커스텀 훅] 탭 요소 관리', () => {
 
       const updatedProblemName = '갱신된 문제 이름';
       const newMockTab = createMockProblem({ ...mockProblem1, name: updatedProblemName });
+      const tabLength = result.current.tabs.length;
 
       act(() => {
         result.current.addProblemTab(newMockTab);
       });
 
-      expect(result.current.tabs.length).toBe(4);
+      expect(result.current.tabs.length).toBe(tabLength);
       expect(result.current.tabs.find((tab) => isProblemTab(tab) && tab.name === updatedProblemName)).not.toBe(
         undefined,
       );
@@ -52,6 +54,7 @@ describe('[커스텀 훅] 탭 요소 관리', () => {
       const { result } = renderHook(() => useTab());
 
       const newMockTab = createMockBookmark();
+      const tabLength = result.current.tabs.length;
 
       act(() => {
         result.current.addBookmarkTab(newMockTab);
@@ -59,7 +62,7 @@ describe('[커스텀 훅] 탭 요소 관리', () => {
 
       const [tab] = result.current.tabs;
 
-      expect(result.current.tabs.length).toBe(5);
+      expect(result.current.tabs.length).toBe(tabLength + 1);
       expect(isBookmarkTab(tab) && tab.url === newMockTab.url).toBe(true);
     });
 
@@ -68,12 +71,13 @@ describe('[커스텀 훅] 탭 요소 관리', () => {
 
       const updatedBookmarkTitle = '갱신된 북마크 이름';
       const newMockTab = createMockBookmark({ ...mockBookmark, title: updatedBookmarkTitle });
+      const tabLength = result.current.tabs.length;
 
       act(() => {
         result.current.addBookmarkTab(newMockTab);
       });
 
-      expect(result.current.tabs.length).toBe(4);
+      expect(result.current.tabs.length).toBe(tabLength);
       expect(result.current.tabs.find((tab) => isBookmarkTab(tab) && tab.title === updatedBookmarkTitle)).not.toBe(
         undefined,
       );
@@ -83,12 +87,13 @@ describe('[커스텀 훅] 탭 요소 관리', () => {
       const { result } = renderHook(() => useTab());
 
       const newExtensionTab = createMockExtension({ type: 'otherExtensionType' });
+      const tabLength = result.current.tabs.length;
 
       act(() => {
         result.current.addExtensionTab(newExtensionTab);
       });
 
-      expect(result.current.tabs.length).toBe(5);
+      expect(result.current.tabs.length).toBe(tabLength + 1);
       expect(result.current.tabs.find((tab) => isExtensionTab(tab) && tab.id === newExtensionTab.id)).not.toBe(
         undefined,
       );
@@ -98,12 +103,13 @@ describe('[커스텀 훅] 탭 요소 관리', () => {
       const { result } = renderHook(() => useTab());
 
       const newExtensionTab = createMockExtension(mockExtension);
+      const tabLength = result.current.tabs.length;
 
       act(() => {
         result.current.addExtensionTab(newExtensionTab);
       });
 
-      expect(result.current.tabs.length).toBe(4);
+      expect(result.current.tabs.length).toBe(tabLength);
       expect(result.current.tabs.find((tab) => isExtensionTab(tab) && tab.id === newExtensionTab.id)).not.toBe(
         undefined,
       );
