@@ -159,6 +159,7 @@ app.on('web-contents-created', (e, contents) => {
       if (contents.getURL().startsWith('chrome-extension://')) {
         if (mainWindow) {
           ipc.send(mainWindow.webContents, 'reload-webview');
+          sentryLogging('[로그] 익스텐션 팝업 창을 닫았습니다.');
         }
       }
     });
