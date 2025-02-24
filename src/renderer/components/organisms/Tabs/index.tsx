@@ -80,7 +80,6 @@ export function Tabs() {
       <div
         css={css`
           width: 100%;
-          padding-top: 0.25rem;
           display: flex;
           justify-content: space-between;
           align-items: end;
