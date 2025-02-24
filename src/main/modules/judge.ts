@@ -151,15 +151,13 @@ export class Judge {
             worker.once('message', (data) => {
               const { stderr, stdout, signal, elapsed } = data;
 
-              const outputBufferSize = Buffer.byteLength(stdout, 'utf-8');
-
               const result = ((): JudgeResult['result'] => {
                 if (stderr.length !== 0) {
                   return '런타임 에러';
                 }
 
                 if (signal === 'SIGTERM') {
-                  return outputBufferSize > MAX_BUFFER_SIZE ? '출력 초과' : '시간 초과';
+                  return stdout.split('\n').length > MAX_LINE_LENGTH ? '출력 초과' : '시간 초과';
                 }
 
                 if (stdout.length !== 0 && normalizeOutput(stdout) === normalizeOutput(outputs[index])) {
