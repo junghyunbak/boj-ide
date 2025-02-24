@@ -4,7 +4,7 @@ import { BOJ_DOMAIN } from '@/common/constants';
 
 import * as cheerio from 'cheerio';
 
-import { extractCheerioElementText, valueIsNotNull } from '../functional';
+import { valueIsNotNull } from '../validate';
 
 type PossibleElement = HTMLElement | SVGElement | EventTarget | null;
 
@@ -53,6 +53,24 @@ export function getProblemInfo(bojProblemHtml: string, url: string): ProblemInfo
 
   return problemInfo;
 }
+
+export const extractCheerioElementText = (cel: cheerio.Element): string => {
+  if (!('children' in cel)) {
+    return '';
+  }
+
+  const [child] = cel.children;
+
+  if (!child) {
+    return '';
+  }
+
+  if ('data' in child) {
+    return child.data || '';
+  }
+
+  return '';
+};
 
 export function getElementFromChildren(children: React.ReactNode, type: unknown) {
   return React.Children.toArray(children).filter((child) => React.isValidElement(child) && child.type === type)[0];

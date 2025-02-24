@@ -1,3 +1,3 @@
 export * from './dom';
 export * from './string';
-export * from './functional';
+export * from './validate';
