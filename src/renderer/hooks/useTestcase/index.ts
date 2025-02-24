@@ -7,64 +7,40 @@ import { useStore } from '@/renderer/store';
 export function useTestcase() {
   const [customTestcase, setCustomTestcases] = useStore(useShallow((s) => [s.customTestCase, s.setCustomTestcases]));
 
-  const removeCustomTestcase = useCallback(
-    (i: number): boolean => {
+  const addCustomTestcase = useCallback(
+    (testcase: TC, problemNumber?: string) => {
       const { problem } = useStore.getState();
 
-      if (!problem) {
-        return false;
+      const number = problem?.number || problemNumber;
+
+      if (!number) {
+        return;
       }
 
-      const { number } = problem;
+      setCustomTestcases((prev) => ({ ...prev, [number]: [...(prev[number] || []), testcase] }));
+    },
+    [setCustomTestcases],
+  );
+
+  const removeCustomTestcase = useCallback(
+    (i: number) => {
+      const { problem } = useStore.getState();
+
+      const number = problem?.number;
+
+      if (!number) {
+        return;
+      }
 
       const testcases = customTestcase[number];
 
-      if (!(testcases && testcases[i])) {
-        return false;
+      if (!testcases || !testcases[i]) {
+        return;
       }
 
-      setCustomTestcases((prev) => {
-        const next = { ...prev };
-
-        if (!next[number]) {
-          return next;
-        }
-
-        next[number].splice(i, 1);
-
-        return next;
-      });
-
-      return true;
+      setCustomTestcases((prev) => ({ ...prev, [number]: [...(prev[number] || []).filter((_, j) => i !== j)] }));
     },
     [setCustomTestcases, customTestcase],
-  );
-
-  const addCustomTestcase = useCallback(
-    (testcase: TC, problemNumber?: string): boolean => {
-      const { problem } = useStore.getState();
-
-      const number = problem ? problem.number : problemNumber;
-
-      if (!number) {
-        return false;
-      }
-
-      setCustomTestcases((prev) => {
-        const next = { ...prev };
-
-        if (!next[number]) {
-          next[number] = [];
-        }
-
-        next[number].push(testcase);
-
-        return next;
-      });
-
-      return true;
-    },
-    [setCustomTestcases],
   );
 
   return {
