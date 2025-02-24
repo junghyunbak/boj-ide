@@ -1,8 +1,6 @@
-import { useEffect } from 'react';
-
 import { css } from '@emotion/react';
 
-import { useJudge, useProblem } from '@/renderer/hooks';
+import { useJudge, useJudgeEvent } from '@/renderer/hooks';
 
 import {
   ExecuteResultTable,
@@ -24,62 +22,9 @@ import { TestCaseMaker } from '@/renderer/components/molecules/TestCaseMaker';
 // [ ]: [채점중일 때] 선택된 문제를 변경하면 기존 채점 결과를 삭제하고, 진행중인 채점 결과를 무시한다.
 // [ ]: [채점중일 때] '결과' 컬럼에 '채점중' 텍스트가 나타나야 한다.
 export function OutputContent() {
-  const { problem } = useProblem();
-  const { judgeResults, customTestcases, judgeId, resetJudge, setJudgeResults } = useJudge();
+  const { judgeResults, allTestcase } = useJudge();
 
-  useEffect(() => {
-    window.electron.ipcRenderer.on('judge-reset', () => {
-      resetJudge();
-    });
-
-    return () => {
-      window.electron.ipcRenderer.removeAllListeners('judge-reset');
-    };
-  }, [resetJudge]);
-
-  useEffect(() => {
-    resetJudge();
-  }, [problem, customTestcases, resetJudge]);
-
-  useEffect(() => {
-    window.electron.ipcRenderer.on('judge-result', ({ data }) => {
-      if (data.id !== judgeId) {
-        return;
-      }
-
-      setJudgeResults((prev) => {
-        const next = [...prev];
-
-        next[data.index] = data;
-
-        return next;
-      });
-    });
-
-    return () => {
-      window.electron.ipcRenderer.removeAllListeners('judge-result');
-    };
-  }, [setJudgeResults, judgeId]);
-
-  const testCases = ((): TC[] => {
-    if (!problem) {
-      return [];
-    }
-
-    const tmp: TC[] = [];
-
-    for (let i = 0; i < problem.testCase.inputs.length; i += 1) {
-      tmp.push({
-        input: problem.testCase.inputs[i],
-        output: problem.testCase.outputs[i],
-        type: 'problem',
-      });
-    }
-
-    tmp.push(...(customTestcases[problem.number] || []));
-
-    return tmp;
-  })();
+  useJudgeEvent();
 
   return (
     <div
@@ -102,8 +47,8 @@ export function OutputContent() {
           </ExecuteResultTheadRow>
         </ExecuteResultThead>
         <ExecuteResultTbody>
-          {testCases.map((testCase, i) => (
-            <TestCase key={i} judgeResult={judgeResults[i]} {...testCase} i={i} />
+          {allTestcase.map((testcase, i) => (
+            <TestCase key={i} judgeResult={judgeResults[i]} {...testcase} i={i} />
           ))}
         </ExecuteResultTbody>
       </ExecuteResultTable>

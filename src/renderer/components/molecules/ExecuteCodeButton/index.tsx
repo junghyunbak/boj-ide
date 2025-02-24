@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { useJudge, useProblem } from '@/renderer/hooks';
+import { useJudge, useJudgeController, useProblem } from '@/renderer/hooks';
 
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 
@@ -8,7 +8,8 @@ import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 // [ ]: 문제가 선택되어있지 않을 경우 버튼이 비활성화되어야 한다.
 export function ExecuteCodeButton() {
   const { problem } = useProblem();
-  const { isJudging, startJudge } = useJudge();
+  const { isJudging } = useJudge();
+  const { startJudge } = useJudgeController();
 
   useEffect(() => {
     window.electron.ipcRenderer.on('judge-request', () => {
