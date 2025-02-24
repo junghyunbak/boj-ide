@@ -1,1 +1,1 @@
-type Tab = BookmarkInfo | ProblemInfo;
+type Tab = BookmarkInfo | ProblemInfo | ExtensionInfo;

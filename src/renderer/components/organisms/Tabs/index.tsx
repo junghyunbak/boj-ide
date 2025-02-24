@@ -4,14 +4,15 @@ import { css } from '@emotion/react';
 
 import { BOJ_DOMAIN, SOLVED_AC_DOMAIN } from '@/common/constants';
 
-import { MovableTab } from '@/renderer/components/molecules/MovableTab';
 import { TabOptions } from '@/renderer/components/molecules/TabOptions';
-import { ProblemTab } from '@/renderer/components/molecules/ProblemTab';
-import { BookmarkTab } from '@/renderer/components/molecules/BookmarkTab';
+import { TabProblem } from '@/renderer/components/molecules/TabProblem';
+import { TabBookmark } from '@/renderer/components/molecules/TabBookmark';
+import { TabExtension } from '@/renderer/components/molecules/TabExtension';
+import { TabPolyfill } from '@/renderer/components/molecules/TabPolyfill';
 
 import { useTab } from '@/renderer/hooks';
 
-import { isProblemTab } from '@/renderer/utils/typeGuard';
+import { isBookmarkTab, isProblemTab } from '@/renderer/utils/typeGuard';
 
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
@@ -24,7 +25,7 @@ import 'overlayscrollbars/overlayscrollbars.css';
 import './index.css';
 
 export function Tabs() {
-  const { tabs, addTab } = useTab();
+  const { tabs, addBookmarkTab, addExtensionTab } = useTab();
 
   const [baekjoonhubExtensionId] = useStore(useShallow((s) => [s.baekjoonhubExtensionId]));
 
@@ -51,22 +52,23 @@ export function Tabs() {
     ];
 
     bookmarks.forEach((bookmark) => {
-      addTab(bookmark);
+      addBookmarkTab(bookmark);
     });
-  }, [addTab]);
+  }, [addBookmarkTab]);
 
   useEffect(() => {
     if (typeof baekjoonhubExtensionId !== 'string') {
       return;
     }
 
-    addTab({
-      url: `chrome-extension://${baekjoonhubExtensionId}`,
+    addExtensionTab({
+      type: 'baekjoonhub',
+      id: baekjoonhubExtensionId,
       title: '백준 허브',
       path: '/popup.html',
       logoImgBase64: baekjoonhubLogo,
     });
-  }, [baekjoonhubExtensionId, addTab]);
+  }, [baekjoonhubExtensionId, addExtensionTab]);
 
   return (
     <div
@@ -108,14 +110,17 @@ export function Tabs() {
                 .filter((tab) => tab)
                 .map((tab, index) => {
                   if (isProblemTab(tab)) {
-                    return <ProblemTab index={index} tab={tab} key={tab.number} />;
+                    return <TabProblem index={index} tab={tab} key={tab.number} />;
                   }
-                  return <BookmarkTab index={index} tab={tab} key={tab.url} />;
+
+                  if (isBookmarkTab(tab)) {
+                    return <TabBookmark index={index} tab={tab} key={tab.url} />;
+                  }
+
+                  return <TabExtension index={index} tab={tab} key={tab.id} />;
                 })}
 
-              <MovableTab tabIndex={tabs.length} polyfill>
-                <MovableTab.MovableTabBottomBorder />
-              </MovableTab>
+              <TabPolyfill />
             </div>
           </OverlayScrollbarsComponent>
         </div>

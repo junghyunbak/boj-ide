@@ -1,7 +1,9 @@
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
+import { useMemo } from 'react';
 
 import { css } from '@emotion/react';
+
+import { useStore } from '@/renderer/store';
+import { useShallow } from 'zustand/shallow';
 
 import { useWebviewController } from '@/renderer/hooks';
 
@@ -9,35 +11,25 @@ import { Text } from '@/renderer/components/atoms/paragraphs/Text';
 
 import { MovableTab } from '../MovableTab';
 
-interface BookmarkTabProps {
-  tab: BookmarkInfo;
+interface TabExtensionProps {
+  tab: ExtensionInfo;
   index: number;
 }
 
-export function BookmarkTab({ tab, index }: BookmarkTabProps) {
-  const [problem] = useStore(useShallow((s) => [s.problem]));
+export function TabExtension({ tab, index }: TabExtensionProps) {
   const [webviewUrl] = useStore(useShallow((s) => [s.webviewUrl]));
 
   const { gotoUrl } = useWebviewController();
 
-  const isSelect = (() => {
-    if (problem) {
-      return false;
-    }
+  const url = useMemo(() => `chrome-extension://${tab.id}${tab.path}`, [tab]);
+  const isSelect = useMemo(() => webviewUrl === url, [webviewUrl, url]);
 
-    if (webviewUrl.startsWith(tab.url)) {
-      return true;
-    }
-
-    return false;
-  })();
-
-  const handleBookmarkItemClick = () => {
-    gotoUrl(tab.url + (tab.path || ''));
+  const handleExtensionItemClick = () => {
+    gotoUrl(url);
   };
 
   return (
-    <MovableTab tabIndex={index} isSelect={isSelect} onClick={handleBookmarkItemClick}>
+    <MovableTab tabIndex={index} isSelect={isSelect} onClick={handleExtensionItemClick}>
       <MovableTab.MovableTabTopBorder />
       <MovableTab.MovableTabBottomBorder />
       <MovableTab.MovableTabLeftBorder />

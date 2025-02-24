@@ -15,7 +15,7 @@ export function useWebview() {
   const [webview, setWebview] = useStore(useShallow((s) => [s.webview, s.setWebview]));
   const [startWebviewUrl, setStartWebviewUrl] = useState(useStore.getState().webviewUrl);
 
-  const { addTab } = useTab();
+  const { addProblemTab } = useTab();
   const { updateProblem } = useProblem();
   const { updateWebviewUrl } = useWebviewController();
 
@@ -94,7 +94,7 @@ export function useWebview() {
       }
 
       updateProblem(problemInfo);
-      addTab(problemInfo);
+      addProblemTab(problemInfo);
     };
 
     webview.addEventListener('did-finish-load', handleWebviewDidFinishLoad);
@@ -102,7 +102,7 @@ export function useWebview() {
     return () => {
       webview.removeEventListener('did-finish-load', handleWebviewDidFinishLoad);
     };
-  }, [webview, addTab, updateWebviewUrl, updateProblem]);
+  }, [webview, updateWebviewUrl, updateProblem, addProblemTab]);
 
   return {
     webview,

@@ -32,6 +32,15 @@ export const createMockBookmark = (() => {
   };
 })();
 
+export const createMockExtension = (values?: Partial<ExtensionInfo>): ExtensionInfo => {
+  return {
+    id: values?.id || faker.string.uuid(),
+    type: values?.type || 'baekjoonhub',
+    path: values?.type || '',
+    title: values?.title || '',
+  };
+};
+
 export const createMockTestcase = (values?: Partial<TC>): TC => {
   return {
     input: values?.input || faker.string.alpha(10),

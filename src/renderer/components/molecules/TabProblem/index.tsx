@@ -5,12 +5,12 @@ import { useFetchProblem, useProblem, useTab, useWebviewController } from '@/ren
 import { Text } from '@/renderer/components/atoms/paragraphs/Text';
 import { MovableTab } from '@/renderer/components/molecules/MovableTab';
 
-interface ProblemTabProps {
+interface TabProblemProps {
   tab: ProblemInfo;
   index: number;
 }
 
-export function ProblemTab({ tab, index }: ProblemTabProps) {
+export function TabProblem({ tab, index }: TabProblemProps) {
   const { problem } = useProblem();
   const { removeTab } = useTab();
   const { gotoProblem } = useWebviewController();

@@ -1,9 +1,10 @@
+/* eslint-disable no-nested-ternary */
 import { useCallback } from 'react';
 
 import { useShallow } from 'zustand/shallow';
 import { useStore } from '@/renderer/store';
 
-import { isBookmarkTab, isProblemTab } from '@/renderer/utils/typeGuard';
+import { isBookmarkTab, isExtensionTab, isProblemTab } from '@/renderer/utils/typeGuard';
 
 import { WEBVIEW_HOME_URL } from '@/renderer/constants';
 
@@ -13,55 +14,46 @@ export function useTab() {
   const [tabs, setTabs] = useStore(useShallow((s) => [s.problemHistories, s.setProblemHistories]));
   const { gotoProblem, gotoUrl } = useWebviewController();
 
-  const addTab = useCallback(
-    (newTab: Tab) => {
+  const addProblemTab = useCallback(
+    (problemTab: ProblemInfo) => {
       setTabs((prev) => {
         const problemTabs = prev.filter(isProblemTab);
+
+        if (problemTabs.find((tab) => tab.number === problemTab.number)) {
+          return prev.map((tab) => (isProblemTab(tab) ? (tab.number === problemTab.number ? problemTab : tab) : tab));
+        }
+
+        return [...prev, problemTab];
+      });
+    },
+    [setTabs],
+  );
+
+  const addBookmarkTab = useCallback(
+    (bookmarkTab: BookmarkInfo) => {
+      setTabs((prev) => {
         const bookmarkTabs = prev.filter(isBookmarkTab);
 
-        if (isProblemTab(newTab)) {
-          if (!problemTabs.some((tab) => tab.number === newTab.number)) {
-            return [...prev, newTab];
-          }
-
-          return prev.map((tab) => {
-            if (isBookmarkTab(tab)) {
-              return tab;
-            }
-
-            return tab.number === newTab.number ? newTab : tab;
-          });
+        if (bookmarkTabs.find((tab) => tab.url === bookmarkTab.url)) {
+          return prev.map((tab) => (isBookmarkTab(tab) ? (tab.url === bookmarkTab.url ? bookmarkTab : tab) : tab));
         }
 
-        if (newTab.url.startsWith('chrome-extension:')) {
-          if (!bookmarkTabs.some((tab) => tab.url.startsWith('chrome-extension:'))) {
-            return [newTab, ...prev];
-          }
+        return [bookmarkTab, ...prev];
+      });
+    },
+    [setTabs],
+  );
 
-          return prev.map((tab) => {
-            if (isProblemTab(tab)) {
-              return tab;
-            }
+  const addExtensionTab = useCallback(
+    (extensionTab: ExtensionInfo) => {
+      setTabs((prev) => {
+        const extensionTabs = prev.filter(isExtensionTab);
 
-            if (tab.url.startsWith('chrome-extension:')) {
-              return newTab;
-            }
-
-            return tab;
-          });
+        if (extensionTabs.find((tab) => tab.type === extensionTab.type)) {
+          return prev.map((tab) => (isExtensionTab(tab) ? (tab.type === extensionTab.type ? extensionTab : tab) : tab));
         }
 
-        if (!bookmarkTabs.some((tab) => tab.url === newTab.url)) {
-          return [newTab, ...prev];
-        }
-
-        return prev.map((tab) => {
-          if (isProblemTab(tab)) {
-            return tab;
-          }
-
-          return tab.url === newTab.url ? newTab : tab;
-        });
+        return [extensionTab, ...prev];
       });
     },
     [setTabs],
@@ -88,8 +80,10 @@ export function useTab() {
 
       if (isProblemTab(nextTab)) {
         gotoProblem(nextTab);
+      } else if (isBookmarkTab(nextTab)) {
+        gotoUrl(`${nextTab.url}${nextTab.path || ''}`);
       } else {
-        gotoUrl(nextTab.url + (nextTab.path || ''));
+        gotoUrl(`chrome-extension://${nextTab.id}${nextTab.path}`);
       }
     },
     [gotoProblem, gotoUrl, setTabs],
@@ -131,7 +125,9 @@ export function useTab() {
 
   return {
     tabs,
-    addTab,
+    addProblemTab,
+    addBookmarkTab,
+    addExtensionTab,
     removeTab,
     reorderTab,
     clearTab,
