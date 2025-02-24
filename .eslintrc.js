@@ -19,6 +19,7 @@ module.exports = {
     'no-unused-vars': 'off',
     'no-await-in-loop': 'off',
     'no-undef': 'off',
+    'no-nested-ternary': 'off',
     'no-dupe-class-members': 'off',
     'no-use-before-define': 'off',
     'prettier/prettier': 'off',

@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary */
 import { useCallback } from 'react';
 
 import { useShallow } from 'zustand/shallow';
