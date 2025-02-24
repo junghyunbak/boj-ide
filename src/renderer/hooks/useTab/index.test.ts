@@ -148,10 +148,13 @@ describe('[커스텀 훅] 탭 요소 관리', () => {
     it('모든 문제 탭 만이 삭제되어야 한다.', () => {
       const { result } = renderHook(() => useTab());
 
+      const tabLength = result.current.tabs.length;
+
       act(() => {
         result.current.clearTab();
       });
 
+      expect(result.current.tabs.length).toBe(tabLength - 2);
       expect(result.current.tabs.some(isProblemTab)).toBe(false);
     });
   });

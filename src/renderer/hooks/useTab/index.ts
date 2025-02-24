@@ -115,7 +115,7 @@ export function useTab() {
   const clearTab = useCallback(() => {
     const { problemHistories: currentTabs } = useStore.getState();
 
-    setTabs((prev) => prev.filter(isBookmarkTab));
+    setTabs((prev) => prev.filter((tab) => !isProblemTab(tab)));
 
     if (currentTabs.filter(isProblemTab).length > 0) {
       gotoUrl(WEBVIEW_HOME_URL);
