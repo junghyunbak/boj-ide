@@ -25,7 +25,7 @@ import { TestCaseMaker } from '@/renderer/components/molecules/TestCaseMaker';
 // [ ]: [채점중일 때] '결과' 컬럼에 '채점중' 텍스트가 나타나야 한다.
 export function OutputContent() {
   const { problem } = useProblem();
-  const { judgeResults, customTestCase, judgeId, resetJudge, setJudgeResults } = useJudge();
+  const { judgeResults, customTestcases, judgeId, resetJudge, setJudgeResults } = useJudge();
 
   useEffect(() => {
     window.electron.ipcRenderer.on('judge-reset', () => {
@@ -39,7 +39,7 @@ export function OutputContent() {
 
   useEffect(() => {
     resetJudge();
-  }, [problem, customTestCase, resetJudge]);
+  }, [problem, customTestcases, resetJudge]);
 
   useEffect(() => {
     window.electron.ipcRenderer.on('judge-result', ({ data }) => {
@@ -76,7 +76,7 @@ export function OutputContent() {
       });
     }
 
-    tmp.push(...(customTestCase[problem.number] || []));
+    tmp.push(...(customTestcases[problem.number] || []));
 
     return tmp;
   })();

@@ -5,7 +5,7 @@ import { useShallow } from 'zustand/shallow';
 import { useStore } from '@/renderer/store';
 
 export function useTestcase() {
-  const [customTestcase, setCustomTestcases] = useStore(useShallow((s) => [s.customTestCase, s.setCustomTestcases]));
+  const [customTestcases, setCustomTestcases] = useStore(useShallow((s) => [s.customTestCase, s.setCustomTestcases]));
 
   const addCustomTestcase = useCallback(
     (testcase: TC, problemNumber?: string) => {
@@ -32,7 +32,7 @@ export function useTestcase() {
         return;
       }
 
-      const testcases = customTestcase[number];
+      const testcases = customTestcases[number];
 
       if (!testcases || !testcases[i]) {
         return;
@@ -40,11 +40,11 @@ export function useTestcase() {
 
       setCustomTestcases((prev) => ({ ...prev, [number]: [...(prev[number] || []).filter((_, j) => i !== j)] }));
     },
-    [setCustomTestcases, customTestcase],
+    [setCustomTestcases, customTestcases],
   );
 
   return {
-    customTestcase,
+    customTestcases,
     addCustomTestcase,
     removeCustomTestcase,
   };

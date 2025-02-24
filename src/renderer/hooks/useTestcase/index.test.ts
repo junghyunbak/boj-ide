@@ -12,14 +12,12 @@ const mockTestcase1 = createMockTestcase();
 const mockTestcase2 = createMockTestcase();
 const mockTestcase3 = createMockTestcase();
 
-const mockCustomTestcases = [mockTestcase1, mockTestcase2, mockTestcase3];
-
 beforeEach(() => {
   const { setProblem, setCustomTestcases } = useStore.getState();
 
   setProblem(mockProblem);
   setCustomTestcases(() => ({
-    [mockProblem.number]: mockCustomTestcases,
+    [mockProblem.number]: [mockTestcase1, mockTestcase2, mockTestcase3],
   }));
 });
 
@@ -28,14 +26,15 @@ describe('[커스텀 훅] 커스텀 테스트케이스를 관리하는 훅', () 
     const { result } = renderHook(() => useTestcase());
 
     const newMockTestcase = createMockTestcase();
+    const prevCustomTestcaseLength = result.current.customTestcases[mockProblem.number]?.length || 0;
 
     act(() => {
       result.current.addCustomTestcase(newMockTestcase);
     });
 
-    const customTestcases = result.current.customTestcase[mockProblem.number];
+    const customTestcases = result.current.customTestcases[mockProblem.number];
 
-    expect(customTestcases?.length).toBe(mockCustomTestcases.length + 1);
+    expect(customTestcases?.length).toBe(prevCustomTestcaseLength + 1);
     expect(customTestcases?.find((testcase) => testcase.input === newMockTestcase.input)).not.toBe(undefined);
   });
 
@@ -51,7 +50,7 @@ describe('[커스텀 훅] 커스텀 테스트케이스를 관리하는 훅', () 
       result.current.addCustomTestcase(newMockTestcase, problemNumber);
     });
 
-    const customTestcases = result.current.customTestcase[problemNumber];
+    const customTestcases = result.current.customTestcases[problemNumber];
 
     expect(customTestcases?.length).toBe(1);
     expect(customTestcases?.find((testcase) => testcase.input === newMockTestcase.input)).not.toBe(undefined);
@@ -61,13 +60,13 @@ describe('[커스텀 훅] 커스텀 테스트케이스를 관리하는 훅', () 
     const { result } = renderHook(() => useTestcase());
 
     const removeIdx = 1;
-    const removeMockTestcase = (result.current.customTestcase[mockProblem.number] || [])[removeIdx];
+    const removeMockTestcase = (result.current.customTestcases[mockProblem.number] || [])[removeIdx];
 
     act(() => {
       result.current.removeCustomTestcase(removeIdx);
     });
 
-    const customTestcases = result.current.customTestcase[mockProblem.number];
+    const customTestcases = result.current.customTestcases[mockProblem.number];
 
     expect(customTestcases?.find((testcase) => testcase.input === removeMockTestcase.input)).toBe(undefined);
   });
@@ -75,14 +74,15 @@ describe('[커스텀 훅] 커스텀 테스트케이스를 관리하는 훅', () 
   it('범위 밖 테스트케이스를 삭제할 경우, 삭제 된 테스트케이스가 없어야 한다.', () => {
     const { result } = renderHook(() => useTestcase());
 
-    const removeIdx = mockCustomTestcases.length;
+    const prevCustomTestcaseLength = result.current.customTestcases[mockProblem.number]?.length || 0;
+    const removeIdx = prevCustomTestcaseLength;
 
     act(() => {
       result.current.removeCustomTestcase(removeIdx);
     });
 
-    const customTestcases = result.current.customTestcase[mockProblem.number];
+    const customTestcases = result.current.customTestcases[mockProblem.number];
 
-    expect(customTestcases?.length).toBe(mockCustomTestcases.length);
+    expect(customTestcases?.length).toBe(prevCustomTestcaseLength);
   });
 });

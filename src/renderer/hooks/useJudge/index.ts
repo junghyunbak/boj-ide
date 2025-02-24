@@ -6,18 +6,19 @@ import { useShallow } from 'zustand/shallow';
 import { v4 as uuidv4 } from 'uuid';
 
 import { useEditorController } from '../useEditorController';
+import { useTestcase } from '../useTestcase';
 
 export function useJudge() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
-  const [customTestCase] = useStore(useShallow((s) => [s.customTestCase]));
   const [judgeResults, setJudgeResults] = useStore(useShallow((s) => [s.judgeResult, s.setJudgeResult]));
   const [judgeId, setJudgeId] = useStore(useShallow((s) => [s.judgeId, s.setJudgeId]));
 
+  const { customTestcases } = useTestcase();
   const { getProblemCode, saveEditorCode } = useEditorController();
 
   useEffect(() => {
     setJudgeId(uuidv4());
-  }, [problem, customTestCase, setJudgeId]);
+  }, [problem, customTestcases, setJudgeId]);
 
   const startJudge = () => {
     if (!problem) {
@@ -25,7 +26,7 @@ export function useJudge() {
     }
 
     const problemTC = problem.testCase;
-    const customTC = (customTestCase[problem.number] || []).reduce<{ inputs: string[]; outputs: string[] }>(
+    const customTC = (customTestcases[problem.number] || []).reduce<{ inputs: string[]; outputs: string[] }>(
       (prev, cur) => {
         prev.inputs.push(cur.input);
         prev.outputs.push(cur.output);
@@ -79,16 +80,16 @@ export function useJudge() {
   const isCorrect = totalCount === correctCount;
 
   return {
-    startJudge,
-    resetJudge,
+    customTestcases,
+    judgeId,
     isJudging,
     isJudgingEnd,
     totalCount,
     correctCount,
     isCorrect,
     judgeResults,
+    startJudge,
+    resetJudge,
     setJudgeResults,
-    customTestCase,
-    judgeId,
   };
 }
