@@ -132,7 +132,6 @@
     "@uiw/react-codemirror": "^4.23.6",
     "ai": "^4.0.18",
     "axios": "^1.7.9",
-    "cheerio": "^1.0.0-rc.12",
     "clipboardy": "^4.0.0",
     "color": "^4.2.3",
     "dom-to-image": "^2.2.1",
