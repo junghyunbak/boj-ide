@@ -125,15 +125,7 @@ export function Tabs() {
           </OverlayScrollbarsComponent>
         </div>
 
-        <div
-          css={css`
-            height: 100%;
-            border-bottom: 1px solid lightgray;
-            padding: 0.375rem;
-          `}
-        >
-          <TabOptions />
-        </div>
+        <TabOptions />
       </div>
     </div>
   );

@@ -31,6 +31,8 @@ export function TabOptions() {
         align-items: center;
         height: fit-content;
         position: relative;
+        border-bottom: 1px solid lightgray;
+        padding: 0.375rem;
       `}
     >
       <button
