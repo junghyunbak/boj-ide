@@ -9,7 +9,7 @@ import { ipc } from '@/main/utils';
 
 import { BOJ_DOMAIN } from '@/common/constants';
 
-import { IpcError, sentryLogging } from '@/main/error';
+import { IpcError, sentryErrorHandler, sentryLogging } from '@/main/error';
 
 export class Boj {
   private mainWindow: BrowserWindow;
@@ -77,7 +77,10 @@ export class Boj {
         clipboard
           .write(code)
           .then(() => resolve(true))
-          .catch(() => resolve(false));
+          .catch((err) => {
+            sentryErrorHandler(err);
+            resolve(false);
+          });
       });
 
       /**
