@@ -26,53 +26,58 @@ export function TabOptions() {
   return (
     <div
       css={css`
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: fit-content;
-        position: relative;
         border-bottom: 1px solid lightgray;
         padding: 0.375rem;
       `}
     >
-      <button
-        ref={buttonRef}
-        type="button"
+      <div
         css={css`
           display: flex;
           justify-content: center;
           align-items: center;
-          border: none;
-          background: none;
-          padding: 0.25rem;
-          cursor: pointer;
-          border-radius: 4px;
-          background-color: ${isOpen ? 'lightgray' : 'transparent'};
-
-          &:hover {
-            background-color: lightgray;
-          }
-
-          svg {
-            width: 1rem;
-            aspect-ratio: 1/1;
-            color: gray;
-          }
+          height: fit-content;
+          position: relative;
         `}
-        onClick={() => setIsOpen(!isOpen)}
       >
-        <ThreeDots />
-      </button>
-
-      <NonModal ref={modalRef} isOpen={isOpen} inset="100% 0 auto auto">
-        <div
+        <button
+          ref={buttonRef}
+          type="button"
           css={css`
-            padding: 0.25rem 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            background: none;
+            padding: 0.25rem;
+            cursor: pointer;
+            border-radius: 4px;
+            background-color: ${isOpen ? 'lightgray' : 'transparent'};
+
+            &:hover {
+              background-color: lightgray;
+            }
+
+            svg {
+              width: 1rem;
+              aspect-ratio: 1/1;
+              color: gray;
+            }
           `}
+          onClick={() => setIsOpen(!isOpen)}
         >
-          <ListButton onClick={handleAllTabCloseButtonClick}>탭 모두 닫기</ListButton>
-        </div>
-      </NonModal>
+          <ThreeDots />
+        </button>
+
+        <NonModal ref={modalRef} isOpen={isOpen} inset="100% 0 auto auto">
+          <div
+            css={css`
+              padding: 0.25rem 0;
+            `}
+          >
+            <ListButton onClick={handleAllTabCloseButtonClick}>문제 탭 전부 닫기</ListButton>
+          </div>
+        </NonModal>
+      </div>
     </div>
   );
 }
