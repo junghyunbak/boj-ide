@@ -45,6 +45,7 @@ describe('[커스텀 훅] 커스텀 테스트케이스를 관리하는 훅', () 
 
     const newMockTestcase = createMockTestcase();
     const problemNumber = '0';
+    const prevCustomTestcaseLength = result.current.customTestcases[problemNumber]?.length || 0;
 
     act(() => {
       result.current.addCustomTestcase(newMockTestcase, problemNumber);
@@ -52,7 +53,7 @@ describe('[커스텀 훅] 커스텀 테스트케이스를 관리하는 훅', () 
 
     const customTestcases = result.current.customTestcases[problemNumber];
 
-    expect(customTestcases?.length).toBe(1);
+    expect(customTestcases?.length).toBe(prevCustomTestcaseLength + 1);
     expect(customTestcases?.find((testcase) => testcase.input === newMockTestcase.input)).not.toBe(undefined);
   });
 
