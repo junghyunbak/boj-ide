@@ -81,6 +81,7 @@ export function Tabs() {
         css={css`
           width: 100%;
           display: flex;
+          padding-top: 0.3rem;
           justify-content: space-between;
           align-items: end;
         `}
