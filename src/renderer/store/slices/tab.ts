@@ -1,6 +1,9 @@
 import { type StateCreator } from 'zustand';
 
 type TabSlice = {
+  problemHistories: Tab[]; // TODO: problemHistories -> tabs
+  setProblemHistories: (fn: (prev: Tab[]) => Tab[]) => void; // TODO: setProblemHistories -> setTabs
+
   destTabIndex: number | null;
   setDestTabIndex: (index: number | null) => void;
 
@@ -12,6 +15,11 @@ type TabSlice = {
 };
 
 export const createTabSlice: StateCreator<TabSlice> = (set): TabSlice => ({
+  problemHistories: [],
+  setProblemHistories(fn) {
+    set((s) => ({ problemHistories: fn(s.problemHistories) }));
+  },
+
   destTabIndex: null,
   setDestTabIndex(index) {
     set(() => ({ destTabIndex: index }));
