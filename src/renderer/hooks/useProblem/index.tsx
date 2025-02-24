@@ -16,6 +16,7 @@ export function useProblem() {
         problem.name = newProblem.name;
         problem.testCase = newProblem.testCase;
         problem.inputDesc = newProblem.inputDesc;
+        problem.testCase = newProblem.testCase;
         return;
       }
 
