@@ -158,4 +158,89 @@ describe('[커스텀 훅] 탭 요소 관리', () => {
       expect(result.current.tabs.some(isProblemTab)).toBe(false);
     });
   });
+
+  describe('탭 순서 변경', () => {
+    /**
+     *      [ 1 ● 3 4 ]
+     * dest    ^
+     *
+     *      [ 1 3 4 ]
+     *      [ 1 ● 3 4 ]
+     * ------------------
+     *      [ 1 ● 3 4 ]
+     * dest      ^
+     *
+     *      [ 1 3 4 ]
+     *      [ 1 ● 3 4 ]
+     */
+    it('제자리로 위치를 변경할 경우, 상태변경이 일어나지 않아야 한다.', () => {
+      const all = [];
+
+      const { result } = renderHook(() => {
+        const value = useTab();
+        all.push(value);
+        return value;
+      });
+
+      const src = 1;
+      const dest = 1;
+
+      act(() => {
+        result.current.reorderTab(1, 1);
+        result.current.reorderTab(1, 2);
+
+        result.current.reorderTab(src, dest + 1);
+      });
+
+      expect(all.length).toBe(1);
+    });
+
+    /**
+     *      [ 1 ● 3 4 ]
+     * dest  ^
+     *
+     *      [ 1 3 4 ]
+     *      [ ● 1 3 4 ]
+     */
+    it('처음으로 위치를 변경한 경우, 순서가 올바르게 변경되어야 한다.', () => {
+      const { result } = renderHook(() => useTab());
+
+      const srcIdx = 1;
+      const destIdx = 0;
+      const target = result.current.tabs[srcIdx];
+
+      const tabLength = result.current.tabs.length;
+
+      act(() => {
+        result.current.reorderTab(srcIdx, destIdx);
+      });
+
+      expect(result.current.tabs.length).toBe(tabLength);
+      expect(result.current.tabs[destIdx] === target).toBe(true);
+    });
+
+    /*
+     *      [ 1 ● 3 4 ]
+     * dest          ^
+     *
+     *      [ 1 3 4 ]
+     *      [ 1 3 4 ● ]
+     */
+    it('마지막을 위치를 변경한 경우, 순서가 올바르게 변경되어야 한다.', () => {
+      const { result } = renderHook(() => useTab());
+
+      const srcIdx = 1;
+      const destIdx = 4;
+      const target = result.current.tabs[srcIdx];
+
+      const tabLength = result.current.tabs.length;
+
+      act(() => {
+        result.current.reorderTab(srcIdx, destIdx);
+      });
+
+      expect(result.current.tabs.length).toBe(tabLength);
+      expect(result.current.tabs[result.current.tabs.length - 1] === target).toBe(true);
+    });
+  });
 });

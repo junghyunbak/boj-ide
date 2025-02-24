@@ -88,11 +88,10 @@ export function useTab() {
     [gotoProblem, gotoUrl, setTabs],
   );
 
-  // TODO: 테스트 코드 작성
   const reorderTab = useCallback(
     (srcIndex: number, destIndex: number) => {
       setTabs((prev) => {
-        if (srcIndex === destIndex) {
+        if (srcIndex === destIndex || srcIndex + 1 === destIndex) {
           return prev;
         }
 
@@ -100,7 +99,7 @@ export function useTab() {
 
         const [moveElement] = next.splice(srcIndex, 1);
 
-        if (destIndex > srcIndex) {
+        if (srcIndex < destIndex) {
           next.splice(destIndex - 1, 0, moveElement);
         } else {
           next.splice(destIndex, 0, moveElement);
