@@ -1,13 +1,11 @@
 import { color } from '@/renderer/styles';
 import { css } from '@emotion/react';
 
-interface TextButtonProps {
-  children: string;
-  onClick: React.ButtonHTMLAttributes<HTMLButtonElement>['onClick'];
+interface TextButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   testId?: string;
 }
 
-export function TextButton({ children, onClick, testId }: TextButtonProps) {
+export function TextButton({ testId, ...props }: TextButtonProps) {
   return (
     <button
       type="button"
@@ -21,10 +19,8 @@ export function TextButton({ children, onClick, testId }: TextButtonProps) {
           text-decoration: underline;
         }
       `}
-      onClick={onClick}
+      {...props}
       data-testid={testId}
-    >
-      {children}
-    </button>
+    />
   );
 }
