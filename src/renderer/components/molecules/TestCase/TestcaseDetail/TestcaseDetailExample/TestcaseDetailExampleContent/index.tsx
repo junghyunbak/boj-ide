@@ -6,7 +6,7 @@ import { TextArea } from '@/renderer/components/atoms/textareas/TextArea';
 import { useTestcaseDetailExampleContext } from '../TestcaseDetailExampleContext';
 
 export function TestcaseDetailExampleContent() {
-  const { value, setValue, isEditing, setIsEditing } = useTestcaseDetailExampleContext();
+  const { value, setValue, isEditing } = useTestcaseDetailExampleContext();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -29,7 +29,14 @@ export function TestcaseDetailExampleContent() {
   }, [isEditing]);
 
   if (isEditing) {
-    return <TextArea ref={textareaRef} value={value} onChange={(e) => setValue(e.target.value)} />;
+    return (
+      <TextArea
+        ref={textareaRef}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        style={{ minHeight: '100px' }}
+      />
+    );
   }
 
   return <CodeBlock>{value}</CodeBlock>;
