@@ -7,9 +7,18 @@ import { useSplitLayoutStoreContext } from '../SplitLayoutContext';
 type LeftProps = {
   initialRatio?: number;
   onRatioChange?(ratio: number): void;
+
+  px?: {
+    min: number;
+  };
 };
 
-export function Left({ children, initialRatio = 50, onRatioChange }: React.PropsWithChildren<LeftProps>) {
+export function Left({
+  children,
+  initialRatio = 50,
+  onRatioChange,
+  px = { min: 100 },
+}: React.PropsWithChildren<LeftProps>) {
   const { splitLayoutStore } = useSplitLayoutStoreContext();
 
   useEffect(() => {
@@ -31,16 +40,25 @@ export function Left({ children, initialRatio = 50, onRatioChange }: React.Props
       const { width, height } = container.getBoundingClientRect();
 
       const deltaX = (vertical ? clientY : clientX) - startX;
-      const ratio = Math.min(((leftWidth + deltaX) / (vertical ? height : width)) * 100, 100);
 
-      if (vertical) {
-        left.style.height = `${ratio}%`;
+      if (px) {
+        if (vertical) {
+          left.style.height = `${Math.max(px.min, leftWidth + deltaX)}px`;
+        } else {
+          left.style.width = `${Math.max(px.min, leftWidth + deltaX)}px`;
+        }
       } else {
-        left.style.width = `${ratio}%`;
-      }
+        const ratio = Math.min(((leftWidth + deltaX) / (vertical ? height : width)) * 100, 100);
 
-      if (onRatioChange) {
-        onRatioChange(ratio);
+        if (vertical) {
+          left.style.height = `${ratio}%`;
+        } else {
+          left.style.width = `${ratio}%`;
+        }
+
+        if (onRatioChange) {
+          onRatioChange(ratio);
+        }
       }
     };
 
@@ -49,7 +67,7 @@ export function Left({ children, initialRatio = 50, onRatioChange }: React.Props
     return function cleanup() {
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [splitLayoutStore, onRatioChange]);
+  }, [splitLayoutStore, onRatioChange, px]);
 
   return (
     <div

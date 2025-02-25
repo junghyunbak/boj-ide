@@ -9,6 +9,9 @@ import { useProblem, useAlertModalController, useTestcase } from '@/renderer/hoo
 import { TextArea } from '@/renderer/components/atoms/textareas/TextArea';
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 import { TextInput } from '@/renderer/components/atoms/inputs/TextInput';
+import { ThreeLineHorizontalResizer } from '@/renderer/components/atoms/lines/ThreeLineHorizontalResizer';
+
+import { SplitLayout } from '@/renderer/components/molecules/SplitLayout';
 
 // [v]: 문제 번호가 작성되어있다면 테스트케이스 추가 버튼이 활성화되어있어야 한다.
 // [v]: 문제가 초기화 되어있지 않다면, 테스트케이스 추가 버튼을 누를 수 없어야 한다
@@ -71,31 +74,52 @@ export function TestCaseMaker() {
         gap: 0.5rem;
       `}
     >
-      <div
-        css={css`
-          display: flex;
-          gap: 0.5rem;
-        `}
-      >
-        <TextArea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="예제 입력"
-          disabled={disabled}
-        />
-        <TextArea
-          value={output}
-          onChange={(e) => setOutput(e.target.value)}
-          placeholder="예제 출력"
-          disabled={disabled}
-        />
-      </div>
+      <SplitLayout vertical>
+        <SplitLayout.Left px={{ min: 100 }}>
+          <div
+            css={css`
+              height: 100%;
+              display: flex;
+              gap: 0.5rem;
+            `}
+          >
+            <TextArea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="예제 입력"
+              disabled={disabled}
+              style={{ minHeight: '100px' }}
+            />
+            <TextArea
+              value={output}
+              onChange={(e) => setOutput(e.target.value)}
+              placeholder="예제 출력"
+              disabled={disabled}
+              style={{ minHeight: '100px' }}
+            />
+          </div>
+        </SplitLayout.Left>
 
-      {!problem && <TextInput value={problemNumber} onChange={handleInputTextChange} />}
+        <SplitLayout.Resizer>
+          <ThreeLineHorizontalResizer />
+        </SplitLayout.Resizer>
 
-      <ActionButton onClick={handleAddTestCaseButtonClick} disabled={disabled}>
-        테스트케이스 추가
-      </ActionButton>
+        <SplitLayout.Right>
+          <div
+            css={css`
+              display: flex;
+              flex-direction: column;
+              gap: 0.5rem;
+            `}
+          >
+            {!problem && <TextInput value={problemNumber} onChange={handleInputTextChange} />}
+
+            <ActionButton onClick={handleAddTestCaseButtonClick} disabled={disabled}>
+              테스트케이스 추가
+            </ActionButton>
+          </div>
+        </SplitLayout.Right>
+      </SplitLayout>
     </div>
   );
 }
