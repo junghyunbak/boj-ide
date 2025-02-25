@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { getElementFromChildren } from '@/renderer/utils';
 
@@ -30,13 +30,6 @@ const TestcaseDetailExampleImpl = (type: '입력' | '출력') =>
 
     const ExampleCopy = getElementFromChildren(children, TestcaseDetailExampleCopyType);
     const ExampleEdit = getElementFromChildren(children, TestcaseDetailExmapleEditType);
-
-    /**
-     * 테스트케이스 추가/삭제로 인해 initValue가 변경될 수 있으므로, 업데이트 해야한다.
-     */
-    useEffect(() => {
-      setValue(initValue);
-    }, [initValue]);
 
     return (
       <TestcaseDetailExampleContextProvider value={{ type, value, setValue, isEditing, setIsEditing }}>

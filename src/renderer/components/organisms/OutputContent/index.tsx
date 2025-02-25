@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import { useJudge, useJudgeEvent } from '@/renderer/hooks';
+import { useJudge, useJudgeEvent, useTestcase } from '@/renderer/hooks';
 
 import { TestCaseMaker } from '@/renderer/components/molecules/TestCaseMaker';
 import { Testcase } from '@/renderer/components/molecules/Testcase';
@@ -14,7 +14,8 @@ import {
 } from './index.style';
 
 export function OutputContent() {
-  const { judgeResults, allTestcase } = useJudge();
+  const { judgeResults } = useJudge();
+  const { allTestcase, tcKeyMap } = useTestcase();
 
   useJudgeEvent();
 
@@ -49,7 +50,7 @@ export function OutputContent() {
               j += 1;
 
               return (
-                <Testcase key={i} judgeResult={judgeResults[i]}>
+                <Testcase key={tcKeyMap.get(testcase)} judgeResult={judgeResults[i]}>
                   <Testcase.TestcaseTitle num={i + 1} />
                   <Testcase.TestcaseResult />
                   <Testcase.TestcaseElapsed />
@@ -72,7 +73,7 @@ export function OutputContent() {
             const customTestcaseArrayIdx = i - j;
 
             return (
-              <Testcase key={i} judgeResult={judgeResults[i]}>
+              <Testcase key={tcKeyMap.get(testcase)} judgeResult={judgeResults[i]}>
                 <Testcase.TestcaseTitle num={customTestcaseArrayIdx + 1} type="custom" />
                 <Testcase.TestcaseResult />
                 <Testcase.TestcaseElapsed />

@@ -13,9 +13,8 @@ const mockTestcase2 = createMockTestcase();
 const mockTestcase3 = createMockTestcase();
 
 beforeEach(() => {
-  const { setProblem, setCustomTestcases } = useStore.getState();
+  const { setCustomTestcases } = useStore.getState();
 
-  setProblem(mockProblem);
   setCustomTestcases(() => ({
     [mockProblem.number]: [mockTestcase1, mockTestcase2, mockTestcase3],
   }));
@@ -24,6 +23,10 @@ beforeEach(() => {
 describe('[커스텀 훅] 커스텀 테스트케이스를 관리하는 훅', () => {
   it('문제 페이지일 때 테스트케이스를 추가할 경우, 현재 페이지 문제 번호로 테스트케이스가 추가되어야 한다.', () => {
     const { result } = renderHook(() => useTestcase());
+
+    act(() => {
+      result.current.updateProblem(mockProblem);
+    });
 
     const newMockTestcase = createMockTestcase();
     const prevCustomTestcaseLength = result.current.customTestcases[mockProblem.number]?.length || 0;
@@ -41,7 +44,9 @@ describe('[커스텀 훅] 커스텀 테스트케이스를 관리하는 훅', () 
   it('문제 페이지가 아닐 때 테스트케이스를 추가할 경우, 입력된 문제 번호로 테스트케이스가 추가되어야 한다.', () => {
     const { result } = renderHook(() => useTestcase());
 
-    useStore.getState().setProblem(null);
+    act(() => {
+      result.current.updateProblem(null);
+    });
 
     const newMockTestcase = createMockTestcase();
     const problemNumber = '0';
@@ -60,6 +65,10 @@ describe('[커스텀 훅] 커스텀 테스트케이스를 관리하는 훅', () 
   it('범위 내 테스트케이스를 삭제할 경우, 해당 테스트케이스가 존재하지 않아야 한다.', () => {
     const { result } = renderHook(() => useTestcase());
 
+    act(() => {
+      result.current.updateProblem(mockProblem);
+    });
+
     const removeIdx = 1;
     const removeMockTestcase = (result.current.customTestcases[mockProblem.number] || [])[removeIdx];
 
@@ -74,6 +83,10 @@ describe('[커스텀 훅] 커스텀 테스트케이스를 관리하는 훅', () 
 
   it('범위 밖 테스트케이스를 삭제할 경우, 삭제 된 테스트케이스가 없어야 한다.', () => {
     const { result } = renderHook(() => useTestcase());
+
+    act(() => {
+      result.current.updateProblem(mockProblem);
+    });
 
     const prevCustomTestcaseLength = result.current.customTestcases[mockProblem.number]?.length || 0;
     const removeIdx = prevCustomTestcaseLength;
