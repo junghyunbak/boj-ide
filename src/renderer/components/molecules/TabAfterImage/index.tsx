@@ -4,12 +4,7 @@ import ReactDOM from 'react-dom';
 import { css } from '@emotion/react';
 import { zIndex } from '@/renderer/styles';
 
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
-
 export function TabAfterImage({ children }: React.PropsWithChildren) {
-  const [isTabDrag] = useStore(useShallow((s) => [s.isTabDrag]));
-
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -24,7 +19,7 @@ export function TabAfterImage({ children }: React.PropsWithChildren) {
 
     window.addEventListener('mousemove', handleWindowMouseMove);
 
-    return () => {
+    return function cleanup() {
       window.removeEventListener('mousemove', handleWindowMouseMove);
     };
   }, []);
