@@ -154,7 +154,7 @@ const configuration: webpack.Configuration = {
     port,
     compress: true,
     hot: true,
-    watchFiles: [webpackPaths.splitLayoutPath, webpackPaths.movableTabPath],
+    watchFiles: [webpackPaths.splitLayoutPath, webpackPaths.movableTabPath, webpackPaths.testcasePath],
     headers: { 'Access-Control-Allow-Origin': '*' },
     static: {
       publicPath: '/',

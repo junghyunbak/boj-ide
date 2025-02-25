@@ -43,9 +43,40 @@ export function useTestcase() {
     [setCustomTestcases, customTestcases],
   );
 
+  // TODO: 테스트코드 작성
+  const updateCustomTestcase = useCallback(
+    (i: number, value: { input?: string; output?: string }) => {
+      const { problem } = useStore.getState();
+
+      const number = problem?.number;
+
+      if (!number) {
+        return;
+      }
+
+      setCustomTestcases((prev) => {
+        if (!prev[number] || !prev[number][i]) {
+          return prev;
+        }
+
+        if (value.input) {
+          prev[number][i].input = value.input;
+        }
+
+        if (value.output) {
+          prev[number][i].output = value.output;
+        }
+
+        return prev;
+      });
+    },
+    [setCustomTestcases],
+  );
+
   return {
     customTestcases,
     addCustomTestcase,
     removeCustomTestcase,
+    updateCustomTestcase,
   };
 }

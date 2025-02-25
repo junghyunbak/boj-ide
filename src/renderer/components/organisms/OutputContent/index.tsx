@@ -9,22 +9,18 @@ import {
   ExecuteResultHead,
   ExecuteResultTbody,
 } from '@/renderer/components/atoms/tables/ExecuteResultTable';
-import { TestCase } from '@/renderer/components/molecules/TestCase';
 import { TestCaseMaker } from '@/renderer/components/molecules/TestCaseMaker';
+import { Testcase } from '@/renderer/components/molecules/Testcase';
 
-// <통합 테스트>
-// [ ]: [채점중이 아닐 때] 사용자 테스트케이스를 추가하면 기존 채점 결과를 삭제한다.
-// [ ]: [채점중이 아닐 때] 사용자 테스트케이스를 삭제하면 기존 채점 결과를 삭제한다.
-// [ ]: [채점중이 아닐 때] 선택된 문제가 변경되면 기존 채점 결과를 삭제한다.
-// [ ]: [채점중이 아닐 때] 결과 컬럼에 아무 텍스트도 없어야 한다.
-// [ ]: [채점중일 때] 사용자 테스트케이스를 추가하면 기존 채점 결과를 삭제하고, 진행중인 채점 결과를 무시한다.
-// [ ]: [채점중일 때] 사용자 테스트케이스를 삭제하면 기존 채점 결과를 삭제하고, 진행중인 채점 결과를 무시한다.
-// [ ]: [채점중일 때] 선택된 문제를 변경하면 기존 채점 결과를 삭제하고, 진행중인 채점 결과를 무시한다.
-// [ ]: [채점중일 때] '결과' 컬럼에 '채점중' 텍스트가 나타나야 한다.
 export function OutputContent() {
   const { judgeResults, allTestcase } = useJudge();
 
   useJudgeEvent();
+
+  /**
+   * 커스텀 테스트케이스의 실제 인덱스를 계산하기 위한 변수
+   */
+  let j = 0;
 
   return (
     <div
@@ -47,9 +43,60 @@ export function OutputContent() {
           </ExecuteResultTheadRow>
         </ExecuteResultThead>
         <ExecuteResultTbody>
-          {allTestcase.map((testcase, i) => (
-            <TestCase key={i} judgeResult={judgeResults[i]} {...testcase} i={i} />
-          ))}
+          {allTestcase.map((testcase, i) => {
+            if (testcase.type === 'problem') {
+              j += 1;
+
+              return (
+                <Testcase key={i} judgeResult={judgeResults[i]}>
+                  <Testcase.TestcaseTitle num={i + 1} />
+                  <Testcase.TestcaseResult />
+                  <Testcase.TestcaseElapsed />
+
+                  <Testcase.TestcaseDetail>
+                    <Testcase.TestcaseDetail.TestcaseDetailExampleInput initValue={testcase.input}>
+                      <Testcase.TestcaseDetail.TestcaseDetailExampleInput.TestcaseDetailExampleCopy />
+                    </Testcase.TestcaseDetail.TestcaseDetailExampleInput>
+
+                    <Testcase.TestcaseDetail.TestcaseDetailExampleOuptut initValue={testcase.output}>
+                      <Testcase.TestcaseDetail.TestcaseDetailExampleOuptut.TestcaseDetailExampleCopy />
+                    </Testcase.TestcaseDetail.TestcaseDetailExampleOuptut>
+
+                    <Testcase.TestcaseDetail.TestcaseDetailResult />
+                  </Testcase.TestcaseDetail>
+                </Testcase>
+              );
+            }
+
+            const customTestcaseArrayIdx = i - j;
+
+            return (
+              <Testcase key={i} judgeResult={judgeResults[i]}>
+                <Testcase.TestcaseTitle num={customTestcaseArrayIdx + 1} type="custom" />
+                <Testcase.TestcaseResult />
+                <Testcase.TestcaseElapsed />
+                <Testcase.TestcaseDelete idx={customTestcaseArrayIdx} />
+
+                <Testcase.TestcaseDetail>
+                  <Testcase.TestcaseDetail.TestcaseDetailExampleInput initValue={testcase.input}>
+                    <Testcase.TestcaseDetail.TestcaseDetailExampleInput.TestcaseDetailExampleCopy />
+                    <Testcase.TestcaseDetail.TestcaseDetailExampleOuptut.TestcaseDetailExampleEdit
+                      idx={customTestcaseArrayIdx}
+                    />
+                  </Testcase.TestcaseDetail.TestcaseDetailExampleInput>
+
+                  <Testcase.TestcaseDetail.TestcaseDetailExampleOuptut initValue={testcase.output}>
+                    <Testcase.TestcaseDetail.TestcaseDetailExampleOuptut.TestcaseDetailExampleCopy />
+                    <Testcase.TestcaseDetail.TestcaseDetailExampleOuptut.TestcaseDetailExampleEdit
+                      idx={customTestcaseArrayIdx}
+                    />
+                  </Testcase.TestcaseDetail.TestcaseDetailExampleOuptut>
+
+                  <Testcase.TestcaseDetail.TestcaseDetailResult />
+                </Testcase.TestcaseDetail>
+              </Testcase>
+            );
+          })}
         </ExecuteResultTbody>
       </ExecuteResultTable>
       <TestCaseMaker />

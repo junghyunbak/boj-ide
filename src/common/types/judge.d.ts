@@ -20,10 +20,11 @@ type Compiler = 'g++' | 'javac';
 type Executer = 'java' | 'node' | 'python3';
 type Cli = Compiler | Executer;
 
+type TCType = 'problem' | 'custom';
 type TC = {
   input: string;
   output: string;
-  type: 'problem' | 'custom';
+  type: TCType;
 };
 
 type CodeInfo = {
