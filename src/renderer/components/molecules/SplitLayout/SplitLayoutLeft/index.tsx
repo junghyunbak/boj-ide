@@ -13,12 +13,7 @@ type LeftProps = {
   };
 };
 
-export function Left({
-  children,
-  initialRatio = 50,
-  onRatioChange,
-  px = { min: 100 },
-}: React.PropsWithChildren<LeftProps>) {
+export function Left({ children, initialRatio = 50, onRatioChange, px }: React.PropsWithChildren<LeftProps>) {
   const { splitLayoutStore } = useSplitLayoutStoreContext();
 
   useEffect(() => {
