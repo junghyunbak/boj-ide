@@ -1,10 +1,12 @@
 import { css } from '@emotion/react';
+import { forwardRef } from 'react';
 
 interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
 
-export function TextArea({ ...props }: TextAreaProps) {
+export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(({ ...props }, ref) => {
   return (
     <textarea
+      ref={ref}
       css={css`
         width: 100%;
         height: 100%;
@@ -27,4 +29,4 @@ export function TextArea({ ...props }: TextAreaProps) {
       {...props}
     />
   );
-}
+});
