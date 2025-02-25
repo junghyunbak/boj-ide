@@ -2,15 +2,16 @@ import { css } from '@emotion/react';
 
 import { useJudge, useJudgeEvent } from '@/renderer/hooks';
 
+import { TestCaseMaker } from '@/renderer/components/molecules/TestCaseMaker';
+import { Testcase } from '@/renderer/components/molecules/Testcase';
+
 import {
   ExecuteResultTable,
   ExecuteResultThead,
   ExecuteResultTheadRow,
   ExecuteResultHead,
   ExecuteResultTbody,
-} from '@/renderer/components/atoms/tables/ExecuteResultTable';
-import { TestCaseMaker } from '@/renderer/components/molecules/TestCaseMaker';
-import { Testcase } from '@/renderer/components/molecules/Testcase';
+} from './index.style';
 
 export function OutputContent() {
   const { judgeResults, allTestcase } = useJudge();
