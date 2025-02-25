@@ -1,14 +1,14 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
 import { useEffect, useRef, useState } from 'react';
 
-import DomToImage from 'dom-to-image';
-
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
 import { useTab } from '@/renderer/hooks';
 
 import { getElementFromChildren } from '@/renderer/utils';
+
+import { TabAfterImage } from '@/renderer/components/molecules/TabAfterImage';
 
 import { MovableTabTopBorder } from './MovableTabTopBorder';
 import { MovableTabContext, MovableTabValue } from './MovableTabContext';
@@ -40,29 +40,15 @@ function MovableTabImpl({
   children,
   onClick = () => {},
 }: React.PropsWithChildren<MovableTabImplProps>) {
-  const [afterImageUrl, setAfterImageUrl] = useState('');
-
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const [setCurrentAfterImageUrl] = useStore(useShallow((s) => [s.setCurrentAfterImageUrl]));
-  const [setIsTabDrag] = useStore(useShallow((s) => [s.setIsTabDrag])); // for tabs
+  const [isAfterImageShow, setIsAfterImageShow] = useState(false);
+
+  const [isTabDrag, setIsTabDrag] = useStore(useShallow((s) => [s.isTabDrag, s.setIsTabDrag])); // for tabs
   const [setIsDrag] = useStore(useShallow((s) => [s.setIsDrag])); // for webview
   const [setDestTabIndex] = useStore(useShallow((s) => [s.setDestTabIndex]));
 
-  const { tabs, reorderTab } = useTab();
-
-  /**
-   * 이미지 잔상 초기화
-   */
-  useEffect(() => {
-    (async () => {
-      if (containerRef.current) {
-        const imageUrl = await DomToImage.toPng(containerRef.current);
-
-        setAfterImageUrl(imageUrl);
-      }
-    })();
-  }, [tabs]);
+  const { reorderTab } = useTab();
 
   /**
    * 드래그 이벤트 등록
@@ -83,7 +69,6 @@ function MovableTabImpl({
 
       isClicked = true;
       setIsDrag(true);
-      setCurrentAfterImageUrl(afterImageUrl);
     };
 
     const handleTabMouseMove = (e: MouseEvent) => {
@@ -91,6 +76,7 @@ function MovableTabImpl({
        * 드래그 중 일때 잔상이 보이도록 드래그 중임을 mousemove에서 처리
        */
       if (isClicked) {
+        setIsAfterImageShow(true);
         setIsTabDrag(true);
       }
 
@@ -118,7 +104,7 @@ function MovableTabImpl({
       isClicked = false;
       setIsDrag(false);
       setIsTabDrag(false);
-      setCurrentAfterImageUrl('');
+      setIsAfterImageShow(false);
     };
 
     const handleMouseRightButtonClick = (e: MouseEvent) => {
@@ -140,16 +126,7 @@ function MovableTabImpl({
       container.removeEventListener('mousemove', handleTabMouseMove);
       window.removeEventListener('mouseup', handleWindowMouseUp);
     };
-  }, [
-    afterImageUrl,
-    tabIndex,
-    polyfill,
-    reorderTab,
-    setCurrentAfterImageUrl,
-    setDestTabIndex,
-    setIsTabDrag,
-    setIsDrag,
-  ]);
+  }, [tabIndex, polyfill, reorderTab, setDestTabIndex, setIsTabDrag, setIsDrag]);
 
   /**
    * 탭 생성 시 스크롤을 요소 위치로 이동
@@ -193,6 +170,19 @@ function MovableTabImpl({
         {Content}
         {RightLine}
       </TabLayout>
+
+      {isAfterImageShow && (
+        <TabAfterImage>
+          <TabLayout>
+            {TopBorder}
+            {BottomBorder}
+            {LeftBorder}
+            {RightBorder}
+
+            {Content}
+          </TabLayout>
+        </TabAfterImage>
+      )}
     </MovableTabContext.Provider>
   );
 }

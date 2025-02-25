@@ -1,12 +1,14 @@
 import { useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
+
 import { css } from '@emotion/react';
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
 import { zIndex } from '@/renderer/styles';
 
-export function TabAfterImage() {
+import { useStore } from '@/renderer/store';
+import { useShallow } from 'zustand/shallow';
+
+export function TabAfterImage({ children }: React.PropsWithChildren) {
   const [isTabDrag] = useStore(useShallow((s) => [s.isTabDrag]));
-  const [currentAfterImageUrl] = useStore(useShallow((s) => [s.currentAfterImageUrl]));
 
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -27,7 +29,7 @@ export function TabAfterImage() {
     };
   }, []);
 
-  return (
+  return ReactDOM.createPortal(
     <div
       ref={containerRef}
       css={css`
@@ -35,16 +37,11 @@ export function TabAfterImage() {
         pointer-events: none;
         z-index: ${zIndex.overlay.afterImage};
         opacity: 0.8;
+        box-shadow: 0 3px 5px rgb(0 0 0 / 30%);
       `}
     >
-      {isTabDrag && currentAfterImageUrl && (
-        <img
-          src={currentAfterImageUrl}
-          css={css`
-            box-shadow: 0 3px 5px rgb(0 0 0 / 30%);
-          `}
-        />
-      )}
-    </div>
+      {children}
+    </div>,
+    document.querySelector('#after-image')!,
   );
 }
