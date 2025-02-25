@@ -7,8 +7,7 @@ export function MovableTabRightBorder() {
         position: absolute;
         top: 0;
         bottom: 0;
-        // BUG: 정수 픽셀로 계산되면서 갭 발생
-        right: -1px;
+        right: 0px;
 
         border-left: 1px solid lightgray;
       `}

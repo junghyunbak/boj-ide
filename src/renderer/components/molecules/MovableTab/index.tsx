@@ -44,7 +44,7 @@ function MovableTabImpl({
 
   const [isAfterImageShow, setIsAfterImageShow] = useState(false);
 
-  const [isTabDrag, setIsTabDrag] = useStore(useShallow((s) => [s.isTabDrag, s.setIsTabDrag])); // for tabs
+  const [setIsTabDrag] = useStore(useShallow((s) => [s.setIsTabDrag])); // for tabs
   const [setIsDrag] = useStore(useShallow((s) => [s.setIsDrag])); // for webview
   const [setDestTabIndex] = useStore(useShallow((s) => [s.setDestTabIndex]));
 
@@ -156,26 +156,21 @@ function MovableTabImpl({
   const Content = getElementFromChildren(children, ContentType);
 
   const LeftLine = getElementFromChildren(children, LeftLineType);
-  const RightLine = getElementFromChildren(children, RightLineType);
 
   return (
     <MovableTabContext.Provider value={{ isSelect, tabIndex }}>
       <TabLayout ref={containerRef} onClick={handleTabClick} isSelect={isSelect} polyfill={polyfill}>
         {TopBorder}
-        {BottomBorder}
-        {LeftBorder}
         {RightBorder}
 
         {LeftLine}
         {Content}
-        {RightLine}
       </TabLayout>
 
       {isAfterImageShow && (
         <TabAfterImage>
           <TabLayout>
             {TopBorder}
-            {BottomBorder}
             {LeftBorder}
             {RightBorder}
 

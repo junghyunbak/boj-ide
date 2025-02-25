@@ -26,7 +26,6 @@ export function TabOptions() {
   return (
     <div
       css={css`
-        border-bottom: 1px solid lightgray;
         padding: 0.375rem;
       `}
     >
