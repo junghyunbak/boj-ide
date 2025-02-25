@@ -10,7 +10,6 @@ export function TestcaseDelete({ idx }: TestcaseDeleteProps) {
   const { removeCustomTestcase } = useTestcase();
 
   const handleRemoveButtonClick = useCallback(() => {
-    console.log('hi', idx);
     removeCustomTestcase(idx);
   }, [removeCustomTestcase, idx]);
 
