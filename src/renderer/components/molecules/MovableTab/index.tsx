@@ -162,6 +162,7 @@ function MovableTabImpl({
       <TabLayout ref={containerRef} onClick={handleTabClick} isSelect={isSelect} polyfill={polyfill}>
         {TopBorder}
         {RightBorder}
+        {BottomBorder}
 
         {LeftLine}
         {Content}

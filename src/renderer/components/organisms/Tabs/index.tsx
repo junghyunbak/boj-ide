@@ -84,16 +84,13 @@ export function Tabs() {
 
           display: flex;
           justify-content: space-between;
-          align-items: center;
-
-          border-bottom: 1px solid lightgray;
+          align-items: end;
         `}
       >
         <div
           css={css`
             flex: 1;
             overflow: hidden;
-            //margin-bottom: -1px;
           `}
         >
           <OverlayScrollbarsComponent
