@@ -66,6 +66,10 @@ declare global {
           channel: (typeof ElECTRON_CHANNELS)['log-execute-ai-create'],
           message: ChannelToMessage['log-execute-ai-create'],
         ): void;
+        sendMessage(
+          channel: (typeof ElECTRON_CHANNELS)['log-toggle-paint'],
+          message: ChannelToMessage['log-toggle-paint'],
+        ): void;
 
         removeAllListeners(channel: ClientChannels): void;
       };

@@ -10,6 +10,7 @@ export const ElECTRON_CHANNELS: {
   'open-deep-link': 'open-deep-link',
   'log-add-testcase': 'log-add-testcase',
   'log-execute-ai-create': 'log-execute-ai-create',
+  'log-toggle-paint': 'log-toggle-paint',
 };
 
 export const CLIENT_CHANNELS: {

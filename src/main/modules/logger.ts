@@ -21,5 +21,14 @@ export class Logger {
         },
       });
     });
+
+    ipc.on('log-toggle-paint', (e, { data: { number, language } }) => {
+      sentryLogging('[로그] 사용자가 그림판을 버튼을 클릭하였습니다.', {
+        tags: {
+          number,
+          language,
+        },
+      });
+    });
   }
 }

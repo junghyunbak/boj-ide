@@ -4,8 +4,6 @@ import { ElECTRON_CHANNELS, CLIENT_CHANNELS } from '@/common/constants';
 
 import { IpcError, sentryErrorHandler } from '@/main/error';
 
-import * as Sentry from '@sentry/node';
-
 function IpcErrorHandler<T extends Electron.IpcMainEvent | Electron.IpcMainInvokeEvent>(
   channel: string,
   listener: (e: T, ...args: any[]) => Promise<any> | any,
@@ -79,6 +77,11 @@ class Ipc {
   on(
     channel: (typeof ElECTRON_CHANNELS)['log-execute-ai-create'],
     listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['log-execute-ai-create']) => void,
+  ): void;
+
+  on(
+    channel: (typeof ElECTRON_CHANNELS)['log-toggle-paint'],
+    listener: (e: Electron.IpcMainEvent, message: ChannelToMessage['log-toggle-paint']) => void,
   ): void;
 
   on(channel: string, listener: (e: Electron.IpcMainEvent, ...args: any[]) => void | Promise<void>): void {

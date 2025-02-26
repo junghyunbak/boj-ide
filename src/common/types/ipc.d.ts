@@ -11,6 +11,7 @@ type ChannelToMessage = {
   'open-deep-link': undefined;
   'log-add-testcase': MessageTemplate<MyOmit<CodeInfo, 'code'>>;
   'log-execute-ai-create': MessageTemplate<MyOmit<CodeInfo, 'code'>>;
+  'log-toggle-paint': MessageTemplate<MyOmit<CodeInfo, 'code'>>;
 
   /**
    * client
@@ -40,6 +41,7 @@ type ElectronChannels = keyof Pick<
   | 'open-deep-link'
   | 'log-add-testcase'
   | 'log-execute-ai-create'
+  | 'log-toggle-paint'
 >;
 
 type ClientChannels = keyof Pick<

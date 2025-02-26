@@ -8,6 +8,12 @@ export function PaintButton() {
 
   const handleTogglePaintButtonClick = () => {
     setIsPaintOpen(!isPaintOpen);
+
+    const { problem, lang } = useStore.getState();
+
+    window.electron.ipcRenderer.sendMessage('log-toggle-paint', {
+      data: { number: problem?.number || '', language: lang },
+    });
   };
 
   return <PenButton onClick={handleTogglePaintButtonClick} />;
