@@ -13,6 +13,7 @@ beforeEach(() => {
   const { setWebview, setProblem } = useStore.getState();
 
   setProblem(mockProblem);
+
   setWebview({
     loadURL(url, options) {
       return new Promise<void>((resolve) => {
@@ -22,7 +23,7 @@ beforeEach(() => {
   } as Electron.WebviewTag);
 });
 
-describe('[커스텀 훅] 웹 뷰 컨트롤러', () => {
+describe('[Custom Hooks] useWebviewController', () => {
   it('새로운 문제로 이동시킬 경우, true를 반환한다.', () => {
     const { result } = renderHook(() => useWebviewController());
 

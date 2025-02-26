@@ -52,8 +52,8 @@
     "start:preload": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.preload.dev.ts",
     "start:renderer": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack serve --config ./.erb/configs/webpack.config.renderer.dev.ts",
     "test": "jest --verbose --watchAll",
-    "test:main": "jest --verbose ./src/main",
-    "test:renderer": "jest --verbose ./src/renderer"
+    "test:main": "jest --verbose --watchAll ./src/main",
+    "test:renderer": "jest --verbose --watchAll ./src/renderer"
   },
   "browserslist": [
     "extends browserslist-config-erb"

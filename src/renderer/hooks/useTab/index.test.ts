@@ -14,7 +14,7 @@ const mockExtension = createMockExtension();
 const mockProblem1 = createMockProblem();
 const mockProblem2 = createMockProblem();
 
-describe('[커스텀 훅] 탭 요소 관리', () => {
+describe('[Custom Hooks] useTab', () => {
   beforeEach(() => {
     useStore.getState().setProblemHistories(() => [mockProblem1, mockBookmark, mockExtension, mockProblem2]);
   });
@@ -202,7 +202,7 @@ describe('[커스텀 훅] 탭 요소 관리', () => {
      *      [ 1 3 4 ]
      *      [ ● 1 3 4 ]
      */
-    it('처음으로 위치를 변경한 경우, 순서가 올바르게 변경되어야 한다.', () => {
+    it('맨 앞으로 위치를 변경한 경우, 순서가 올바르게 변경되어야 한다.', () => {
       const { result } = renderHook(() => useTab());
 
       const srcIdx = 1;
@@ -226,7 +226,7 @@ describe('[커스텀 훅] 탭 요소 관리', () => {
      *      [ 1 3 4 ]
      *      [ 1 3 4 ● ]
      */
-    it('마지막을 위치를 변경한 경우, 순서가 올바르게 변경되어야 한다.', () => {
+    it('맨 뒤로 위치를 변경한 경우, 순서가 올바르게 변경되어야 한다.', () => {
       const { result } = renderHook(() => useTab());
 
       const srcIdx = 1;

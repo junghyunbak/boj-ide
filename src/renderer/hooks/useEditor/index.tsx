@@ -15,8 +15,6 @@ import { useEditorController } from '../useEditorController';
  *
  * vim, dom 단축키와 같은 로직은 내보내기 한 요소들을 가지고 추가적인 훅에서 처리
  */
-
-// [ ]: 문제/언어 변경 시 히스토리가 존재하지 않아야 함.
 export function useEditor({ width, height }: { width: number; height: number }) {
   const [problem] = useStore(useShallow((s) => [s.problem]));
   const [lang] = useStore(useShallow((s) => [s.lang]));

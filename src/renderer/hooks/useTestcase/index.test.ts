@@ -20,83 +20,87 @@ beforeEach(() => {
   }));
 });
 
-describe('[커스텀 훅] 커스텀 테스트케이스를 관리하는 훅', () => {
-  it('문제 페이지일 때 테스트케이스를 추가할 경우, 현재 페이지 문제 번호로 테스트케이스가 추가되어야 한다.', () => {
-    const { result } = renderHook(() => useTestcase());
+describe('[Custom Hooks] useTestcase', () => {
+  describe('문제가 초기화되지 않은 상태', () => {
+    it('문제 번호가 추가로 전달 된 경우, 해당 문제 번호로 테스트케이스가 추가되어야 한다.', () => {
+      const { result } = renderHook(() => useTestcase());
 
-    act(() => {
-      result.current.updateProblem(mockProblem);
+      act(() => {
+        result.current.updateProblem(null);
+      });
+
+      const problemNumber = '0';
+      const newMockTestcase = createMockTestcase();
+      const prevCustomTestcaseLength = result.current.customTestcases[problemNumber]?.length || 0;
+
+      act(() => {
+        result.current.addCustomTestcase(newMockTestcase, problemNumber);
+      });
+
+      const customTestcases = result.current.customTestcases[problemNumber];
+
+      expect(customTestcases?.length).toBe(prevCustomTestcaseLength + 1);
+      expect(customTestcases?.find((testcase) => testcase.input === newMockTestcase.input)).not.toBe(undefined);
     });
-
-    const newMockTestcase = createMockTestcase();
-    const prevCustomTestcaseLength = result.current.customTestcases[mockProblem.number]?.length || 0;
-
-    act(() => {
-      result.current.addCustomTestcase(newMockTestcase);
-    });
-
-    const customTestcases = result.current.customTestcases[mockProblem.number];
-
-    expect(customTestcases?.length).toBe(prevCustomTestcaseLength + 1);
-    expect(customTestcases?.find((testcase) => testcase.input === newMockTestcase.input)).not.toBe(undefined);
   });
 
-  it('문제 페이지가 아닐 때 테스트케이스를 추가할 경우, 입력된 문제 번호로 테스트케이스가 추가되어야 한다.', () => {
-    const { result } = renderHook(() => useTestcase());
+  describe('문제가 초기화 되어있는 상태', () => {
+    it('테스트케이스를 추가할 경우, 현재 문제 번호로 테스트케이스가 추가되어야 한다.', () => {
+      const { result } = renderHook(() => useTestcase());
 
-    act(() => {
-      result.current.updateProblem(null);
+      act(() => {
+        result.current.updateProblem(mockProblem);
+      });
+
+      const newMockTestcase = createMockTestcase();
+      const prevCustomTestcaseLength = result.current.customTestcases[mockProblem.number]?.length || 0;
+
+      act(() => {
+        result.current.addCustomTestcase(newMockTestcase);
+      });
+
+      const customTestcases = result.current.customTestcases[mockProblem.number];
+
+      expect(customTestcases?.length).toBe(prevCustomTestcaseLength + 1);
+      expect(customTestcases?.find((testcase) => testcase.input === newMockTestcase.input)).not.toBe(undefined);
     });
 
-    const newMockTestcase = createMockTestcase();
-    const problemNumber = '0';
-    const prevCustomTestcaseLength = result.current.customTestcases[problemNumber]?.length || 0;
+    it('범위 내 테스트케이스를 삭제할 경우, 해당 테스트케이스가 존재하지 않아야 한다.', () => {
+      const { result } = renderHook(() => useTestcase());
 
-    act(() => {
-      result.current.addCustomTestcase(newMockTestcase, problemNumber);
+      act(() => {
+        result.current.updateProblem(mockProblem);
+      });
+
+      const removeIdx = 1;
+      const removeMockTestcase = (result.current.customTestcases[mockProblem.number] || [])[removeIdx];
+
+      act(() => {
+        result.current.removeCustomTestcase(removeIdx);
+      });
+
+      const customTestcases = result.current.customTestcases[mockProblem.number];
+
+      expect(customTestcases?.find((testcase) => testcase.input === removeMockTestcase.input)).toBe(undefined);
     });
 
-    const customTestcases = result.current.customTestcases[problemNumber];
+    it('범위 밖 테스트케이스를 삭제할 경우, 삭제 된 테스트케이스가 없어야 한다.', () => {
+      const { result } = renderHook(() => useTestcase());
 
-    expect(customTestcases?.length).toBe(prevCustomTestcaseLength + 1);
-    expect(customTestcases?.find((testcase) => testcase.input === newMockTestcase.input)).not.toBe(undefined);
-  });
+      act(() => {
+        result.current.updateProblem(mockProblem);
+      });
 
-  it('범위 내 테스트케이스를 삭제할 경우, 해당 테스트케이스가 존재하지 않아야 한다.', () => {
-    const { result } = renderHook(() => useTestcase());
+      const prevCustomTestcaseLength = result.current.customTestcases[mockProblem.number]?.length || 0;
+      const removeIdx = prevCustomTestcaseLength;
 
-    act(() => {
-      result.current.updateProblem(mockProblem);
+      act(() => {
+        result.current.removeCustomTestcase(removeIdx);
+      });
+
+      const customTestcases = result.current.customTestcases[mockProblem.number];
+
+      expect(customTestcases?.length).toBe(prevCustomTestcaseLength);
     });
-
-    const removeIdx = 1;
-    const removeMockTestcase = (result.current.customTestcases[mockProblem.number] || [])[removeIdx];
-
-    act(() => {
-      result.current.removeCustomTestcase(removeIdx);
-    });
-
-    const customTestcases = result.current.customTestcases[mockProblem.number];
-
-    expect(customTestcases?.find((testcase) => testcase.input === removeMockTestcase.input)).toBe(undefined);
-  });
-
-  it('범위 밖 테스트케이스를 삭제할 경우, 삭제 된 테스트케이스가 없어야 한다.', () => {
-    const { result } = renderHook(() => useTestcase());
-
-    act(() => {
-      result.current.updateProblem(mockProblem);
-    });
-
-    const prevCustomTestcaseLength = result.current.customTestcases[mockProblem.number]?.length || 0;
-    const removeIdx = prevCustomTestcaseLength;
-
-    act(() => {
-      result.current.removeCustomTestcase(removeIdx);
-    });
-
-    const customTestcases = result.current.customTestcases[mockProblem.number];
-
-    expect(customTestcases?.length).toBe(prevCustomTestcaseLength);
   });
 });
