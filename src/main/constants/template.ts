@@ -21,6 +21,12 @@ rl.on('close', () => {
   const [a, b] = input().split(' ').map(Number);
 
   console.log(a + b);
+
+  /*
+  default.js 파일이 존재하지 않을 경우 출력되는 기본 코드입니다.
+
+  기본 코드는 '기본 코드로 설정' 버튼을 눌러 변경할 수 있습니다.
+  */
 })
 `;
 
@@ -37,6 +43,12 @@ int main() {
 
   cout << a+b << endl;
 
+  /*
+  default.cpp 파일이 존재하지 않을 경우 출력되는 기본 코드입니다.
+
+  기본 코드는 '기본 코드로 설정' 버튼을 눌러 변경할 수 있습니다.
+  */
+
   return 0;
 }
 `;
@@ -46,6 +58,12 @@ export const PY_INPUT_TEMPLATE = `import sys
 a, b = map(int, sys.stdin.readline().split())
 
 print(a+b)
+
+'''
+default.py 파일이 존재하지 않을 경우 출력되는 기본 코드입니다.
+
+기본 코드는 '기본 코드로 설정' 버튼을 눌러 변경할 수 있습니다.
+'''
 `;
 
 export const JAVA_CODE_TEMPLATE = `import java.util.*;
@@ -60,6 +78,12 @@ public class Main{
     b = sc.nextInt();
 
     System.out.println(a + b);
+
+    /*
+    default.java 파일이 존재하지 않을 경우 출력되는 기본 코드입니다.
+
+    기본 코드는 '기본 코드로 설정' 버튼을 눌러 변경할 수 있습니다.
+    */
   }
 }
 `;
