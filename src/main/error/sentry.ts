@@ -1,3 +1,5 @@
+import { RELEASE_VERSION } from '@/common/constants';
+
 import * as Sentry from '@sentry/node';
 
 import { type SeverityLevel } from '@sentry/node';
@@ -17,8 +19,14 @@ export const sentryLogging = (
     return;
   }
 
+  const { tags, ...other } = scopeContext;
+
   Sentry.captureMessage(message, {
-    ...scopeContext,
+    ...other,
     level: 'log',
+    tags: {
+      ...tags,
+      version: RELEASE_VERSION,
+    },
   });
 };

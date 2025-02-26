@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import { useAlertModalController } from '@/renderer/hooks';
 
-import { RELEASE_VERSION } from '@/renderer/constants';
+import { RELEASE_VERSION } from '@/common/constants';
 
 import { TransparentButton } from '@/renderer/components/atoms/buttons/TransparentButton';
 
