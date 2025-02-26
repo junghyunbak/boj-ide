@@ -26,6 +26,9 @@ rl.on('close', () => {
   default.js 파일이 존재하지 않을 경우 출력되는 기본 코드입니다.
 
   기본 코드는 '기본 코드로 설정' 버튼을 눌러 변경할 수 있습니다.
+
+  node.js의 경우 fs 모듈을 사용한 입력은 불가합니다. readline을 이용해주세요.
+  https://boj-ide.gitbook.io/boj-ide-docs/note/language#node.js
   */
 })
 `;
