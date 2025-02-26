@@ -13,22 +13,16 @@ export function useEditorController() {
   const { fireAlertModal } = useAlertModalController();
 
   const getProblemCode = useCallback(() => {
-    const { problem, problemToCode } = useStore.getState();
+    const { problem, problemToCode, lang } = useStore.getState();
 
-    if (!problem) {
-      return '';
-    }
-
-    return problemToCode.get(problem.number) || '';
+    return problemToCode.get(`${problem?.number}|${lang}`) || '';
   }, []);
 
   const setProblemCode = useCallback(
     (code: string) => {
-      const { problem } = useStore.getState();
+      const { problem, lang } = useStore.getState();
 
-      if (problem) {
-        setProblemToCode(problem.number, code);
-      }
+      setProblemToCode(`${problem?.number}|${lang}`, code);
     },
     [setProblemToCode],
   );
