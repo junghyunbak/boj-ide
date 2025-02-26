@@ -86,15 +86,21 @@ function PaintAndEditor() {
   const [isPaintOpen] = useStore(useShallow((s) => [s.isPaintOpen]));
 
   return (
-    <SplitLayout hiddenLeft={!isPaintOpen}>
-      <SplitLayout.Left
-        initialRatio={useStore.getState().paintLeftRatio}
-        onRatioChange={useStore.getState().setPaintLeftRatio}
-      >
-        <EditorPaint />
-      </SplitLayout.Left>
+    <SplitLayout>
+      {/**
+       * fragment를 사용하여 한번에 Left, Resizer를 렌더링 할 경우
+       * 올바르게 렌더링되지 않음.
+       */}
+      {isPaintOpen && (
+        <SplitLayout.Left
+          initialRatio={useStore.getState().paintLeftRatio}
+          onRatioChange={useStore.getState().setPaintLeftRatio}
+        >
+          <EditorPaint />
+        </SplitLayout.Left>
+      )}
 
-      <SplitLayout.Resizer zIndex={zIndex.resizer.paint} />
+      {isPaintOpen && <SplitLayout.Resizer zIndex={zIndex.resizer.paint} />}
 
       <SplitLayout.Right>
         <Editor />

@@ -17,11 +17,10 @@ const ResizerType = (<Resizer />).type;
 const RightType = (<Right />).type;
 
 type LayoutProps = {
-  hiddenLeft?: boolean;
   vertical?: boolean;
 };
 
-function Layout({ children, hiddenLeft = false, vertical = false }: React.PropsWithChildren<LayoutProps>) {
+function Layout({ children, vertical = false }: React.PropsWithChildren<LayoutProps>) {
   const leftRef = useRef<HTMLDivElement | null>(null);
   const resizerRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -62,12 +61,8 @@ function Layout({ children, hiddenLeft = false, vertical = false }: React.PropsW
               `}
         `}
       >
-        {!hiddenLeft && (
-          <>
-            {LeftElement}
-            {ResizerElement}
-          </>
-        )}
+        {LeftElement}
+        {ResizerElement}
         {RightElement}
       </div>
     </SplitLayoutContext.Provider>
