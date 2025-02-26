@@ -5,6 +5,7 @@ type ChannelToMessage = {
   'load-code': MessageTemplate<MyOmit<CodeInfo, 'code'>>;
   'load-files': undefined;
   'save-code': MessageTemplate<CodeInfo>;
+  'save-default-code': MessageTemplate<MyOmit<CodeInfo, 'number'>>;
   'judge-start': MessageTemplate<CodeInfo & Pick<ProblemInfo, 'testCase'> & { judgeId: string }>;
   'submit-code': MessageTemplate<CodeInfo>;
   'open-source-code-folder': undefined;
@@ -34,6 +35,7 @@ type ElectronChannels = keyof Pick<
   ChannelToMessage,
   | 'judge-start'
   | 'save-code'
+  | 'save-default-code'
   | 'load-code'
   | 'load-files'
   | 'open-source-code-folder'

@@ -4,6 +4,7 @@ export const ElECTRON_CHANNELS: {
   'load-code': 'load-code',
   'load-files': 'load-files',
   'save-code': 'save-code',
+  'save-default-code': 'save-default-code',
   'judge-start': 'judge-start',
   'submit-code': 'submit-code',
   'open-source-code-folder': 'open-source-code-folder',

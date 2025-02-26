@@ -13,22 +13,6 @@ import {
 
 import { ipc } from '@/main/utils';
 
-const createDefaultCode = (language: Language) => {
-  switch (language) {
-    case 'C++14':
-    case 'C++17':
-      return CPP_INPUT_TEMPLATE;
-    case 'node.js':
-      return JS_INPUT_TEMPLATE;
-    case 'Python3':
-      return PY_INPUT_TEMPLATE;
-    case 'Java11':
-      return JAVA_CODE_TEMPLATE;
-    default:
-      return '';
-  }
-};
-
 export class Code {
   private basePath: string;
 
@@ -43,6 +27,32 @@ export class Code {
     fs.writeFileSync(path.join(basePath, `${fileName}.${ext}`), code, {
       encoding: 'utf-8',
     });
+  }
+
+  private loadDefaultCodeFile(language: Language, ext: string) {
+    const defaultFilePath = path.join(this.basePath, `default.${ext}`);
+
+    const defaultCode = (() => {
+      switch (language) {
+        case 'C++14':
+        case 'C++17':
+          return CPP_INPUT_TEMPLATE;
+        case 'node.js':
+          return JS_INPUT_TEMPLATE;
+        case 'Python3':
+          return PY_INPUT_TEMPLATE;
+        case 'Java11':
+          return JAVA_CODE_TEMPLATE;
+        default:
+          return '';
+      }
+    })();
+
+    if (!fs.existsSync(defaultFilePath)) {
+      fs.writeFileSync(defaultFilePath, defaultCode, { encoding: 'utf-8' });
+    }
+
+    return fs.readFileSync(defaultFilePath, { encoding: 'utf-8' });
   }
 
   build() {
@@ -82,6 +92,20 @@ export class Code {
       return { data: { isSaved: true } };
     });
 
+    ipc.handle('save-default-code', async (e, { data: { code, language } }) => {
+      const ext = langToJudgeInfo[language].ext[process.platform];
+
+      if (!ext) {
+        throw new Error('지원하지 않는 플랫폼입니다.');
+      }
+
+      const defaultFilePath = path.join(this.basePath, `default.${ext}`);
+
+      fs.writeFileSync(defaultFilePath, code, { encoding: 'utf-8' });
+
+      return { data: { isSaved: true } };
+    });
+
     ipc.handle('load-code', async (e, { data: { number, language } }) => {
       const ext = langToJudgeInfo[language].ext[process.platform];
 
@@ -92,7 +116,7 @@ export class Code {
       const filePath = path.join(this.basePath, `${number}.${ext}`);
 
       if (!fs.existsSync(filePath)) {
-        const code = createDefaultCode(language);
+        const code = this.loadDefaultCodeFile(language, ext);
 
         fs.writeFileSync(filePath, code, { encoding: 'utf-8' });
       }

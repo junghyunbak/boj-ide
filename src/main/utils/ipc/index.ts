@@ -104,6 +104,14 @@ class Ipc {
     ) => Promise<ChannelToMessage['save-code-result']>,
   ): void;
 
+  handle(
+    channel: (typeof ElECTRON_CHANNELS)['save-default-code'],
+    listener: (
+      e: Electron.IpcMainInvokeEvent,
+      message: ChannelToMessage['save-default-code'],
+    ) => Promise<ChannelToMessage['save-code-result']>,
+  ): void;
+
   handle(channel: string, listener: (e: Electron.IpcMainInvokeEvent, ...args: any[]) => Promise<any>): void {
     ipcMain.handle(channel, IpcErrorHandler(channel, listener, this.send));
   }
