@@ -8,7 +8,7 @@ import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 
 export function SetDefaultCodeButton() {
   const { problem } = useProblem();
-  const { getProblemCode } = useEditorController();
+  const { getProblemCode, saveEditorCode } = useEditorController();
   const { fireConfirmModal } = useConfirmModalController();
   const { fireAlertModal } = useAlertModalController();
 
@@ -19,6 +19,8 @@ export function SetDefaultCodeButton() {
       const result = await window.electron.ipcRenderer.invoke('save-default-code', {
         data: { language: lang, code: getProblemCode() },
       });
+
+      saveEditorCode({ silence: true });
 
       if (result && result.data.isSaved) {
         fireAlertModal('안내', `default.${languageToExt(lang)} 파일이 성공적으로 업데이트 되었습니다.`);
