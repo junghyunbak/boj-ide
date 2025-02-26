@@ -40,6 +40,7 @@ export function ActionButton({ variant = 'primary', children, onClick, disabled 
         padding: 0.4rem 0.8rem;
         background-color: ${bgColor};
         color: ${textColor};
+        white-space: nowrap;
         cursor: pointer;
         &:hover {
           background-color: ${Color(bgColor).lighten(0.05).toString()};
