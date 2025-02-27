@@ -1,14 +1,21 @@
 import styled from '@emotion/styled';
-
+import { css } from '@emotion/react';
 import { color, zIndex } from '@/renderer/styles';
 
 export const PaintLayout = styled.div<{ isExpand: boolean }>`
   width: 100%;
   height: 100%;
 
-  position: ${({ isExpand }) => (isExpand ? 'absolute' : 'relative')};
-  inset: 0;
-  z-index: ${({ isExpand }) => (isExpand ? zIndex.paint.expanded : zIndex.paint.default)};
+  ${({ isExpand }) =>
+    isExpand
+      ? css`
+          position: absolute;
+          z-index: ${zIndex.paint.expanded};
+        `
+      : css`
+          position: relative;
+          z-index: ${zIndex.paint.default};
+        `}
 
   background-color: white;
   outline: none;
