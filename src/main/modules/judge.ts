@@ -70,10 +70,11 @@ export class Judge {
       return null;
     }
 
-    const ext = this.codeModule.getExt(language);
-    const filePath = path.join(this.basePath, language === 'Java11' ? 'Main.java' : `${number}.${ext}`);
+    this.codeModule.save({ language, code, number });
 
-    fs.writeFileSync(filePath, code, { encoding: 'utf-8' });
+    if (language === 'Java11') {
+      fs.writeFileSync(path.join(this.basePath, 'Main.java'), code, { encoding: 'utf-8' });
+    }
 
     const compileCmd = this.getCompileCmd({ language, number });
 
@@ -119,10 +120,7 @@ export class Judge {
         // 1. cli 존재여부 체크
         this.isCliExist(language);
 
-        // 2. 코드 저장
-        this.codeModule.save({ number, language, code });
-
-        // 3. 컴파일
+        // 2. 컴파일
         const error = await this.compile({ language, code, number });
 
         if (error) {
@@ -135,7 +133,7 @@ export class Judge {
           return;
         }
 
-        // 4. 채점 시작
+        // 3. 채점 시작
         const executeCmd = this.getExecuteCmd({ language, number });
 
         for (let index = 0; index < inputs.length; index += 1) {

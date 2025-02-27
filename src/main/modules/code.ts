@@ -72,7 +72,7 @@ export class Code {
     return fs.readFileSync(defaultFilePath, { encoding: 'utf-8' });
   }
 
-  public getExt(language: Language) {
+  private getExt(language: Language) {
     const ext = langToJudgeInfo[language].ext[process.platform];
 
     if (!ext) {
