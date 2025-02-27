@@ -12,6 +12,7 @@ export function PaintButton() {
     const { problem, lang } = useStore.getState();
 
     window.electron.ipcRenderer.sendMessage('log-toggle-paint', {
+      // BUG: 공백문자 전달 시 Sentry invalid 태그 에러 발생
       data: { number: problem?.number || '', language: lang },
     });
   };

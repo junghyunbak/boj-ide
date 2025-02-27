@@ -12,12 +12,14 @@ export function useEditorController() {
 
   const { fireAlertModal } = useAlertModalController();
 
+  // TODO: 테스트
   const getProblemCode = useCallback(() => {
     const { problem, problemToCode, lang } = useStore.getState();
 
     return problemToCode.get(`${problem?.number}|${lang}`) || '';
   }, []);
 
+  // TODO: 테스트
   const setProblemCode = useCallback(
     (code: string) => {
       const { problem, lang } = useStore.getState();
