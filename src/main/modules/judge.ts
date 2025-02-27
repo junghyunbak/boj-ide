@@ -1,4 +1,5 @@
-import { app, BrowserWindow, WebContents } from 'electron';
+/* eslint-disable no-cond-assign */
+import { app, BrowserWindow } from 'electron';
 
 import fs from 'fs';
 import path from 'path';
@@ -6,68 +7,91 @@ import { Worker } from 'worker_threads';
 
 import { customSpawn, normalizeOutput, ipc, checkCli } from '@/main/utils';
 
-import { MAX_BUFFER_SIZE, MAX_LINE_LENGTH, langToJudgeInfo } from '@/main/constants';
+import { MAX_LINE_LENGTH, langToJudgeInfo } from '@/main/constants';
 
 import { sentryLogging } from '@/main/error';
 
 import { Code } from './code';
 
-export async function compile({
-  language,
-  code,
-  fileName,
-  basePath,
-  ext,
-}: {
-  language: Language;
-  code: string;
-  fileName: string;
-  basePath: string;
-  ext: string;
-}): Promise<string> {
-  if (!langToJudgeInfo[language].compile) {
-    return '';
-  }
-
-  fs.writeFileSync(path.join(basePath, `${fileName}.${ext}`), code, { encoding: 'utf-8' });
-
-  // BUG: java 파일이 비어있을 경우에도 Main.java 파일이 갱신되지 않음.
-  if (language === 'Java11') {
-    fs.writeFileSync(path.join(basePath, 'Main.java'), code, { encoding: 'utf-8' });
-  }
-
-  const compileCmd = langToJudgeInfo[language].compile(fileName)[process.platform];
-
-  if (compileCmd === undefined) {
-    throw new Error('지원하지 않는 플랫폼입니다.');
-  }
-
-  const stderr = await new Promise<string>((resolve) => {
-    let error = '';
-
-    const ps = customSpawn.async(compileCmd, { cwd: basePath, shell: true });
-
-    ps.stderr.on('data', (buf) => {
-      error += buf.toString();
-    });
-
-    ps.on('close', () => {
-      resolve(error);
-    });
-  });
-
-  return stderr;
-}
+type ErrorMessage = string;
 
 export class Judge {
   private basePath: string;
 
-  private webContents: WebContents;
+  private mainWindow: BrowserWindow;
+
+  private codeModule: Code;
 
   constructor(mainWindow: BrowserWindow) {
     this.basePath = app.getPath('userData');
+    this.mainWindow = mainWindow;
+    this.codeModule = new Code(mainWindow);
+  }
 
-    this.webContents = mainWindow.webContents;
+  private needCompile(language: Language) {
+    return langToJudgeInfo[language].compile !== undefined;
+  }
+
+  private isCliExist(language: Language) {
+    if (!checkCli(langToJudgeInfo[language].cli)) {
+      throw new Error(
+        `프로그램이 설치되어 있지 않습니다.\n\ncli \`${langToJudgeInfo[language].cli}\` 가 설치되어 있어야 합니다.\n\n설치 후 재시작해주세요.`,
+      );
+    }
+  }
+
+  private getCompileCmd(data: MyOmit<CodeInfo, 'code'>) {
+    const { language } = data;
+
+    let cmd: `${Cli} ${string}` | undefined;
+
+    if (
+      !langToJudgeInfo[language].compile ||
+      !(cmd = langToJudgeInfo[language].compile(data.number)[process.platform])
+    ) {
+      throw new Error('지원하지 않는 플랫폼입니다.');
+    }
+
+    return cmd;
+  }
+
+  private getExecuteCmd(data: MyOmit<CodeInfo, 'code'>) {
+    const executeCmd = langToJudgeInfo[data.language].execute(data.number)[process.platform];
+
+    if (!executeCmd) {
+      throw new Error('지원하지 않는 플랫폼입니다.');
+    }
+
+    return executeCmd;
+  }
+
+  private async compile({ language, code, number }: CodeInfo): Promise<ErrorMessage | null> {
+    if (!this.needCompile(language)) {
+      return null;
+    }
+
+    const ext = this.codeModule.getExt(language);
+    const filePath = path.join(this.basePath, language === 'Java11' ? 'Main.java' : `${number}.${ext}`);
+
+    fs.writeFileSync(filePath, code, { encoding: 'utf-8' });
+
+    const compileCmd = this.getCompileCmd({ language, number });
+
+    const stderr = await new Promise<string>((resolve) => {
+      let error = '';
+
+      const ps = customSpawn.async(compileCmd, { cwd: this.basePath, shell: true });
+
+      ps.stderr.on('data', (buf) => {
+        error += buf.toString();
+      });
+
+      ps.on('close', () => {
+        resolve(error);
+      });
+    });
+
+    return stderr;
   }
 
   build() {
@@ -92,34 +116,18 @@ export class Judge {
           },
         });
 
-        const ext = langToJudgeInfo[language].ext[process.platform];
+        // 1. cli 존재여부 체크
+        this.isCliExist(language);
 
-        if (!ext) {
-          throw new Error('지원하지 않는 플랫폼입니다.');
-        }
+        // 2. 코드 저장
+        this.codeModule.save({ number, language, code });
 
-        /**
-         * cli 존재여부 체크
-         */
-        if (!checkCli(langToJudgeInfo[language].cli)) {
-          throw new Error(
-            `프로그램이 설치되어 있지 않습니다.\n\ncli \`${langToJudgeInfo[language].cli}\` 가 설치되어 있어야 합니다.\n\n설치 후 재시작해주세요.`,
-          );
-        }
-
-        /**
-         * 코드 저장
-         */
-        Code.saveFile(this.basePath, number, ext, code);
-
-        /**
-         * 컴파일
-         */
-        const error = await compile({ language, code, fileName: number, basePath: this.basePath, ext });
+        // 3. 컴파일
+        const error = await this.compile({ language, code, number });
 
         if (error) {
           for (let index = 0; index < inputs.length; index += 1) {
-            ipc.send(this.webContents, 'judge-result', {
+            ipc.send(this.mainWindow.webContents, 'judge-result', {
               data: { index, stderr: error, stdout: '', elapsed: 0, result: '컴파일 에러', id: judgeId },
             });
           }
@@ -127,14 +135,8 @@ export class Judge {
           return;
         }
 
-        /**
-         * 채점 시작
-         */
-        const executeCmd = langToJudgeInfo[language].execute(number)[process.platform];
-
-        if (!executeCmd) {
-          throw new Error('지원하지 않는 플랫폼입니다.');
-        }
+        // 4. 채점 시작
+        const executeCmd = this.getExecuteCmd({ language, number });
 
         for (let index = 0; index < inputs.length; index += 1) {
           (() => {
@@ -177,7 +179,7 @@ export class Judge {
                 output += '\n\n출력이 너무 깁니다.';
               }
 
-              ipc.send(this.webContents, 'judge-result', {
+              ipc.send(this.mainWindow.webContents, 'judge-result', {
                 data: { index, stderr, stdout: output, elapsed, result, id: judgeId },
               });
 
