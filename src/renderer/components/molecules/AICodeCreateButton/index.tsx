@@ -53,6 +53,7 @@ export function AICodeCreateButton() {
           inputs: problem.testCase.inputs,
           inputDesc: problem.inputDesc,
           language: useStore.getState().lang,
+          indentSpace: useStore.getState().indentSpace,
         },
       });
     });
