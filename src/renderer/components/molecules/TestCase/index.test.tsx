@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
+import { render } from '@/renderer/utils/jest';
 
 import { useStore } from '@/renderer/store';
 

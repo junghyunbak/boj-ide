@@ -1,9 +1,9 @@
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { PenButton } from '@/renderer/components/atoms/buttons/PenButton';
+import { PaintButton } from '@/renderer/components/atoms/buttons/PaintButton';
 
-export function PaintButton() {
+export function TogglePaintButton() {
   const [isPaintOpen, setIsPaintOpen] = useStore(useShallow((s) => [s.isPaintOpen, s.setIsPaintOpen]));
 
   const handleTogglePaintButtonClick = () => {
@@ -17,5 +17,5 @@ export function PaintButton() {
     });
   };
 
-  return <PenButton onClick={handleTogglePaintButtonClick} />;
+  return <PaintButton onClick={handleTogglePaintButtonClick} />;
 }

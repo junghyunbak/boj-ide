@@ -10,9 +10,9 @@ import { AppUpdaterInfo } from '@/renderer/components/molecules/AppUpdaterInfo';
 export function Footer() {
   return (
     <div
-      css={css`
+      css={(theme) => css`
         width: 100%;
-        border-top: 1px solid lightgray;
+        border-top: 1px solid ${theme.colors.border};
         display: flex;
         justify-content: space-between;
         align-items: center;

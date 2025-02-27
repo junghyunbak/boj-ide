@@ -10,15 +10,20 @@ export function SettingButton({ onClick }: SettingButtonProps) {
     <button
       type="button"
       onClick={onClick}
-      css={css`
-        border: none;
-        background: none;
-        color: gray;
-        cursor: pointer;
+      css={(theme) => css`
         display: flex;
         justify-content: center;
         align-items: center;
+
+        border: none;
+
+        color: ${theme.colors.fg};
+
+        background: none;
+
         padding: 0.5rem;
+
+        cursor: pointer;
       `}
     >
       <Gear width="1rem" />

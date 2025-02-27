@@ -10,24 +10,6 @@ type TabState = {
 export const TabLayout = styled.div<TabState>`
   position: relative;
 
-  ${({ isSelect }) =>
-    isSelect
-      ? css`
-          background-color: white;
-        `
-      : css`
-          background-color: #f9f9f9;
-        `};
-
-  ${({ isSelect, polyfill }) =>
-    !polyfill && !isSelect
-      ? css`
-          &:hover {
-            background-color: #fdfdfd;
-          }
-        `
-      : ''}
-
   ${({ polyfill }) =>
     polyfill
       ? css`

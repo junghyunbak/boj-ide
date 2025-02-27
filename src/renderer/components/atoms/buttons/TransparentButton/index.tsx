@@ -31,16 +31,17 @@ export function TransparentButton({ children, onClick, size = 'normal' }: Transp
   return (
     <button
       type="button"
-      css={css`
+      css={(theme) => css`
         background: none;
         border: none;
         padding: ${padding};
-        cursor: pointer;
-        color: ${color.text};
+        color: ${theme.colors.fg};
         font-size: ${fontSize};
+        cursor: pointer;
+
         &:hover {
-          color: ${color.primaryText};
-          background-color: rgba(0, 0, 0, 0.1);
+          color: ${theme.colors.primaryfg};
+          background-color: ${theme.colors.active};
         }
       `}
       onClick={onClick}

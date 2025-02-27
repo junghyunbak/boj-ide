@@ -9,6 +9,7 @@ import {
   TestcaseDetailExampleLayout,
   TestcaseDetailExampleTitleBox,
   TestcaseDetailExampleTitleLayout,
+  TestcaseDetailExampleTitleParagraph,
 } from './index.style';
 
 import { TestcaseDetailExampleContextProvider } from './TestcaseDetailExampleContext';
@@ -36,7 +37,7 @@ const TestcaseDetailExampleImpl = (type: '입력' | '출력') =>
         <TestcaseDetailExampleLayout>
           <TestcaseDetailExampleTitleLayout>
             <TestcaseDetailExampleTitleBox>
-              <Text fontSize="1.25rem">예제 {type}</Text>
+              <TestcaseDetailExampleTitleParagraph>예제 {type}</TestcaseDetailExampleTitleParagraph>
               {ExampleCopy}
               {ExampleEdit}
             </TestcaseDetailExampleTitleBox>

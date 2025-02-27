@@ -1,5 +1,4 @@
 import { css } from '@emotion/react';
-import { color } from '@/renderer/styles';
 
 import { ReactComponent as AngleRight } from '@/renderer/assets/svgs/angle-right.svg';
 
@@ -11,11 +10,11 @@ export function AngleButton({ onClick }: AngleButtonProps) {
   return (
     <button
       type="button"
-      css={css`
+      css={(theme) => css`
         border: none;
         background: none;
         padding: 0.5rem;
-        color: ${color.text};
+        color: ${theme.colors.fg};
         cursor: pointer;
       `}
       onClick={onClick}

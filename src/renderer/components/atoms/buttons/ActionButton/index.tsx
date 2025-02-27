@@ -1,4 +1,4 @@
-import { css } from '@emotion/react';
+import { css, useTheme } from '@emotion/react';
 import { color } from '@/renderer/styles';
 import { HTMLAttributes } from 'react';
 import Color from 'color';
@@ -11,6 +11,8 @@ interface ActionButtonProps extends HTMLAttributes<HTMLButtonElement> {
 }
 
 export function ActionButton({ variant = 'primary', children, onClick, disabled = false }: ActionButtonProps) {
+  const theme = useTheme();
+
   const bgColor = (() => {
     switch (variant) {
       case 'secondary':
@@ -19,7 +21,7 @@ export function ActionButton({ variant = 'primary', children, onClick, disabled 
         return '#95a5a6';
       case 'primary':
       default:
-        return color.primaryBg;
+        return theme.colors.primarybg;
     }
   })();
 
@@ -39,16 +41,18 @@ export function ActionButton({ variant = 'primary', children, onClick, disabled 
         border: none;
         padding: 0.4rem 0.8rem;
         background-color: ${bgColor};
-        color: ${textColor};
+        color: ${theme.colors.buttonFg};
         white-space: nowrap;
         cursor: pointer;
+
         &:hover {
           background-color: ${Color(bgColor).lighten(0.05).toString()};
         }
+
         &:disabled {
           cursor: auto;
           background-color: ${Color(bgColor).darken(0.2).toString()};
-          color: lightgray;
+          color: ${theme.colors.disabledFg};
         }
       `}
       onClick={onClick}

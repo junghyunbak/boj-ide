@@ -4,7 +4,7 @@ import { BOJ_DOMAIN } from '@/common/constants';
 
 import { MainPage } from '@/renderer/components/pages/MainPage';
 
-import { useAlertModalController, useWebviewController } from '@/renderer/hooks';
+import { useAlertModalController, useWebviewController, useTheme } from '@/renderer/hooks';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -12,7 +12,10 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import './App.css';
+import { Global, ThemeProvider } from '@emotion/react';
+
+import { themes, globalStyle } from '@/renderer/styles';
+
 import './assets/fonts/fonts.css';
 
 const queryClient = new QueryClient({
@@ -25,6 +28,8 @@ const queryClient = new QueryClient({
 });
 
 export default function App() {
+  const { theme } = useTheme();
+
   const { fireAlertModal } = useAlertModalController();
   const { gotoUrl } = useWebviewController();
 
@@ -53,10 +58,13 @@ export default function App() {
   }, [fireAlertModal, gotoUrl, setBaekjoonhubExtensionId]);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <MainPage />
+    <ThemeProvider theme={themes[theme]}>
+      <Global styles={globalStyle} />
+      <QueryClientProvider client={queryClient}>
+        <MainPage />
 
-      {process.env.NODE_ENV === 'development' && <ReactQueryDevtools />}
-    </QueryClientProvider>
+        {process.env.NODE_ENV === 'development' && <ReactQueryDevtools />}
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }

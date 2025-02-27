@@ -27,12 +27,17 @@ export function VimModeText() {
         display: flex;
         align-items: center;
         justify-content: center;
+
         padding: 0 0.4rem;
       `}
     >
-      <Text fontSize="0.875rem">
+      <p
+        css={css`
+          font-size: 0.875rem;
+        `}
+      >
         {isCodeStale ? `-- ${vimMode.toUpperCase()} --` : `"${problem.number}.${languageToExt(language)}" written`}
-      </Text>
+      </p>
     </div>
   );
 }

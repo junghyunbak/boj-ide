@@ -59,9 +59,14 @@ export function TabExtension({ tab, index }: TabExtensionProps) {
             </div>
           )}
 
-          <Text whiteSpace="nowrap" userSelect="none">
+          <p
+            css={css`
+              white-space: nowrap;
+              user-select: none;
+            `}
+          >
             {tab.title}
-          </Text>
+          </p>
         </MovableTab.MovableTabContent.MovableTabContentDetail>
       </MovableTab.MovableTabContent>
 

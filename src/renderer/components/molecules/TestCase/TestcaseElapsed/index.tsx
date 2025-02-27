@@ -11,8 +11,8 @@ export function TestcaseElapsed() {
   }
 
   return (
-    <Text>
+    <p>
       {judgeResult.elapsed} <Highlight>ms</Highlight>
-    </Text>
+    </p>
   );
 }

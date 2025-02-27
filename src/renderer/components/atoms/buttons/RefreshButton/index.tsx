@@ -9,15 +9,15 @@ export function RefreshButton({ onClick }: RefreshButtonProps) {
   return (
     <button
       type="button"
-      css={css`
+      css={(theme) => css`
         background: none;
         border: none;
         padding: 0.5rem;
         display: flex;
         justify-content: center;
         align-items: center;
+        color: ${theme.colors.fg};
         cursor: pointer;
-        color: gray;
       `}
       onClick={onClick}
     >

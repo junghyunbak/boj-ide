@@ -11,13 +11,13 @@ export function MovableTabBottomBorder() {
 
   return (
     <div
-      css={css`
+      css={(theme) => css`
         position: absolute;
         bottom: 0;
         left: 0;
         right: 0;
 
-        border-top: 1px solid lightgray;
+        border-top: 1px solid ${theme.colors.border};
       `}
     />
   );

@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 export function ThreeLineHorizontalResizer() {
   return (
     <div
-      css={css`
+      css={(theme) => css`
         width: 100%;
 
         display: flex;

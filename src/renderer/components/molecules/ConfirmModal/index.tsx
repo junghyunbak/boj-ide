@@ -38,7 +38,7 @@ export function ConfirmModal() {
   return (
     <Modal isOpen={isConfirmModalOpen} onCloseButtonClick={handleNoButtonClick}>
       <div
-        css={css`
+        css={(theme) => css`
           padding: 1rem 1.25rem;
           display: flex;
           flex-direction: column;
@@ -47,7 +47,7 @@ export function ConfirmModal() {
           min-width: 20dvw;
           aspect-ratio: 16/9;
           background-color: white;
-          border-top: 2px solid ${color.primaryBg};
+          border-top: 2px solid ${theme.colors.primarybg};
         `}
       >
         <Markdown>{confirmMessage || ''}</Markdown>

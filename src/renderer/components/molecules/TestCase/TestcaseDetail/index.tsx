@@ -17,12 +17,12 @@ export function TestcaseDetailImpl({ children }: React.PropsWithChildren) {
   return (
     <td colSpan={5}>
       <div
-        css={css`
+        css={(theme) => css`
           display: flex;
           flex-direction: column;
           gap: 0.5rem;
           padding: 0.5rem;
-          border-top: 1px solid #ddd;
+          border-top: 1px solid ${theme.colors.border};
         `}
       >
         <div

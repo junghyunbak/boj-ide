@@ -25,9 +25,9 @@ export function TabOptions() {
 
   return (
     <div
-      css={css`
+      css={(theme) => css`
         padding: 0.375rem;
-        border-bottom: 1px solid lightgray;
+        border-bottom: 1px solid ${theme.colors.border};
       `}
     >
       <div
@@ -42,25 +42,30 @@ export function TabOptions() {
         <button
           ref={buttonRef}
           type="button"
-          css={css`
+          css={(theme) => css`
             display: flex;
             justify-content: center;
             align-items: center;
             border: none;
             background: none;
             padding: 0.25rem;
-            cursor: pointer;
             border-radius: 4px;
-            background-color: ${isOpen ? 'lightgray' : 'transparent'};
+            cursor: pointer;
+
+            ${isOpen
+              ? css`
+                  background-color: ${theme.colors.active};
+                `
+              : css``}
 
             &:hover {
-              background-color: lightgray;
+              background-color: ${theme.colors.active};
             }
 
             svg {
               width: 1rem;
               aspect-ratio: 1/1;
-              color: gray;
+              color: ${theme.colors.fg};
             }
           `}
           onClick={() => setIsOpen(!isOpen)}

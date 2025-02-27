@@ -12,15 +12,22 @@ export function Output() {
         height: 100%;
         display: flex;
         flex-direction: column;
-        background-color: white;
       `}
     >
       <OutputHeader />
       <RowLine />
       <div
-        css={css`
+        css={(theme) => css`
           flex: 1;
           overflow-y: scroll;
+
+          &::-webkit-scrollbar {
+            width: 7px;
+          }
+
+          &::-webkit-scrollbar-thumb {
+            background: ${theme.colors.scrollbar};
+          }
         `}
       >
         <OutputContent />

@@ -7,17 +7,30 @@ interface CodeBlockProps {
 export function CodeBlock({ children }: CodeBlockProps) {
   return (
     <pre
-      css={css`
+      css={(theme) => css`
         width: 100%;
         height: 100%;
+
         padding: 0.5rem;
         margin: 0;
-        background-color: #f7f7f9;
-        border: 1px solid lightgray;
-        overflow-x: scroll;
+
+        background-color: ${theme.colors.code};
+
+        border: 1px solid ${theme.colors.border};
+
         font-size: 1.125rem;
         font-family: 'menlo';
         line-height: 1.4;
+
+        overflow-x: scroll;
+
+        &::-webkit-scrollbar {
+          height: 7px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: ${theme.colors.scrollbar};
+        }
       `}
     >
       {children}

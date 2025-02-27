@@ -8,10 +8,11 @@ export function TextInput({ value, onChange }: TextInputProps) {
       type="text"
       value={value}
       onChange={onChange}
-      css={css`
+      css={(theme) => css`
         width: 100%;
-        border: 1px solid lightgray;
-        background-color: white;
+        border: 1px solid ${theme.colors.border};
+        background-color: ${theme.colors.code};
+        color: ${theme.colors.fg};
         padding: 0.5rem;
         outline: none;
       `}

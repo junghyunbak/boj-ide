@@ -2,8 +2,6 @@ import { css } from '@emotion/react';
 
 import { getElementFromChildren } from '@/renderer/utils';
 
-import { color } from '@/renderer/styles';
-
 import { MovableTabContentCloseButton } from './MovableTabContentCloseButton';
 import { MovableTabContentDetail } from './MovableTabContentDetail';
 import { useMovableTabContext } from '../MovableTabContext';
@@ -19,7 +17,7 @@ function MovableTabContentImpl({ children }: React.PropsWithChildren) {
 
   return (
     <div
-      css={css`
+      css={(theme) => css`
         display: flex;
         gap: 0.5rem;
         align-items: center;
@@ -28,10 +26,10 @@ function MovableTabContentImpl({ children }: React.PropsWithChildren) {
 
         ${isSelect
           ? css`
-              border-top: 1px solid ${color.primaryBg};
+              background-color: ${theme.colors.bg};
             `
           : css`
-              border-top: 1px solid transparent;
+              background-color: ${theme.colors.tabBg};
             `}
 
         &:hover * {

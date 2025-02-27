@@ -17,6 +17,7 @@ export const XButton = forwardRef<HTMLButtonElement, XButtonProps>(({ onClick, o
         display: flex;
         justify-content: center;
         align-items: center;
+
         &:hover {
           background-color: rgba(0, 0, 0, 0.1);
           cursor: pointer;
@@ -28,8 +29,8 @@ export const XButton = forwardRef<HTMLButtonElement, XButtonProps>(({ onClick, o
     >
       <X
         width="0.6rem"
-        css={css`
-          color: ${color.text};
+        css={(theme) => css`
+          color: ${theme.colors.fg};
         `}
       />
     </button>

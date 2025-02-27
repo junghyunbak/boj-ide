@@ -58,7 +58,12 @@ export function TabProblem({ tab, index }: TabProblemProps) {
             )}
           </div>
 
-          <Text whiteSpace="nowrap" userSelect="none">{`${tab.number}번: ${tab.name}`}</Text>
+          <p
+            css={css`
+              white-space: nowrap;
+              user-select: none;
+            `}
+          >{`${tab.number}번: ${tab.name}`}</p>
         </MovableTab.MovableTabContent.MovableTabContentDetail>
         <MovableTab.MovableTabContent.MovableTabContentCloseButton onClick={handleTabCloseButtonClick} />
       </MovableTab.MovableTabContent>

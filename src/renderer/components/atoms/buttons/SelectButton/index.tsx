@@ -13,20 +13,22 @@ export const SelectButton = forwardRef<HTMLButtonElement, SelectButtonProps>(({ 
     <button
       ref={ref}
       type="button"
-      css={css`
-        border: 1px solid #ccc;
-        color: ${color.text};
+      css={(theme) => css`
+        background-color: ${theme.colors.bg};
+        border: 1px solid ${theme.colors.border};
+        color: ${theme.colors.fg};
         padding: 0.4rem 0.8rem;
-        font-weight: 500;
         white-space: nowrap;
-        box-shadow: ${isActive ? 'inset 0 3px 5px rgba(0, 0, 0, 0.125)' : 'none'};
-        background: ${isActive ? '#e6e6e6' : 'none'};
+
+        ${isActive
+          ? css`
+              box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+            `
+          : css``}
+
         outline: none;
         cursor: pointer;
-        &:hover {
-          background: #e6e6e6;
-          border-color: #adadad;
-        }
+
         &::after {
           content: '';
           display: inline-block;

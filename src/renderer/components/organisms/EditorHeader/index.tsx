@@ -3,8 +3,8 @@ import { css } from '@emotion/react';
 import { SaveCodeButton } from '@/renderer/components/molecules/SaveCodeButton';
 import { AICodeCreateButton } from '@/renderer/components/molecules/AICodeCreateButton';
 import { ToggleLanguage } from '@/renderer/components/molecules/ToggleLanguage';
-import { SettingToggleButton } from '@/renderer/components/molecules/SettingToggleButton';
-import { PaintButton } from '@/renderer/components/molecules/PaintButton';
+import { ToggleSettingButton } from '@/renderer/components/molecules/ToggleSettingButton';
+import { TogglePaintButton } from '@/renderer/components/molecules/TogglePaintButton';
 import { SetDefaultCodeButton } from '@/renderer/components/molecules/SetDefaultCodeButton';
 
 export function EditorHeader() {
@@ -30,8 +30,8 @@ export function EditorHeader() {
             gap: 0.2rem;
           `}
         >
-          <PaintButton />
-          <SettingToggleButton />
+          <TogglePaintButton />
+          <ToggleSettingButton />
         </div>
         <SetDefaultCodeButton />
         <AICodeCreateButton />

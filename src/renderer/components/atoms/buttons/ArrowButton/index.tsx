@@ -25,7 +25,7 @@ export function ArrowButton({ direction = 'left', disabled = false, onClick }: A
   return (
     <button
       type="button"
-      css={css`
+      css={(theme) => css`
         display: flex;
         justify-content: center;
         align-items: center;
@@ -33,11 +33,11 @@ export function ArrowButton({ direction = 'left', disabled = false, onClick }: A
         border: none;
         padding: 0.5rem;
         transform: rotate(${deg}deg);
-        border-radius: 9999px;
-        color: gray;
+        color: ${theme.colors.fg};
         cursor: pointer;
+
         &:disabled {
-          color: lightgray;
+          color: ${theme.colors.disabledFg};
           cursor: auto;
         }
       `}

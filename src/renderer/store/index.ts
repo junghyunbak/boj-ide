@@ -13,6 +13,7 @@ import { createTabSlice } from './slices/tab';
 
 import { createFabricSlice } from './slices/fabric';
 import { createPaintSlice } from './slices/paint';
+import { createThemeSlice } from './slices/theme';
 
 export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createJudgeSlice> &
@@ -20,7 +21,8 @@ export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createLayoutSlice> &
   ReturnType<typeof createModalSlice> &
   ReturnType<typeof createBojViewSlice> &
-  ReturnType<typeof createTabSlice>;
+  ReturnType<typeof createTabSlice> &
+  ReturnType<typeof createThemeSlice>;
 
 export const useStore = create<StoreState>()(
   persist(
@@ -32,6 +34,7 @@ export const useStore = create<StoreState>()(
       ...createLayoutSlice(...a),
       ...createModalSlice(...a),
       ...createTabSlice(...a),
+      ...createThemeSlice(...a),
     }),
     {
       name: 'zustandStore',
@@ -47,6 +50,7 @@ export const useStore = create<StoreState>()(
           customTestCase,
           fontSize,
           isPaintOpen,
+          theme,
         } = s;
 
         return {
@@ -60,6 +64,7 @@ export const useStore = create<StoreState>()(
           customTestCase,
           fontSize,
           isPaintOpen,
+          theme,
         };
       },
     },

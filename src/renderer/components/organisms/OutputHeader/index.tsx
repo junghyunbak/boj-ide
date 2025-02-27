@@ -1,6 +1,5 @@
 import { css } from '@emotion/react';
 
-import { Text } from '@/renderer/components/atoms/paragraphs/Text';
 import { ExecuteCodeButton } from '@/renderer/components/molecules/ExecuteCodeButton';
 import { ExecuteResultText } from '@/renderer/components/molecules/ExecuteResultText';
 
@@ -12,7 +11,6 @@ export function OutputHeader() {
         align-items: center;
         justify-content: space-between;
         padding: 0.25rem 0.5rem 0.25rem 1rem;
-        background-color: white;
       `}
     >
       <div
@@ -21,7 +19,7 @@ export function OutputHeader() {
           gap: 0.5rem;
         `}
       >
-        <Text>실행 결과</Text>
+        <p>실행 결과</p>
         <ExecuteResultText />
       </div>
       <ExecuteCodeButton />

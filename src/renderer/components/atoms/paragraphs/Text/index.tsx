@@ -1,5 +1,4 @@
-import { color } from '@/renderer/styles';
-import { css } from '@emotion/react';
+import { css, useTheme } from '@emotion/react';
 import React from 'react';
 
 interface TextProps {
@@ -19,24 +18,26 @@ export function Text({
   whiteSpace = 'normal',
   userSelect = 'auto',
 }: TextProps) {
+  const theme = useTheme();
+
   const fontColor = (() => {
     switch (type) {
       case '런타임 에러':
-        return color.error;
+        return theme.common.colors.judge.error;
       case '시간 초과':
       case '출력 초과':
-        return color.over;
+        return theme.common.colors.judge.over;
       case '틀렸습니다':
-        return color.wrong;
+        return theme.common.colors.judge.wrong;
       case '맞았습니다!!':
-        return color.correct;
+        return theme.common.colors.judge.correct;
       case '채점 중':
-        return color.judging;
+        return theme.common.colors.judge.judging;
       case '컴파일 에러':
-        return color.compileError;
+        return theme.common.colors.judge.compileError;
       case '기본':
       default:
-        return color.text;
+        return theme.colors.fg;
     }
   })();
 

@@ -5,6 +5,11 @@ export * from './useProblem';
 export * from './useTestcase';
 
 /**
+ * theme
+ */
+export * from './useTheme';
+
+/**
  * tab
  */
 export * from './useTab';

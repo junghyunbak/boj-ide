@@ -34,36 +34,35 @@ export const PaintFabricControllerButtonGroupBox = styled.div`
 
 export const PaintFabricControllerButton = styled.button`
   border: 0;
-  border-left: 1px solid lightgray;
-  border-right: 1px solid lightgray;
-  border-top: 1px solid lightgray;
+  border-left: 1px solid ${(props) => props.theme.colors.border};
+  border-right: 1px solid ${(props) => props.theme.colors.border};
+  border-top: 1px solid ${(props) => props.theme.colors.border};
 
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 0.5rem;
 
-  background: white;
-  color: gray;
+  background: ${(props) => props.theme.colors.bg};
+  color: ${(props) => props.theme.colors.fg};
   outline: none;
 
   cursor: pointer;
   pointer-events: auto;
 
   &:last-of-type {
-    border-bottom: 1px solid lightgray;
+    border-bottom: 1px solid ${(props) => props.theme.colors.border};
   }
 
   &:disabled {
-    background-color: ${color.primaryBg};
-    color: white;
+    background-color: ${(props) => props.theme.colors.active};
   }
 `;
 
 export const ExpandShrinkButton = styled.button`
   border: none;
 
-  color: gray;
+  color: ${(props) => props.theme.colors.fg};
   background: none;
 
   cursor: pointer;

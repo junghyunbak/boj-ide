@@ -10,11 +10,11 @@ export const HorizontalResizer = forwardRef<HTMLDivElement, HorizontalResizerPro
   return (
     <div
       ref={ref}
-      css={css`
+      css={(theme) => css`
         height: 1px;
         width: 100%;
         flex-shrink: 0;
-        border-bottom: 1px solid lightgray;
+        border-bottom: 1px solid ${theme.colors.border};
         cursor: row-resize;
         position: relative;
       `}
@@ -23,14 +23,14 @@ export const HorizontalResizer = forwardRef<HTMLDivElement, HorizontalResizerPro
       }}
     >
       <div
-        css={css`
+        css={(theme) => css`
           position: absolute;
           left: 0;
           right: 0;
           top: -2px;
           opacity: 0;
           height: 4px;
-          background-color: gray;
+          background-color: ${theme.colors.accent};
           transition: opacity 0.1s ease 0.1s;
           &:hover {
             opacity: 1;

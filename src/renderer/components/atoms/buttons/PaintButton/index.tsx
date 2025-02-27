@@ -1,11 +1,9 @@
-import { ReactComponent as ExternalLink } from '@/renderer/assets/svgs/external-link.svg';
 import { css } from '@emotion/react';
+import { ReactComponent as Paint } from '@/renderer/assets/svgs/palette.svg';
 
-interface ExternalLinkButtonProps {
-  onClick: () => void;
-}
+interface PaintButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
-export function ExternalLinkButton({ onClick }: ExternalLinkButtonProps) {
+export function PaintButton({ onClick }: PaintButtonProps) {
   return (
     <button
       type="button"
@@ -14,14 +12,19 @@ export function ExternalLinkButton({ onClick }: ExternalLinkButtonProps) {
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 0.5rem;
-        border: none;
+
         background: none;
+
+        border: none;
+
+        padding: 0.5rem;
+
         color: ${theme.colors.fg};
+
         cursor: pointer;
       `}
     >
-      <ExternalLink width="1rem" />
+      <Paint width="1rem" />
     </button>
   );
 }

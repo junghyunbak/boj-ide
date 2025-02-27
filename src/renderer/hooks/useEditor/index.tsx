@@ -22,7 +22,7 @@ export function useEditor({ width, height }: { width: number; height: number }) 
   const [editorCode] = useStore(useShallow((s) => [s.code]));
 
   const { saveEditorCode, initialEditorCode, syncEditorCode } = useEditorController();
-  const { extensions } = useEditorExtensions();
+  const { extensions, codemirrorTheme } = useEditorExtensions();
 
   const editorRef = useRef<HTMLDivElement | null>(null);
 
@@ -32,8 +32,11 @@ export function useEditor({ width, height }: { width: number; height: number }) 
     width: `${width}px`,
     height: `${height}px`,
     indentWithTab: false,
+    theme: codemirrorTheme,
     basicSetup: {
       tabSize: indentSpace,
+      highlightActiveLineGutter: false,
+      foldGutter: false,
     },
     onChange: syncEditorCode,
   });

@@ -80,11 +80,11 @@ export function EditorPaintController() {
                 `}
               >
                 <div
-                  css={css`
+                  css={(theme) => css`
                     width: 100%;
                     height: ${width}px;
-                    background-color: ${brushWidth === width ? 'white' : 'gray'};
-                    border-radius: 0.25rem;
+                    background-color: ${theme.colors.fg};
+                    border-radius: 3px;
                   `}
                 />
               </div>

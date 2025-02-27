@@ -9,10 +9,10 @@ export function TextButton({ testId, ...props }: TextButtonProps) {
   return (
     <button
       type="button"
-      css={css`
+      css={(theme) => css`
         border: none;
         background: none;
-        color: ${color.primaryText};
+        color: ${theme.colors.primaryfg};
         padding: 0;
         cursor: pointer;
         &:hover {

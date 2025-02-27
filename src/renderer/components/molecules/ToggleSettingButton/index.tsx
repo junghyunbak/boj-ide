@@ -3,7 +3,7 @@ import { useShallow } from 'zustand/shallow';
 
 import { SettingButton } from '@/renderer/components/atoms/buttons/SettingButton';
 
-export function SettingToggleButton() {
+export function ToggleSettingButton() {
   const [isSetting, setIsSetting] = useStore(useShallow((s) => [s.isSetting, s.setIsSetting]));
 
   const handleToggleButtonClick = () => {

@@ -48,7 +48,6 @@ export function EditorSettings() {
         display: flex;
         flex-direction: column;
         gap: 1rem;
-        color: #333;
         position: relative;
 
         > div {
@@ -74,12 +73,18 @@ export function EditorSettings() {
       </div>
 
       <div
-        css={css`
-          border-bottom: 1px solid #e5e5e5;
+        css={(theme) => css`
+          border-bottom: 1px solid ${theme.colors.border};
           margin: 1rem 0;
         `}
       >
-        <Text fontSize="1.3125rem">설정</Text>
+        <p
+          css={css`
+            font-size: 1.3rem;
+          `}
+        >
+          설정
+        </p>
       </div>
 
       <div>

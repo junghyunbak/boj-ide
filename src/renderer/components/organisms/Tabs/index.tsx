@@ -22,8 +22,6 @@ import { baekjoonhubLogo, baekjoonLogo, solvedACLogo } from '@/renderer/assets/b
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
 import 'overlayscrollbars/overlayscrollbars.css';
 
-import './index.css';
-
 export function Tabs() {
   const { tabs, addBookmarkTab, addExtensionTab } = useTab();
 
@@ -72,9 +70,20 @@ export function Tabs() {
 
   return (
     <div
-      css={css`
+      css={(theme) => css`
         width: 100%;
-        background-color: #f9f9f9;
+        background-color: ${theme.colors.tabBg};
+
+        .os-theme-custom {
+          --os-handle-interactive-area-offset: 0;
+          --os-handle-bg: ${theme.colors.scrollbar};
+          --os-handle-bg-hover: ${theme.colors.scrollbarHover};
+          --os-handle-bg-active: ${theme.colors.scrollbarActive};
+          --os-handle-border-radius: 0;
+          --os-padding-axis: 0;
+          --os-padding-perpendicular: 0;
+          --os-size: 4px;
+        }
       `}
     >
       <div

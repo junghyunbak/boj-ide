@@ -31,12 +31,52 @@ export function EditorCodemirror() {
 
   return (
     <div
-      css={css`
+      css={(theme) => css`
         width: 100%;
         height: 100%;
 
         .cm-tooltip {
           z-index: ${zIndex.editor.tooltip} !important;
+        }
+
+        .cm-gutter {
+          padding: 0 10px 0 17px;
+        }
+
+        .cm-fat-cursor {
+          background: ${theme.editor.colors.cursor} !important;
+        }
+
+        .cm-editor:not(.cm-focused) .cm-fat-cursor {
+          outline: solid 1px ${theme.editor.colors.cursor} !important;
+          background: transparent !important;
+        }
+
+        .cm-scroller::-webkit-scrollbar {
+          width: 7px;
+          height: 7px;
+        }
+
+        .cm-scroller::-webkit-scrollbar-thumb {
+          background: ${theme.colors.scrollbar};
+        }
+
+        .cm-scroller::-webkit-scrollbar-corner {
+          background: transparent;
+        }
+
+        .cm-panels {
+          background-color: transparent;
+          border-top: 1px solid ${theme.colors.border};
+        }
+
+        .cm-vim-panel {
+          padding: 5px 10px;
+        }
+
+        .cm-panels input {
+          color: ${theme.colors.fg} !important;
+          font-family: hack;
         }
       `}
       ref={containerRef}
