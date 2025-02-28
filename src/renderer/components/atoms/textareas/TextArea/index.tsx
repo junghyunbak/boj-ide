@@ -30,6 +30,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(({ ...pro
           white-space: pre-wrap;
         }
       `}
+      spellCheck="false"
       {...props}
     />
   );
