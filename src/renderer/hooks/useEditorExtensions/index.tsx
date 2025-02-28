@@ -1,10 +1,14 @@
 import { useMemo } from 'react';
 
+import { useTheme } from '@emotion/react';
+
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
 import { EditorView } from '@uiw/react-codemirror';
+
 import { vim } from '@replit/codemirror-vim';
+
 import { acceptCompletion } from '@codemirror/autocomplete';
 import { indentWithTab } from '@codemirror/commands';
 import { keymap } from '@codemirror/view';
@@ -12,12 +16,10 @@ import { javascript } from '@codemirror/lang-javascript';
 import { cpp } from '@codemirror/lang-cpp';
 import { python } from '@codemirror/lang-python';
 import { java } from '@codemirror/lang-java';
+
+import { useEditorController } from '@/renderer/hooks/useEditorController';
+
 import { createTheme } from '@uiw/codemirror-themes';
-import { tags as t } from '@lezer/highlight';
-
-import { useTheme } from '@emotion/react';
-
-import { useEditorController } from '../useEditorController';
 
 export function useEditorExtensions() {
   const [editorMode] = useStore(useShallow((s) => [s.mode]));
@@ -32,35 +34,8 @@ export function useEditorExtensions() {
     () =>
       createTheme({
         theme: theme.theme,
-        settings: {
-          background: theme.colors.bg,
-          foreground: theme.colors.fg,
-
-          lineHighlight: theme.editor.colors.lineHightlight,
-
-          selection: theme.editor.colors.selection,
-          selectionMatch: theme.editor.colors.selection,
-
-          gutterBorder: theme.editor.colors.gutterBorder,
-          gutterBackground: theme.editor.colors.gutterBg,
-          gutterForeground: theme.editor.colors.gutterFg,
-          gutterActiveForeground: theme.colors.primarybg,
-        },
-        styles: [
-          { tag: t.keyword, color: theme.editor.colors.keyword },
-          { tag: t.atom, color: theme.editor.colors.atom },
-          { tag: t.number, color: theme.editor.colors.number },
-          { tag: t.propertyName, color: theme.editor.colors.property },
-          { tag: t.attributeName, color: theme.editor.colors.attribute },
-          { tag: t.comment, color: theme.editor.colors.comment },
-          { tag: t.string, color: theme.editor.colors.string },
-          { tag: t.variableName, color: theme.editor.colors.variable },
-          { tag: t.definition(t.variableName), color: theme.editor.colors.variable },
-          { tag: t.bracket, color: theme.editor.colors.bracket },
-          { tag: t.tagName, color: theme.editor.colors.tag },
-          { tag: t.link, color: theme.editor.colors.link },
-          { tag: t.invalid, color: theme.editor.colors.invalid },
-        ],
+        settings: theme.editor.settings,
+        styles: theme.editor.styles,
       }),
     [theme],
   );
@@ -71,6 +46,7 @@ export function useEditorExtensions() {
         /**
          * codemirror 단축키
          */
+        // @ts-ignore
         keymap.of([{ key: 'Tab', run: acceptCompletion }, indentWithTab]),
         keymap.of([
           {

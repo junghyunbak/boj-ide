@@ -44,11 +44,11 @@ export function EditorCodemirror() {
         }
 
         .cm-fat-cursor {
-          background: ${theme.editor.colors.cursor} !important;
+          background: ${theme.editor.cursorColor} !important;
         }
 
         .cm-editor:not(.cm-focused) .cm-fat-cursor {
-          outline: solid 1px ${theme.editor.colors.cursor} !important;
+          outline: solid 1px ${theme.editor.cursorColor} !important;
           background: transparent !important;
         }
 

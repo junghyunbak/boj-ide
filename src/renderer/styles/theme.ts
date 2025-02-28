@@ -4,6 +4,10 @@ import { css, Theme } from '@emotion/react';
 
 import { adjustTransparency } from '@/renderer/utils';
 
+import { tags as t } from '@lezer/highlight';
+import { CreateThemeOptions } from '@uiw/codemirror-themes';
+import { defaultSettingsEclipse, eclipseLightStyle } from '@uiw/codemirror-theme-eclipse';
+
 export const judgeColors = {
   correct: '#009874',
   wrong: '#dd4124',
@@ -30,6 +34,7 @@ declare module '@emotion/react' {
 
       tableBg: string;
       tableBgAccent: string;
+      tableFgLabel: string;
 
       tabBg: string;
 
@@ -47,30 +52,9 @@ declare module '@emotion/react' {
       border: string;
     };
     editor: {
-      colors: {
-        cursor: string;
-
-        gutterFg: string;
-        gutterBg: string;
-        gutterBorder: string;
-
-        lineHightlight: string;
-
-        selection: string;
-
-        keyword: string;
-        atom: string;
-        number: string;
-        property: string;
-        attribute: string;
-        comment: string;
-        string: string;
-        variable: string;
-        bracket: string;
-        tag: string;
-        link: string;
-        invalid: string;
-      };
+      settings: CreateThemeOptions['settings'];
+      styles: CreateThemeOptions['styles'];
+      cursorColor: string;
     };
   }
 }
@@ -96,6 +80,7 @@ export const themes: Record<Themes, Theme> = {
 
       tableBg: '#fff',
       tableBgAccent: '#f9f9f9',
+      tableFgLabel: '#808080',
 
       tabBg: '#f9f9f9',
 
@@ -109,30 +94,15 @@ export const themes: Record<Themes, Theme> = {
       code: '#f7f7f9',
     },
     editor: {
-      colors: {
-        cursor: '#7e7',
+      settings: {
+        ...defaultSettingsEclipse,
 
-        gutterFg: '#ddd',
-        gutterBg: 'transparent',
-        gutterBorder: 'transparent',
-
-        lineHightlight: '#e8f2ff80',
-
-        selection: '#d9d9d9',
-
-        keyword: '#708',
-        atom: '#219',
-        number: '#164',
-        property: '#00f',
-        attribute: '#00c',
-        comment: '#a50',
-        string: '#a11',
-        variable: '#05a',
-        bracket: '#997',
-        tag: '#170',
-        link: '#00c',
-        invalid: '#f00',
+        gutterForeground: '#808080',
+        gutterBackground: '#f9f9f9',
+        gutterBorder: '#ddd',
       },
+      styles: eclipseLightStyle,
+      cursorColor: '#ff9696',
     },
   },
   programmers: {
@@ -151,6 +121,7 @@ export const themes: Record<Themes, Theme> = {
 
       tableBg: '#202B3D',
       tableBgAccent: '#202B3D',
+      tableFgLabel: '#44576c',
 
       scrollbar: '#37485D',
       scrollbarHover: '#37485D',
@@ -168,30 +139,65 @@ export const themes: Record<Themes, Theme> = {
       code: '#202B3D',
     },
     editor: {
-      colors: {
-        cursor: '#7e7',
-
-        gutterFg: '#44576c',
-        gutterBg: 'transparent',
+      settings: {
+        gutterForeground: '#44576c',
+        gutterBackground: 'transparent',
         gutterBorder: 'transparent',
 
-        lineHightlight: adjustTransparency('#202B3D', '#263747', 0.2),
-
         selection: '#44576c',
+        selectionMatch: '#44576c',
 
-        keyword: '#C38FE5',
-        atom: '#a16a94',
-        number: '#a16a94',
-        property: '#99cc99',
-        attribute: '#99cc99',
-        comment: '#d27b53',
-        string: '#e7c547',
-        variable: '#4CAF50',
-        bracket: '#eaeaea',
-        tag: '#d54e53',
-        link: '#a16a94',
-        invalid: '#6A6A6A',
+        lineHighlight: adjustTransparency('#202B3D', '#263747', 0.2),
       },
+      /**
+       * TODO: 높은 스코프 변수명 하이라이트
+       *
+       * Codemirror 라이브러리 코어 문제
+       * .cm-s-tomorrow-night-bright span.cm-variable-2 { color: #7aa6da }
+       */
+      styles: [
+        {
+          tag: t.comment,
+          color: '#d27b53',
+        },
+        {
+          tag: [t.atom, t.number],
+          color: '#a16a94',
+        },
+        {
+          tag: [t.propertyName, t.attributeName],
+          color: '#99cc99',
+        },
+        {
+          tag: t.keyword,
+          color: '#C38FE5',
+        },
+        {
+          tag: t.string,
+          color: '#e7c547',
+        },
+        {
+          tag: t.variableName,
+          color: '#4CAF50',
+        },
+        {
+          tag: t.bracket,
+          color: '#eaeaea',
+        },
+        {
+          tag: t.tagName,
+          color: '#d54e53',
+        },
+        {
+          tag: t.link,
+          color: '#a16a94',
+        },
+        {
+          tag: t.definition(t.variableName),
+          color: '#FFEB3B',
+        },
+      ],
+      cursorColor: '#7e7',
     },
   },
 };

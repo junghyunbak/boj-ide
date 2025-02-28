@@ -1,4 +1,3 @@
-import { color } from '@/renderer/styles';
 import { css } from '@emotion/react';
 
 interface TextButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
@@ -15,6 +14,7 @@ export function TextButton({ testId, ...props }: TextButtonProps) {
         color: ${theme.colors.primaryfg};
         padding: 0;
         cursor: pointer;
+
         &:hover {
           text-decoration: underline;
         }

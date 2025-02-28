@@ -15,7 +15,7 @@ export const TestcaseDetailResultTableData = styled.td`
     white-space: nowrap;
     text-align: right;
     vertical-align: top;
-    color: ${(props) => props.theme.colors.primarybg};
+    color: ${(props) => props.theme.colors.tableFgLabel};
 
     &::after {
       content: '>';
