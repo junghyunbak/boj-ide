@@ -18,7 +18,7 @@ export const TestcaseDetailResultTableData = styled.td`
     color: ${(props) => props.theme.colors.tableFgLabel};
 
     &::after {
-      content: '>';
+      content: '〉';
       padding: 0 0.5rem;
     }
   }
