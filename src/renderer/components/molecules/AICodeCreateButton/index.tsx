@@ -22,7 +22,12 @@ export function AICodeCreateButton() {
   const { updateEditorCode } = useEditorController();
   const { complete, completion, isLoading } = useStreamingAICode({
     onError() {
-      fireAlertModal('에러 발생', AI_ERROR_MESSAGE);
+      fireAlertModal(
+        '에러 발생',
+        <div>
+          <pre>{AI_ERROR_MESSAGE}</pre>
+        </div>,
+      );
     },
   });
 

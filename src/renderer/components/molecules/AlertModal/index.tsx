@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { css } from '@emotion/react';
 import { Modal } from '@/renderer/components/atoms/modal/Modal';
-import { Markdown } from '@/renderer/components/atoms/Markdown';
 import { Text } from '@/renderer/components/atoms/paragraphs/Text';
 import { TextButton } from '@/renderer/components/atoms/buttons/TextButton';
 import { useAlertModalController, useAlertModalState } from '@/renderer/hooks';
@@ -42,20 +41,20 @@ export function AlertModal() {
         `}
       >
         <div
-          css={css`
-            border: 1px solid lightgray;
+          css={(theme) => css`
+            border: 1px solid ${theme.colors.border};
             display: flex;
             flex-direction: column;
-            background-color: white;
+            background-color: ${theme.colors.bg};
             box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
             max-width: 64rem;
           `}
         >
           <div
-            css={css`
+            css={(theme) => css`
               padding: 0.5rem 1rem;
-              border-bottom: 1px solid lightgray;
-              background-color: #f5f5f5;
+              border-bottom: 1px solid ${theme.colors.border};
+              background-color: ${theme.colors.tabBg};
               display: flex;
               justify-content: space-between;
               align-items: center;
@@ -71,7 +70,7 @@ export function AlertModal() {
               padding: 1rem;
             `}
           >
-            <Markdown>{alertContent || ''}</Markdown>
+            {alertContent}
           </div>
         </div>
       </div>

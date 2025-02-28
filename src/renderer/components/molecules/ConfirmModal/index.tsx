@@ -2,9 +2,7 @@ import { useEffect } from 'react';
 import { css } from '@emotion/react';
 import { Modal } from '@/renderer/components/atoms/modal/Modal';
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
-import { Markdown } from '@/renderer/components/atoms/Markdown';
 import { useConfirmModalController, useConfirmModalState } from '@/renderer/hooks';
-import { color } from '@/renderer/styles';
 
 export function ConfirmModal() {
   const { confirmCallback, confirmMessage, isConfirmModalOpen } = useConfirmModalState();
@@ -46,11 +44,11 @@ export function ConfirmModal() {
           gap: 2rem;
           min-width: 20dvw;
           aspect-ratio: 16/9;
-          background-color: white;
+          background-color: ${theme.colors.bg};
           border-top: 2px solid ${theme.colors.primarybg};
         `}
       >
-        <Markdown>{confirmMessage || ''}</Markdown>
+        <pre>{confirmMessage}</pre>
 
         <div
           css={css`

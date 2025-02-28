@@ -216,7 +216,8 @@ export const globalStyle = (theme: Theme) => css`
     color: ${theme.colors.fg};
   }
 
-  p {
+  p,
+  pre {
     margin: 0;
   }
 

@@ -8,7 +8,7 @@ export function useAlertModalController() {
   const [setAlertContent] = useStore(useShallow((s) => [s.setAlertContent]));
 
   const fireAlertModal = useCallback(
-    (title: string, content: string) => {
+    (title: string, content: React.ReactNode) => {
       setAlertTitle(title);
       setAlertContent(content);
     },
