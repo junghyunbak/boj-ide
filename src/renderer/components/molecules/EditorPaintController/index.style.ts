@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { zIndex, color } from '@/renderer/styles';
+import { zIndex } from '@/renderer/styles';
 
 export const PaintControllerBox = styled.div`
   position: absolute;

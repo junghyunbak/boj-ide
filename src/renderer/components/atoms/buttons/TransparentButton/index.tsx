@@ -1,4 +1,3 @@
-import { color } from '@/renderer/styles';
 import { css } from '@emotion/react';
 
 interface TransparentButtonProps {

@@ -76,7 +76,7 @@ export const themes: Record<Themes, Theme> = {
 
       buttonFg: '#fff',
 
-      disabledFg: '#ddd',
+      disabledFg: '#ccc',
 
       tableBg: '#fff',
       tableBgAccent: '#f9f9f9',

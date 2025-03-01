@@ -1,11 +1,11 @@
-import { css, useTheme } from '@emotion/react';
-import { color } from '@/renderer/styles';
 import { HTMLAttributes } from 'react';
+
+import { css, useTheme } from '@emotion/react';
 import Color from 'color';
 
 interface ActionButtonProps extends HTMLAttributes<HTMLButtonElement> {
   children: string;
-  variant?: 'primary' | 'secondary' | 'cancel';
+  variant?: 'primary' | 'cancel';
   onClick: () => void;
   disabled?: boolean;
 }
@@ -15,22 +15,11 @@ export function ActionButton({ variant = 'primary', children, onClick, disabled 
 
   const bgColor = (() => {
     switch (variant) {
-      case 'secondary':
-        return color.secondaryBg;
       case 'cancel':
         return '#95a5a6';
       case 'primary':
       default:
         return theme.colors.primarybg;
-    }
-  })();
-
-  const textColor = (() => {
-    switch (variant) {
-      case 'secondary':
-      case 'primary':
-      default:
-        return 'white';
     }
   })();
 
