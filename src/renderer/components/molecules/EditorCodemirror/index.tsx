@@ -43,6 +43,10 @@ export function EditorCodemirror() {
           padding: 0 10px 0 17px;
         }
 
+        .cm-cursor {
+          border-color: ${theme.colors.fg};
+        }
+
         .cm-fat-cursor {
           background: ${theme.editor.cursorColor} !important;
         }
