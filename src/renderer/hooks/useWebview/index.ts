@@ -80,8 +80,8 @@ export function useWebview() {
 
             .header,
             .page-header,
-            .table-responsive,
-            .table-responsive td,
+            .table,
+            .table *,
             .headline {
               border-color: ${emotionTheme.colors.border} !important;
             }
