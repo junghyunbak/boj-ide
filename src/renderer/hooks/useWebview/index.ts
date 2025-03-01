@@ -80,12 +80,13 @@ export function useWebview() {
 
             .header,
             .page-header,
+            .table-responsive,
             .table,
             .table *,
             .headline {
               border-color: ${emotionTheme.colors.border} !important;
             }
-
+            
             .sampledata { 
               background-color: ${emotionTheme.colors.code};
               border: ${emotionTheme.colors.border};
