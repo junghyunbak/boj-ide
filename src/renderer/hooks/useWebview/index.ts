@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useTheme as useEmotionTheme } from '@emotion/react';
+import { css, useTheme as useEmotionTheme } from '@emotion/react';
 
 import { getProblemInfo } from '@/renderer/utils';
 
@@ -31,16 +31,85 @@ export function useWebview() {
       return;
     }
 
-    const customStyleId = 'custom-style';
+    const customStyleDivId = 'custom-style';
+    const customStyle = css`
+      .wrapper {
+        background: ${emotionTheme.colors.bg};
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        color: ${emotionTheme.colors.primaryfg};
+      }
+
+      .headline h2,
+      .headline h3,
+      .headline h4 {
+        border-color: ${emotionTheme.colors.primarybg};
+      }
+
+      body,
+      li,
+      a,
+      p {
+        color: ${emotionTheme.colors.fg} !important;
+      }
+
+      .active a {
+        background-color: ${emotionTheme.colors.primarybg} !important;
+      }
+
+      .header,
+      .page-header,
+      .table-responsive,
+      .table,
+      .table *,
+      .headline {
+        border-color: ${emotionTheme.colors.border} !important;
+      }
+
+      .sampledata {
+        background-color: ${emotionTheme.colors.code};
+        border: ${emotionTheme.colors.border};
+        color: ${emotionTheme.colors.fg};
+      }
+
+      .btn-default {
+        color: ${emotionTheme.colors.fg};
+        border-color: ${emotionTheme.colors.primarybg};
+        background-color: ${emotionTheme.colors.primarybg};
+      }
+
+      *::-webkit-scrollbar {
+        width: 7px;
+        height: 7px;
+      }
+
+      *::-webkit-scrollbar-thumb {
+        background: ${emotionTheme.colors.scrollbar};
+      }
+
+      *::-webkit-scrollbar-track {
+        background: ${emotionTheme.colors.bg};
+      }
+
+      *::-webkit-scrollbar-corner {
+        background: ${emotionTheme.colors.bg};
+      }
+    `.styles;
 
     webview
       .executeJavaScript(
         `
       (() => {
         const $newStyleDiv = document.createElement('div');
-        $newStyleDiv.id = '${customStyleId}';
+        $newStyleDiv.id = '${customStyleDivId}';
 
-        const $customStyleDiv = document.querySelector('#${customStyleId}');
+        const $customStyleDiv = document.querySelector('#${customStyleDivId}');
 
         if($customStyleDiv) {
           $customStyleDiv.remove();
@@ -48,69 +117,7 @@ export function useWebview() {
 
         $newStyleDiv.innerHTML = \`
           <style>
-            .wrapper {
-              background: ${emotionTheme.colors.bg};
-            }
-
-            h1,
-            h2,
-            h3,
-            h4,
-            h5,
-            h6 {
-              color: ${emotionTheme.colors.primaryfg};
-            }
-
-            .headline h2,
-            .headline h3,
-            .headline h4 { 
-              border-color: ${emotionTheme.colors.primarybg};
-            }
-            
-            body,
-            li,
-            a,
-            p {
-              color: ${emotionTheme.colors.fg} !important;
-            }
-
-            .active a {
-              background-color: ${emotionTheme.colors.primarybg} !important;
-            }
-
-            .header,
-            .page-header,
-            .table-responsive,
-            .table,
-            .table *,
-            .headline {
-              border-color: ${emotionTheme.colors.border} !important;
-            }
-            
-            .sampledata { 
-              background-color: ${emotionTheme.colors.code};
-              border: ${emotionTheme.colors.border};
-              color: ${emotionTheme.colors.fg};
-            }
-
-            .btn-default { 
-              color: ${emotionTheme.colors.fg};
-              border-color: ${emotionTheme.colors.primarybg};
-              background-color: ${emotionTheme.colors.primarybg};
-            }
-
-            *::-webkit-scrollbar {
-              width: 7px;
-              height: 7px;
-            }
-
-            *::-webkit-scrollbar-thumb {
-              background: ${emotionTheme.colors.scrollbar};
-            }
-
-            *::-webkit-scrollbar-track {
-              background: ${emotionTheme.colors.bg};
-            }
+            ${customStyle}
           </style>
         \`;
 
