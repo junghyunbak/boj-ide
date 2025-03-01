@@ -113,7 +113,7 @@ export function useWebview() {
           </style>
         \`;
 
-        if(${theme === 'programmers'} && ${webviewUrl.startsWith(`https://${BOJ_DOMAIN}/problem`)}) {
+        if(${theme === 'programmers'} && ${new RegExp(`^https://${BOJ_DOMAIN}/problem/[0-9]+`).test(webviewUrl)}) {
           document.body.appendChild($newStyleDiv);
         }
       })();
