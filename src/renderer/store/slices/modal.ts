@@ -10,8 +10,8 @@ type ModalSlice = {
   alertTitle: string | null;
   setAlertTitle: (title: string | null) => void;
 
-  alertContent: React.ReactNode;
-  setAlertContent: (content: React.ReactNode) => void;
+  alertContent: string | null;
+  setAlertContent: (content: string | null) => void;
 };
 
 export const createModalSlice: StateCreator<ModalSlice> = (set): ModalSlice => ({

@@ -1,8 +1,11 @@
 import { useEffect } from 'react';
+
 import { css } from '@emotion/react';
+
 import { Modal } from '@/renderer/components/atoms/modal/Modal';
-import { Text } from '@/renderer/components/atoms/paragraphs/Text';
 import { TextButton } from '@/renderer/components/atoms/buttons/TextButton';
+import { Markdown } from '@/renderer/components/atoms/Markdown';
+
 import { useAlertModalController, useAlertModalState } from '@/renderer/hooks';
 
 export function AlertModal() {
@@ -61,7 +64,13 @@ export function AlertModal() {
               position: sticky;
             `}
           >
-            <Text>{alertTitle}</Text>
+            <p
+              css={(theme) => css`
+                color: ${theme.colors.fg};
+              `}
+            >
+              {alertTitle}
+            </p>
             <TextButton onClick={handleCloseButtonClick}>닫기</TextButton>
           </div>
 
@@ -70,7 +79,7 @@ export function AlertModal() {
               padding: 1rem;
             `}
           >
-            {alertContent}
+            <Markdown>{alertContent || ''}</Markdown>
           </div>
         </div>
       </div>

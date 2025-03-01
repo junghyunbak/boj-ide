@@ -32,10 +32,29 @@ export class Judge {
     return langToJudgeInfo[language].compile !== undefined;
   }
 
+  private getCliType(language: Language) {
+    switch (language) {
+      case 'node.js':
+      case 'Python3':
+        return '인터프리터';
+      case 'C++14':
+      case 'C++17':
+      case 'Java11':
+      default:
+        return '컴파일러';
+    }
+  }
+
   private isCliExist(language: Language) {
     if (!checkCli(langToJudgeInfo[language].cli)) {
       throw new Error(
-        `프로그램이 설치되어 있지 않습니다.\n\ncli \`${langToJudgeInfo[language].cli}\` 가 설치되어 있어야 합니다.\n\n설치 후 재시작해주세요.`,
+        [
+          `${this.getCliType(language)} \`${langToJudgeInfo[language].cli}\` 가 설치되어있지 않습니다.`,
+          `<img src="https://github.com/user-attachments/assets/1f5765b2-4039-48b1-a9e3-f9ccebbf2dc9" style="width: 500px"/>`,
+          `1. ${this.getCliType(language)} \`${langToJudgeInfo[language].cli}\`를 설치합니다.`,
+          `2. 터미널에서 \`$ ${langToJudgeInfo[language].cli} --version\` 명령어를 실행하여 버전이 올바르게 출력되는지 확인합니다.`,
+          '그럼에도 동작하지 않는 경우 [Github Issues](https://github.com/junghyunbak/boj-ide/issues) 채널로 문의해주세요.',
+        ].join('\n\n'),
       );
     }
   }
