@@ -89,7 +89,7 @@ export const themes: Record<Themes, Theme> = {
       scrollbarActive: '#0000004c',
 
       accent: '#808080',
-      active: '#f5f5f5',
+      active: '#eee',
       border: '#ddd',
       code: '#f7f7f9',
     },
