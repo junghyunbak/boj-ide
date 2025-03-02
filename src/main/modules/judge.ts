@@ -47,6 +47,8 @@ export class Judge {
 
   private isCliExist(language: Language) {
     if (!checkCli(langToJudgeInfo[language].cli)) {
+      console.error(Object.entries(process.env).filter(([key]) => key.toLowerCase() === 'path'));
+
       throw new Error(
         [
           `${this.getCliType(language)} \`${langToJudgeInfo[language].cli}\` 가 설치되어있지 않습니다.`,
