@@ -10,7 +10,7 @@ export const XButton = forwardRef<HTMLButtonElement, XButtonProps>(({ onClick, o
   return (
     <button
       type="button"
-      css={css`
+      css={(theme) => css`
         border: none;
         background-color: transparent;
         border-radius: 0.25rem;
@@ -20,7 +20,7 @@ export const XButton = forwardRef<HTMLButtonElement, XButtonProps>(({ onClick, o
         align-items: center;
 
         &:hover {
-          background-color: rgba(0, 0, 0, 0.1);
+          background-color: ${theme.colors.active};
           cursor: pointer;
         }
       `}
