@@ -1,6 +1,6 @@
 {
   "name": "boj-ide",
-  "version": "1.13.15",
+  "version": "1.13.16",
   "description": "BOJ IDE",
   "keywords": [
     "electron",
