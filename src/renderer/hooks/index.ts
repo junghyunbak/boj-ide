@@ -66,3 +66,5 @@ export * from './useEditor';
 export * from './useEditorController';
 export * from './useEditorExtensions';
 export * from './useEditorVim';
+
+export * from './useFocusRecovery';
