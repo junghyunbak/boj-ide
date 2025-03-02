@@ -31,6 +31,7 @@ export function useWebview() {
 
     const customStyleDivId = 'custom-style';
     const customStyle = css`
+      html,
       .wrapper {
         background: ${emotionTheme.colors.bg};
       }
@@ -143,13 +144,13 @@ export function useWebview() {
        * 백준 허브 확장 프로그램에서 삽입되는 기본 스타일로 인한
        * 리스트 태그 패딩값이 사라지는 문제를 해결하기 위한 코드
        */
-      newWebview.insertCSS(`
+      newWebview.insertCSS(css`
         ol,
         ul:not(.nav),
         dl {
           padding-left: 40px;
         }
-      `);
+      `.styles);
       setWebview(newWebview);
     });
   }, [setWebview]);
