@@ -141,7 +141,7 @@ export const themes: Record<Themes, Theme> = {
     editor: {
       settings: {
         gutterForeground: '#44576c',
-        gutterBackground: 'transparent',
+        gutterBackground: '#263747',
         gutterBorder: 'transparent',
 
         selection: '#44576c',
