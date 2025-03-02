@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
@@ -18,19 +18,19 @@ export function useWebview() {
   const [startWebviewUrl, setStartWebviewUrl] = useState(webviewUrl);
 
   const emotionTheme = useEmotionTheme();
-
   const { theme } = useTheme();
   const { addProblemTab } = useTab();
   const { updateProblem } = useProblem();
   const { updateWebviewUrl } = useWebviewController();
 
-  useEffect(() => {
+  const refreshWebviewTheme = useCallback(() => {
     if (!webview) {
       return;
     }
 
     const customStyleDivId = 'custom-style';
-    const customStyle = css`
+
+    const bojOverrideStyle = css`
       html,
       .wrapper {
         background: ${emotionTheme.colors.bg};
@@ -116,7 +116,7 @@ export function useWebview() {
 
         $newStyleDiv.innerHTML = \`
           <style>
-            ${customStyle}
+            ${bojOverrideStyle}
           </style>
         \`;
 
@@ -127,7 +127,14 @@ export function useWebview() {
     `,
       )
       .catch(console.log);
-  }, [emotionTheme, theme, webview, webviewUrl]);
+  }, [webview, webviewUrl, theme, emotionTheme]);
+
+  /**
+   * 테마가 변경될 때 마다 웹뷰 스타일 갱신
+   */
+  useEffect(() => {
+    refreshWebviewTheme();
+  }, [refreshWebviewTheme]);
 
   /**
    * webview 상태 초기화
@@ -136,10 +143,12 @@ export function useWebview() {
     const newWebview = document.querySelector<Electron.WebviewTag>('webview');
 
     if (!newWebview) {
-      return;
+      return function cleanup() {};
     }
 
-    newWebview.addEventListener('dom-ready', () => {
+    const handleWebviewDomReady = () => {
+      setWebview(newWebview);
+
       /**
        * 백준 허브 확장 프로그램에서 삽입되는 기본 스타일로 인한
        * 리스트 태그 패딩값이 사라지는 문제를 해결하기 위한 코드
@@ -151,8 +160,13 @@ export function useWebview() {
           padding-left: 40px;
         }
       `.styles);
-      setWebview(newWebview);
-    });
+    };
+
+    newWebview.addEventListener('dom-ready', handleWebviewDomReady);
+
+    return function cleanup() {
+      newWebview.removeEventListener('dom-ready', handleWebviewDomReady);
+    };
   }, [setWebview]);
 
   /**
@@ -192,6 +206,8 @@ export function useWebview() {
     }
 
     const handleWebviewDidFinishLoad = async () => {
+      refreshWebviewTheme();
+
       const url = webview.getURL() || '';
 
       updateWebviewUrl(url);
@@ -223,10 +239,11 @@ export function useWebview() {
     return () => {
       webview.removeEventListener('did-finish-load', handleWebviewDidFinishLoad);
     };
-  }, [webview, updateWebviewUrl, updateProblem, addProblemTab]);
+  }, [webview, updateWebviewUrl, updateProblem, addProblemTab, refreshWebviewTheme]);
 
   return {
     webview,
     startWebviewUrl,
+    refreshWebviewTheme,
   };
 }
