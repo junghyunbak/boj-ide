@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { BOJ_DOMAIN } from '@/common/constants';
+import { extractProblemNumberFromUrl } from '../string';
 
 type PossibleElement = HTMLElement | SVGElement | EventTarget | null;
 
@@ -25,7 +25,7 @@ export function isParentExist(child: PossibleElement, ...parents: PossibleElemen
 export function getProblemInfo(bojProblemHtml: string, url: string): ProblemInfo | null {
   const doc = new DOMParser().parseFromString(bojProblemHtml, 'text/html');
 
-  const number = (new RegExp(`https://${BOJ_DOMAIN}/problem/([0-9]+)`).exec(url) || [])[1] || '';
+  const number = extractProblemNumberFromUrl(url);
   const name = doc.querySelector<HTMLSpanElement>('#problem_title')?.innerText;
   const inputDesc = doc.querySelector<HTMLDivElement>('#problem_input')?.innerHTML;
 

@@ -1,3 +1,5 @@
+import { BOJ_DOMAIN } from '@/common/constants';
+
 export const languageToExt = (language: Language) => {
   switch (language) {
     case 'node.js':
@@ -12,4 +14,12 @@ export const languageToExt = (language: Language) => {
     default:
       return '';
   }
+};
+
+export const isBojProblemUrl = (url: string) => {
+  return new RegExp(`^https://${BOJ_DOMAIN}/problem/[0-9]+`).test(url);
+};
+
+export const extractProblemNumberFromUrl = (url: string) => {
+  return (new RegExp(`https://${BOJ_DOMAIN}/problem/([0-9]+)`).exec(url) || [])[1] || '';
 };

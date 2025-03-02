@@ -5,9 +5,7 @@ import { useShallow } from 'zustand/shallow';
 
 import { css, useTheme as useEmotionTheme } from '@emotion/react';
 
-import { getProblemInfo } from '@/renderer/utils';
-
-import { BOJ_DOMAIN } from '@/common/constants';
+import { getProblemInfo, isBojProblemUrl } from '@/renderer/utils';
 
 import { useWebviewController } from '../useWebviewController';
 import { useTab } from '../useTab';
@@ -121,7 +119,7 @@ export function useWebview() {
           </style>
         \`;
 
-        if(${theme === 'programmers'} && ${new RegExp(`^https://${BOJ_DOMAIN}/problem/[0-9]+`).test(webviewUrl)}) {
+        if(${theme === 'programmers'} && ${isBojProblemUrl(webviewUrl)}) {
           document.body.appendChild($newStyleDiv);
         }
       })();
@@ -197,7 +195,7 @@ export function useWebview() {
 
       updateWebviewUrl(url);
 
-      if (!url.startsWith(`https://${BOJ_DOMAIN}/problem/`)) {
+      if (!isBojProblemUrl(url)) {
         updateProblem(null);
         return;
       }
