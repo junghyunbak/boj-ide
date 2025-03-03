@@ -4,14 +4,18 @@ import { getElementFromChildren } from '@/renderer/utils';
 
 import { MovableTabContentCloseButton } from './MovableTabContentCloseButton';
 import { MovableTabContentDetail } from './MovableTabContentDetail';
+import { MovableTabContentIcon } from './MovableTabContentIcon';
+
 import { useMovableTabContext } from '../MovableTabContext';
 
+const IconType = (<MovableTabContentIcon />).type;
 const CloseButtonType = (<MovableTabContentCloseButton />).type;
 const DetailType = (<MovableTabContentDetail />).type;
 
 function MovableTabContentImpl({ children }: React.PropsWithChildren) {
   const { isSelect } = useMovableTabContext();
 
+  const Icon = getElementFromChildren(children, IconType);
   const CloseButton = getElementFromChildren(children, CloseButtonType);
   const Detail = getElementFromChildren(children, DetailType);
 
@@ -37,6 +41,7 @@ function MovableTabContentImpl({ children }: React.PropsWithChildren) {
         }
       `}
     >
+      {Icon}
       {Detail}
       {CloseButton}
     </div>
@@ -44,6 +49,7 @@ function MovableTabContentImpl({ children }: React.PropsWithChildren) {
 }
 
 export const MovableTabContent = Object.assign(MovableTabContentImpl, {
-  MovableTabContentCloseButton,
+  MovableTabContentIcon,
   MovableTabContentDetail,
+  MovableTabContentCloseButton,
 });

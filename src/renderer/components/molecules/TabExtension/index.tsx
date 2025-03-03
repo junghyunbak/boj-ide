@@ -1,13 +1,9 @@
 import { useMemo } from 'react';
 
-import { css } from '@emotion/react';
-
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
 import { useWebviewController } from '@/renderer/hooks';
-
-import { Text } from '@/renderer/components/atoms/paragraphs/Text';
 
 import { MovableTab } from '../MovableTab';
 
@@ -38,35 +34,9 @@ export function TabExtension({ tab, index }: TabExtensionProps) {
       <MovableTab.MovableTabLeftLine />
 
       <MovableTab.MovableTabContent>
+        <MovableTab.MovableTabContent.MovableTabContentIcon src={tab.logoImgBase64} />
         <MovableTab.MovableTabContent.MovableTabContentDetail>
-          {tab.logoImgBase64 && (
-            <div
-              css={css`
-                display: flex;
-                width: 0.75rem;
-                flex-shrink: 0;
-              `}
-            >
-              <img
-                src={tab.logoImgBase64}
-                css={css`
-                  width: 100%;
-                  height: 100%;
-                  user-select: none;
-                `}
-                draggable={false}
-              />
-            </div>
-          )}
-
-          <p
-            css={css`
-              white-space: nowrap;
-              user-select: none;
-            `}
-          >
-            {tab.title}
-          </p>
+          {tab.title}
         </MovableTab.MovableTabContent.MovableTabContentDetail>
       </MovableTab.MovableTabContent>
 

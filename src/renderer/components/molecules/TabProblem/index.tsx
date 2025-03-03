@@ -1,9 +1,7 @@
-import { css } from '@emotion/react';
-
 import { useFetchProblem, useProblem, useTab, useWebviewController } from '@/renderer/hooks';
 
-import { Text } from '@/renderer/components/atoms/paragraphs/Text';
 import { MovableTab } from '@/renderer/components/molecules/MovableTab';
+import { placeholderLogo } from '@/renderer/assets/base64Images';
 
 interface TabProblemProps {
   tab: ProblemInfo;
@@ -36,34 +34,9 @@ export function TabProblem({ tab, index }: TabProblemProps) {
       <MovableTab.MovableTabLeftLine />
 
       <MovableTab.MovableTabContent>
+        <MovableTab.MovableTabContent.MovableTabContentIcon src={tierBase64 || placeholderLogo} />
         <MovableTab.MovableTabContent.MovableTabContentDetail>
-          <div
-            css={css`
-              display: flex;
-              width: 0.75rem;
-              flex-shrink: 0;
-            `}
-          >
-            {tierBase64 && (
-              <img
-                src={tierBase64}
-                alt=""
-                css={css`
-                  width: 100%;
-                  height: 100%;
-                  user-select: none;
-                `}
-                draggable={false}
-              />
-            )}
-          </div>
-
-          <p
-            css={css`
-              white-space: nowrap;
-              user-select: none;
-            `}
-          >{`${tab.number}번: ${tab.name}`}</p>
+          {`${tab.number}번: ${tab.name}`}
         </MovableTab.MovableTabContent.MovableTabContentDetail>
         <MovableTab.MovableTabContent.MovableTabContentCloseButton onClick={handleTabCloseButtonClick} />
       </MovableTab.MovableTabContent>
