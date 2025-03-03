@@ -1,3 +1,5 @@
+import { css } from '@emotion/react';
+
 import { useEffect } from 'react';
 
 import { HorizontalResizer } from '@/renderer/components/atoms/lines/HorizontalResizer';
@@ -57,7 +59,13 @@ export function Resizer({ children, onDragStart, onDragEnd, zIndex }: React.Prop
   }, [splitLayoutStore, onDragEnd]);
 
   return (
-    <div ref={resizerRef} onMouseDown={handleMouseDown}>
+    <div
+      ref={resizerRef}
+      onMouseDown={handleMouseDown}
+      css={css`
+        user-select: none;
+      `}
+    >
       {children || <DefaultResizer zIndex={zIndex} />}
     </div>
   );
