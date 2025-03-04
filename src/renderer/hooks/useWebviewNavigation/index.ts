@@ -5,11 +5,15 @@ import { useShallow } from 'zustand/shallow';
 
 import { WEBVIEW_HOME_URL } from '@/renderer/constants';
 
+import { useWebviewController } from '../useWebviewController';
+
 export function useWebviewNavigation() {
   const [webview] = useStore(useShallow((s) => [s.webview]));
 
   const [canGoBack, setCanGoBack] = useState(true);
   const [canGoForward, setCanGoForward] = useState(true);
+
+  const { updateWebviewLoading } = useWebviewController();
 
   useEffect(() => {
     if (!webview) {
@@ -29,16 +33,19 @@ export function useWebviewNavigation() {
   }, [webview]);
 
   const goBack = useCallback(() => {
+    updateWebviewLoading('loading');
     webview?.goBack();
-  }, [webview]);
+  }, [webview, updateWebviewLoading]);
 
   const goForward = useCallback(() => {
+    updateWebviewLoading('loading');
     webview?.goForward();
-  }, [webview]);
+  }, [webview, updateWebviewLoading]);
 
   const reload = useCallback(() => {
+    updateWebviewLoading('loading');
     webview?.reload();
-  }, [webview]);
+  }, [webview, updateWebviewLoading]);
 
   const openExternal = useCallback(() => {
     window.open(webview ? webview.getURL() : WEBVIEW_HOME_URL, '_blank');

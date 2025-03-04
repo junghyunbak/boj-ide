@@ -147,12 +147,8 @@ export function useWebview() {
       `.styles);
     };
 
-    const handleWebviewWillNavigate = (event: Electron.WillNavigateEvent) => {
-      const { url } = event;
-
-      if (isBojProblemUrl(url)) {
-        updateWebviewLoading('loading');
-      }
+    const handleWebviewWillNavigate = () => {
+      updateWebviewLoading('loading');
     };
 
     newWebview.addEventListener('dom-ready', handleWebviewDomReady);

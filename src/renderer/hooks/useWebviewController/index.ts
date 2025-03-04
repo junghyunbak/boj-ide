@@ -47,12 +47,8 @@ export function useWebviewController() {
       const url = `https://${BOJ_DOMAIN}/problem/${problemInfo.number}`;
 
       updateWebviewLoading('loading');
-
-      /**
-       * 낙관적 업데이트
-       */
-      setProblem(problemInfo);
       updateWebviewUrl(url);
+      setProblem(problemInfo);
 
       webview.loadURL(url).catch(console.error);
 
@@ -69,17 +65,15 @@ export function useWebviewController() {
         return false;
       }
 
-      /**
-       * 낙관적 업데이트
-       */
-      setProblem(null);
+      updateWebviewLoading('loading');
       updateWebviewUrl(url);
+      setProblem(null);
 
       webview.loadURL(url).catch(console.error);
 
       return true;
     },
-    [setProblem, updateWebviewUrl],
+    [setProblem, updateWebviewUrl, updateWebviewLoading],
   );
 
   return {
