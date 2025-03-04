@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
@@ -27,6 +27,82 @@ export function useWebview() {
 
   const insertCSSKeyRef = useRef<string>('');
 
+  const bojOverrideStyle = useMemo(
+    () => css`
+      html,
+      .wrapper {
+        background: ${emotionTheme.colors.bg} !important;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        color: ${emotionTheme.colors.primaryfg} !important;
+      }
+
+      .headline h2,
+      .headline h3,
+      .headline h4 {
+        border-color: ${emotionTheme.colors.primarybg} !important;
+      }
+
+      body,
+      li,
+      a,
+      p {
+        color: ${emotionTheme.colors.fg} !important;
+      }
+
+      .active a {
+        background-color: ${emotionTheme.colors.primarybg} !important;
+      }
+
+      .header,
+      .page-header,
+      .table-responsive,
+      .table,
+      .table *,
+      .headline {
+        border-color: ${emotionTheme.colors.border} !important;
+      }
+
+      pre,
+      code,
+      .sampledata {
+        background-color: ${emotionTheme.colors.code} !important;
+        border: ${emotionTheme.colors.border} !important;
+        color: ${emotionTheme.colors.fg} !important;
+      }
+
+      .btn-default {
+        color: ${emotionTheme.colors.fg} !important;
+        border-color: ${emotionTheme.colors.primarybg} !important;
+        background-color: ${emotionTheme.colors.primarybg} !important;
+      }
+
+      *::-webkit-scrollbar {
+        width: 7px;
+        height: 7px;
+      }
+
+      *::-webkit-scrollbar-thumb {
+        background: ${emotionTheme.colors.scrollbar};
+      }
+
+      *::-webkit-scrollbar-track {
+        background: ${emotionTheme.colors.bg};
+      }
+
+      *::-webkit-scrollbar-corner {
+        background: ${emotionTheme.colors.bg};
+      }
+    `.styles,
+    [emotionTheme],
+  );
+
   const refreshWebviewTheme = useCallback(async () => {
     if (!webview) {
       return;
@@ -37,82 +113,9 @@ export function useWebview() {
     }
 
     if (theme === 'programmers' && isBojProblemUrl(webviewUrl)) {
-      const bojOverrideStyle = css`
-        html,
-        .wrapper {
-          background: ${emotionTheme.colors.bg} !important;
-        }
-
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
-          color: ${emotionTheme.colors.primaryfg} !important;
-        }
-
-        .headline h2,
-        .headline h3,
-        .headline h4 {
-          border-color: ${emotionTheme.colors.primarybg} !important;
-        }
-
-        body,
-        li,
-        a,
-        p {
-          color: ${emotionTheme.colors.fg} !important;
-        }
-
-        .active a {
-          background-color: ${emotionTheme.colors.primarybg} !important;
-        }
-
-        .header,
-        .page-header,
-        .table-responsive,
-        .table,
-        .table *,
-        .headline {
-          border-color: ${emotionTheme.colors.border} !important;
-        }
-
-        pre,
-        code,
-        .sampledata {
-          background-color: ${emotionTheme.colors.code} !important;
-          border: ${emotionTheme.colors.border} !important;
-          color: ${emotionTheme.colors.fg} !important;
-        }
-
-        .btn-default {
-          color: ${emotionTheme.colors.fg} !important;
-          border-color: ${emotionTheme.colors.primarybg} !important;
-          background-color: ${emotionTheme.colors.primarybg} !important;
-        }
-
-        *::-webkit-scrollbar {
-          width: 7px;
-          height: 7px;
-        }
-
-        *::-webkit-scrollbar-thumb {
-          background: ${emotionTheme.colors.scrollbar};
-        }
-
-        *::-webkit-scrollbar-track {
-          background: ${emotionTheme.colors.bg};
-        }
-
-        *::-webkit-scrollbar-corner {
-          background: ${emotionTheme.colors.bg};
-        }
-      `.styles;
-
       insertCSSKeyRef.current = await webview.insertCSS(bojOverrideStyle);
     }
-  }, [webview, webviewUrl, theme, emotionTheme]);
+  }, [webview, theme, webviewUrl, bojOverrideStyle]);
 
   /**
    * 테마가 변경될 때 마다 웹뷰 스타일 갱신
@@ -147,16 +150,10 @@ export function useWebview() {
       `.styles);
     };
 
-    const handleWebviewWillNavigate = () => {
-      updateWebviewLoading('loading');
-    };
-
     newWebview.addEventListener('dom-ready', handleWebviewDomReady);
-    newWebview.addEventListener('will-navigate', handleWebviewWillNavigate);
 
     return function cleanup() {
       newWebview.removeEventListener('dom-ready', handleWebviewDomReady);
-      newWebview.removeEventListener('will-navigate', handleWebviewWillNavigate);
     };
   }, [setWebview, updateWebviewLoading]);
 
@@ -183,7 +180,7 @@ export function useWebview() {
       }
     });
 
-    return () => {
+    return function cleanup() {
       window.electron.ipcRenderer.removeAllListeners('reload-webview');
     };
   }, [webview]);
@@ -193,7 +190,7 @@ export function useWebview() {
    */
   useEffect(() => {
     if (!webview) {
-      return () => {};
+      return function cleanup() {};
     }
 
     const handleWebviewDidFinishLoad = async () => {
@@ -209,10 +206,6 @@ export function useWebview() {
       }
 
       const html = await webview.executeJavaScript('document.documentElement.outerHTML');
-
-      /**
-       * 실제 url과 webview.getURL() 값이 다를 수 있어 해당 방식을 사용
-       */
       const realUrl = await webview.executeJavaScript('window.location.href');
 
       const problemInfo = getProblemInfo(html, realUrl);
@@ -225,10 +218,22 @@ export function useWebview() {
       addProblemTab(problemInfo);
     };
 
-    webview.addEventListener('did-finish-load', handleWebviewDidFinishLoad);
+    const handleWebviewWillNavigate = () => {
+      updateWebviewLoading('loading');
+    };
 
-    return () => {
+    const handleWebviewDidFailLoad = () => {
+      updateWebviewLoading('finished');
+    };
+
+    webview.addEventListener('did-finish-load', handleWebviewDidFinishLoad);
+    webview.addEventListener('did-fail-load', handleWebviewDidFailLoad);
+    webview.addEventListener('will-navigate', handleWebviewWillNavigate);
+
+    return function cleanup() {
       webview.removeEventListener('did-finish-load', handleWebviewDidFinishLoad);
+      webview.removeEventListener('did-fail-load', handleWebviewDidFailLoad);
+      webview.removeEventListener('will-navigate', handleWebviewWillNavigate);
     };
   }, [
     webview,
