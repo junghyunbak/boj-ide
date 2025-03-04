@@ -147,12 +147,22 @@ export function useWebview() {
       `.styles);
     };
 
+    const handleWebviewWillNavigate = (event: Electron.WillNavigateEvent) => {
+      const { url } = event;
+
+      if (isBojProblemUrl(url)) {
+        updateWebviewLoading('loading');
+      }
+    };
+
     newWebview.addEventListener('dom-ready', handleWebviewDomReady);
+    newWebview.addEventListener('will-navigate', handleWebviewWillNavigate);
 
     return function cleanup() {
       newWebview.removeEventListener('dom-ready', handleWebviewDomReady);
+      newWebview.removeEventListener('will-navigate', handleWebviewWillNavigate);
     };
-  }, [setWebview]);
+  }, [setWebview, updateWebviewLoading]);
 
   /**
    * 마지막 접속 url 반영
