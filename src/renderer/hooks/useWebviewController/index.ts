@@ -4,6 +4,7 @@ import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
 import { BOJ_DOMAIN } from '@/common/constants';
+import { WEBVIEW_HOME_URL } from '@/renderer/constants';
 
 export function useWebviewController() {
   const [setWebviewUrl] = useStore(useShallow((s) => [s.setWebViewUrl]));
@@ -76,9 +77,33 @@ export function useWebviewController() {
     [setProblem, updateWebviewUrl, updateWebviewLoading],
   );
 
+  const goBack = useCallback(() => {
+    updateWebviewLoading('loading');
+    useStore.getState().webview?.goBack();
+  }, [updateWebviewLoading]);
+
+  const goForward = useCallback(() => {
+    updateWebviewLoading('loading');
+    useStore.getState().webview?.goForward();
+  }, [updateWebviewLoading]);
+
+  const reload = useCallback(() => {
+    updateWebviewLoading('loading');
+    useStore.getState().webview?.reload();
+  }, [updateWebviewLoading]);
+
+  const openExternal = useCallback(() => {
+    const { webview } = useStore.getState();
+    window.open(webview ? webview.getURL() : WEBVIEW_HOME_URL, '_blank');
+  }, []);
+
   return {
     gotoProblem,
     gotoUrl,
+    goBack,
+    goForward,
+    reload,
+    openExternal,
     updateWebviewUrl,
     updateWebviewLoading,
   };
