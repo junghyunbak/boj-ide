@@ -7,6 +7,7 @@ import { BOJ_DOMAIN } from '@/common/constants';
 
 export function useWebviewController() {
   const [setWebviewUrl] = useStore(useShallow((s) => [s.setWebViewUrl]));
+  const [setWebviewIsLoading] = useStore(useShallow((s) => [s.setWebviewIsLoading]));
   const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
 
   const updateWebviewUrl = useCallback(
@@ -24,6 +25,13 @@ export function useWebviewController() {
     [setWebviewUrl],
   );
 
+  const updateWebviewLoading = useCallback(
+    (state: 'loading' | 'finished') => {
+      setWebviewIsLoading(state === 'loading');
+    },
+    [setWebviewIsLoading],
+  );
+
   const gotoProblem = useCallback(
     (problemInfo: ProblemInfo): boolean => {
       const { problem, webview } = useStore.getState();
@@ -38,6 +46,8 @@ export function useWebviewController() {
 
       const url = `https://${BOJ_DOMAIN}/problem/${problemInfo.number}`;
 
+      updateWebviewLoading('loading');
+
       /**
        * 낙관적 업데이트
        */
@@ -48,7 +58,7 @@ export function useWebviewController() {
 
       return true;
     },
-    [setProblem, updateWebviewUrl],
+    [updateWebviewLoading, setProblem, updateWebviewUrl],
   );
 
   const gotoUrl = useCallback(
@@ -76,5 +86,6 @@ export function useWebviewController() {
     gotoProblem,
     gotoUrl,
     updateWebviewUrl,
+    updateWebviewLoading,
   };
 }
