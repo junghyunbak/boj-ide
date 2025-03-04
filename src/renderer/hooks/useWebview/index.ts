@@ -76,6 +76,7 @@ export function useWebview() {
           border-color: ${emotionTheme.colors.border} !important;
         }
 
+        pre,
         .sampledata {
           background-color: ${emotionTheme.colors.code} !important;
           border: ${emotionTheme.colors.border} !important;
