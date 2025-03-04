@@ -9,6 +9,7 @@ type TabState = {
 
 export const TabLayout = styled.div<TabState>`
   position: relative;
+  user-select: none;
 
   ${({ polyfill }) =>
     polyfill
