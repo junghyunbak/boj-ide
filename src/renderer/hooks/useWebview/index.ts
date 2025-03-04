@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
@@ -23,110 +23,91 @@ export function useWebview() {
   const { updateProblem } = useProblem();
   const { updateWebviewUrl } = useWebviewController();
 
-  const refreshWebviewTheme = useCallback(() => {
+  const insertCSSKeyRef = useRef<string>('');
+
+  const refreshWebviewTheme = useCallback(async () => {
     if (!webview) {
       return;
     }
 
-    const customStyleDivId = 'custom-style';
+    if (insertCSSKeyRef.current) {
+      webview.removeInsertedCSS(insertCSSKeyRef.current);
+    }
 
-    const bojOverrideStyle = css`
-      html,
-      .wrapper {
-        background: ${emotionTheme.colors.bg};
-      }
-
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6 {
-        color: ${emotionTheme.colors.primaryfg};
-      }
-
-      .headline h2,
-      .headline h3,
-      .headline h4 {
-        border-color: ${emotionTheme.colors.primarybg};
-      }
-
-      body,
-      li,
-      a,
-      p {
-        color: ${emotionTheme.colors.fg} !important;
-      }
-
-      .active a {
-        background-color: ${emotionTheme.colors.primarybg} !important;
-      }
-
-      .header,
-      .page-header,
-      .table-responsive,
-      .table,
-      .table *,
-      .headline {
-        border-color: ${emotionTheme.colors.border} !important;
-      }
-
-      .sampledata {
-        background-color: ${emotionTheme.colors.code};
-        border: ${emotionTheme.colors.border};
-        color: ${emotionTheme.colors.fg};
-      }
-
-      .btn-default {
-        color: ${emotionTheme.colors.fg};
-        border-color: ${emotionTheme.colors.primarybg};
-        background-color: ${emotionTheme.colors.primarybg};
-      }
-
-      *::-webkit-scrollbar {
-        width: 7px;
-        height: 7px;
-      }
-
-      *::-webkit-scrollbar-thumb {
-        background: ${emotionTheme.colors.scrollbar};
-      }
-
-      *::-webkit-scrollbar-track {
-        background: ${emotionTheme.colors.bg};
-      }
-
-      *::-webkit-scrollbar-corner {
-        background: ${emotionTheme.colors.bg};
-      }
-    `.styles;
-
-    webview
-      .executeJavaScript(
-        `
-      (() => {
-        const $newStyleDiv = document.createElement('div');
-        $newStyleDiv.id = '${customStyleDivId}';
-
-        const $customStyleDiv = document.querySelector('#${customStyleDivId}');
-
-        if($customStyleDiv) {
-          $customStyleDiv.remove();
+    if (theme === 'programmers' && isBojProblemUrl(webviewUrl)) {
+      const bojOverrideStyle = css`
+        html,
+        .wrapper {
+          background: ${emotionTheme.colors.bg} !important;
         }
 
-        $newStyleDiv.innerHTML = \`
-          <style>
-            ${bojOverrideStyle}
-          </style>
-        \`;
-
-        if(${theme === 'programmers'} && ${isBojProblemUrl(webviewUrl)}) {
-          document.body.appendChild($newStyleDiv);
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+          color: ${emotionTheme.colors.primaryfg} !important;
         }
-      })();
-    `,
-      )
-      .catch(console.log);
+
+        .headline h2,
+        .headline h3,
+        .headline h4 {
+          border-color: ${emotionTheme.colors.primarybg} !important;
+        }
+
+        body,
+        li,
+        a,
+        p {
+          color: ${emotionTheme.colors.fg} !important;
+        }
+
+        .active a {
+          background-color: ${emotionTheme.colors.primarybg} !important;
+        }
+
+        .header,
+        .page-header,
+        .table-responsive,
+        .table,
+        .table *,
+        .headline {
+          border-color: ${emotionTheme.colors.border} !important;
+        }
+
+        .sampledata {
+          background-color: ${emotionTheme.colors.code} !important;
+          border: ${emotionTheme.colors.border} !important;
+          color: ${emotionTheme.colors.fg} !important;
+        }
+
+        .btn-default {
+          color: ${emotionTheme.colors.fg} !important;
+          border-color: ${emotionTheme.colors.primarybg} !important;
+          background-color: ${emotionTheme.colors.primarybg} !important;
+        }
+
+        *::-webkit-scrollbar {
+          width: 7px;
+          height: 7px;
+        }
+
+        *::-webkit-scrollbar-thumb {
+          background: ${emotionTheme.colors.scrollbar};
+        }
+
+        *::-webkit-scrollbar-track {
+          background: ${emotionTheme.colors.bg};
+        }
+
+        *::-webkit-scrollbar-corner {
+          background: ${emotionTheme.colors.bg};
+        }
+      `.styles;
+
+      insertCSSKeyRef.current = await webview.insertCSS(bojOverrideStyle);
+    }
   }, [webview, webviewUrl, theme, emotionTheme]);
 
   /**
