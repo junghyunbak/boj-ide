@@ -1,13 +1,14 @@
 import { css } from '@emotion/react';
 
-import { useWebviewNavigation } from '@/renderer/hooks';
+import { useWebviewController, useWebviewNavigation } from '@/renderer/hooks';
 
 import { ArrowButton } from '@/renderer/components/atoms/buttons/ArrowButton';
 import { RefreshButton } from '@/renderer/components/atoms/buttons/RefreshButton';
 import { ExternalLinkButton } from '@/renderer/components/atoms/buttons/ExternalLinkButton';
 
 export function WebviewController() {
-  const { canGoBack, canGoForward, goBack, goForward, reload, openExternal } = useWebviewNavigation();
+  const { canGoBack, canGoForward } = useWebviewNavigation();
+  const { goBack, goForward, reload, openExternal } = useWebviewController();
 
   const handleGoBackButtonClick = () => {
     goBack();

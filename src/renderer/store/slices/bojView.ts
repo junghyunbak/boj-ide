@@ -6,6 +6,9 @@ type BojViewSlice = {
   webviewUrl: string;
   setWebViewUrl: (url: string) => void;
 
+  webviewIsLoading: boolean;
+  setWebviewIsLoading: (webviewIsLoading: boolean) => void;
+
   isResizerDrag: boolean;
   setIsDrag: (isDrag: boolean) => void;
 
@@ -20,6 +23,11 @@ export const createBojViewSlice: StateCreator<BojViewSlice> = (set): BojViewSlic
   webview: null,
   setWebview(webview) {
     set(() => ({ webview }));
+  },
+
+  webviewIsLoading: true,
+  setWebviewIsLoading(webviewIsLoading) {
+    set(() => ({ webviewIsLoading }));
   },
 
   isResizerDrag: false,

@@ -4,9 +4,11 @@ import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
 import { BOJ_DOMAIN } from '@/common/constants';
+import { WEBVIEW_HOME_URL } from '@/renderer/constants';
 
 export function useWebviewController() {
   const [setWebviewUrl] = useStore(useShallow((s) => [s.setWebViewUrl]));
+  const [setWebviewIsLoading] = useStore(useShallow((s) => [s.setWebviewIsLoading]));
   const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
 
   const updateWebviewUrl = useCallback(
@@ -24,6 +26,13 @@ export function useWebviewController() {
     [setWebviewUrl],
   );
 
+  const updateWebviewLoading = useCallback(
+    (state: 'loading' | 'finished') => {
+      setWebviewIsLoading(state === 'loading');
+    },
+    [setWebviewIsLoading],
+  );
+
   const gotoProblem = useCallback(
     (problemInfo: ProblemInfo): boolean => {
       const { problem, webview } = useStore.getState();
@@ -38,17 +47,15 @@ export function useWebviewController() {
 
       const url = `https://${BOJ_DOMAIN}/problem/${problemInfo.number}`;
 
-      /**
-       * 낙관적 업데이트
-       */
-      setProblem(problemInfo);
+      updateWebviewLoading('loading');
       updateWebviewUrl(url);
+      setProblem(problemInfo);
 
       webview.loadURL(url).catch(console.error);
 
       return true;
     },
-    [setProblem, updateWebviewUrl],
+    [updateWebviewLoading, setProblem, updateWebviewUrl],
   );
 
   const gotoUrl = useCallback(
@@ -59,22 +66,45 @@ export function useWebviewController() {
         return false;
       }
 
-      /**
-       * 낙관적 업데이트
-       */
-      setProblem(null);
+      updateWebviewLoading('loading');
       updateWebviewUrl(url);
+      setProblem(null);
 
       webview.loadURL(url).catch(console.error);
 
       return true;
     },
-    [setProblem, updateWebviewUrl],
+    [setProblem, updateWebviewUrl, updateWebviewLoading],
   );
+
+  const goBack = useCallback(() => {
+    updateWebviewLoading('loading');
+    useStore.getState().webview?.goBack();
+  }, [updateWebviewLoading]);
+
+  const goForward = useCallback(() => {
+    updateWebviewLoading('loading');
+    useStore.getState().webview?.goForward();
+  }, [updateWebviewLoading]);
+
+  const reload = useCallback(() => {
+    updateWebviewLoading('loading');
+    useStore.getState().webview?.reload();
+  }, [updateWebviewLoading]);
+
+  const openExternal = useCallback(() => {
+    const { webview } = useStore.getState();
+    window.open(webview ? webview.getURL() : WEBVIEW_HOME_URL, '_blank');
+  }, []);
 
   return {
     gotoProblem,
     gotoUrl,
+    goBack,
+    goForward,
+    reload,
+    openExternal,
     updateWebviewUrl,
+    updateWebviewLoading,
   };
 }

@@ -2,11 +2,11 @@ import { type Themes } from '@/renderer/store/slices/theme';
 
 import { css, Theme } from '@emotion/react';
 
-import { adjustTransparency } from '@/renderer/utils';
-
 import { tags as t } from '@lezer/highlight';
 import { CreateThemeOptions } from '@uiw/codemirror-themes';
 import { defaultSettingsEclipse, eclipseLightStyle } from '@uiw/codemirror-theme-eclipse';
+
+import { adjustTransparency } from '../utils/color';
 
 export const judgeColors = {
   correct: '#009874',

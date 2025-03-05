@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
@@ -15,25 +15,23 @@ import { useTheme } from '../useTheme';
 export function useWebview() {
   const [webview, setWebview] = useStore(useShallow((s) => [s.webview, s.setWebview]));
   const [webviewUrl] = useStore(useShallow((s) => [s.webviewUrl]));
+  const [webviewIsLoading] = useStore(useShallow((s) => [s.webviewIsLoading]));
+
   const [startWebviewUrl, setStartWebviewUrl] = useState(webviewUrl);
 
   const emotionTheme = useEmotionTheme();
   const { theme } = useTheme();
   const { addProblemTab } = useTab();
   const { updateProblem } = useProblem();
-  const { updateWebviewUrl } = useWebviewController();
+  const { updateWebviewUrl, updateWebviewLoading } = useWebviewController();
 
-  const refreshWebviewTheme = useCallback(() => {
-    if (!webview) {
-      return;
-    }
+  const insertCSSKeyRef = useRef<string>('');
 
-    const customStyleDivId = 'custom-style';
-
-    const bojOverrideStyle = css`
+  const bojOverrideStyle = useMemo(
+    () => css`
       html,
       .wrapper {
-        background: ${emotionTheme.colors.bg};
+        background: ${emotionTheme.colors.bg} !important;
       }
 
       h1,
@@ -42,13 +40,13 @@ export function useWebview() {
       h4,
       h5,
       h6 {
-        color: ${emotionTheme.colors.primaryfg};
+        color: ${emotionTheme.colors.primaryfg} !important;
       }
 
       .headline h2,
       .headline h3,
       .headline h4 {
-        border-color: ${emotionTheme.colors.primarybg};
+        border-color: ${emotionTheme.colors.primarybg} !important;
       }
 
       body,
@@ -71,16 +69,18 @@ export function useWebview() {
         border-color: ${emotionTheme.colors.border} !important;
       }
 
+      pre,
+      code,
       .sampledata {
-        background-color: ${emotionTheme.colors.code};
-        border: ${emotionTheme.colors.border};
-        color: ${emotionTheme.colors.fg};
+        background-color: ${emotionTheme.colors.code} !important;
+        border: ${emotionTheme.colors.border} !important;
+        color: ${emotionTheme.colors.fg} !important;
       }
 
       .btn-default {
-        color: ${emotionTheme.colors.fg};
-        border-color: ${emotionTheme.colors.primarybg};
-        background-color: ${emotionTheme.colors.primarybg};
+        color: ${emotionTheme.colors.fg} !important;
+        border-color: ${emotionTheme.colors.primarybg} !important;
+        background-color: ${emotionTheme.colors.primarybg} !important;
       }
 
       *::-webkit-scrollbar {
@@ -99,35 +99,23 @@ export function useWebview() {
       *::-webkit-scrollbar-corner {
         background: ${emotionTheme.colors.bg};
       }
-    `.styles;
+    `.styles,
+    [emotionTheme],
+  );
 
-    webview
-      .executeJavaScript(
-        `
-      (() => {
-        const $newStyleDiv = document.createElement('div');
-        $newStyleDiv.id = '${customStyleDivId}';
+  const refreshWebviewTheme = useCallback(async () => {
+    if (!webview) {
+      return;
+    }
 
-        const $customStyleDiv = document.querySelector('#${customStyleDivId}');
+    if (insertCSSKeyRef.current) {
+      webview.removeInsertedCSS(insertCSSKeyRef.current);
+    }
 
-        if($customStyleDiv) {
-          $customStyleDiv.remove();
-        }
-
-        $newStyleDiv.innerHTML = \`
-          <style>
-            ${bojOverrideStyle}
-          </style>
-        \`;
-
-        if(${theme === 'programmers'} && ${isBojProblemUrl(webviewUrl)}) {
-          document.body.appendChild($newStyleDiv);
-        }
-      })();
-    `,
-      )
-      .catch(console.log);
-  }, [webview, webviewUrl, theme, emotionTheme]);
+    if (theme === 'programmers' && isBojProblemUrl(webviewUrl)) {
+      insertCSSKeyRef.current = await webview.insertCSS(bojOverrideStyle);
+    }
+  }, [webview, theme, webviewUrl, bojOverrideStyle]);
 
   /**
    * 테마가 변경될 때 마다 웹뷰 스타일 갱신
@@ -146,14 +134,14 @@ export function useWebview() {
       return function cleanup() {};
     }
 
-    const handleWebviewDomReady = () => {
+    const handleWebviewDomReady = async () => {
       setWebview(newWebview);
 
       /**
        * 백준 허브 확장 프로그램에서 삽입되는 기본 스타일로 인한
        * 리스트 태그 패딩값이 사라지는 문제를 해결하기 위한 코드
        */
-      newWebview.insertCSS(css`
+      await newWebview.insertCSS(css`
         ol,
         ul:not(.nav),
         dl {
@@ -167,7 +155,7 @@ export function useWebview() {
     return function cleanup() {
       newWebview.removeEventListener('dom-ready', handleWebviewDomReady);
     };
-  }, [setWebview]);
+  }, [setWebview, updateWebviewLoading]);
 
   /**
    * 마지막 접속 url 반영
@@ -192,7 +180,7 @@ export function useWebview() {
       }
     });
 
-    return () => {
+    return function cleanup() {
       window.electron.ipcRenderer.removeAllListeners('reload-webview');
     };
   }, [webview]);
@@ -202,14 +190,14 @@ export function useWebview() {
    */
   useEffect(() => {
     if (!webview) {
-      return () => {};
+      return function cleanup() {};
     }
 
     const handleWebviewDidFinishLoad = async () => {
-      refreshWebviewTheme();
+      await refreshWebviewTheme();
+      updateWebviewLoading('finished');
 
       const url = webview.getURL() || '';
-
       updateWebviewUrl(url);
 
       if (!isBojProblemUrl(url)) {
@@ -218,10 +206,6 @@ export function useWebview() {
       }
 
       const html = await webview.executeJavaScript('document.documentElement.outerHTML');
-
-      /**
-       * 실제 url과 webview.getURL() 값이 다를 수 있어 해당 방식을 사용
-       */
       const realUrl = await webview.executeJavaScript('window.location.href');
 
       const problemInfo = getProblemInfo(html, realUrl);
@@ -234,15 +218,36 @@ export function useWebview() {
       addProblemTab(problemInfo);
     };
 
-    webview.addEventListener('did-finish-load', handleWebviewDidFinishLoad);
-
-    return () => {
-      webview.removeEventListener('did-finish-load', handleWebviewDidFinishLoad);
+    const handleWebviewWillNavigate = () => {
+      updateWebviewLoading('loading');
     };
-  }, [webview, updateWebviewUrl, updateProblem, addProblemTab, refreshWebviewTheme]);
+
+    const handleWebviewDidFailLoad = () => {
+      updateWebviewLoading('finished');
+    };
+
+    webview.addEventListener('did-finish-load', handleWebviewDidFinishLoad);
+    webview.addEventListener('did-fail-load', handleWebviewDidFailLoad);
+    webview.addEventListener('will-navigate', handleWebviewWillNavigate);
+
+    return function cleanup() {
+      webview.removeEventListener('did-finish-load', handleWebviewDidFinishLoad);
+      webview.removeEventListener('did-fail-load', handleWebviewDidFailLoad);
+      webview.removeEventListener('will-navigate', handleWebviewWillNavigate);
+    };
+  }, [
+    webview,
+    updateWebviewUrl,
+    updateProblem,
+    addProblemTab,
+    refreshWebviewTheme,
+    webviewIsLoading,
+    updateWebviewLoading,
+  ]);
 
   return {
     webview,
+    webviewIsLoading,
     startWebviewUrl,
     refreshWebviewTheme,
   };
