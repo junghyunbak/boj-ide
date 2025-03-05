@@ -33,6 +33,7 @@ export function Markdown({ children }: MarkdownProps) {
           padding: 2px 4px;
           border: 1px solid ${theme.colors.border};
           border-radius: 4px;
+          font-family: hack;
         }
 
         a {
