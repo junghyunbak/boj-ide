@@ -48,7 +48,13 @@ export function ConfirmModal() {
           border-top: 2px solid ${theme.colors.primarybg};
         `}
       >
-        <pre>{confirmMessage}</pre>
+        <pre
+          css={css`
+            font-family: open-sans;
+          `}
+        >
+          {confirmMessage}
+        </pre>
 
         <div
           css={css`
