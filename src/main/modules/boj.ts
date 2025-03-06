@@ -37,6 +37,10 @@ export class Boj {
 
       page.goto(`https://${BOJ_DOMAIN}/submit/${number}`);
 
+      page.on('dialog', (dialog) => {
+        dialog.dismiss();
+      });
+
       /**
        * 1. 로그인 여부 확인
        *
