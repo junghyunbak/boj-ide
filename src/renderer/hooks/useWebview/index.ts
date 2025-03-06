@@ -43,6 +43,10 @@ export function useWebview() {
         color: ${emotionTheme.colors.primaryfg} !important;
       }
 
+      .navbar-collapse,
+      .nav,
+      .nav a,
+      .nav h3,
       .headline h2,
       .headline h3,
       .headline h4 {
@@ -56,7 +60,7 @@ export function useWebview() {
         color: ${emotionTheme.colors.fg} !important;
       }
 
-      .active a {
+      .active a:not(.mega-menu-content a) {
         background-color: ${emotionTheme.colors.primarybg} !important;
       }
 
@@ -77,10 +81,16 @@ export function useWebview() {
         color: ${emotionTheme.colors.fg} !important;
       }
 
-      .btn-default {
+      .btn-default,
+      .dropdown-menu {
         color: ${emotionTheme.colors.fg} !important;
-        border-color: ${emotionTheme.colors.primarybg} !important;
-        background-color: ${emotionTheme.colors.primarybg} !important;
+        background-color: ${emotionTheme.colors.bg} !important;
+        border-color: ${emotionTheme.colors.border} !important;
+      }
+
+      .dropdown-menu a:hover,
+      .dropdown-menu a:focus {
+        background-color: ${emotionTheme.colors.active} !important;
       }
 
       *::-webkit-scrollbar {
