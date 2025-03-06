@@ -66,7 +66,6 @@ export function useWebviewController() {
         return false;
       }
 
-      updateWebviewLoading('loading');
       updateWebviewUrl(url);
       setProblem(null);
 
@@ -74,7 +73,7 @@ export function useWebviewController() {
 
       return true;
     },
-    [setProblem, updateWebviewUrl, updateWebviewLoading],
+    [setProblem, updateWebviewUrl],
   );
 
   const goBack = useCallback(() => {

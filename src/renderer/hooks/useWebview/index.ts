@@ -218,8 +218,10 @@ export function useWebview() {
       addProblemTab(problemInfo);
     };
 
-    const handleWebviewWillNavigate = () => {
-      updateWebviewLoading('loading');
+    const handleWebviewWillNavigate = (event: Electron.WillNavigateEvent) => {
+      if (isBojProblemUrl(event.url)) {
+        updateWebviewLoading('loading');
+      }
     };
 
     const handleWebviewDidFailLoad = () => {
@@ -247,6 +249,7 @@ export function useWebview() {
 
   return {
     webview,
+    webviewUrl,
     webviewIsLoading,
     startWebviewUrl,
     refreshWebviewTheme,
