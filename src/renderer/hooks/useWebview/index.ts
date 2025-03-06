@@ -88,6 +88,7 @@ export function useWebview() {
         border-color: ${emotionTheme.colors.border} !important;
       }
 
+      .nav a:hover,
       .dropdown-menu a:hover,
       .dropdown-menu a:focus {
         background-color: ${emotionTheme.colors.active} !important;
