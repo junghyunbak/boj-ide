@@ -5,7 +5,11 @@ import * as Sentry from '@sentry/node';
 import { type SeverityLevel } from '@sentry/node';
 
 export const sentryErrorHandler = (err: Error) => {
-  Sentry.captureException(err);
+  Sentry.captureException(err, {
+    tags: {
+      version: RELEASE_VERSION,
+    },
+  });
 };
 
 export const sentryLogging = (
