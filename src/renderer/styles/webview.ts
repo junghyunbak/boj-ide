@@ -48,6 +48,7 @@ export const createWebviewStyle = (theme: Theme) => {
       border-left-color: ${theme.colors.border} !important;
     }
 
+    blockquote,
     .header,
     .page-header,
     .table-responsive,
@@ -55,6 +56,10 @@ export const createWebviewStyle = (theme: Theme) => {
     .table *,
     .headline {
       border-color: ${theme.colors.border} !important;
+    }
+
+    blockquote:hover {
+      border-color: ${theme.colors.primarybg} !important;
     }
 
     /* anchor */
