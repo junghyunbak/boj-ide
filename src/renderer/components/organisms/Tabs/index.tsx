@@ -166,7 +166,7 @@ export function Tabs() {
             탭을 <b>드래그</b>하여 순서를 변경할 수 있습니다.
           </li>
           <li>
-            활성화 된 탭은 <code>⌘ + w</code> or <code>ctrl + w</code> 단축키로 종료할 수 있습니다.
+            활성화 된 탭은 <code>⌘/⌃ + w</code> 단축키로 닫을 수 있습니다.
           </li>
           <li>
             우측 <code>...</code> 버튼에서 한번에 모든 문제 탭을 닫을 수 있습니다.

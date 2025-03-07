@@ -242,13 +242,13 @@ function TourOverlayContent({ tourRef, children, myTourStep, title, guideLoc = '
             <div
               css={css`
                 display: flex;
-                gap: 0.5rem;
+                gap: 0.25rem;
               `}
             >
-              <ActionButton disabled={isFirstStep} onClick={goPrevStep}>
-                이전
+              <ActionButton onClick={goPrevStep} disabled={isFirstStep}>
+                〈 이전
               </ActionButton>
-              <ActionButton onClick={goNextStep}>{isLastStep ? '시작' : '다음'}</ActionButton>
+              <ActionButton onClick={goNextStep}>{isLastStep ? '시작' : '다음 〉'}</ActionButton>
             </div>
           </div>
         </TourPopoverBox>
