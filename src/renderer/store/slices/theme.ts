@@ -8,7 +8,7 @@ type ThemeSlice = {
 };
 
 export const createThemeSlice: StateCreator<ThemeSlice> = (set, get): ThemeSlice => ({
-  theme: 'programmers',
+  theme: 'baekjoon',
   setTheme(theme) {
     set(() => ({ theme }));
   },
