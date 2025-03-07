@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import { useEffect } from 'react';
+import { useWindowEvent } from '@/renderer/hooks';
 
 import { useSplitLayoutStoreContext } from '../SplitLayoutContext';
 
@@ -16,8 +16,8 @@ type LeftProps = {
 export function Left({ children, initialRatio = 50, onRatioChange, px }: React.PropsWithChildren<LeftProps>) {
   const { splitLayoutStore } = useSplitLayoutStoreContext();
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
+  useWindowEvent(
+    (e) => {
       const { isDrag, containerRef, leftRef, vertical, startX, leftWidth } = splitLayoutStore.getState();
 
       if (!isDrag) {
@@ -55,14 +55,10 @@ export function Left({ children, initialRatio = 50, onRatioChange, px }: React.P
           onRatioChange(ratio);
         }
       }
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-
-    return function cleanup() {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, [splitLayoutStore, onRatioChange, px]);
+    },
+    [onRatioChange, px, splitLayoutStore],
+    'mousemove',
+  );
 
   return (
     <div

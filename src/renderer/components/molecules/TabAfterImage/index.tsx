@@ -1,28 +1,27 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import ReactDOM from 'react-dom';
 
 import { css } from '@emotion/react';
+
 import { zIndex } from '@/renderer/styles';
+
+import { useWindowEvent } from '@/renderer/hooks';
 
 export function TabAfterImage({ children }: React.PropsWithChildren) {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const handleWindowMouseMove = (e: MouseEvent) => {
+  useWindowEvent(
+    (e) => {
       if (!containerRef.current) {
         return;
       }
 
       containerRef.current.style.top = `${e.clientY}px`;
       containerRef.current.style.left = `${e.clientX}px`;
-    };
-
-    window.addEventListener('mousemove', handleWindowMouseMove);
-
-    return function cleanup() {
-      window.removeEventListener('mousemove', handleWindowMouseMove);
-    };
-  }, []);
+    },
+    [],
+    'mousemove',
+  );
 
   return ReactDOM.createPortal(
     <div

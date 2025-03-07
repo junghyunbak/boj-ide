@@ -1,17 +1,31 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
+
+import { useWindowEvent } from '../useWindowEvent';
 
 export function useFocusRecovery() {
   const curFocusRef = useRef<Element | null>(null);
   const lastFocusRef = useRef<Element | null>(null);
 
-  useEffect(() => {
-    const handleWindowClick = () => {
+  useWindowEvent(
+    () => {
       if (curFocusRef.current !== document.activeElement) {
         curFocusRef.current = document.activeElement;
       }
-    };
+    },
+    [],
+    'click',
+  );
 
-    const handleWindowFocus = () => {
+  useWindowEvent(
+    () => {
+      lastFocusRef.current = curFocusRef.current;
+    },
+    [],
+    'blur',
+  );
+
+  useWindowEvent(
+    () => {
       setTimeout(() => {
         const $cmContent = document.querySelector('.cm-content');
 
@@ -23,20 +37,8 @@ export function useFocusRecovery() {
           $cmContent.focus();
         }
       }, 50);
-    };
-
-    const handleWindowBlur = () => {
-      lastFocusRef.current = curFocusRef.current;
-    };
-
-    window.addEventListener('click', handleWindowClick);
-    window.addEventListener('focus', handleWindowFocus);
-    window.addEventListener('blur', handleWindowBlur);
-
-    return function cleanup() {
-      window.removeEventListener('click', handleWindowClick);
-      window.removeEventListener('focus', handleWindowFocus);
-      window.removeEventListener('blur', handleWindowBlur);
-    };
-  }, []);
+    },
+    [],
+    'focus',
+  );
 }

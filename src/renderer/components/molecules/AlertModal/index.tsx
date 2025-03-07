@@ -1,30 +1,24 @@
-import { useEffect } from 'react';
-
 import { css } from '@emotion/react';
 
 import { Modal } from '@/renderer/components/atoms/modal/Modal';
 import { TextButton } from '@/renderer/components/atoms/buttons/TextButton';
 import { Markdown } from '@/renderer/components/atoms/Markdown';
 
-import { useAlertModalController, useAlertModalState } from '@/renderer/hooks';
+import { useAlertModalController, useAlertModalState, useWindowEvent } from '@/renderer/hooks';
 
 export function AlertModal() {
   const { alertTitle, alertContent, isAlertModalOpen } = useAlertModalState();
   const { closeAlertModal } = useAlertModalController();
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+  useWindowEvent(
+    (e) => {
       if (e.key === 'Escape' || e.key === 'Enter') {
         closeAlertModal();
       }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [closeAlertModal]);
+    },
+    [closeAlertModal],
+    'keydown',
+  );
 
   const handleCloseButtonClick = () => {
     closeAlertModal();

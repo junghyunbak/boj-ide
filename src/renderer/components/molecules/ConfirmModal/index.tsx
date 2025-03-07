@@ -2,25 +2,21 @@ import { useEffect } from 'react';
 import { css } from '@emotion/react';
 import { Modal } from '@/renderer/components/atoms/modal/Modal';
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
-import { useConfirmModalController, useConfirmModalState } from '@/renderer/hooks';
+import { useConfirmModalController, useConfirmModalState, useWindowEvent } from '@/renderer/hooks';
 
 export function ConfirmModal() {
   const { confirmCallback, confirmMessage, isConfirmModalOpen } = useConfirmModalState();
   const { cancelConfirmModal } = useConfirmModalController();
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+  useWindowEvent(
+    (e) => {
       if (e.key === 'Escape') {
         cancelConfirmModal();
       }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [cancelConfirmModal]);
+    },
+    [cancelConfirmModal],
+    'keydown',
+  );
 
   const handleOkButtonClick = () => {
     if (confirmCallback instanceof Function) {
