@@ -6,6 +6,7 @@ import { ManualButton } from '@/renderer/components/molecules/ManualButton';
 import { EditorTabSize } from '@/renderer/components/molecules/EditorTabSize';
 import { VimModeText } from '@/renderer/components/molecules/VimModeText';
 import { AppUpdaterInfo } from '@/renderer/components/molecules/AppUpdaterInfo';
+import { TourButton } from '@/renderer/components/molecules/TourButton';
 
 export function Footer() {
   return (
@@ -27,6 +28,7 @@ export function Footer() {
       >
         <StorageButton />
         <ManualButton />
+        <TourButton />
         <VimModeText />
       </div>
 

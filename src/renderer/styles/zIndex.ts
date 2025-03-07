@@ -17,8 +17,10 @@ export const editor = {
 };
 
 export const overlay = {
-  afterImage: 9998,
-  modal: 9999,
+  afterImage: 8000,
+  modal: 8001,
+  tourBackground: 8002,
+  tourPopover: 8003,
   nonModal: 200,
 };
 

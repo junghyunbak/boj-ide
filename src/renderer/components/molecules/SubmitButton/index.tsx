@@ -1,3 +1,5 @@
+import { useRef } from 'react';
+
 import { useConfirmModalController, useEditorController } from '@/renderer/hooks';
 
 import { useStore } from '@/renderer/store';
@@ -5,11 +7,15 @@ import { useShallow } from 'zustand/shallow';
 
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 
+import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
+
 export function SubmitButton() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
 
   const { fireConfirmModal } = useConfirmModalController();
   const { getProblemCode } = useEditorController();
+
+  const tourRef = useRef<HTMLButtonElement>(null);
 
   const handleSubmitButtonClick = () => {
     if (!problem) {
@@ -31,8 +37,14 @@ export function SubmitButton() {
   };
 
   return (
-    <ActionButton onClick={handleSubmitButtonClick} disabled={!problem}>
-      제출
-    </ActionButton>
+    <>
+      <ActionButton onClick={handleSubmitButtonClick} disabled={!problem} ref={tourRef}>
+        제출
+      </ActionButton>
+
+      <TourOverlay title="백준 웹 사이트 제출" myTourStep={7} tourRef={tourRef} guideLoc="bottomRight">
+        <p>작성한 코드를 백준에 자동으로 제출합니다.</p>
+      </TourOverlay>
+    </>
   );
 }

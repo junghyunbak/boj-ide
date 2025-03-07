@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { css } from '@emotion/react';
 
@@ -9,6 +9,7 @@ import { TabProblem } from '@/renderer/components/molecules/TabProblem';
 import { TabBookmark } from '@/renderer/components/molecules/TabBookmark';
 import { TabExtension } from '@/renderer/components/molecules/TabExtension';
 import { TabPolyfill } from '@/renderer/components/molecules/TabPolyfill';
+import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
 
 import { useTab } from '@/renderer/hooks';
 
@@ -26,6 +27,8 @@ export function Tabs() {
   const { tabs, addBookmarkTab, addExtensionTab } = useTab();
 
   const [baekjoonhubExtensionId] = useStore(useShallow((s) => [s.baekjoonhubExtensionId]));
+
+  const tourRef = useRef<HTMLDivElement>(null);
 
   /**
    * 탭을 동적으로 추가하는 이유는, 기존 사용자들은 persist 상태를 동기화하기 때문에
@@ -85,6 +88,7 @@ export function Tabs() {
           --os-size: 4px;
         }
       `}
+      ref={tourRef}
     >
       <div
         css={css`
@@ -137,6 +141,19 @@ export function Tabs() {
 
         <TabOptions />
       </div>
+
+      <TourOverlay title="탭" tourRef={tourRef} guideLoc="bottom" myTourStep={6}>
+        <p>문제 페이지로 이동할 때 마다 탭이 생성됩니다.</p>
+        <br />
+        <ul>
+          <li>탭을 클릭하여 문제 혹은 페이지로 이동할 수 있습니다.</li>
+          <li>탭을 드래그하여 순서를 변경할 수 있습니다.</li>
+          <li>고정 북마크와 확장 프로그램 탭은 닫을 수 없습니다.</li>
+          <li>
+            우측 <code>...</code> 버튼에서 한번에 모든 문제 탭을 닫을 수 있습니다.
+          </li>
+        </ul>
+      </TourOverlay>
     </div>
   );
 }

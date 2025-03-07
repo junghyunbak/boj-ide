@@ -16,14 +16,7 @@ export function Editor() {
     >
       <EditorHeader />
       <RowLine />
-      <div
-        css={css`
-          flex: 1;
-          overflow: hidden;
-        `}
-      >
-        <EditorContent />
-      </div>
+      <EditorContent />
     </div>
   );
 }

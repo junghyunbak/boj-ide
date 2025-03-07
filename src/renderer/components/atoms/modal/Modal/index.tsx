@@ -32,8 +32,8 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(({ children, isOpen,
         css={css`
           position: absolute;
           inset: 0;
-          background-color: rgba(0, 0, 0, 0.3);
-          backdrop-filter: blur(2px);
+          background: #172334;
+          opacity: 0.8;
         `}
         onClick={onCloseButtonClick}
       />

@@ -10,6 +10,7 @@ import { createLayoutSlice } from './slices/layout';
 import { createModalSlice } from './slices/modal';
 import { createBojViewSlice } from './slices/bojView';
 import { createTabSlice } from './slices/tab';
+import { createTourSlice } from './slices/tour';
 
 import { createFabricSlice } from './slices/fabric';
 import { createPaintSlice } from './slices/paint';
@@ -22,7 +23,8 @@ export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createModalSlice> &
   ReturnType<typeof createBojViewSlice> &
   ReturnType<typeof createTabSlice> &
-  ReturnType<typeof createThemeSlice>;
+  ReturnType<typeof createThemeSlice> &
+  ReturnType<typeof createTourSlice>;
 
 export const useStore = create<StoreState>()(
   persist(
@@ -35,6 +37,7 @@ export const useStore = create<StoreState>()(
       ...createModalSlice(...a),
       ...createTabSlice(...a),
       ...createThemeSlice(...a),
+      ...createTourSlice(...a),
     }),
     {
       name: 'zustandStore',
@@ -51,6 +54,7 @@ export const useStore = create<StoreState>()(
           fontSize,
           isPaintOpen,
           theme,
+          tourStep,
         } = s;
 
         return {
@@ -65,6 +69,7 @@ export const useStore = create<StoreState>()(
           fontSize,
           isPaintOpen,
           theme,
+          tourStep,
         };
       },
     },
