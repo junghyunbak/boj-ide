@@ -23,7 +23,7 @@ export const LineBox = styled.div<{ isHidden: boolean }>`
   bottom: 0;
   left: -1px;
 
-  border-left: 3px solid ${(props) => props.theme.colors.accent};
+  border-left: 2px solid ${(props) => props.theme.colors.accent};
 
   ${({ isHidden }) =>
     isHidden
