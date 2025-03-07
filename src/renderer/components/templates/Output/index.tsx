@@ -17,17 +17,9 @@ export function Output() {
       <OutputHeader />
       <RowLine />
       <div
-        css={(theme) => css`
+        css={css`
           flex: 1;
           overflow-y: scroll;
-
-          &::-webkit-scrollbar {
-            width: 7px;
-          }
-
-          &::-webkit-scrollbar-thumb {
-            background: ${theme.colors.scrollbar};
-          }
         `}
       >
         <OutputContent />

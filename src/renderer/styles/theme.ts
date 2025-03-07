@@ -211,6 +211,26 @@ export const globalStyle = (theme: Theme) => css`
     box-sizing: border-box;
   }
 
+  * {
+    &::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: ${theme.colors.scrollbar};
+      cursor: auto;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+  }
+
   body {
     background: ${theme.colors.bg};
     color: ${theme.colors.fg};

@@ -23,14 +23,6 @@ export function CodeBlock({ children }: CodeBlockProps) {
         line-height: 1.4;
 
         overflow-x: scroll;
-
-        &::-webkit-scrollbar {
-          height: 7px;
-        }
-
-        &::-webkit-scrollbar-thumb {
-          background: ${theme.colors.scrollbar};
-        }
       `}
     >
       {children}

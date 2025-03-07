@@ -56,19 +56,6 @@ export function EditorCodemirror() {
           background: transparent !important;
         }
 
-        .cm-scroller::-webkit-scrollbar {
-          width: 7px;
-          height: 7px;
-        }
-
-        .cm-scroller::-webkit-scrollbar-thumb {
-          background: ${theme.colors.scrollbar};
-        }
-
-        .cm-scroller::-webkit-scrollbar-corner {
-          background: transparent;
-        }
-
         .cm-panels {
           background-color: transparent;
           border-top: 1px solid ${theme.colors.border};
