@@ -2,11 +2,13 @@ import { css, type Theme } from '@emotion/react';
 
 export const createWebviewStyle = (theme: Theme) => {
   return css`
+    /* background */
     html,
     .wrapper {
       background: ${theme.colors.bg} !important;
     }
 
+    /* text */
     h1,
     h2,
     h3,
@@ -16,6 +18,18 @@ export const createWebviewStyle = (theme: Theme) => {
       color: ${theme.colors.primaryfg} !important;
     }
 
+    body,
+    li,
+    a,
+    p {
+      color: ${theme.colors.fg} !important;
+    }
+
+    .copy-button {
+      color: ${theme.colors.primarybg} !important;
+    }
+
+    /* border */
     .navbar-collapse,
     .nav,
     .nav a,
@@ -26,15 +40,12 @@ export const createWebviewStyle = (theme: Theme) => {
       border-color: ${theme.colors.primarybg} !important;
     }
 
-    body,
-    li,
-    a,
-    p {
-      color: ${theme.colors.fg} !important;
+    .navbar-nav a {
+      border-color: ${theme.colors.border} !important;
     }
 
-    .active a:not(.mega-menu-content a) {
-      background-color: ${theme.colors.primarybg} !important;
+    .mega-menu-content * {
+      border-left-color: ${theme.colors.border} !important;
     }
 
     .header,
@@ -46,19 +57,9 @@ export const createWebviewStyle = (theme: Theme) => {
       border-color: ${theme.colors.border} !important;
     }
 
-    pre,
-    code,
-    .sampledata {
-      background-color: ${theme.colors.code} !important;
-      border: ${theme.colors.border} !important;
-      color: ${theme.colors.fg} !important;
-    }
-
-    .btn-default,
-    .dropdown-menu {
-      color: ${theme.colors.fg} !important;
-      background-color: ${theme.colors.bg} !important;
-      border-color: ${theme.colors.border} !important;
+    /* anchor */
+    .active a:not(.mega-menu-content a) {
+      background-color: ${theme.colors.primarybg} !important;
     }
 
     .nav a:hover,
@@ -67,6 +68,28 @@ export const createWebviewStyle = (theme: Theme) => {
       background-color: ${theme.colors.active} !important;
     }
 
+    .mega-menu-content a:hover {
+      background-color: ${theme.colors.active} !important;
+    }
+
+    /* code block */
+    pre,
+    code,
+    .sampledata {
+      background-color: ${theme.colors.code} !important;
+      border: ${theme.colors.border} !important;
+      color: ${theme.colors.fg} !important;
+    }
+
+    /* list */
+    .btn-default,
+    .dropdown-menu {
+      color: ${theme.colors.fg} !important;
+      background-color: ${theme.colors.bg} !important;
+      border-color: ${theme.colors.border} !important;
+    }
+
+    /* scrollbar */
     *::-webkit-scrollbar {
       width: 7px;
       height: 7px;
