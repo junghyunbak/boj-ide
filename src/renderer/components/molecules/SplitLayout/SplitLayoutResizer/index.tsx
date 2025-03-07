@@ -1,9 +1,9 @@
 import { css } from '@emotion/react';
 
-import { useEffect } from 'react';
-
 import { HorizontalResizer } from '@/renderer/components/atoms/lines/HorizontalResizer';
 import { VerticalResizer } from '@/renderer/components/atoms/lines/VerticalResizer';
+
+import { useWindowEvent } from '@/renderer/hooks';
 
 import { useSplitLayoutStoreContext } from '../SplitLayoutContext';
 
@@ -42,21 +42,24 @@ export function Resizer({ children, onDragStart, onDragEnd, zIndex }: React.Prop
     splitLayoutStore.getState().leftWidth = vertical ? height : width;
   };
 
-  useEffect(() => {
-    const handleMouseUp = () => {
-      splitLayoutStore.getState().isDrag = false;
+  /**
+   * 요소가 아닌 전역에 이벤트를 붙인 이유
+   *
+   * : 앱 밖으로 마우스 커서가 이동한 경우에도 mouseup이 동작되도록 하기 위해서
+   */
+  useWindowEvent(
+    () => {
+      if (splitLayoutStore.getState().isDrag) {
+        splitLayoutStore.getState().isDrag = false;
 
-      if (onDragEnd) {
-        onDragEnd();
+        if (onDragEnd) {
+          onDragEnd();
+        }
       }
-    };
-
-    window.addEventListener('mouseup', handleMouseUp);
-
-    return function cleanup() {
-      window.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [splitLayoutStore, onDragEnd]);
+    },
+    [onDragEnd, splitLayoutStore],
+    'mouseup',
+  );
 
   return (
     <div
