@@ -1,2 +1,2 @@
 export * from './sentry';
-export * from './customError';
+export * from './ipc';

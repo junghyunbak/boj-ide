@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 
 export function useIpcEvent<T extends ClientChannels>(
-  func: (message: ChannelToMessage[T]) => void,
+  func: (message: ChannelToMessage[T][0]) => void,
   deps: unknown[],
   channel: T,
 ) {

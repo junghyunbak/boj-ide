@@ -112,7 +112,7 @@ export class Code {
         data: { code },
       });
 
-      return { data: { code } };
+      return undefined;
     });
   }
 }
