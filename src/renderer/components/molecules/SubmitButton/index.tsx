@@ -43,7 +43,9 @@ export function SubmitButton() {
       </ActionButton>
 
       <TourOverlay title="백준 웹 사이트 제출" myTourStep={7} tourRef={tourRef} guideLoc="bottomRight">
-        <p>작성한 코드를 백준에 자동으로 제출합니다.</p>
+        <p>코드를 백준에 자동으로 제출합니다.</p>
+        <br />
+        <h5>* 코드 제출을 위해서는 좌측 웹 뷰에서 백준에 로그인 해야합니다.</h5>
       </TourOverlay>
     </>
   );
