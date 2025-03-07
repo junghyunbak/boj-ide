@@ -208,6 +208,7 @@ function TourOverlayContent({ tourRef, children, myTourStep, title, guideLoc = '
                 color: ${theme.colors.fg};
                 background-color: ${theme.colors.code};
                 border: 1px solid ${theme.colors.border};
+                font-size: 12px;
               }
             `}
           >

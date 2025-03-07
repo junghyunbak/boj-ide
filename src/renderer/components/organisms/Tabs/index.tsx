@@ -162,7 +162,9 @@ export function Tabs() {
         <br />
         <ul>
           <li>탭을 클릭하여 문제 혹은 페이지로 이동할 수 있습니다.</li>
-          <li>탭을 드래그하여 순서를 변경할 수 있습니다.</li>
+          <li>
+            탭을 <b>드래그</b>하여 순서를 변경할 수 있습니다.
+          </li>
           <li>
             활성화 된 탭은 <code>⌘ + w</code> or <code>ctrl + w</code> 단축키로 종료할 수 있습니다.
           </li>
