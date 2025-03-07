@@ -126,8 +126,6 @@ function TourOverlayContent({ tourRef, children, myTourStep, title, guideLoc = '
     }
   })();
 
-  console.log(guidePopoverInset);
-
   return ReactDOM.createPortal(
     <TourLayout>
       <TourDimmedBox
@@ -205,11 +203,11 @@ function TourOverlayContent({ tourRef, children, myTourStep, title, guideLoc = '
                 color: ${theme.colors.primarybg};
               }
               code {
-                border-radius: 3px;
+                border-radius: 4px;
                 padding: 2px 4px;
                 color: ${theme.colors.fg};
                 background-color: ${theme.colors.code};
-                border-color: ${theme.colors.border};
+                border: 1px solid ${theme.colors.border};
               }
             `}
           >
