@@ -12,6 +12,7 @@ export const ElECTRON_CHANNELS: {
   'log-add-testcase': 'log-add-testcase',
   'log-execute-ai-create': 'log-execute-ai-create',
   'log-toggle-paint': 'log-toggle-paint',
+  'quit-app': 'quit-app',
 };
 
 export const CLIENT_CHANNELS: {
@@ -29,4 +30,5 @@ export const CLIENT_CHANNELS: {
   'set-baekjoonhub-id': 'set-baekjoonhub-id',
   'reload-webview': 'reload-webview',
   'app-update-info': 'app-update-info',
+  'close-tab': 'close-tab',
 };

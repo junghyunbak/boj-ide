@@ -121,6 +121,10 @@ export function useTab() {
     }
   }, [gotoUrl, setTabs]);
 
+  const getProblemTabCount = useCallback(() => {
+    return tabs.filter(isProblemTab).length;
+  }, [tabs]);
+
   return {
     tabs,
     addProblemTab,
@@ -129,5 +133,6 @@ export function useTab() {
     removeTab,
     reorderTab,
     clearTab,
+    getProblemTabCount,
   };
 }

@@ -13,6 +13,7 @@ type ChannelToMessage = {
   'log-add-testcase': MessageTemplate<MyOmit<CodeInfo, 'code'>>;
   'log-execute-ai-create': MessageTemplate<MyOmit<CodeInfo, 'code'>>;
   'log-toggle-paint': MessageTemplate<MyOmit<CodeInfo, 'code'>>;
+  'quit-app': undefined;
 
   /**
    * client
@@ -29,6 +30,7 @@ type ChannelToMessage = {
   'set-baekjoonhub-id': MessageTemplate<{ extensionId: string }>;
   'reload-webview': undefined;
   'app-update-info': MessageTemplate<{ bytesPerSecond?: number; percent?: number; isDownloaded: boolean }>;
+  'close-tab': undefined;
 };
 
 type ElectronChannels = keyof Pick<
@@ -44,6 +46,7 @@ type ElectronChannels = keyof Pick<
   | 'log-add-testcase'
   | 'log-execute-ai-create'
   | 'log-toggle-paint'
+  | 'quit-app'
 >;
 
 type ClientChannels = keyof Pick<
@@ -60,4 +63,5 @@ type ClientChannels = keyof Pick<
   | 'set-baekjoonhub-id'
   | 'reload-webview'
   | 'app-update-info'
+  | 'close-tab'
 >;

@@ -1,4 +1,9 @@
 /**
+ * event
+ */
+export * from './useIpcEvent';
+
+/**
  * problem
  */
 export * from './useProblem';

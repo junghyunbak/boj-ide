@@ -2,6 +2,7 @@ import { useFetchProblem, useProblem, useTab, useWebviewController } from '@/ren
 
 import { MovableTab } from '@/renderer/components/molecules/MovableTab';
 import { placeholderLogo } from '@/renderer/assets/base64Images';
+import { useIpcEvent } from '@/renderer/hooks/useIpcEvent';
 
 interface TabProblemProps {
   tab: ProblemInfo;
@@ -15,6 +16,16 @@ export function TabProblem({ tab, index }: TabProblemProps) {
   const { tierBase64 } = useFetchProblem(tab.number);
 
   const isSelect = problem?.number === tab.number;
+
+  useIpcEvent(
+    'close-tab',
+    () => {
+      if (isSelect) {
+        removeTab(index, isSelect);
+      }
+    },
+    [index, isSelect],
+  );
 
   const handleTabCloseButtonClick = () => {
     removeTab(index, isSelect);

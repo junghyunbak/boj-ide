@@ -108,6 +108,10 @@ const createWindow = async () => {
     }
   });
 
+  ipc.on('quit-app', () => {
+    app.quit();
+  });
+
   mainWindow.on('closed', () => {
     app.quit();
   });
@@ -141,6 +145,11 @@ app.on('browser-window-focus', () => {
     }
   });
 
+  globalShortcut.register('CommandOrControl+W', () => {
+    if (mainWindow) {
+      ipc.send(mainWindow.webContents, 'close-tab', undefined);
+    }
+  });
   globalShortcut.register('CommandOrControl+R', handleCommandOrControlR);
   globalShortcut.register('CommandOrControl+Shift+R', handleCommandOrControlR);
 });
@@ -158,7 +167,7 @@ app.on('web-contents-created', (e, contents) => {
     newWindow.webContents.on('destroyed', () => {
       if (contents.getURL().startsWith('chrome-extension://')) {
         if (mainWindow) {
-          ipc.send(mainWindow.webContents, 'reload-webview');
+          ipc.send(mainWindow.webContents, 'reload-webview', undefined);
           sentryLogging('[로그] 익스텐션 팝업 창을 닫았습니다.');
         }
       }

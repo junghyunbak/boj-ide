@@ -11,7 +11,7 @@ import { TabExtension } from '@/renderer/components/molecules/TabExtension';
 import { TabPolyfill } from '@/renderer/components/molecules/TabPolyfill';
 import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
 
-import { useTab } from '@/renderer/hooks';
+import { useTab, useIpcEvent, useProblem, useConfirmModalController } from '@/renderer/hooks';
 
 import { isBookmarkTab, isProblemTab } from '@/renderer/utils/typeGuard';
 
@@ -24,11 +24,27 @@ import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
 import 'overlayscrollbars/overlayscrollbars.css';
 
 export function Tabs() {
-  const { tabs, addBookmarkTab, addExtensionTab } = useTab();
+  const { tabs, addBookmarkTab, addExtensionTab, getProblemTabCount } = useTab();
+  const { problem } = useProblem();
+  const { fireConfirmModal } = useConfirmModalController();
 
+  // TODO: 훅으로 분리
   const [baekjoonhubExtensionId] = useStore(useShallow((s) => [s.baekjoonhubExtensionId]));
 
   const tourRef = useRef<HTMLDivElement>(null);
+
+  useIpcEvent(
+    'close-tab',
+    () => {
+      if (getProblemTabCount() === 0 || !problem) {
+        fireConfirmModal('종료하시겠습니까?', () => {
+          window.electron.ipcRenderer.sendMessage('quit-app');
+        });
+      }
+    },
+    // TODO: eslint에서 의존성 추적할 수 있도록
+    [getProblemTabCount, problem, fireConfirmModal],
+  );
 
   /**
    * 탭을 동적으로 추가하는 이유는, 기존 사용자들은 persist 상태를 동기화하기 때문에
