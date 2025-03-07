@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 import { css } from '@emotion/react';
@@ -6,12 +6,12 @@ import { css } from '@emotion/react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useTour } from '@/renderer/hooks/useTour';
+import { useTour, useWindowEvent } from '@/renderer/hooks';
+
+import { XButton } from '@/renderer/components/atoms/buttons/XButton';
+import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 
 import { TourDimmedBox, TourLayout, TourPopoverBox, TourPopoverLayout } from './index.style';
-import { XButton } from '../../atoms/buttons/XButton';
-import { TextButton } from '../../atoms/buttons/TextButton';
-import { ActionButton } from '../../atoms/buttons/ActionButton';
 
 interface TourOverlayProps extends React.PropsWithChildren {
   title: string;
@@ -56,33 +56,44 @@ function TourOverlayContent({ tourRef, children, myTourStep, title, guideLoc = '
 
   const { MAX_TOUR_STEP, isFirstStep, isLastStep, goNextStep, goPrevStep, closeTourStep } = useTour();
 
-  useEffect(() => {
-    const tourElement = tourRef.current;
-
-    if (!tourElement) {
-      return function cleanup() {};
+  const updateTourItemInfo = useCallback(() => {
+    if (!tourRef.current) {
+      return;
     }
 
-    const handleWindowResize = () => {
-      const { x, y, width, height } = tourElement.getBoundingClientRect();
+    const { x, y, width, height } = tourRef.current.getBoundingClientRect();
 
-      setTourItemWidth(width);
-      setTourItemHeight(height);
+    setTourItemWidth(width);
+    setTourItemHeight(height);
 
-      setLeftX(x);
-      setRightX(x + width);
-      setTopY(y);
-      setBottomY(y + height);
-    };
-
-    handleWindowResize();
-
-    window.addEventListener('resize', handleWindowResize);
-
-    return function cleanup() {
-      window.removeEventListener('resize', handleWindowResize);
-    };
+    setLeftX(x);
+    setRightX(x + width);
+    setTopY(y);
+    setBottomY(y + height);
   }, [tourRef]);
+
+  useEffect(() => {
+    updateTourItemInfo();
+  }, [updateTourItemInfo]);
+
+  useWindowEvent(updateTourItemInfo, [updateTourItemInfo], 'resize');
+
+  useWindowEvent(
+    (e) => {
+      switch (e.key) {
+        case 'ArrowLeft':
+          goPrevStep();
+          break;
+        case 'ArrowRight':
+          goNextStep();
+          break;
+        default:
+          break;
+      }
+    },
+    [goPrevStep, goNextStep],
+    'keydown',
+  );
 
   const guidePopoverInset = (() => {
     const popover = popoverRef.current;
