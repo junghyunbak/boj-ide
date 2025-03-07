@@ -18,13 +18,13 @@ export function TabProblem({ tab, index }: TabProblemProps) {
   const isSelect = problem?.number === tab.number;
 
   useIpcEvent(
-    'close-tab',
     () => {
       if (isSelect) {
         removeTab(index, isSelect);
       }
     },
-    [index, isSelect],
+    [index, isSelect, removeTab],
+    'close-tab',
   );
 
   const handleTabCloseButtonClick = () => {

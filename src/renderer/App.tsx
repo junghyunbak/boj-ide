@@ -4,7 +4,13 @@ import { BOJ_DOMAIN } from '@/common/constants';
 
 import { MainPage } from '@/renderer/components/pages/MainPage';
 
-import { useAlertModalController, useWebviewController, useTheme, useFocusRecovery } from '@/renderer/hooks';
+import {
+  useAlertModalController,
+  useWebviewController,
+  useTheme,
+  useFocusRecovery,
+  useIpcEvent,
+} from '@/renderer/hooks';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -37,26 +43,32 @@ export default function App() {
 
   useFocusRecovery();
 
-  useEffect(() => {
-    window.electron.ipcRenderer.on('occur-error', ({ data: { message } }) => {
+  useIpcEvent(
+    ({ data: { message } }) => {
       fireAlertModal('에러 발생', message);
-    });
+    },
+    [fireAlertModal],
+    'occur-error',
+  );
 
-    window.electron.ipcRenderer.on('open-problem', ({ data: { problemNumber } }) => {
+  useIpcEvent(
+    ({ data: { problemNumber } }) => {
       gotoUrl(`https://${BOJ_DOMAIN}/problem/${problemNumber}`);
-    });
+    },
+    [gotoUrl],
+    'open-problem',
+  );
 
-    window.electron.ipcRenderer.on('set-baekjoonhub-id', ({ data: { extensionId } }) => {
+  useIpcEvent(
+    ({ data: { extensionId } }) => {
       setBaekjoonhubExtensionId(extensionId);
-    });
+    },
+    [setBaekjoonhubExtensionId],
+    'set-baekjoonhub-id',
+  );
 
+  useEffect(() => {
     window.electron.ipcRenderer.sendMessage('open-deep-link');
-
-    return () => {
-      window.electron.ipcRenderer.removeAllListeners('occur-error');
-      window.electron.ipcRenderer.removeAllListeners('open-problem');
-      window.electron.ipcRenderer.removeAllListeners('set-baekjoonhub-id');
-    };
   }, [fireAlertModal, gotoUrl, setBaekjoonhubExtensionId]);
 
   return (

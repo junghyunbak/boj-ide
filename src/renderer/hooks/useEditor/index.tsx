@@ -7,6 +7,7 @@ import { useShallow } from 'zustand/shallow';
 
 import { useEditorExtensions } from '../useEditorExtensions';
 import { useEditorController } from '../useEditorController';
+import { useIpcEvent } from '../useIpcEvent';
 
 export function useEditor({ width, height }: { width: number; height: number }) {
   const [problem] = useStore(useShallow((s) => [s.problem]));
@@ -75,6 +76,10 @@ export function useEditor({ width, height }: { width: number; height: number }) 
    *
    * - 히스토리 제거
    * - 새로운 문제/언어의 코드를 불러와 초기화
+   *
+   * 코드 초기화 시 codemirror state가 사용되기 때문에,
+   * useEffect에서 invoke의 응답값으로 상태를 초기화 할 경우 순환 실행이 발생하여
+   * on 이벤트로 초기화 하도록 구현
    */
   useEffect(() => {
     if (problem) {
@@ -84,17 +89,14 @@ export function useEditor({ width, height }: { width: number; height: number }) 
     }
   }, [problem, lang]);
 
-  useEffect(() => {
-    // invoke 반환값을 사용하지 않고, 채널을 만들어 초기화하는 이유는 useEffect 순환 실행을 피하기 위함.
-    window.electron.ipcRenderer.on('load-code-result', ({ data: { code } }) => {
+  useIpcEvent(
+    ({ data: { code } }) => {
       initialEditorCode(code);
       setState(EditorState.create({ ...state }));
-    });
-
-    return function cleanup() {
-      window.electron.ipcRenderer.removeAllListeners('load-code-result');
-    };
-  }, [state, setState, initialEditorCode]);
+    },
+    [initialEditorCode, setState, state],
+    'load-code-result',
+  );
 
   /**
    * 문제/언어가 변경되면

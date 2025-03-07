@@ -8,6 +8,7 @@ import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
 import { useEditorController } from '../useEditorController';
+import { useIpcEvent } from '../useIpcEvent';
 
 export function useEditorVim({
   editorRef,
@@ -86,22 +87,22 @@ export function useEditorVim({
    *
    * mac의 경우 기존 ctrl+r 에 cmd+r까지 redo가 동작하게 됨.
    * */
-  useEffect(() => {
-    window.electron.ipcRenderer.on('ctrl-or-cmd-r-pressed', () => {
-      const { mode, vimMode } = useStore.getState();
+  useIpcEvent(
+    () => {
+      window.electron.ipcRenderer.on('ctrl-or-cmd-r-pressed', () => {
+        const { mode, vimMode } = useStore.getState();
 
-      if (view && mode === 'vim' && /normal/i.test(vimMode)) {
-        /**
-         * 의존성 타입 꼬임으로 인해 타입 에러 발생
-         * codemirror/state 타입 에러 : Two different types with this name exist, but they are unrelated.
-         */
-        // @ts-ignore
-        redo(view);
-      }
-    });
-
-    return () => {
-      window.electron.ipcRenderer.removeAllListeners('ctrl-or-cmd-r-pressed');
-    };
-  }, [view]);
+        if (view && mode === 'vim' && /normal/i.test(vimMode)) {
+          /**
+           * 의존성 타입 꼬임으로 인해 타입 에러 발생
+           * codemirror/state 타입 에러 : Two different types with this name exist, but they are unrelated.
+           */
+          // @ts-ignore
+          redo(view);
+        }
+      });
+    },
+    [view],
+    'ctrl-or-cmd-r-pressed',
+  );
 }

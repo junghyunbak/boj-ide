@@ -5,6 +5,7 @@ import { useShallow } from 'zustand/shallow';
 
 import { useTestcase } from '../useTestcase';
 import { useJudgeController } from '../useJudgeController';
+import { useIpcEvent } from '../useIpcEvent';
 
 export function useJudgeEvent() {
   const [setJudgeResults] = useStore(useShallow((s) => [s.setJudgeResult]));
@@ -31,8 +32,8 @@ export function useJudgeEvent() {
   /**
    * 채점 결과 수신 이벤트 등록
    */
-  useEffect(() => {
-    window.electron.ipcRenderer.on('judge-result', ({ data }) => {
+  useIpcEvent(
+    ({ data }) => {
       const { judgeId } = useStore.getState();
 
       if (data.id !== judgeId) {
@@ -46,23 +47,19 @@ export function useJudgeEvent() {
 
         return next;
       });
-    });
-
-    return () => {
-      window.electron.ipcRenderer.removeAllListeners('judge-result');
-    };
-  }, [setJudgeResults]);
+    },
+    [setJudgeResults],
+    'judge-result',
+  );
 
   /**
    * 채점 결과 리셋 이벤트 등록
    */
-  useEffect(() => {
-    window.electron.ipcRenderer.on('judge-reset', () => {
+  useIpcEvent(
+    () => {
       resetJudge();
-    });
-
-    return () => {
-      window.electron.ipcRenderer.removeAllListeners('judge-reset');
-    };
-  }, [resetJudge]);
+    },
+    [resetJudge],
+    'judge-reset',
+  );
 }

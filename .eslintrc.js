@@ -9,6 +9,12 @@ module.exports = {
     'react/require-default-props': 'off',
     'react/jsx-props-no-spreading': 'off',
     'react/no-array-index-key': 'off',
+    'react-hooks/exhaustive-deps': [
+      'error',
+      {
+        additionalHooks: '(useIpcEvent)',
+      },
+    ],
     'import/no-extraneous-dependencies': 'off',
     'import/extensions': 'off',
     'import/no-unresolved': 'off',

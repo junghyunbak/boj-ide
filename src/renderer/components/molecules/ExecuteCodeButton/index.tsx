@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 
-import { useJudge, useJudgeController, useProblem } from '@/renderer/hooks';
+import { useIpcEvent, useJudge, useJudgeController, useProblem } from '@/renderer/hooks';
 
 import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
 
@@ -15,17 +15,15 @@ export function ExecuteCodeButton() {
 
   const tourRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    window.electron.ipcRenderer.on('judge-request', () => {
+  useIpcEvent(
+    () => {
       if (!isJudging) {
         startJudge();
       }
-    });
-
-    return () => {
-      window.electron.ipcRenderer.removeAllListeners('judge-request');
-    };
-  }, [isJudging, startJudge]);
+    },
+    [isJudging, startJudge],
+    'judge-request',
+  );
 
   const handleExecuteButtonClick = () => {
     startJudge();

@@ -26,7 +26,6 @@ declare global {
 
         on<T extends ClientChannels>(channel: T, func: (message: ChannelToMessage[T]) => void): () => void;
         sendMessage<T extends ElectronChannels>(channel: T, message?: ChannelToMessage[T]): void;
-        removeAllListeners(channel: ClientChannels): void;
       };
     };
   }

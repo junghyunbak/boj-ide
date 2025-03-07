@@ -13,6 +13,7 @@ import { useWebviewController } from '../useWebviewController';
 import { useTab } from '../useTab';
 import { useProblem } from '../useProblem';
 import { useTheme } from '../useTheme';
+import { useIpcEvent } from '../useIpcEvent';
 
 export function useWebview() {
   const [webview, setWebview] = useStore(useShallow((s) => [s.webview, s.setWebview]));
@@ -88,17 +89,15 @@ export function useWebview() {
   /**
    * webview 새로고침 ipc 이벤트 초기화
    */
-  useEffect(() => {
-    window.electron.ipcRenderer.on('reload-webview', () => {
+  useIpcEvent(
+    () => {
       if (webview) {
         webview.reload();
       }
-    });
-
-    return function cleanup() {
-      window.electron.ipcRenderer.removeAllListeners('reload-webview');
-    };
-  }, [webview]);
+    },
+    [webview],
+    'reload-webview',
+  );
 
   /**
    * webview url 변경 이벤트 초기화

@@ -34,7 +34,6 @@ export function Tabs() {
   const tourRef = useRef<HTMLDivElement>(null);
 
   useIpcEvent(
-    'close-tab',
     () => {
       if (getProblemTabCount() === 0 || !problem) {
         fireConfirmModal('종료하시겠습니까?', () => {
@@ -42,8 +41,8 @@ export function Tabs() {
         });
       }
     },
-    // TODO: eslint에서 의존성 추적할 수 있도록
     [getProblemTabCount, problem, fireConfirmModal],
+    'close-tab',
   );
 
   /**
