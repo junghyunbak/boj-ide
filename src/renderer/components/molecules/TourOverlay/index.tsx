@@ -140,39 +140,42 @@ function TourOverlayContent({ tourRef, children, myTourStep, title, guideLoc = '
 
   return ReactDOM.createPortal(
     <TourLayout>
-      <TourDimmedBox
-        style={{
-          left: 0,
-          right: window.innerWidth - leftX,
-          top: topY,
-          bottom: window.innerHeight - bottomY,
-        }}
-      />
-
-      <TourDimmedBox
-        style={{
-          left: rightX,
-          right: 0,
-          top: topY,
-          bottom: window.innerHeight - bottomY,
-        }}
-      />
-
+      {/**
+       * height값을 직접 설정해줘야 Windows에서 paint시 오차가 생기지 않았다.
+       */}
       <TourDimmedBox
         style={{
           top: 0,
-          bottom: window.innerHeight - topY,
           left: 0,
+          width: '100%',
+          height: `${topY}px`,
+        }}
+      />
+
+      <TourDimmedBox
+        style={{
+          top: topY,
+          left: 0,
+          width: `${leftX}px`,
+          height: `${tourItemHeight}px`,
+        }}
+      />
+
+      <TourDimmedBox
+        style={{
+          top: topY,
+          left: rightX,
           right: 0,
+          height: `${tourItemHeight}px`,
         }}
       />
 
       <TourDimmedBox
         style={{
           top: bottomY,
+          right: 0,
           bottom: 0,
           left: 0,
-          right: 0,
         }}
       />
 
