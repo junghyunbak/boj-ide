@@ -8,8 +8,9 @@ import { useShallow } from 'zustand/shallow';
 
 import { useTour, useWindowEvent } from '@/renderer/hooks';
 
-import { XButton } from '@/renderer/components/atoms/buttons/XButton';
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
+
+import { ReactComponent as X } from '@/renderer/assets/svgs/x.svg';
 
 import { TourDimmedBox, TourLayout, TourPopoverBox, TourPopoverLayout } from './index.style';
 
@@ -198,7 +199,21 @@ function TourOverlayContent({ tourRef, children, myTourStep, title, guideLoc = '
               {title}
             </h3>
 
-            <XButton onClick={closeTourStep} />
+            <button
+              type="button"
+              onClick={closeTourStep}
+              css={css`
+                border: none;
+                background-color: transparent;
+                cursor: pointer;
+                svg {
+                  width: 1rem;
+                  height: 1rem;
+                }
+              `}
+            >
+              <X />
+            </button>
           </div>
 
           <div

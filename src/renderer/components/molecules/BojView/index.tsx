@@ -64,7 +64,7 @@ export function BojView() {
       )}
 
       <TourOverlay title="웹 뷰" tourRef={tourRef} myTourStep={1} guideLoc="right">
-        <p>내장된 브라우저로 풀이 할 문제 페이지로 이동합니다.</p>
+        <p>내장된 브라우저에서 풀이 할 문제 페이지로 이동합니다.</p>
         <br />
         <p>문제 페이지에 접속하면 에디터가 활성화되고 코드를 실행 할 준비가 완료됩니다.</p>
         <br />
@@ -73,7 +73,9 @@ export function BojView() {
           <a href="https://chromewebstore.google.com/detail/boj-ide-executor/aegmfpcnfkmlhmlklhipladjabpncjha">
             BOJ IDE Executor
           </a>
-          로 브라우저에서 곧바로 문제를 열수도 있습니다.
+          를 사용하면
+          <br />
+          브라우저에서 곧바로 문제를 열어볼 수 있습니다.
         </p>
       </TourOverlay>
     </div>

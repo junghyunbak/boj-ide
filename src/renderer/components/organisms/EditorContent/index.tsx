@@ -51,7 +51,7 @@ export function EditorContent() {
           <li>에디터 모드 (Vim / Normal)</li>
           <li>폰트 크기</li>
           <li>들여쓰기 크기</li>
-          <li>언어 (C++14, C++17, Java11, Node.js)</li>
+          <li>런타임 (C++, Java, Python, Node.js)</li>
         </ul>
       </TourOverlay>
     </div>
