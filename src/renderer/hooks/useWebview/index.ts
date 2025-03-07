@@ -3,9 +3,11 @@ import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { css, useTheme as useEmotionTheme } from '@emotion/react';
+import { useTheme as useEmotionTheme } from '@emotion/react';
 
 import { getProblemInfo, isBojProblemUrl } from '@/renderer/utils';
+
+import { createWebviewStyle } from '@/renderer/styles';
 
 import { useWebviewController } from '../useWebviewController';
 import { useTab } from '../useTab';
@@ -26,93 +28,7 @@ export function useWebview() {
   const { updateWebviewUrl, updateWebviewLoading } = useWebviewController();
 
   const insertCSSKeyRef = useRef<string>('');
-
-  const bojOverrideStyle = useMemo(
-    () => css`
-      html,
-      .wrapper {
-        background: ${emotionTheme.colors.bg} !important;
-      }
-
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6 {
-        color: ${emotionTheme.colors.primaryfg} !important;
-      }
-
-      .navbar-collapse,
-      .nav,
-      .nav a,
-      .nav h3,
-      .headline h2,
-      .headline h3,
-      .headline h4 {
-        border-color: ${emotionTheme.colors.primarybg} !important;
-      }
-
-      body,
-      li,
-      a,
-      p {
-        color: ${emotionTheme.colors.fg} !important;
-      }
-
-      .active a:not(.mega-menu-content a) {
-        background-color: ${emotionTheme.colors.primarybg} !important;
-      }
-
-      .header,
-      .page-header,
-      .table-responsive,
-      .table,
-      .table *,
-      .headline {
-        border-color: ${emotionTheme.colors.border} !important;
-      }
-
-      pre,
-      code,
-      .sampledata {
-        background-color: ${emotionTheme.colors.code} !important;
-        border: ${emotionTheme.colors.border} !important;
-        color: ${emotionTheme.colors.fg} !important;
-      }
-
-      .btn-default,
-      .dropdown-menu {
-        color: ${emotionTheme.colors.fg} !important;
-        background-color: ${emotionTheme.colors.bg} !important;
-        border-color: ${emotionTheme.colors.border} !important;
-      }
-
-      .nav a:hover,
-      .dropdown-menu a:hover,
-      .dropdown-menu a:focus {
-        background-color: ${emotionTheme.colors.active} !important;
-      }
-
-      *::-webkit-scrollbar {
-        width: 7px;
-        height: 7px;
-      }
-
-      *::-webkit-scrollbar-thumb {
-        background: ${emotionTheme.colors.scrollbar};
-      }
-
-      *::-webkit-scrollbar-track {
-        background: ${emotionTheme.colors.bg};
-      }
-
-      *::-webkit-scrollbar-corner {
-        background: ${emotionTheme.colors.bg};
-      }
-    `.styles,
-    [emotionTheme],
-  );
+  const bojOverrideStyle = useMemo(() => createWebviewStyle(emotionTheme), [emotionTheme]);
 
   const refreshWebviewTheme = useCallback(async () => {
     if (!webview) {
@@ -147,18 +63,6 @@ export function useWebview() {
 
     const handleWebviewDomReady = async () => {
       setWebview(newWebview);
-
-      /**
-       * 백준 허브 확장 프로그램에서 삽입되는 기본 스타일로 인한
-       * 리스트 태그 패딩값이 사라지는 문제를 해결하기 위한 코드
-       */
-      await newWebview.insertCSS(css`
-        ol,
-        ul:not(.nav),
-        dl {
-          padding-left: 40px;
-        }
-      `.styles);
     };
 
     newWebview.addEventListener('dom-ready', handleWebviewDomReady);
@@ -206,9 +110,11 @@ export function useWebview() {
 
     const handleWebviewDidFinishLoad = async () => {
       await refreshWebviewTheme();
+
       updateWebviewLoading('finished');
 
       const url = webview.getURL() || '';
+
       updateWebviewUrl(url);
 
       if (!isBojProblemUrl(url)) {
