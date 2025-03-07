@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { css } from '@emotion/react';
 
@@ -66,6 +66,8 @@ export function TestCaseMaker() {
 
   const disabled = problem === null && problemNumber === '';
 
+  const splitLayoutPxOption = useMemo(() => ({ min: 100 }), []);
+
   return (
     <div
       css={css`
@@ -75,7 +77,7 @@ export function TestCaseMaker() {
       `}
     >
       <SplitLayout vertical>
-        <SplitLayout.Left px={{ min: 100 }}>
+        <SplitLayout.Left px={splitLayoutPxOption}>
           <div
             css={css`
               height: 100%;
