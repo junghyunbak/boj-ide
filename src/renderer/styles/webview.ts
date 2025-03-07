@@ -9,6 +9,8 @@ export const createWebviewStyle = (theme: Theme) => {
     }
 
     /* text */
+
+    .copy-button,
     h1,
     h2,
     h3,
@@ -23,10 +25,6 @@ export const createWebviewStyle = (theme: Theme) => {
     a,
     p {
       color: ${theme.colors.fg} !important;
-    }
-
-    .copy-button {
-      color: ${theme.colors.primarybg} !important;
     }
 
     /* border */
