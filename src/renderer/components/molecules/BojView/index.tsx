@@ -70,7 +70,10 @@ export function BojView() {
         <br />
         <p>
           💡 크롬 확장 프로그램{' '}
-          <a href="https://chromewebstore.google.com/detail/boj-ide-executor/aegmfpcnfkmlhmlklhipladjabpncjha">
+          <a
+            href="https://chromewebstore.google.com/detail/boj-ide-executor/aegmfpcnfkmlhmlklhipladjabpncjha"
+            target="_blank"
+          >
             BOJ IDE Executor
           </a>
           를 사용하면
