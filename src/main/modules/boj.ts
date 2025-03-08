@@ -1,9 +1,7 @@
-import { BrowserWindow, app } from 'electron';
+import { BrowserWindow, app, clipboard } from 'electron';
 
 import puppeteer from 'puppeteer-core';
 import pie from 'puppeteer-in-electron';
-
-import clipboard from 'clipboardy';
 
 import { ipc } from '@/main/utils';
 
@@ -77,15 +75,17 @@ export class Boj {
       /**
        * 2. 클립보드에 코드 복사
        */
-      const isClipboardCopySuccess = await new Promise((resolve) => {
-        clipboard
-          .write(code)
-          .then(() => resolve(true))
-          .catch((err) => {
-            sentryErrorHandler(err);
-            resolve(false);
-          });
-      });
+      let isClipboardCopySuccess: boolean;
+
+      try {
+        clipboard.writeText(code);
+
+        isClipboardCopySuccess = true;
+      } catch (err) {
+        sentryErrorHandler(err as Error);
+
+        isClipboardCopySuccess = false;
+      }
 
       /**
        * 3. 안내 메세지 삽입

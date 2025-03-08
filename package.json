@@ -134,7 +134,6 @@
     "@uiw/react-codemirror": "^4.23.6",
     "ai": "^4.0.18",
     "axios": "^1.7.9",
-    "clipboardy": "^4.0.0",
     "color": "^4.2.3",
     "domhandler": "^5.0.3",
     "dotenv": "^16.4.7",
