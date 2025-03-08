@@ -50,8 +50,8 @@ function TourOverlayContent({ tourRef, children, myTourStep, title, guideLoc = '
   const [rightX, setRightX] = useState(0);
   const [topY, setTopY] = useState(0);
   const [bottomY, setBottomY] = useState(0);
-  const [tourItemWidth, setTourItemWidth] = useState(0);
-  const [tourItemHeight, setTourItemHeight] = useState(0);
+
+  const [tourRect, setTourRect] = useState<DOMRect>(new DOMRect(0, 0, 0, 0));
 
   const popoverRef = useRef<HTMLDivElement>(null);
 
@@ -62,10 +62,11 @@ function TourOverlayContent({ tourRef, children, myTourStep, title, guideLoc = '
       return;
     }
 
-    const { x, y, width, height } = tourRef.current.getBoundingClientRect();
+    const rect = tourRef.current.getBoundingClientRect();
 
-    setTourItemWidth(width);
-    setTourItemHeight(height);
+    const { x, y, width, height } = rect;
+
+    setTourRect(rect);
 
     setLeftX(x);
     setRightX(x + width);
@@ -108,31 +109,33 @@ function TourOverlayContent({ tourRef, children, myTourStep, title, guideLoc = '
 
     const { width, height } = popover.getBoundingClientRect();
 
+    const { width: tourItemWidth, height: tourItemHeight } = tourRect;
+
     switch (guideLoc) {
       case 'leftTop':
-        return `${topY}px ${window.innerWidth - leftX}px auto auto`;
+        return `${topY}px ${Math.min(window.innerWidth - leftX, window.innerWidth - width)}px auto auto`;
       case 'left':
-        return `${topY + tourItemHeight / 2 - height / 2}px ${window.innerWidth - leftX}px auto auto`;
+        return `${topY + tourItemHeight / 2 - height / 2}px ${Math.min(window.innerWidth - leftX, window.innerWidth - width)}px auto auto`;
       case 'leftBottom':
-        return `${bottomY - height}px ${window.innerWidth - leftX}px auto auto`;
+        return `${bottomY - height}px ${Math.min(window.innerWidth - leftX, window.innerWidth - width)}px auto auto`;
       case 'rightTop':
-        return `${topY}px ${window.innerWidth - rightX - width}px auto auto`;
+        return `${topY}px ${Math.max(window.innerWidth - rightX - width, 0)}px auto auto`;
       case 'right':
-        return `${topY + tourItemHeight / 2 - height / 2}px ${window.innerWidth - rightX - width}px auto auto`;
+        return `${topY + tourItemHeight / 2 - height / 2}px ${Math.max(window.innerWidth - rightX - width, 0)}px auto auto`;
       case 'rightBottom':
-        return `${topY + tourItemHeight - height}px ${window.innerWidth - rightX - width}px auto auto`;
+        return `${topY + tourItemHeight - height}px ${Math.max(window.innerWidth - rightX - width, 0)}px auto auto`;
       case 'topLeft':
-        return `auto auto ${window.innerHeight - topY}px ${leftX}px`;
+        return `auto auto ${Math.min(window.innerHeight - topY, window.innerHeight - height)}px ${leftX}px`;
       case 'top':
-        return `auto auto ${window.innerHeight - topY}px ${leftX + tourItemWidth / 2 - width / 2}px`;
+        return `auto auto ${Math.min(window.innerHeight - topY, window.innerHeight - height)}px ${leftX + tourItemWidth / 2 - width / 2}px`;
       case 'topRight':
-        return `auto auto ${window.innerHeight - topY}px ${leftX + tourItemWidth - width}px`;
+        return `auto auto ${Math.min(window.innerHeight - topY, window.innerHeight - height)}px ${leftX + tourItemWidth - width}px`;
       case 'bottomLeft':
-        return `auto auto ${window.innerHeight - bottomY - height}px ${leftX}px`;
+        return `auto auto ${Math.max(window.innerHeight - bottomY - height, 0)}px ${leftX}px`;
       case 'bottom':
-        return `auto auto ${window.innerHeight - bottomY - height}px ${leftX + tourItemWidth / 2 - width / 2}px`;
+        return `auto auto ${Math.max(window.innerHeight - bottomY - height, 0)}px ${leftX + tourItemWidth / 2 - width / 2}px`;
       case 'bottomRight':
-        return `auto auto ${window.innerHeight - bottomY - height}px ${leftX + tourItemWidth - width}px`;
+        return `auto auto ${Math.max(window.innerHeight - bottomY - height, 0)}px ${leftX + tourItemWidth - width}px`;
       default:
         return '';
     }
@@ -157,7 +160,7 @@ function TourOverlayContent({ tourRef, children, myTourStep, title, guideLoc = '
           top: topY,
           left: 0,
           width: `${leftX}px`,
-          height: `${tourItemHeight}px`,
+          height: `${tourRect.height}px`,
         }}
       />
 
@@ -166,7 +169,7 @@ function TourOverlayContent({ tourRef, children, myTourStep, title, guideLoc = '
           top: topY,
           left: rightX,
           right: 0,
-          height: `${tourItemHeight}px`,
+          height: `${tourRect.height}px`,
         }}
       />
 
@@ -227,6 +230,7 @@ function TourOverlayContent({ tourRef, children, myTourStep, title, guideLoc = '
               flex-direction: column;
               & * {
                 margin: 0;
+                white-space: nowrap;
               }
               a {
                 color: ${theme.colors.primarybg};
