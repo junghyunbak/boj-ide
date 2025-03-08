@@ -23,6 +23,8 @@ import { MenuBuilder, Boj, Code, Judge, SentryService, AppUpdater, Logger } from
 SentryService.init();
 
 let mainWindow: BrowserWindow | null = null;
+let popupWindows: BrowserWindow[] = [];
+
 let problemNumber: number | null = null;
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -146,10 +148,21 @@ app.on('browser-window-focus', () => {
   });
 
   globalShortcut.register('CommandOrControl+W', () => {
-    if (mainWindow) {
+    if (mainWindow && mainWindow.isFocused()) {
       ipc.send(mainWindow.webContents, 'close-tab', undefined);
     }
+
+    const focusPopupWindowIdx = popupWindows.findIndex(
+      (browserWindow) => !browserWindow.isDestroyed() && browserWindow.isFocused(),
+    );
+
+    if (focusPopupWindowIdx !== -1) {
+      const [deletedPopupWindow] = popupWindows.splice(focusPopupWindowIdx, 1);
+
+      deletedPopupWindow.destroy();
+    }
   });
+
   globalShortcut.register('CommandOrControl+R', handleCommandOrControlR);
   globalShortcut.register('CommandOrControl+Shift+R', handleCommandOrControlR);
 });
@@ -160,14 +173,19 @@ app.on('browser-window-blur', () => {
 
 app.on('web-contents-created', (e, contents) => {
   contents.setWindowOpenHandler(({ url }) => {
-    const newWindow = new BrowserWindow({ width: 800, height: 600 });
+    const popupWindow = new BrowserWindow({ width: 800, height: 600 });
 
-    newWindow.loadURL(url);
+    popupWindows.push(popupWindow);
 
-    newWindow.webContents.on('destroyed', () => {
+    popupWindow.loadURL(url);
+
+    popupWindow.webContents.on('destroyed', () => {
       if (contents.getURL().startsWith('chrome-extension://')) {
         if (mainWindow) {
           ipc.send(mainWindow.webContents, 'reload-webview', undefined);
+
+          popupWindows = popupWindows.filter((browserWindow) => !browserWindow.isDestroyed());
+
           sentryLogging('[로그] 익스텐션 팝업 창을 닫았습니다.');
         }
       }
