@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import { useWindowEvent } from '@/renderer/hooks';
+import { useEventWindow } from '@/renderer/hooks';
 
 import { useSplitLayoutStoreContext } from '../SplitLayoutContext';
 
@@ -16,7 +16,7 @@ type LeftProps = {
 export function Left({ children, initialRatio = 50, onRatioChange, px }: React.PropsWithChildren<LeftProps>) {
   const { splitLayoutStore } = useSplitLayoutStoreContext();
 
-  useWindowEvent(
+  useEventWindow(
     (e) => {
       const { isDrag, containerRef, leftRef, vertical, startX, leftWidth } = splitLayoutStore.getState();
 

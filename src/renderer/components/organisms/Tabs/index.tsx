@@ -11,7 +11,7 @@ import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
 
 import {
   useTab,
-  useIpcEvent,
+  useEventIpc,
   useProblem,
   useConfirmModalController,
   useDailyProblem,
@@ -37,7 +37,7 @@ export function Tabs() {
 
   const tourRef = useRef<HTMLDivElement>(null);
 
-  useIpcEvent(
+  useEventIpc(
     () => {
       if (problemTabCount === 0 || !problem) {
         fireConfirmModal('종료하시겠습니까?', () => {

@@ -6,7 +6,7 @@ import { css } from '@emotion/react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useTour, useWindowEvent } from '@/renderer/hooks';
+import { useTour, useEventWindow } from '@/renderer/hooks';
 
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 
@@ -78,9 +78,9 @@ function TourOverlayContent({ tourRef, children, myTourStep, title, guideLoc = '
     updateTourItemInfo();
   }, [updateTourItemInfo]);
 
-  useWindowEvent(updateTourItemInfo, [updateTourItemInfo], 'resize');
+  useEventWindow(updateTourItemInfo, [updateTourItemInfo], 'resize');
 
-  useWindowEvent(
+  useEventWindow(
     (e) => {
       switch (e.key) {
         case 'ArrowLeft':

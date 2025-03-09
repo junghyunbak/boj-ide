@@ -5,12 +5,12 @@ import { css } from '@emotion/react';
 
 import { zIndex } from '@/renderer/styles';
 
-import { useWindowEvent } from '@/renderer/hooks';
+import { useEventWindow } from '@/renderer/hooks';
 
 export function TabAfterImage({ children }: React.PropsWithChildren) {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  useWindowEvent(
+  useEventWindow(
     (e) => {
       if (!containerRef.current) {
         return;

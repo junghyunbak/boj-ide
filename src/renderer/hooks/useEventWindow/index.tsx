@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from 'react';
 
-export function useWindowEvent<T extends keyof WindowEventMap>(
+export function useEventWindow<T extends keyof WindowEventMap>(
   func: (this: Window, ev: WindowEventMap[T]) => any,
   deps: unknown[],
   type: T,

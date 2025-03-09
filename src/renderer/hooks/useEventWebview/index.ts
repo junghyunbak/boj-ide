@@ -7,7 +7,7 @@ import { useShallow } from 'zustand/shallow';
 
 import { isBojProblemUrl, getProblemInfo } from '@/renderer/utils';
 
-import { useIpcEvent as useEventIpc } from '../useIpcEvent';
+import { useEventIpc } from '../useEventIpc';
 import { useModifyWebview } from '../useModifyWebview';
 import { useModifyProblem } from '../useModifyProblem';
 import { useModifyTab } from '../useModifyTab';

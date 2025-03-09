@@ -1,8 +1,8 @@
 /**
  * event
  */
-export * from './useIpcEvent';
-export * from './useWindowEvent';
+export * from './useEventIpc';
+export * from './useEventWindow';
 
 /**
  * tour

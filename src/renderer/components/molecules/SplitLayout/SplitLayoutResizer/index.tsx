@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { HorizontalResizer } from '@/renderer/components/atoms/lines/HorizontalResizer';
 import { VerticalResizer } from '@/renderer/components/atoms/lines/VerticalResizer';
 
-import { useWindowEvent } from '@/renderer/hooks';
+import { useEventWindow } from '@/renderer/hooks';
 
 import { useSplitLayoutStoreContext } from '../SplitLayoutContext';
 
@@ -47,7 +47,7 @@ export function Resizer({ children, onDragStart, onDragEnd, zIndex }: React.Prop
    *
    * : 앱 밖으로 마우스 커서가 이동한 경우에도 mouseup이 동작되도록 하기 위해서
    */
-  useWindowEvent(
+  useEventWindow(
     () => {
       if (splitLayoutStore.getState().isDrag) {
         splitLayoutStore.getState().isDrag = false;

@@ -4,14 +4,14 @@ import { css } from '@emotion/react';
 
 import { Text } from '@/renderer/components/atoms/paragraphs/Text';
 
-import { useIpcEvent } from '@/renderer/hooks';
+import { useEventIpc } from '@/renderer/hooks';
 
 import { bytesToSize } from '@/renderer/utils';
 
 export function AppUpdaterInfo() {
   const [updateInfo, setUpdateInfo] = useState('');
 
-  useIpcEvent(
+  useEventIpc(
     ({ data: { bytesPerSecond, percent, isDownloaded } }) => {
       if (isDownloaded) {
         setUpdateInfo('');

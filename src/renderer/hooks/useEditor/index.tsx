@@ -7,7 +7,7 @@ import { useShallow } from 'zustand/shallow';
 
 import { useEditorExtensions } from '../useEditorExtensions';
 import { useEditorController } from '../useEditorController';
-import { useIpcEvent } from '../useIpcEvent';
+import { useEventIpc } from '../useEventIpc';
 
 export function useEditor({ width, height }: { width: number; height: number }) {
   const [problem] = useStore(useShallow((s) => [s.problem]));
@@ -89,7 +89,7 @@ export function useEditor({ width, height }: { width: number; height: number }) 
     }
   }, [problem, lang]);
 
-  useIpcEvent(
+  useEventIpc(
     ({ data: { code } }) => {
       initialEditorCode(code);
       setState(EditorState.create({ ...state }));

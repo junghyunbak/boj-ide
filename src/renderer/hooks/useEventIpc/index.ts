@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from 'react';
 
-export function useIpcEvent<T extends ClientChannels>(
+export function useEventIpc<T extends ClientChannels>(
   func: (message: ChannelToMessage[T][0]) => void,
   deps: unknown[],
   channel: T,

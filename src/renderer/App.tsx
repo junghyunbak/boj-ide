@@ -4,7 +4,7 @@ import { BOJ_DOMAIN } from '@/common/constants';
 
 import { MainPage } from '@/renderer/components/pages/MainPage';
 
-import { useAlertModalController, useTheme, useFocusRecovery, useIpcEvent, useModifyWebview } from '@/renderer/hooks';
+import { useAlertModalController, useTheme, useFocusRecovery, useEventIpc, useModifyWebview } from '@/renderer/hooks';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -38,7 +38,7 @@ export default function App() {
 
   useFocusRecovery();
 
-  useIpcEvent(
+  useEventIpc(
     ({ data: { message } }) => {
       fireAlertModal('에러 발생', message);
     },
@@ -46,7 +46,7 @@ export default function App() {
     'occur-error',
   );
 
-  useIpcEvent(
+  useEventIpc(
     ({ data: { problemNumber } }) => {
       gotoUrl(`https://${BOJ_DOMAIN}/problem/${problemNumber}`);
     },
@@ -54,7 +54,7 @@ export default function App() {
     'open-problem',
   );
 
-  useIpcEvent(
+  useEventIpc(
     ({ data: { extensionId } }) => {
       setBaekjoonhubExtensionId(extensionId);
     },

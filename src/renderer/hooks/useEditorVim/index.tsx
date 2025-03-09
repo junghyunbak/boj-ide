@@ -8,7 +8,7 @@ import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
 import { useEditorController } from '../useEditorController';
-import { useIpcEvent } from '../useIpcEvent';
+import { useEventIpc } from '../useEventIpc';
 
 export function useEditorVim({
   editorRef,
@@ -87,7 +87,7 @@ export function useEditorVim({
    *
    * mac의 경우 기존 ctrl+r 에 cmd+r까지 redo가 동작하게 됨.
    * */
-  useIpcEvent(
+  useEventIpc(
     () => {
       window.electron.ipcRenderer.on('ctrl-or-cmd-r-pressed', () => {
         const { mode, vimMode } = useStore.getState();

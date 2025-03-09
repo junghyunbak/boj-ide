@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 
-import { useIpcEvent, useJudge, useJudgeController, useProblem } from '@/renderer/hooks';
+import { useEventIpc, useJudge, useJudgeController, useProblem } from '@/renderer/hooks';
 
 import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
 
@@ -15,7 +15,7 @@ export function ExecuteCodeButton() {
 
   const tourRef = useRef<HTMLButtonElement>(null);
 
-  useIpcEvent(
+  useEventIpc(
     () => {
       if (!isJudging) {
         startJudge();

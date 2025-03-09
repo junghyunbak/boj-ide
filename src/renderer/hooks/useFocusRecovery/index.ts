@@ -1,12 +1,12 @@
 import { useRef } from 'react';
 
-import { useWindowEvent } from '../useWindowEvent';
+import { useEventWindow } from '../useEventWindow';
 
 export function useFocusRecovery() {
   const curFocusRef = useRef<Element | null>(null);
   const lastFocusRef = useRef<Element | null>(null);
 
-  useWindowEvent(
+  useEventWindow(
     () => {
       if (curFocusRef.current !== document.activeElement) {
         curFocusRef.current = document.activeElement;
@@ -16,7 +16,7 @@ export function useFocusRecovery() {
     'click',
   );
 
-  useWindowEvent(
+  useEventWindow(
     () => {
       lastFocusRef.current = curFocusRef.current;
     },
@@ -24,7 +24,7 @@ export function useFocusRecovery() {
     'blur',
   );
 
-  useWindowEvent(
+  useEventWindow(
     () => {
       setTimeout(() => {
         const $cmContent = document.querySelector('.cm-content');

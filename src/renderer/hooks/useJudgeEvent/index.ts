@@ -5,7 +5,7 @@ import { useShallow } from 'zustand/shallow';
 
 import { useTestcase } from '../useTestcase';
 import { useJudgeController } from '../useJudgeController';
-import { useIpcEvent } from '../useIpcEvent';
+import { useEventIpc } from '../useEventIpc';
 
 export function useJudgeEvent() {
   const [setJudgeResults] = useStore(useShallow((s) => [s.setJudgeResult]));
@@ -32,7 +32,7 @@ export function useJudgeEvent() {
   /**
    * 채점 결과 수신 이벤트 등록
    */
-  useIpcEvent(
+  useEventIpc(
     ({ data }) => {
       const { judgeId } = useStore.getState();
 
@@ -55,7 +55,7 @@ export function useJudgeEvent() {
   /**
    * 채점 결과 리셋 이벤트 등록
    */
-  useIpcEvent(
+  useEventIpc(
     () => {
       resetJudge();
     },
