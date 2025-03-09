@@ -4,13 +4,7 @@ import { BOJ_DOMAIN } from '@/common/constants';
 
 import { MainPage } from '@/renderer/components/pages/MainPage';
 
-import {
-  useAlertModalController,
-  useWebviewController,
-  useTheme,
-  useFocusRecovery,
-  useIpcEvent,
-} from '@/renderer/hooks';
+import { useAlertModalController, useTheme, useFocusRecovery, useIpcEvent, useModifyWebview } from '@/renderer/hooks';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -38,7 +32,7 @@ export default function App() {
   const { theme } = useTheme();
 
   const { fireAlertModal } = useAlertModalController();
-  const { gotoUrl } = useWebviewController();
+  const { gotoUrl } = useModifyWebview();
 
   const [setBaekjoonhubExtensionId] = useStore(useShallow((s) => [s.setBaekjoonhubExtensionId]));
 

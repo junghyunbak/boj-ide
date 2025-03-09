@@ -1,15 +1,37 @@
 import { useCallback } from 'react';
 
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
+import { type Theme } from '@emotion/react';
+
+import { createWebviewStyle } from '@/renderer/styles';
+
+import { isBojProblemUrl } from '@/renderer/utils';
 
 import { BOJ_DOMAIN } from '@/common/constants';
 import { WEBVIEW_HOME_URL } from '@/renderer/constants';
 
-export function useWebviewController() {
+import { useStore } from '@/renderer/store';
+import { useShallow } from 'zustand/shallow';
+
+export function useModifyWebview() {
   const [setWebviewUrl] = useStore(useShallow((s) => [s.setWebViewUrl]));
   const [setWebviewIsLoading] = useStore(useShallow((s) => [s.setWebviewIsLoading]));
   const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
+
+  const refreshWebviewTheme = useCallback(async (emotionTheme: Theme) => {
+    const { webview, webviewUrl, theme, insertCSSKey } = useStore.getState();
+
+    if (!webview) {
+      return;
+    }
+
+    if (insertCSSKey) {
+      webview.removeInsertedCSS(insertCSSKey);
+    }
+
+    if (theme === 'programmers' && isBojProblemUrl(webviewUrl)) {
+      useStore.getState().insertCSSKey = await webview.insertCSS(createWebviewStyle(emotionTheme));
+    }
+  }, []);
 
   const updateWebviewUrl = useCallback(
     (url: string) => {
@@ -98,6 +120,7 @@ export function useWebviewController() {
   }, []);
 
   return {
+    refreshWebviewTheme,
     gotoProblem,
     gotoUrl,
     goBack,

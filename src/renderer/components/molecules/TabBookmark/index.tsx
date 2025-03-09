@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useProblem, useWebviewController } from '@/renderer/hooks';
+import { useModifyWebview, useProblem } from '@/renderer/hooks';
 
 import { MovableTab } from '../MovableTab';
 
@@ -16,7 +16,7 @@ export function TabBookmark({ tab, index }: TabBookmarkProps) {
   const [webviewUrl] = useStore(useShallow((s) => [s.webviewUrl]));
 
   const { problem } = useProblem();
-  const { gotoUrl } = useWebviewController();
+  const { gotoUrl } = useModifyWebview();
 
   const isSelect = useMemo(() => !problem && webviewUrl.startsWith(tab.url), [problem, webviewUrl, tab]);
 

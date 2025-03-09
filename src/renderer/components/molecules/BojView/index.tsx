@@ -5,15 +5,18 @@ import { css } from '@emotion/react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useWebview } from '@/renderer/hooks';
+import { useWebview, useSetupWebview, useEventWebview } from '@/renderer/hooks';
 
 import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
 
 export function BojView() {
+  useEventWebview();
+
+  const { startWebviewUrl } = useSetupWebview();
+
+  const { webviewIsLoading } = useWebview();
+
   const [isResizerDrag] = useStore(useShallow((s) => [s.isResizerDrag]));
-
-  const { startWebviewUrl, webviewIsLoading } = useWebview();
-
   const tourRef = useRef<HTMLDivElement>(null);
 
   return (

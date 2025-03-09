@@ -7,11 +7,11 @@ import { WEBVIEW_HOME_URL } from '@/renderer/constants';
 
 import { isProblemTab, isBookmarkTab, isExtensionTab } from '@/renderer/utils/typeGuard';
 
-import { useWebviewController } from '../useWebviewController';
+import { useModifyWebview } from '../useModifyWebview';
 
 export function useModifyTab() {
   const [setTabs] = useStore(useShallow((s) => [s.setProblemHistories]));
-  const { gotoUrl, gotoProblem } = useWebviewController();
+  const { gotoUrl, gotoProblem } = useModifyWebview();
 
   const addProblemTab = useCallback(
     (problemTab: ProblemInfo) => {

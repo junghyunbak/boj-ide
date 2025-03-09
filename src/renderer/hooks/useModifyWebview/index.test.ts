@@ -5,7 +5,7 @@ import { createMockProblem } from '@/renderer/mock';
 
 import { useStore } from '@/renderer/store';
 
-import { useWebviewController } from '.';
+import { useModifyWebview } from '.';
 
 const mockProblem = createMockProblem();
 
@@ -25,7 +25,7 @@ beforeEach(() => {
 
 describe('[Custom Hooks] useWebviewController', () => {
   it('새로운 문제로 이동시킬 경우, true를 반환한다.', () => {
-    const { result } = renderHook(() => useWebviewController());
+    const { result } = renderHook(() => useModifyWebview());
 
     const newMockProblem = createMockProblem();
 
@@ -39,7 +39,7 @@ describe('[Custom Hooks] useWebviewController', () => {
   });
 
   it('동일한 문제 번호로 이동시킬 경우, false를 반환한다.', () => {
-    const { result } = renderHook(() => useWebviewController());
+    const { result } = renderHook(() => useModifyWebview());
 
     const sameNumberMockProblem = createMockProblem({ number: mockProblem.number });
 
