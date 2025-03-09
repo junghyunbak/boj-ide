@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import { useClickOutOfModal, useTab } from '@/renderer/hooks';
+import { useClickOutOfModal, useTab, useGhostTab } from '@/renderer/hooks';
 
 import { ReactComponent as ThreeDots } from '@/renderer/assets/svgs/three-dots.svg';
 
@@ -12,6 +12,7 @@ import { ListButton } from '@/renderer/components/atoms/buttons/ListButton';
 export function TabOptions() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const { activeDailyProblem, toggleDailyProblemActive } = useGhostTab();
   const { clearTab } = useTab();
 
   const { modalRef, buttonRef } = useClickOutOfModal(() => {
@@ -20,6 +21,11 @@ export function TabOptions() {
 
   const handleAllTabCloseButtonClick = () => {
     clearTab();
+    setIsOpen(false);
+  };
+
+  const handleDailyProblemActiveToggleButtonClick = () => {
+    toggleDailyProblemActive();
     setIsOpen(false);
   };
 
@@ -80,6 +86,9 @@ export function TabOptions() {
             `}
           >
             <ListButton onClick={handleAllTabCloseButtonClick}>문제 탭 전부 닫기</ListButton>
+            <ListButton
+              onClick={handleDailyProblemActiveToggleButtonClick}
+            >{`일일 문제 추천 ${activeDailyProblem ? '비활성화' : '활성화'}`}</ListButton>
           </div>
         </NonModal>
       </div>

@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { useMovableTabContext } from '../MovableTabContext';
 
 export function MovableTabTopBorder() {
-  const { isSelect } = useMovableTabContext();
+  const { isSelect, ghost } = useMovableTabContext();
 
   return (
     <div
@@ -16,7 +16,14 @@ export function MovableTabTopBorder() {
       <div
         css={(theme) => css`
           width: 100%;
-          border-top: 1px solid ${theme.colors.border};
+
+          ${ghost
+            ? css`
+                border-top: 1px dashed ${theme.colors.accent};
+              `
+            : css`
+                border-top: 1px solid ${theme.colors.border};
+              `}
         `}
       />
       {isSelect && (

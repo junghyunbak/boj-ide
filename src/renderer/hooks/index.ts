@@ -24,6 +24,7 @@ export * from './useTheme';
  * tab
  */
 export * from './useTab';
+export * from './useGhostTab';
 
 /**
  * judge

@@ -11,7 +11,7 @@ import { TabExtension } from '@/renderer/components/molecules/TabExtension';
 import { TabPolyfill } from '@/renderer/components/molecules/TabPolyfill';
 import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
 
-import { useTab, useIpcEvent, useProblem, useConfirmModalController } from '@/renderer/hooks';
+import { useTab, useIpcEvent, useProblem, useConfirmModalController, useGhostTab } from '@/renderer/hooks';
 
 import { isBookmarkTab, isProblemTab } from '@/renderer/utils/typeGuard';
 
@@ -23,10 +23,13 @@ import { baekjoonhubLogo, baekjoonLogo, solvedACLogo } from '@/renderer/assets/b
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
 import 'overlayscrollbars/overlayscrollbars.css';
 
+import { TabProblemGhost } from '../../molecules/TabProblemGhost';
+
 export function Tabs() {
   const { tabs, addBookmarkTab, addExtensionTab, getProblemTabCount } = useTab();
   const { problem } = useProblem();
   const { fireConfirmModal } = useConfirmModalController();
+  const { ghostTabs, activeDailyProblem } = useGhostTab();
 
   // TODO: 훅으로 분리
   const [baekjoonhubExtensionId] = useStore(useShallow((s) => [s.baekjoonhubExtensionId]));
@@ -147,6 +150,11 @@ export function Tabs() {
                   }
 
                   return <TabExtension index={index} tab={tab} key={tab.id} />;
+                })}
+
+              {activeDailyProblem &&
+                ghostTabs.map((num) => {
+                  return <TabProblemGhost num={num} key={num} />;
                 })}
 
               <TabPolyfill />

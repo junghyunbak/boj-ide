@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 
 type TabState = {
-  isSelect?: boolean;
+  ghost?: boolean;
   polyfill?: boolean;
 };
 
@@ -11,12 +11,19 @@ export const TabLayout = styled.div<TabState>`
   position: relative;
   user-select: none;
 
-  ${({ polyfill }) =>
+  ${({ ghost }) =>
+    ghost
+      ? css`
+          opacity: 0.5;
+        `
+      : css``}
+
+  ${({ polyfill = false }) =>
     polyfill
       ? css`
           flex: 1;
-          cursor: auto;
           background-color: transparent;
+          cursor: auto;
         `
       : css`
           cursor: pointer;

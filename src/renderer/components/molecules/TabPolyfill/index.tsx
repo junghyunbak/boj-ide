@@ -7,7 +7,6 @@ export function TabPolyfill() {
 
   return (
     <MovableTab tabIndex={tabs.length} polyfill>
-      <MovableTab.MovableTabLeftLine />
       <MovableTab.MovableTabBottomBorder />
     </MovableTab>
   );

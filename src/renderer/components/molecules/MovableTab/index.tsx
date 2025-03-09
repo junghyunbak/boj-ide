@@ -37,6 +37,7 @@ function MovableTabImpl({
   tabIndex,
   isSelect = false,
   polyfill = false,
+  ghost = false,
   children,
   onClick = () => {},
 }: React.PropsWithChildren<MovableTabImplProps>) {
@@ -62,8 +63,10 @@ function MovableTabImpl({
 
     let isClicked: boolean = false;
 
+    const disableDrag = polyfill || ghost;
+
     const handleTabMouseDown = () => {
-      if (polyfill) {
+      if (disableDrag) {
         return;
       }
 
@@ -84,7 +87,7 @@ function MovableTabImpl({
       const { clientX } = e;
 
       const startX = containerX;
-      const middleX = containerX + (polyfill ? containerWidth : containerWidth / 2);
+      const middleX = containerX + (disableDrag ? containerWidth : containerWidth / 2);
       const endX = containerX + containerWidth;
 
       if (startX < clientX && clientX <= middleX) {
@@ -126,7 +129,7 @@ function MovableTabImpl({
       container.removeEventListener('mousemove', handleTabMouseMove);
       window.removeEventListener('mouseup', handleWindowMouseUp);
     };
-  }, [tabIndex, polyfill, reorderTab, setDestTabIndex, setIsTabDrag, setIsDrag]);
+  }, [tabIndex, polyfill, reorderTab, setDestTabIndex, setIsTabDrag, setIsDrag, ghost]);
 
   /**
    * 탭 생성 시 스크롤을 요소 위치로 이동
@@ -156,16 +159,18 @@ function MovableTabImpl({
   const Content = getElementFromChildren(children, ContentType);
 
   const LeftLine = getElementFromChildren(children, LeftLineType);
+  const RightLine = getElementFromChildren(children, RightLineType);
 
   return (
-    <MovableTabContext.Provider value={{ isSelect, tabIndex }}>
-      <TabLayout ref={containerRef} onClick={handleTabClick} isSelect={isSelect} polyfill={polyfill}>
+    <MovableTabContext.Provider value={{ isSelect, tabIndex, ghost }}>
+      <TabLayout ref={containerRef} onClick={handleTabClick} ghost={ghost} polyfill={polyfill}>
         {TopBorder}
         {RightBorder}
         {BottomBorder}
 
         {LeftLine}
         {Content}
+        {RightLine}
       </TabLayout>
 
       {isAfterImageShow && (

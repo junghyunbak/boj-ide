@@ -1,6 +1,10 @@
 import { css } from '@emotion/react';
 
+import { useMovableTabContext } from '../MovableTabContext';
+
 export function MovableTabRightBorder() {
+  const { ghost } = useMovableTabContext();
+
   return (
     <div
       css={(theme) => css`
@@ -9,7 +13,13 @@ export function MovableTabRightBorder() {
         bottom: 0;
         right: 0px;
 
-        border-left: 1px solid ${theme.colors.border};
+        ${ghost
+          ? css`
+              border-left: 1px dashed ${theme.colors.accent};
+            `
+          : css`
+              border-left: 1px solid ${theme.colors.border};
+            `}
       `}
     />
   );

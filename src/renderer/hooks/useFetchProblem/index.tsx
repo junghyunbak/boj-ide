@@ -7,7 +7,7 @@ export function useFetchProblem(problemNumber: string): { tierBase64: string | n
   const { data: solvedProblem, isError } = useQuery({
     queryKey: ['solved.ac', problemNumber],
     queryFn: async () => {
-      const { data } = await axios.get<{ level: number; titleKo: string; tierBase64: string }>(
+      const { data } = await axios.get<{ level: number; title: string; tierBase64: string }>(
         `${FETCH_DOMAIN}/api/solved?problemId=${problemNumber}`,
       );
 
@@ -22,10 +22,10 @@ export function useFetchProblem(problemNumber: string): { tierBase64: string | n
     };
   }
 
-  const { titleKo, tierBase64 } = solvedProblem;
+  const { title, tierBase64 } = solvedProblem;
 
   return {
     tierBase64,
-    title: titleKo,
+    title,
   };
 }

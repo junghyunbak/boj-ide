@@ -13,6 +13,10 @@ export function MovableTabLeftLine() {
 
   const isHidden = !isTabDrag || destTabIndex !== tabIndex;
 
+  if (tabIndex !== 0) {
+    return null;
+  }
+
   return (
     <LineLayout dir="left">
       <LineBox isHidden={isHidden} />
