@@ -59,11 +59,6 @@ export * from './useFetchProblem';
 export * from './useStreamingAICode';
 
 /**
- * webview
- */
-export * from './useWebviewNavigation';
-
-/**
  * editor
  */
 export * from './useEditor';

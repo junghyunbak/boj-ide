@@ -6,9 +6,14 @@ export function useWebview() {
   const [webviewUrl] = useStore(useShallow((s) => [s.webviewUrl]));
   const [webviewIsLoading] = useStore(useShallow((s) => [s.webviewIsLoading]));
 
+  const [canGoBack] = useStore(useShallow((s) => [s.canGoBack]));
+  const [canGoForward] = useStore(useShallow((s) => [s.canGoForward]));
+
   return {
     webview,
     webviewUrl,
     webviewIsLoading,
+    canGoBack,
+    canGoForward,
   };
 }

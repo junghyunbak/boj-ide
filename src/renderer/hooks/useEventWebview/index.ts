@@ -14,6 +14,9 @@ import { useModifyTab } from '../useModifyTab';
 
 export function useEventWebview() {
   const [webview] = useStore(useShallow((s) => [s.webview]));
+  const [setCanGoBack] = useStore(useShallow((s) => [s.setCanGoBack]));
+  const [setCanGoForward] = useStore(useShallow((s) => [s.setCanGoForward]));
+
   const emotionTheme = useTheme();
 
   const { refreshWebviewTheme, updateWebviewLoading, updateWebviewUrl } = useModifyWebview();
@@ -103,4 +106,21 @@ export function useEventWebview() {
     updateWebviewLoading,
     emotionTheme,
   ]);
+
+  useEffect(() => {
+    if (!webview) {
+      return () => {};
+    }
+
+    const handleWebviewDidFinishLoad = () => {
+      setCanGoBack(webview.canGoBack());
+      setCanGoForward(webview.canGoForward());
+    };
+
+    webview.addEventListener('did-finish-load', handleWebviewDidFinishLoad);
+
+    return () => {
+      webview.removeEventListener('did-finish-load', handleWebviewDidFinishLoad);
+    };
+  }, [webview, setCanGoBack, setCanGoForward]);
 }
