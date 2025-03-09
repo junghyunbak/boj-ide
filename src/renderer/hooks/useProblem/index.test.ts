@@ -6,6 +6,7 @@ import { createMockProblem } from '@/renderer/mock';
 import { useStore } from '@/renderer/store';
 
 import { useProblem } from '.';
+import { useModifyProblem } from '../useModifyProblem';
 
 const mockProblem = createMockProblem();
 
@@ -15,7 +16,7 @@ beforeEach(() => {
 
 describe('[Custom Hooks] useProblem', () => {
   it('동일하지 않은 문제번호 객체가 초기화 될 경우, 문제 상태가 갱신되어야 한다.', () => {
-    const { result } = renderHook(() => useProblem());
+    const { result } = renderHook(() => ({ ...useProblem(), ...useModifyProblem() }));
 
     const newMockProblem = createMockProblem();
 
@@ -30,7 +31,7 @@ describe('[Custom Hooks] useProblem', () => {
     const all = [];
 
     const { result } = renderHook(() => {
-      const value = useProblem();
+      const value = { ...useProblem(), ...useModifyProblem() };
       all.push(value);
       return value;
     });
@@ -47,7 +48,7 @@ describe('[Custom Hooks] useProblem', () => {
   });
 
   it('문제 객체가 null일 경우, null로 업데이트 되어야 한다.', () => {
-    const { result } = renderHook(() => useProblem());
+    const { result } = renderHook(() => ({ ...useProblem(), ...useModifyProblem() }));
 
     act(() => {
       result.current.updateProblem(null);

@@ -7,9 +7,11 @@ import { useStore } from '@/renderer/store';
 import { v4 as uuidv4 } from 'uuid';
 
 import { useProblem } from '../useProblem';
+import { useModifyProblem } from '../useModifyProblem';
 
 export function useTestcase() {
-  const { problem, updateProblem } = useProblem();
+  const { problem } = useProblem();
+  const { updateProblem } = useModifyProblem();
   const [customTestcases, setCustomTestcases] = useStore(useShallow((s) => [s.customTestCase, s.setCustomTestcases]));
 
   const problemTestcases = useMemo<TC[]>(() => {
