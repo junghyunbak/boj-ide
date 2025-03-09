@@ -7,7 +7,7 @@ import { useShallow } from 'zustand/shallow';
 
 import { useEditorController } from '../useEditorController';
 
-export function useJudgeController() {
+export function useModifyJudge() {
   const [setJudgeResults] = useStore(useShallow((s) => [s.setJudgeResult]));
   const [setJudgeId] = useStore(useShallow((s) => [s.setJudgeId]));
 

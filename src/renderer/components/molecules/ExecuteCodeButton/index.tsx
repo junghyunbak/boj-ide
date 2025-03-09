@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 
-import { useEventIpc, useJudge, useJudgeController, useProblem } from '@/renderer/hooks';
+import { useEventIpc, useJudge, useModifyJudge, useProblem } from '@/renderer/hooks';
 
 import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
 
@@ -11,7 +11,7 @@ import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 export function ExecuteCodeButton() {
   const { problem } = useProblem();
   const { isJudging } = useJudge();
-  const { startJudge } = useJudgeController();
+  const { startJudge } = useModifyJudge();
 
   const tourRef = useRef<HTMLButtonElement>(null);
 

@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import { useJudge, useJudgeEvent, useTestcase } from '@/renderer/hooks';
+import { useJudge, useEventJudge, useTestcase } from '@/renderer/hooks';
 
 import { TestCaseMaker } from '@/renderer/components/molecules/TestCaseMaker';
 import { Testcase } from '@/renderer/components/molecules/Testcase';
@@ -17,7 +17,7 @@ export function OutputContent() {
   const { judgeResults } = useJudge();
   const { allTestcase, tcKeyMap } = useTestcase();
 
-  useJudgeEvent();
+  useEventJudge();
 
   /**
    * 커스텀 테스트케이스의 실제 인덱스를 계산하기 위한 변수

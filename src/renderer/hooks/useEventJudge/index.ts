@@ -4,16 +4,16 @@ import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
 import { useTestcase } from '../useTestcase';
-import { useJudgeController } from '../useJudgeController';
+import { useModifyJudge } from '../useModifyJudge';
 import { useEventIpc } from '../useEventIpc';
 
-export function useJudgeEvent() {
+export function useEventJudge() {
   const [setJudgeResults] = useStore(useShallow((s) => [s.setJudgeResult]));
   const [problem] = useStore(useShallow((s) => [s.problem]));
 
   const { customTestcases } = useTestcase();
 
-  const { resetJudge, updateJudgeIdentifier } = useJudgeController();
+  const { resetJudge, updateJudgeIdentifier } = useModifyJudge();
 
   /**
    * - problem

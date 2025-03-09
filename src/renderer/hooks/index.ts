@@ -9,13 +9,6 @@ export * from './useTestcase';
 export * from './useTheme';
 
 /**
- * judge
- */
-export * from './useJudge';
-export * from './useJudgeController';
-export * from './useJudgeEvent';
-
-/**
  * paint
  */
 export * from './useFabricCanvas';
@@ -66,6 +59,7 @@ export * from './useDailyProblem';
 export * from './useTab';
 export * from './useWebview';
 export * from './useTour';
+export * from './useJudge';
 
 /**
  * setup
@@ -88,6 +82,7 @@ export * from './useModifyTab';
 export * from './useModifyWebview';
 export * from './useModifyProblem';
 export * from './useModifyTour';
+export * from './useModifyJudge';
 
 /**
  * event
@@ -95,3 +90,4 @@ export * from './useModifyTour';
 export * from './useEventIpc';
 export * from './useEventWindow';
 export * from './useEventWebview';
+export * from './useEventJudge';
