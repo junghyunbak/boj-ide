@@ -8,6 +8,7 @@ import { useStore } from '@/renderer/store';
 import { isBookmarkTab, isExtensionTab, isProblemTab } from '@/renderer/utils/typeGuard';
 
 import { useTab } from '.';
+import { useModifyTab } from '../useModifyTab';
 
 const mockBookmark = createMockBookmark();
 const mockExtension = createMockExtension();
@@ -21,7 +22,7 @@ describe('[Custom Hooks] useTab', () => {
 
   describe('탭 추가', () => {
     it('같은 문제가 존재하지 않을 경우, 맨 뒤에 문제가 추가되어야 한다.', () => {
-      const { result } = renderHook(() => useTab());
+      const { result } = renderHook(() => ({ ...useTab(), ...useModifyTab() }));
 
       const newMockTab = createMockProblem();
       const tabLength = result.current.tabs.length;
@@ -34,7 +35,7 @@ describe('[Custom Hooks] useTab', () => {
     });
 
     it('같은 문제가 존재 할 경우, 데이터만 갱신되어야 한다.', () => {
-      const { result } = renderHook(() => useTab());
+      const { result } = renderHook(() => ({ ...useTab(), ...useModifyTab() }));
 
       const updatedProblemName = '갱신된 문제 이름';
       const newMockTab = createMockProblem({ ...mockProblem1, name: updatedProblemName });
@@ -51,7 +52,7 @@ describe('[Custom Hooks] useTab', () => {
     });
 
     it('같은 북마크가 존재하지 않을 경우, 맨 앞에 북마크가 추가되어야 한다.', () => {
-      const { result } = renderHook(() => useTab());
+      const { result } = renderHook(() => ({ ...useTab(), ...useModifyTab() }));
 
       const newMockTab = createMockBookmark();
       const tabLength = result.current.tabs.length;
@@ -67,7 +68,7 @@ describe('[Custom Hooks] useTab', () => {
     });
 
     it('같은 북마크가 존재 할 경우, 데이터만 갱신되어야 한다.', () => {
-      const { result } = renderHook(() => useTab());
+      const { result } = renderHook(() => ({ ...useTab(), ...useModifyTab() }));
 
       const updatedBookmarkTitle = '갱신된 북마크 이름';
       const newMockTab = createMockBookmark({ ...mockBookmark, title: updatedBookmarkTitle });
@@ -84,7 +85,7 @@ describe('[Custom Hooks] useTab', () => {
     });
 
     it('같은 크롬 익스텐션이 존재하지 않을 경우, 맨 앞에 익스텐션이 추가되어야 한다.', () => {
-      const { result } = renderHook(() => useTab());
+      const { result } = renderHook(() => ({ ...useTab(), ...useModifyTab() }));
 
       const newExtensionTab = createMockExtension({ type: 'otherExtensionType' });
       const tabLength = result.current.tabs.length;
@@ -100,7 +101,7 @@ describe('[Custom Hooks] useTab', () => {
     });
 
     it('같은 크롬 익스텐션이 존재 할 경우, 데이터만 갱신되어야 한다.', () => {
-      const { result } = renderHook(() => useTab());
+      const { result } = renderHook(() => ({ ...useTab(), ...useModifyTab() }));
 
       const newExtensionTab = createMockExtension(mockExtension);
       const tabLength = result.current.tabs.length;
@@ -118,7 +119,7 @@ describe('[Custom Hooks] useTab', () => {
 
   describe('탭 일부 삭제', () => {
     it('범위 내의 탭을 제거 할 경우, 삭제한 탭이 존재하지 않아야 한다.', () => {
-      const { result } = renderHook(() => useTab());
+      const { result } = renderHook(() => ({ ...useTab(), ...useModifyTab() }));
 
       const removeIdx = 1;
       const willRemovedTab = result.current.tabs[removeIdx];
@@ -131,7 +132,7 @@ describe('[Custom Hooks] useTab', () => {
     });
 
     it('범위 밖의 탭을 제거 할 경우, 탭 개수에 변화가 없어야 한다.', () => {
-      const { result } = renderHook(() => useTab());
+      const { result } = renderHook(() => ({ ...useTab(), ...useModifyTab() }));
 
       const tabLength = result.current.tabs.length;
       const removeIdx = tabLength;
@@ -146,7 +147,7 @@ describe('[Custom Hooks] useTab', () => {
 
   describe('탭 전체 삭제', () => {
     it('모든 문제 탭 만이 삭제되어야 한다.', () => {
-      const { result } = renderHook(() => useTab());
+      const { result } = renderHook(() => ({ ...useTab(), ...useModifyTab() }));
 
       const tabLength = result.current.tabs.length;
 
@@ -177,7 +178,7 @@ describe('[Custom Hooks] useTab', () => {
       const all = [];
 
       const { result } = renderHook(() => {
-        const value = useTab();
+        const value = { ...useTab(), ...useModifyTab() };
         all.push(value);
         return value;
       });
@@ -203,7 +204,7 @@ describe('[Custom Hooks] useTab', () => {
      *      [ ● 1 3 4 ]
      */
     it('맨 앞으로 위치를 변경한 경우, 순서가 올바르게 변경되어야 한다.', () => {
-      const { result } = renderHook(() => useTab());
+      const { result } = renderHook(() => ({ ...useTab(), ...useModifyTab() }));
 
       const srcIdx = 1;
       const destIdx = 0;
@@ -227,7 +228,7 @@ describe('[Custom Hooks] useTab', () => {
      *      [ 1 3 4 ● ]
      */
     it('맨 뒤로 위치를 변경한 경우, 순서가 올바르게 변경되어야 한다.', () => {
-      const { result } = renderHook(() => useTab());
+      const { result } = renderHook(() => ({ ...useTab(), ...useModifyTab() }));
 
       const srcIdx = 1;
       const destIdx = 4;

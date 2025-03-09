@@ -1,4 +1,4 @@
-import { useFetchProblem, useProblem, useTab, useWebviewController } from '@/renderer/hooks';
+import { useFetchProblem, useModifyTab, useProblem, useWebviewController } from '@/renderer/hooks';
 
 import { MovableTab } from '@/renderer/components/molecules/MovableTab';
 import { placeholderLogo } from '@/renderer/assets/base64Images';
@@ -11,7 +11,7 @@ interface TabProblemProps {
 
 export function TabProblem({ tab, index }: TabProblemProps) {
   const { problem } = useProblem();
-  const { removeTab } = useTab();
+  const { removeTab } = useModifyTab();
   const { gotoProblem } = useWebviewController();
   const { tierBase64 } = useFetchProblem(tab.number);
 

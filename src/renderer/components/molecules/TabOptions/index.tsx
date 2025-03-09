@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import { useClickOutOfModal, useTab, useModifyDailyProblems, useDailyProblem } from '@/renderer/hooks';
+import { useClickOutOfModal, useModifyDailyProblems, useDailyProblem, useModifyTab } from '@/renderer/hooks';
 
 import { ReactComponent as ThreeDots } from '@/renderer/assets/svgs/three-dots.svg';
 
@@ -16,7 +16,7 @@ export function TabOptions() {
 
   const { activeDailyProblem } = useDailyProblem();
 
-  const { clearTab } = useTab();
+  const { clearTab } = useModifyTab();
 
   const { modalRef, buttonRef } = useClickOutOfModal(() => {
     setIsOpen(false);

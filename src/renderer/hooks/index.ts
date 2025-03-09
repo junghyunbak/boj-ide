@@ -21,11 +21,6 @@ export * from './useTestcase';
 export * from './useTheme';
 
 /**
- * tab
- */
-export * from './useTab';
-
-/**
  * judge
  */
 export * from './useJudge';
@@ -85,13 +80,14 @@ export * from './useFocusRecovery';
 /**
  * state
  */
-
 export * from './useDailyProblem';
+export * from './useTab';
 
 /**
  * load
  */
 export * from './useLoadDailyProblem';
+export * from './useLoadTab';
 
 /**
  * fetch
@@ -102,5 +98,5 @@ export * from './useFetchDailyProblem';
 /**
  * modify
  */
-
 export * from './useModifyDailyProblem';
+export * from './useModifyTab';

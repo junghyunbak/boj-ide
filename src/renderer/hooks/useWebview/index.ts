@@ -10,10 +10,10 @@ import { getProblemInfo, isBojProblemUrl } from '@/renderer/utils';
 import { createWebviewStyle } from '@/renderer/styles';
 
 import { useWebviewController } from '../useWebviewController';
-import { useTab } from '../useTab';
 import { useProblem } from '../useProblem';
 import { useTheme } from '../useTheme';
 import { useIpcEvent } from '../useIpcEvent';
+import { useModifyTab } from '../useModifyTab';
 
 export function useWebview() {
   const [webview, setWebview] = useStore(useShallow((s) => [s.webview, s.setWebview]));
@@ -24,7 +24,7 @@ export function useWebview() {
 
   const emotionTheme = useEmotionTheme();
   const { theme } = useTheme();
-  const { addProblemTab } = useTab();
+  const { addProblemTab } = useModifyTab();
   const { updateProblem } = useProblem();
   const { updateWebviewUrl, updateWebviewLoading } = useWebviewController();
 
