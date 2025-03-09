@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import { useTheme, useClickOutOfModal } from '@/renderer/hooks';
+import { useTheme, useClickOutOfModal, useModifyTheme } from '@/renderer/hooks';
 
 import { SelectButton } from '@/renderer/components/atoms/buttons/SelectButton';
 import { NonModal } from '@/renderer/components/atoms/modal/NonModal';
@@ -27,7 +27,9 @@ const ThemeToKorStr = (theme: Themes) => {
 export function ThemeButton() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { theme, updateTheme } = useTheme();
+  const { theme } = useTheme();
+
+  const { updateTheme } = useModifyTheme();
 
   const { buttonRef, modalRef } = useClickOutOfModal(() => {
     setIsModalOpen(false);

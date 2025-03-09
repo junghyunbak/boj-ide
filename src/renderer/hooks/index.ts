@@ -1,9 +1,4 @@
 /**
- * theme
- */
-export * from './useTheme';
-
-/**
  * paint
  */
 export * from './useFabricCanvas';
@@ -52,6 +47,7 @@ export * from './useJudge';
 export * from './useAlertModal';
 export * from './useConfirmModal';
 export * from './useTestcase';
+export * from './useTheme';
 
 /**
  * setup
@@ -78,12 +74,14 @@ export * from './useModifyJudge';
 export * from './useModifyAlertModal';
 export * from './useModifyConfirmModal';
 export * from './useModifyTestcase';
+export * from './useModifyTheme';
 
 /**
  * event
  */
 export * from './useEventIpc';
 export * from './useEventWindow';
+export * from './useEventApp';
 export * from './useEventWebview';
 export * from './useEventJudge';
 export * from './useEventFocus';
