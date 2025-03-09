@@ -13,11 +13,23 @@ export class MenuBuilder {
   }
 
   buildMenu(): Menu {
-    if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+    const isProd = process.env.NODE_ENV === 'production';
+
+    if (!isProd || process.env.DEBUG_PROD === 'true') {
       this.setupDevelopmentEnvironment();
     }
 
-    const template = process.platform === 'darwin' ? this.buildDarwinTemplate() : [];
+    const template = (() => {
+      switch (process.platform) {
+        case 'darwin':
+          return this.buildDarwinTemplate();
+
+        case 'win32':
+          return isProd ? [] : this.buildDefaultTemplate();
+        default:
+          return [];
+      }
+    })();
 
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
