@@ -89,3 +89,4 @@ export * from './useEventWindow';
 export * from './useEventWebview';
 export * from './useEventJudge';
 export * from './useEventFocus';
+export * from './useEventTab';

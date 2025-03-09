@@ -9,15 +9,7 @@ import { TabExtension } from '@/renderer/components/molecules/TabExtension';
 import { TabPolyfill } from '@/renderer/components/molecules/TabPolyfill';
 import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
 
-import {
-  useTab,
-  useEventIpc,
-  useProblem,
-  useConfirmModalController,
-  useDailyProblem,
-  useSetupDailyProblems,
-  useSetupTab,
-} from '@/renderer/hooks';
+import { useTab, useDailyProblem, useSetupDailyProblems, useSetupTab, useEventTab } from '@/renderer/hooks';
 
 import { isBookmarkTab, isProblemTab } from '@/renderer/utils/typeGuard';
 
@@ -30,24 +22,12 @@ export function Tabs() {
   useSetupDailyProblems();
   useSetupTab();
 
-  const { tabs, problemTabCount } = useTab();
-  const { problem } = useProblem();
-  const { fireConfirmModal } = useConfirmModalController();
+  useEventTab();
+
+  const { tabs } = useTab();
   const { dailyProblemNumbers, activeDailyProblem } = useDailyProblem();
 
   const tourRef = useRef<HTMLDivElement>(null);
-
-  useEventIpc(
-    () => {
-      if (problemTabCount === 0 || !problem) {
-        fireConfirmModal('종료하시겠습니까?', () => {
-          window.electron.ipcRenderer.sendMessage('quit-app');
-        });
-      }
-    },
-    [problemTabCount, problem, fireConfirmModal],
-    'close-tab',
-  );
 
   return (
     <div
