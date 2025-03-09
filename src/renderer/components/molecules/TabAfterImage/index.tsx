@@ -28,6 +28,7 @@ export function TabAfterImage({ children }: React.PropsWithChildren) {
       ref={containerRef}
       css={css`
         position: fixed;
+        top: ${window.innerHeight}px;
         pointer-events: none;
         z-index: ${zIndex.overlay.afterImage};
         opacity: 0.8;
