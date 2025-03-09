@@ -6,6 +6,8 @@ import { createMockTestcase, createMockProblem } from '@/renderer/mock';
 import { useStore } from '@/renderer/store';
 
 import { useTestcase } from '.';
+import { useModifyTestcase } from '../useModifyTestcase';
+import { useModifyProblem } from '../useModifyProblem';
 
 const mockProblem = createMockProblem();
 const mockTestcase1 = createMockTestcase();
@@ -23,7 +25,7 @@ beforeEach(() => {
 describe('[Custom Hooks] useTestcase', () => {
   describe('문제가 초기화되지 않은 상태', () => {
     it('문제 번호가 추가로 전달 된 경우, 해당 문제 번호로 테스트케이스가 추가되어야 한다.', () => {
-      const { result } = renderHook(() => useTestcase());
+      const { result } = renderHook(() => ({ ...useTestcase(), ...useModifyProblem(), ...useModifyTestcase() }));
 
       act(() => {
         result.current.updateProblem(null);
@@ -46,7 +48,7 @@ describe('[Custom Hooks] useTestcase', () => {
 
   describe('문제가 초기화 되어있는 상태', () => {
     it('테스트케이스를 추가할 경우, 현재 문제 번호로 테스트케이스가 추가되어야 한다.', () => {
-      const { result } = renderHook(() => useTestcase());
+      const { result } = renderHook(() => ({ ...useTestcase(), ...useModifyProblem(), ...useModifyTestcase() }));
 
       act(() => {
         result.current.updateProblem(mockProblem);
@@ -66,7 +68,7 @@ describe('[Custom Hooks] useTestcase', () => {
     });
 
     it('범위 내 테스트케이스를 삭제할 경우, 해당 테스트케이스가 존재하지 않아야 한다.', () => {
-      const { result } = renderHook(() => useTestcase());
+      const { result } = renderHook(() => ({ ...useTestcase(), ...useModifyProblem(), ...useModifyTestcase() }));
 
       act(() => {
         result.current.updateProblem(mockProblem);
@@ -85,7 +87,7 @@ describe('[Custom Hooks] useTestcase', () => {
     });
 
     it('범위 밖 테스트케이스를 삭제할 경우, 삭제 된 테스트케이스가 없어야 한다.', () => {
-      const { result } = renderHook(() => useTestcase());
+      const { result } = renderHook(() => ({ ...useTestcase(), ...useModifyProblem(), ...useModifyTestcase() }));
 
       act(() => {
         result.current.updateProblem(mockProblem);

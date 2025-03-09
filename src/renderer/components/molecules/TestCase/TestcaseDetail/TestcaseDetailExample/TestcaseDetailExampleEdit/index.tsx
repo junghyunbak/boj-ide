@@ -1,6 +1,4 @@
-import { useCallback } from 'react';
-
-import { useTestcase } from '@/renderer/hooks';
+import { useModifyTestcase } from '@/renderer/hooks';
 
 import { TextButton } from '@/renderer/components/atoms/buttons/TextButton';
 
@@ -13,7 +11,7 @@ interface TestcaseDetailExampleEditProps {
 export function TestcaseDetailExampleEdit({ idx }: TestcaseDetailExampleEditProps) {
   const { type, value, isEditing, setIsEditing } = useTestcaseDetailExampleContext();
 
-  const { updateCustomTestcase } = useTestcase();
+  const { updateCustomTestcase } = useModifyTestcase();
 
   const handleExampleEditButtonClick = () => {
     if (isEditing) {

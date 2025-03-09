@@ -1,9 +1,4 @@
 /**
- * problem
- */
-export * from './useTestcase';
-
-/**
  * theme
  */
 export * from './useTheme';
@@ -56,6 +51,7 @@ export * from './useTour';
 export * from './useJudge';
 export * from './useAlertModal';
 export * from './useConfirmModal';
+export * from './useTestcase';
 
 /**
  * setup
@@ -81,6 +77,7 @@ export * from './useModifyTour';
 export * from './useModifyJudge';
 export * from './useModifyAlertModal';
 export * from './useModifyConfirmModal';
+export * from './useModifyTestcase';
 
 /**
  * event
