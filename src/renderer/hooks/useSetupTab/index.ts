@@ -9,7 +9,7 @@ import { baekjoonhubLogo, baekjoonLogo, solvedACLogo } from '@/renderer/assets/b
 
 import { useModifyTab } from '../useModifyTab';
 
-export function useLoadTab() {
+export function useSetupTab() {
   const [baekjoonhubExtensionId] = useStore(useShallow((s) => [s.baekjoonhubExtensionId]));
 
   const { addBookmarkTab, addExtensionTab } = useModifyTab();

@@ -15,8 +15,8 @@ import {
   useProblem,
   useConfirmModalController,
   useDailyProblem,
-  useLoadDailyProblems,
-  useLoadTab,
+  useSetupDailyProblems,
+  useSetupTab,
 } from '@/renderer/hooks';
 
 import { isBookmarkTab, isProblemTab } from '@/renderer/utils/typeGuard';
@@ -27,8 +27,8 @@ import 'overlayscrollbars/overlayscrollbars.css';
 import { TabProblemGhost } from '../../molecules/TabProblemGhost';
 
 export function Tabs() {
-  useLoadDailyProblems();
-  useLoadTab();
+  useSetupDailyProblems();
+  useSetupTab();
 
   const { tabs, problemTabCount } = useTab();
   const { problem } = useProblem();

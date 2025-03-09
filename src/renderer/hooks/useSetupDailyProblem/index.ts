@@ -5,7 +5,7 @@ import { useShallow } from 'zustand/shallow';
 
 import { useFetchDailyProblem } from '../useFetchDailyProblem';
 
-export function useLoadDailyProblems() {
+export function useSetupDailyProblems() {
   const [setDailyProblem] = useStore(useShallow((s) => [s.setDailyProblem]));
 
   const { yyyySmmSdd, dailyProblems } = useFetchDailyProblem();

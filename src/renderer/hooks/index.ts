@@ -86,8 +86,8 @@ export * from './useTab';
 /**
  * load
  */
-export * from './useLoadDailyProblem';
-export * from './useLoadTab';
+export * from './useSetupDailyProblem';
+export * from './useSetupTab';
 
 /**
  * fetch
