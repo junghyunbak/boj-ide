@@ -11,6 +11,7 @@ import { useProblem } from '../useProblem';
 export function useTestcase() {
   const { problem } = useProblem();
   const [customTestcases] = useStore(useShallow((s) => [s.customTestCase]));
+  const [testcaseInputProblemNumber] = useStore(useShallow((s) => [s.testcaseInputProblemNumber]));
 
   const problemTestcases = useMemo<TC[]>(() => {
     if (!problem) {
@@ -54,5 +55,6 @@ export function useTestcase() {
     allTestcase,
     tcKeyMap,
     customTestcases,
+    testcaseInputProblemNumber,
   };
 }

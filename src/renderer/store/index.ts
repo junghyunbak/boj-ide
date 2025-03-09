@@ -57,6 +57,7 @@ export const useStore = create<StoreState>()(
           tourStep,
           dailyProblem,
           activeDailyProblem,
+          testcaseInputProblemNumber,
         } = s;
 
         return {
@@ -74,6 +75,7 @@ export const useStore = create<StoreState>()(
           tourStep,
           dailyProblem,
           activeDailyProblem,
+          testcaseInputProblemNumber,
         };
       },
     },

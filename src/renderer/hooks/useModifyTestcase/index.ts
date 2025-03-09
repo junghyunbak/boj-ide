@@ -5,6 +5,7 @@ import { useShallow } from 'zustand/shallow';
 
 export function useModifyTestcase() {
   const [setCustomTestcases] = useStore(useShallow((s) => [s.setCustomTestcases]));
+  const [setTestcaseInputProblemNumber] = useStore(useShallow((s) => [s.setTestcaseInputProblemNumber]));
 
   const addCustomTestcase = useCallback(
     (testcase: TC, problemNumber?: string) => {
@@ -72,9 +73,17 @@ export function useModifyTestcase() {
     [setCustomTestcases],
   );
 
+  const updateTestcaseInputProblemNumber = useCallback(
+    (problemNumber: string) => {
+      setTestcaseInputProblemNumber(problemNumber);
+    },
+    [setTestcaseInputProblemNumber],
+  );
+
   return {
     addCustomTestcase,
     removeCustomTestcase,
     updateCustomTestcase,
+    updateTestcaseInputProblemNumber,
   };
 }

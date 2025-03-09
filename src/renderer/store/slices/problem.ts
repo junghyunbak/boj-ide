@@ -8,6 +8,9 @@ type ProblemSlice = {
 
   customTestCase: CustomTestcases; // TODO: customTestCase -> customTestcases
   setCustomTestcases: (fn: (prev: CustomTestcases) => CustomTestcases) => void;
+
+  testcaseInputProblemNumber: string;
+  setTestcaseInputProblemNumber(problemNumber: string): void;
 };
 
 export const createProblemSlice: StateCreator<ProblemSlice> = (set, get): ProblemSlice => ({
@@ -19,5 +22,10 @@ export const createProblemSlice: StateCreator<ProblemSlice> = (set, get): Proble
   customTestCase: {},
   setCustomTestcases(fn) {
     set((s) => ({ customTestCase: fn(s.customTestCase) }));
+  },
+
+  testcaseInputProblemNumber: '',
+  setTestcaseInputProblemNumber(problemNumber) {
+    set(() => ({ testcaseInputProblemNumber: problemNumber }));
   },
 });

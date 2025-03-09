@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { css } from '@emotion/react';
 
 import { useStore } from '@/renderer/store';
 
-import { useProblem, useModifyAlertModal, useModifyTestcase } from '@/renderer/hooks';
+import { useProblem, useModifyAlertModal, useModifyTestcase, useTestcase } from '@/renderer/hooks';
 
 import { TextArea } from '@/renderer/components/atoms/textareas/TextArea';
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
@@ -19,20 +19,14 @@ import { SplitLayout } from '@/renderer/components/molecules/SplitLayout';
 export function TestCaseMaker() {
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
-  const [problemNumber, setProblemNumber] = useState('');
 
   const { problem } = useProblem();
+  const { testcaseInputProblemNumber } = useTestcase();
 
-  const { addCustomTestcase } = useModifyTestcase();
+  const { addCustomTestcase, updateTestcaseInputProblemNumber } = useModifyTestcase();
   const { fireAlertModal } = useModifyAlertModal();
 
-  useEffect(() => {
-    if (problem) {
-      setProblemNumber(problem.number);
-    }
-  }, [problem]);
-
-  const handleAddTestCaseButtonClick = () => {
+  const handleAddTestCaseButtonClick = useCallback(() => {
     const item: TC = {
       input,
       output,
@@ -46,26 +40,29 @@ export function TestCaseMaker() {
 
     window.electron.ipcRenderer.sendMessage('log-add-testcase', {
       data: {
-        number: problemNumber,
+        number: testcaseInputProblemNumber,
         language: useStore.getState().lang,
       },
     });
 
-    addCustomTestcase(item, problemNumber);
+    addCustomTestcase(item, testcaseInputProblemNumber);
 
     setInput('');
     setOutput('');
-  };
+  }, [addCustomTestcase, fireAlertModal, input, output, testcaseInputProblemNumber]);
 
-  const handleInputTextChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    if (!/^[0-9]*$/.test(e.target.value)) {
-      return;
-    }
+  const handleInputTextChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      if (!/^[0-9]*$/.test(e.target.value)) {
+        return;
+      }
 
-    setProblemNumber(e.target.value);
-  };
+      updateTestcaseInputProblemNumber(e.target.value);
+    },
+    [updateTestcaseInputProblemNumber],
+  );
 
-  const disabled = problem === null && problemNumber === '';
+  const disabled = problem === null && testcaseInputProblemNumber === '';
 
   const splitLayoutPxOption = useMemo(() => ({ min: 100 }), []);
 
@@ -115,7 +112,7 @@ export function TestCaseMaker() {
               gap: 0.5rem;
             `}
           >
-            {!problem && <TextInput value={problemNumber} onChange={handleInputTextChange} />}
+            {!problem && <TextInput value={testcaseInputProblemNumber} onChange={handleInputTextChange} />}
 
             <ActionButton onClick={handleAddTestCaseButtonClick} disabled={disabled}>
               테스트케이스 추가
