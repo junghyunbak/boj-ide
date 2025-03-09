@@ -40,3 +40,12 @@ export function bytesToSize(bytes: number): string {
 
   return `${(bytes / 1024 ** i).toFixed(1)} ${sizes[i]}`;
 }
+
+export function createDateString(date: Date, type: 'yyyySmmSdd'): string {
+  switch (type) {
+    case 'yyyySmmSdd':
+      return `${date.getFullYear()}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}`;
+    default:
+      return date.toDateString();
+  }
+}

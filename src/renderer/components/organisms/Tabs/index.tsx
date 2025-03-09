@@ -11,7 +11,14 @@ import { TabExtension } from '@/renderer/components/molecules/TabExtension';
 import { TabPolyfill } from '@/renderer/components/molecules/TabPolyfill';
 import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
 
-import { useTab, useIpcEvent, useProblem, useConfirmModalController, useGhostTab } from '@/renderer/hooks';
+import {
+  useTab,
+  useIpcEvent,
+  useProblem,
+  useConfirmModalController,
+  useDailyProblem,
+  useLoadDailyProblems,
+} from '@/renderer/hooks';
 
 import { isBookmarkTab, isProblemTab } from '@/renderer/utils/typeGuard';
 
@@ -26,10 +33,12 @@ import 'overlayscrollbars/overlayscrollbars.css';
 import { TabProblemGhost } from '../../molecules/TabProblemGhost';
 
 export function Tabs() {
+  useLoadDailyProblems();
+
   const { tabs, addBookmarkTab, addExtensionTab, getProblemTabCount } = useTab();
   const { problem } = useProblem();
   const { fireConfirmModal } = useConfirmModalController();
-  const { ghostTabs, activeDailyProblem } = useGhostTab();
+  const { dailyProblemNumbers, activeDailyProblem } = useDailyProblem();
 
   // TODO: 훅으로 분리
   const [baekjoonhubExtensionId] = useStore(useShallow((s) => [s.baekjoonhubExtensionId]));
@@ -153,8 +162,8 @@ export function Tabs() {
                 })}
 
               {activeDailyProblem &&
-                ghostTabs.map((num) => {
-                  return <TabProblemGhost num={num} key={num} />;
+                dailyProblemNumbers.map((problemNumber) => {
+                  return <TabProblemGhost num={problemNumber} key={problemNumber} />;
                 })}
 
               <TabPolyfill />

@@ -55,7 +55,7 @@ export const useStore = create<StoreState>()(
           isPaintOpen,
           theme,
           tourStep,
-          ghostTabs,
+          dailyProblem,
           activeDailyProblem,
         } = s;
 
@@ -72,7 +72,7 @@ export const useStore = create<StoreState>()(
           isPaintOpen,
           theme,
           tourStep,
-          ghostTabs,
+          dailyProblem,
           activeDailyProblem,
         };
       },

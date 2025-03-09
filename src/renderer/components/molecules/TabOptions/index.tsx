@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import { useClickOutOfModal, useTab, useGhostTab } from '@/renderer/hooks';
+import { useClickOutOfModal, useTab, useModifyDailyProblems, useDailyProblem } from '@/renderer/hooks';
 
 import { ReactComponent as ThreeDots } from '@/renderer/assets/svgs/three-dots.svg';
 
@@ -12,7 +12,10 @@ import { ListButton } from '@/renderer/components/atoms/buttons/ListButton';
 export function TabOptions() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { activeDailyProblem, toggleDailyProblemActive } = useGhostTab();
+  const { toggleActiveDailyProblem } = useModifyDailyProblems();
+
+  const { activeDailyProblem } = useDailyProblem();
+
   const { clearTab } = useTab();
 
   const { modalRef, buttonRef } = useClickOutOfModal(() => {
@@ -25,7 +28,7 @@ export function TabOptions() {
   };
 
   const handleDailyProblemActiveToggleButtonClick = () => {
-    toggleDailyProblemActive();
+    toggleActiveDailyProblem();
     setIsOpen(false);
   };
 
