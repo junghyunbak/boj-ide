@@ -7,11 +7,6 @@ const octokit = new Octokit({ throttle: { enabled: false } });
 export function useFetchDailyProblem() {
   const today = new Date();
 
-  /**
-   * 테스트를 위해 어제로 설정
-   */
-  today.setDate(today.getDate() - 1);
-
   const yyyySmmSdd = createDateString(today, 'yyyySmmSdd');
 
   const { data: dailyProblems } = useQuery({
