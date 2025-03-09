@@ -108,7 +108,6 @@ export function useWebview() {
     }
 
     const handleWebviewDidFinishLoad = async () => {
-      console.log('-------------------------------');
       await refreshWebviewTheme();
 
       updateWebviewLoading('finished');
