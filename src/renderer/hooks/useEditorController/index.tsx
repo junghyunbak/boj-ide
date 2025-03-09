@@ -3,14 +3,14 @@ import { useCallback } from 'react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useAlertModalController } from '../useAlertModalController';
+import { useModifyAlertModal } from '../useModifyAlertModal';
 
 export function useEditorController() {
   const [setIsCodeStale] = useStore(useShallow((s) => [s.setIsCodeStale]));
   const [setEditorCode] = useStore(useShallow((s) => [s.setCode]));
   const [setProblemToCode] = useStore(useShallow((s) => [s.setProblemToCode]));
 
-  const { fireAlertModal } = useAlertModalController();
+  const { fireAlertModal } = useModifyAlertModal();
 
   // TODO: 테스트
   const getProblemCode = useCallback(() => {

@@ -1,12 +1,14 @@
-import { useEffect } from 'react';
 import { css } from '@emotion/react';
+
+import { useConfirmModal, useEventWindow, useModifyConfirmModal } from '@/renderer/hooks';
+
 import { Modal } from '@/renderer/components/atoms/modal/Modal';
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
-import { useConfirmModalController, useConfirmModalState, useEventWindow } from '@/renderer/hooks';
 
 export function ConfirmModal() {
-  const { confirmCallback, confirmMessage, isConfirmModalOpen } = useConfirmModalState();
-  const { cancelConfirmModal } = useConfirmModalController();
+  const { confirmCallback, confirmMessage, isConfirmModalOpen } = useConfirmModal();
+
+  const { cancelConfirmModal } = useModifyConfirmModal();
 
   useEventWindow(
     (e) => {

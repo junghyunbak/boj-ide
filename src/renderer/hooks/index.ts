@@ -23,9 +23,6 @@ export * from './usePaintController';
 /**
  * modal
  */
-export * from './useAlertModal';
-export * from './useAlertModalController';
-export * from './useConfirmModal';
 export * from './useClickOutOfModal';
 
 /**
@@ -57,6 +54,8 @@ export * from './useTab';
 export * from './useWebview';
 export * from './useTour';
 export * from './useJudge';
+export * from './useAlertModal';
+export * from './useConfirmModal';
 
 /**
  * setup
@@ -80,6 +79,8 @@ export * from './useModifyWebview';
 export * from './useModifyProblem';
 export * from './useModifyTour';
 export * from './useModifyJudge';
+export * from './useModifyAlertModal';
+export * from './useModifyConfirmModal';
 
 /**
  * event

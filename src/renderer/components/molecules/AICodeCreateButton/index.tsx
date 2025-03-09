@@ -7,12 +7,7 @@ import { useShallow } from 'zustand/shallow';
 
 import aiCreateImageSrc from '@/renderer/assets/gifs/ai-create.gif';
 
-import {
-  useStreamingAICode,
-  useConfirmModalController,
-  useAlertModalController,
-  useEditorController,
-} from '@/renderer/hooks';
+import { useStreamingAICode, useModifyAlertModal, useEditorController, useModifyConfirmModal } from '@/renderer/hooks';
 
 import { AI_ERROR_MESSAGE, AI_EXECUTE_QUESTION_MESSAGE } from '@/renderer/constants';
 
@@ -22,8 +17,9 @@ import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
 export function AICodeCreateButton() {
   const [problem] = useStore(useShallow((s) => [s.problem]));
 
-  const { fireAlertModal } = useAlertModalController();
-  const { fireConfirmModal } = useConfirmModalController();
+  const { fireAlertModal } = useModifyAlertModal();
+  const { fireConfirmModal } = useModifyConfirmModal();
+
   const { updateEditorCode } = useEditorController();
   const { complete, completion, isLoading } = useStreamingAICode({
     onError() {

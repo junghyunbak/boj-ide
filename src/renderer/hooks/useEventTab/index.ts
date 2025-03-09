@@ -1,13 +1,13 @@
 import { useProblem } from '../useProblem';
 import { useTab } from '../useTab';
 import { useEventIpc } from '../useEventIpc';
-import { useConfirmModalController } from '../useConfirmModal';
+import { useModifyConfirmModal } from '../useModifyConfirmModal';
 
 export function useEventTab() {
   const { problem } = useProblem();
   const { problemTabCount } = useTab();
 
-  const { fireConfirmModal } = useConfirmModalController();
+  const { fireConfirmModal } = useModifyConfirmModal();
 
   useEventIpc(
     () => {

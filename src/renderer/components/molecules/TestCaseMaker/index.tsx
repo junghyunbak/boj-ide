@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 
 import { useStore } from '@/renderer/store';
 
-import { useProblem, useAlertModalController, useTestcase } from '@/renderer/hooks';
+import { useProblem, useModifyAlertModal, useTestcase } from '@/renderer/hooks';
 
 import { TextArea } from '@/renderer/components/atoms/textareas/TextArea';
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
@@ -23,7 +23,7 @@ export function TestCaseMaker() {
 
   const { problem } = useProblem();
   const { addCustomTestcase } = useTestcase();
-  const { fireAlertModal } = useAlertModalController();
+  const { fireAlertModal } = useModifyAlertModal();
 
   useEffect(() => {
     if (problem) {

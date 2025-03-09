@@ -1,4 +1,4 @@
-import { useAlertModalController, useConfirmModalController, useEditorController, useProblem } from '@/renderer/hooks';
+import { useModifyAlertModal, useEditorController, useProblem, useModifyConfirmModal } from '@/renderer/hooks';
 
 import { useStore } from '@/renderer/store';
 
@@ -8,9 +8,11 @@ import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 
 export function SetDefaultCodeButton() {
   const { problem } = useProblem();
+
   const { getProblemCode, saveEditorCode } = useEditorController();
-  const { fireConfirmModal } = useConfirmModalController();
-  const { fireAlertModal } = useAlertModalController();
+
+  const { fireAlertModal } = useModifyAlertModal();
+  const { fireConfirmModal } = useModifyConfirmModal();
 
   const handleSetDefaultButtonClick = () => {
     fireConfirmModal('현재 코드를 기본 코드로 저장하시겠습니까?', async () => {

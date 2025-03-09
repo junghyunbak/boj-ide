@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-export function useAlertModalController() {
+export function useModifyAlertModal() {
   const [setAlertTitle] = useStore(useShallow((s) => [s.setAlertTitle]));
   const [setAlertContent] = useStore(useShallow((s) => [s.setAlertContent]));
 
