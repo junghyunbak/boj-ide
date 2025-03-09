@@ -36,7 +36,6 @@ export * from './useResponsiveLayout';
 /**
  * api
  */
-export * from './useFetchProblem';
 export * from './useStreamingAICode';
 
 /**
@@ -46,8 +45,6 @@ export * from './useEditor';
 export * from './useEditorController';
 export * from './useEditorExtensions';
 export * from './useEditorVim';
-
-export * from './useFocusRecovery';
 
 // ---------------
 
@@ -71,7 +68,7 @@ export * from './useSetupWebview';
 /**
  * fetch
  */
-
+export * from './useFetchProblem';
 export * from './useFetchDailyProblem';
 
 /**
@@ -91,3 +88,4 @@ export * from './useEventIpc';
 export * from './useEventWindow';
 export * from './useEventWebview';
 export * from './useEventJudge';
+export * from './useEventFocus';

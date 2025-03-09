@@ -2,7 +2,7 @@ import { useRef } from 'react';
 
 import { useEventWindow } from '../useEventWindow';
 
-export function useFocusRecovery() {
+export function useEventFocus() {
   const curFocusRef = useRef<Element | null>(null);
   const lastFocusRef = useRef<Element | null>(null);
 
