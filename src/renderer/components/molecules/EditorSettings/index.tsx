@@ -1,24 +1,23 @@
+import { useCallback } from 'react';
+
 import { css } from '@emotion/react';
 
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
-
 import { AngleButton } from '@/renderer/components/atoms/buttons/AngleButton';
-import { useCallback } from 'react';
-import { useEditor, useModifyEditor } from '@/renderer/hooks';
+
+import { useEditor, useModifyEditor, useModifySetting } from '@/renderer/hooks';
 
 const EditorMode: EditorMode[] = ['normal', 'vim'];
 const EditorIndentSpace: IndentSpace[] = [2, 4];
 
 export function EditorSettings() {
-  const [setIsSetting] = useStore(useShallow((s) => [s.setIsSetting]));
-
   const { editorMode, editorFontSize, editorIndentSpace } = useEditor();
+
+  const { updateIsSetting } = useModifySetting();
   const { updateEditorMode, updateEditorFontSize, updateEditorIndentSpace } = useModifyEditor();
 
   const handleBackButtonClick = useCallback(() => {
-    setIsSetting(false);
-  }, [setIsSetting]);
+    updateIsSetting(false);
+  }, [updateIsSetting]);
 
   const handleEditorModeRatioButtonClick = useCallback(
     (mode: EditorMode) => {
