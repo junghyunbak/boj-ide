@@ -1,22 +1,35 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { useCodeMirror } from '@uiw/react-codemirror';
 
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
-
 import { useModifyEditor } from '../useModifyEditor';
 import { useProblem } from '../useProblem';
+import { useEditor } from '../useEditor';
 
-export function useSetupEditor({
-  editorRef,
-  setContainer,
-}: ReturnType<typeof useCodeMirror> & { editorRef: React.MutableRefObject<HTMLDivElement | null> }) {
+export function useSetupEditor() {
+  const editorRef = useRef<HTMLDivElement>(null);
+
   const { problem } = useProblem();
+  const { editorCode, extensions, editorWidth, editorHeight, editorIndentSpace, editorLanguage } = useEditor();
 
-  const [lang] = useStore(useShallow((s) => [s.lang]));
+  const { saveEditorCode, syncEditorCode } = useModifyEditor();
 
-  const { saveEditorCode } = useModifyEditor();
+  const codemirror = useCodeMirror({
+    value: editorCode,
+    extensions,
+    width: `${editorWidth}px`,
+    height: `${editorHeight}px`,
+    indentWithTab: false,
+    theme: 'none',
+    basicSetup: {
+      tabSize: editorIndentSpace,
+      highlightActiveLineGutter: false,
+      foldGutter: false,
+    },
+    onChange: syncEditorCode,
+  });
+
+  const { setContainer } = codemirror;
 
   /**
    * 에디터 초기화
@@ -36,12 +49,17 @@ export function useSetupEditor({
   useEffect(() => {
     if (problem) {
       window.electron.ipcRenderer.invoke('load-code', {
-        data: { number: problem.number, language: lang },
+        data: { number: problem.number, language: editorLanguage },
       });
     }
 
     return () => {
       saveEditorCode({ silence: true });
     };
-  }, [problem, lang, saveEditorCode]);
+  }, [problem, editorLanguage, saveEditorCode]);
+
+  return {
+    codemirror,
+    editorRef,
+  };
 }

@@ -12,11 +12,12 @@ interface TabProblemGhostProps {
 
 export function TabProblemGhost({ num }: TabProblemGhostProps) {
   const { tabs } = useTab();
+
   const { addProblemTab } = useModifyTab();
   const { gotoProblem } = useModifyWebview();
-  const { tierBase64, title } = useFetchProblem(num);
-
   const { removeTab } = useModifyDailyProblems();
+
+  const { tierBase64, title } = useFetchProblem(num);
 
   const handleCloseButtonClick = useCallback(() => {
     removeTab(num);

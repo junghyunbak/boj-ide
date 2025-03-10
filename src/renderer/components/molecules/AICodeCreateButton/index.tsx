@@ -1,13 +1,18 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import { css } from '@emotion/react';
 
 import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
 
 import aiCreateImageSrc from '@/renderer/assets/gifs/ai-create.gif';
 
-import { useFetchAICode, useModifyAlertModal, useModifyEditor, useModifyConfirmModal } from '@/renderer/hooks';
+import {
+  useFetchAICode,
+  useModifyAlertModal,
+  useModifyEditor,
+  useModifyConfirmModal,
+  useProblem,
+} from '@/renderer/hooks';
 
 import { AI_ERROR_MESSAGE, AI_EXECUTE_QUESTION_MESSAGE } from '@/renderer/constants';
 
@@ -15,19 +20,19 @@ import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
 
 export function AICodeCreateButton() {
-  const [problem] = useStore(useShallow((s) => [s.problem]));
+  const tourRef = useRef<HTMLButtonElement>(null);
+
+  const { problem } = useProblem();
 
   const { fireAlertModal } = useModifyAlertModal();
   const { fireConfirmModal } = useModifyConfirmModal();
-
   const { updateEditorCode } = useModifyEditor();
+
   const { complete, completion, isLoading } = useFetchAICode({
     onError() {
       fireAlertModal('에러 발생', AI_ERROR_MESSAGE);
     },
   });
-
-  const tourRef = useRef<HTMLButtonElement>(null);
 
   /**
    * 결과가 변경될 때 마다 에디터 갱신
@@ -36,7 +41,7 @@ export function AICodeCreateButton() {
     updateEditorCode(completion);
   }, [completion, updateEditorCode]);
 
-  const handleAICodeCreateButtonClick = () => {
+  const handleAICodeCreateButtonClick = useCallback(() => {
     fireConfirmModal(AI_EXECUTE_QUESTION_MESSAGE, async () => {
       if (!problem) {
         return;
@@ -60,7 +65,7 @@ export function AICodeCreateButton() {
         },
       });
     });
-  };
+  }, [complete, fireConfirmModal, problem]);
 
   return (
     <>

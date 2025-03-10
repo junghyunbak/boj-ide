@@ -14,6 +14,8 @@ export * from './useTheme';
 export * from './useEditor';
 export * from './usePaint';
 export * from './useFabric';
+export * from './useDrag';
+export * from './useSetting';
 
 /**
  * setup
@@ -50,6 +52,7 @@ export * from './useModifyTheme';
 export * from './useModifyEditor';
 export * from './useModifyFabric';
 export * from './useModifyPaint';
+export * from './useModifySetting';
 
 /**
  * event
@@ -66,3 +69,4 @@ export * from './useEventPaint';
 export * from './useEventFabric';
 export * from './useEventSyncLayout';
 export * from './useEventClickOutOfModal';
+export * from './useEventAlertModal';

@@ -10,7 +10,7 @@ import { ReactComponent as Pencil } from '@/renderer/assets/svgs/pencil.svg';
 import { ReactComponent as Expand } from '@/renderer/assets/svgs/expand.svg';
 import { ReactComponent as Shrink } from '@/renderer/assets/svgs/shrink.svg';
 
-import { useModifyPaint } from '@/renderer/hooks';
+import { useFabric, useModifyPaint } from '@/renderer/hooks';
 
 import {
   PaintControllerBox,
@@ -24,9 +24,7 @@ const BRUSH_WIDTHS: BrushWidth[] = [2, 4, 8];
 const BRUSH_COLORS: BrushColor[] = ['black', 'red', 'blue'];
 
 export function EditorPaintController() {
-  const [brushWidth] = useFabricStore(useShallow((s) => [s.brushWidth]));
-  const [brushColor] = useFabricStore(useShallow((s) => [s.brushColor]));
-  const [mode] = useFabricStore(useShallow((s) => [s.mode]));
+  const { brushColor, brushWidth, mode } = useFabric();
 
   const {
     handleFabricCanvasModeButtonClick,

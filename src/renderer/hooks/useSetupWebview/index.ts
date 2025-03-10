@@ -7,6 +7,7 @@ export function useSetupWebview() {
   const [setWebview] = useStore(useShallow((s) => [s.setWebview]));
 
   // TODO: 시작 url 리렌더링 시 변경되지 않도록 구현
+  // TODO: 지역 상태 종속성 제거
   const [startWebviewUrl, setStartWebviewUrl] = useState(useStore.getState().webviewUrl);
 
   /**

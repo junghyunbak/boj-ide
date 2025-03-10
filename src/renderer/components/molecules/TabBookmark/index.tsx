@@ -1,9 +1,6 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
-
-import { useModifyWebview, useProblem } from '@/renderer/hooks';
+import { useModifyWebview, useProblem, useWebview } from '@/renderer/hooks';
 
 import { MovableTab } from '../MovableTab';
 
@@ -13,16 +10,16 @@ interface TabBookmarkProps {
 }
 
 export function TabBookmark({ tab, index }: TabBookmarkProps) {
-  const [webviewUrl] = useStore(useShallow((s) => [s.webviewUrl]));
-
+  const { webviewUrl } = useWebview();
   const { problem } = useProblem();
+
   const { gotoUrl } = useModifyWebview();
 
   const isSelect = useMemo(() => !problem && webviewUrl.startsWith(tab.url), [problem, webviewUrl, tab]);
 
-  const handleBookmarkItemClick = () => {
+  const handleBookmarkItemClick = useCallback(() => {
     gotoUrl(`${tab.url}${tab.path || ''}`);
-  };
+  }, [gotoUrl, tab]);
 
   return (
     <MovableTab tabIndex={index} isSelect={isSelect} onClick={handleBookmarkItemClick}>

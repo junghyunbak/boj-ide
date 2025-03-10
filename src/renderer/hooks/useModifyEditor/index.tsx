@@ -11,8 +11,40 @@ export function useModifyEditor() {
   const [setProblemToCode] = useStore(useShallow((s) => [s.setProblemToCode]));
   const [setEditorWidth] = useStore(useShallow((s) => [s.setEditorWidth]));
   const [setEditorHeight] = useStore(useShallow((s) => [s.setEditorHeight]));
+  const [setEditorMode] = useStore(useShallow((s) => [s.setMode]));
+  const [setEditorFontSize] = useStore(useShallow((s) => [s.setFontSize]));
+  const [setEditorIndentSpace] = useStore(useShallow((s) => [s.setIndentSpace]));
+  const [setEditorLanguage] = useStore(useShallow((s) => [s.setLang]));
 
   const { fireAlertModal } = useModifyAlertModal();
+
+  const updateEditorMode = useCallback(
+    (mode: EditorMode) => {
+      setEditorMode(mode);
+    },
+    [setEditorMode],
+  );
+
+  const updateEditorFontSize = useCallback(
+    (fontSize: number) => {
+      setEditorFontSize(fontSize);
+    },
+    [setEditorFontSize],
+  );
+
+  const updateEditorIndentSpace = useCallback(
+    (indentSpace: IndentSpace) => {
+      setEditorIndentSpace(indentSpace);
+    },
+    [setEditorIndentSpace],
+  );
+
+  const updateEditorLanguage = useCallback(
+    (language: Language) => {
+      setEditorLanguage(language);
+    },
+    [setEditorLanguage],
+  );
 
   // TODO: 테스트
   const getProblemCode = useCallback(() => {
@@ -118,10 +150,18 @@ export function useModifyEditor() {
     getProblemCode,
     saveEditorCode,
     syncEditorCode,
+
     stalingEditorCode,
     freshingEditorCode,
+
+    updateEditorFontSize,
+    updateEditorIndentSpace,
+    updateEditorLanguage,
     updateEditorCode,
+    updateEditorMode,
+
     initialEditorCode,
+
     resizeEditorLayout,
   };
 }

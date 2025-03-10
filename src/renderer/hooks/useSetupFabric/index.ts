@@ -7,15 +7,12 @@ import { fabric } from 'fabric';
 
 import { useModifyFabric } from '../useModifyFabric';
 import { useProblem } from '../useProblem';
+import { useFabric } from '../useFabric';
 
 export function useSetupFabric(canvasRef: React.RefObject<HTMLCanvasElement>) {
-  const [canvas] = useFabricStore(useShallow((s) => [s.canvas]));
-  const [mode] = useFabricStore(useShallow((s) => [s.mode]));
-  const [brushWidth] = useFabricStore(useShallow((s) => [s.brushWidth]));
-  const [brushColor] = useFabricStore(useShallow((s) => [s.brushColor]));
-  const [problemToFabricJSON] = useFabricStore(useShallow((s) => [s.problemToFabricJSON, s.setProblemToFabricJSON]));
   const [setCanvas] = useFabricStore(useShallow((s) => [s.setCanvas]));
 
+  const { canvas, mode, brushWidth, brushColor, problemToFabricJSON } = useFabric();
   const { problem } = useProblem();
 
   const { changeHandMode, changeSelectMode, changePenMode, backupFabricCanvasData } = useModifyFabric();

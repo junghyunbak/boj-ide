@@ -1,8 +1,8 @@
-import { useRef, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { useTheme } from '@emotion/react';
 
-import { Extension, useCodeMirror, EditorView } from '@uiw/react-codemirror';
+import { Extension, EditorView } from '@uiw/react-codemirror';
 import { createTheme } from '@uiw/codemirror-themes';
 import { vim } from '@replit/codemirror-vim';
 import { acceptCompletion } from '@codemirror/autocomplete';
@@ -19,7 +19,7 @@ import { useShallow } from 'zustand/shallow';
 import { useModifyEditor } from '../useModifyEditor';
 
 export function useEditor() {
-  const [indentSpace] = useStore(useShallow((s) => [s.indentSpace]));
+  const [editorIndentSpace] = useStore(useShallow((s) => [s.indentSpace]));
   const [editorCode] = useStore(useShallow((s) => [s.code]));
   const [editorWidth] = useStore(useShallow((s) => [s.editorWidth]));
   const [editorHeight] = useStore(useShallow((s) => [s.editorHeight]));
@@ -27,11 +27,9 @@ export function useEditor() {
   const [editorFontSize] = useStore(useShallow((s) => [s.fontSize]));
   const [editorLanguage] = useStore(useShallow((s) => [s.lang]));
 
-  const editorRef = useRef<HTMLDivElement>(null);
-
   const emotionTheme = useTheme();
 
-  const { syncEditorCode, saveEditorCode } = useModifyEditor();
+  const { saveEditorCode } = useModifyEditor();
 
   const shortcutExtensions = useMemo<Extension[]>(() => {
     return [
@@ -93,20 +91,16 @@ export function useEditor() {
     ];
   }, [editorFontSize, emotionTheme]);
 
-  const codemirror = useCodeMirror({
-    value: editorCode,
-    extensions: [...codeExtensions, ...shortcutExtensions, ...themeExtensions],
-    width: `${editorWidth}px`,
-    height: `${editorHeight}px`,
-    indentWithTab: false,
-    theme: 'none',
-    basicSetup: {
-      tabSize: indentSpace,
-      highlightActiveLineGutter: false,
-      foldGutter: false,
-    },
-    onChange: syncEditorCode,
-  });
+  const extensions = [...shortcutExtensions, ...codeExtensions, ...themeExtensions];
 
-  return { editorRef, codemirror };
+  return {
+    editorCode,
+    editorFontSize,
+    editorHeight,
+    editorWidth,
+    editorIndentSpace,
+    extensions,
+    editorLanguage,
+    editorMode,
+  };
 }

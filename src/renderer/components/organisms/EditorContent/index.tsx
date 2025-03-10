@@ -1,24 +1,20 @@
 import { useRef } from 'react';
 
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
-
 import { css } from '@emotion/react';
 
-import { useProblem } from '@/renderer/hooks';
+import { useProblem, useSetting } from '@/renderer/hooks';
 
 import { EditorSettings } from '@/renderer/components/molecules/EditorSettings';
 import { EditorCodemirror } from '@/renderer/components/molecules/EditorCodemirror';
 import { EditorPlaceholder } from '@/renderer/components/molecules/EditorPlaceholder';
 
-import { TourOverlay } from '../../molecules/TourOverlay';
+import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
 
 export function EditorContent() {
-  const { problem } = useProblem();
-
-  const [isSetting] = useStore(useShallow((s) => [s.isSetting]));
-
   const tourRef = useRef<HTMLDivElement>(null);
+
+  const { problem } = useProblem();
+  const { isSetting } = useSetting();
 
   const Content = (() => {
     if (isSetting) {

@@ -1,7 +1,7 @@
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-export function useAlertModalState() {
+export function useAlertModal() {
   const [alertTitle] = useStore(useShallow((s) => [s.alertTitle]));
   const [alertContent] = useStore(useShallow((s) => [s.alertContent]));
 

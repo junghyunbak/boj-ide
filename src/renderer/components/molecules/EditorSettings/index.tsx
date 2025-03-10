@@ -4,40 +4,52 @@ import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
 import { AngleButton } from '@/renderer/components/atoms/buttons/AngleButton';
-import { Text } from '@/renderer/components/atoms/paragraphs/Text';
+import { useCallback } from 'react';
+import { useEditor, useModifyEditor } from '@/renderer/hooks';
 
 const EditorMode: EditorMode[] = ['normal', 'vim'];
 const EditorIndentSpace: IndentSpace[] = [2, 4];
 
 export function EditorSettings() {
-  const [editorMode, setEditorMode] = useStore(useShallow((s) => [s.mode, s.setMode]));
-  const [editorfontSize, setEditorFontSize] = useStore(useShallow((s) => [s.fontSize, s.setFontSize]));
-  const [editorIndentSpace, setEditorIndentSpace] = useStore(useShallow((s) => [s.indentSpace, s.setIndentSpace]));
   const [setIsSetting] = useStore(useShallow((s) => [s.setIsSetting]));
 
-  const handleBackButtonClick = () => {
+  const { editorMode, editorFontSize, editorIndentSpace } = useEditor();
+  const { updateEditorMode, updateEditorFontSize, updateEditorIndentSpace } = useModifyEditor();
+
+  const handleBackButtonClick = useCallback(() => {
     setIsSetting(false);
-  };
+  }, [setIsSetting]);
 
-  const handleEditorModeRatioButtonClick = (mode: EditorMode) => () => {
-    setEditorMode(mode);
-  };
+  const handleEditorModeRatioButtonClick = useCallback(
+    (mode: EditorMode) => {
+      return () => {
+        updateEditorMode(mode);
+      };
+    },
+    [updateEditorMode],
+  );
 
-  const handleSelectOptionChange: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
-    const fontSize = +e.target.value;
+  const handleSelectOptionChange = useCallback<React.ChangeEventHandler<HTMLSelectElement>>(
+    (e) => {
+      const fontSize = +e.target.value;
 
-    if (!Number.isNaN(fontSize)) {
-      setEditorFontSize(fontSize);
-    }
-  };
+      if (!Number.isNaN(fontSize)) {
+        updateEditorFontSize(fontSize);
+      }
+    },
+    [updateEditorFontSize],
+  );
 
-  const handleIndentSpaceOptionChange: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
-    const indentSpace = +e.target.value;
+  const handleIndentSpaceOptionChange = useCallback<React.ChangeEventHandler<HTMLSelectElement>>(
+    (e) => {
+      const indentSpace = +e.target.value;
 
-    if (!Number.isNaN(indentSpace) && (indentSpace === 2 || indentSpace === 4)) {
-      setEditorIndentSpace(indentSpace);
-    }
-  };
+      if (!Number.isNaN(indentSpace) && (indentSpace === 2 || indentSpace === 4)) {
+        updateEditorIndentSpace(indentSpace);
+      }
+    },
+    [updateEditorIndentSpace],
+  );
 
   return (
     <div
@@ -116,7 +128,7 @@ export function EditorSettings() {
 
       <div>
         <h5>에디터 폰트 크기</h5>
-        <select value={editorfontSize} onChange={handleSelectOptionChange}>
+        <select value={editorFontSize} onChange={handleSelectOptionChange}>
           {[8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map((fontSize, i) => {
             return <option key={i}>{fontSize}</option>;
           })}

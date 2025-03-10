@@ -8,6 +8,7 @@ import { TabBookmark } from '@/renderer/components/molecules/TabBookmark';
 import { TabExtension } from '@/renderer/components/molecules/TabExtension';
 import { TabPolyfill } from '@/renderer/components/molecules/TabPolyfill';
 import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
+import { TabProblemGhost } from '@/renderer/components/molecules/TabProblemGhost';
 
 import { useTab, useDailyProblem, useSetupDailyProblems, useSetupTab, useEventTab } from '@/renderer/hooks';
 
@@ -16,9 +17,9 @@ import { isBookmarkTab, isProblemTab } from '@/renderer/utils/typeGuard';
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
 import 'overlayscrollbars/overlayscrollbars.css';
 
-import { TabProblemGhost } from '../../molecules/TabProblemGhost';
-
 export function Tabs() {
+  const tourRef = useRef<HTMLDivElement>(null);
+
   useSetupDailyProblems();
   useSetupTab();
 
@@ -26,8 +27,6 @@ export function Tabs() {
 
   const { tabs } = useTab();
   const { dailyProblemNumbers, activeDailyProblem } = useDailyProblem();
-
-  const tourRef = useRef<HTMLDivElement>(null);
 
   return (
     <div

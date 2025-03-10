@@ -56,6 +56,7 @@ function TourOverlayContent({ tourRef, children, myTourStep, title, guideLoc = '
   const popoverRef = useRef<HTMLDivElement>(null);
 
   const { MAX_TOUR_STEP, isFirstStep, isLastStep } = useTour();
+
   const { goNextStep, goPrevStep, closeTourStep } = useModifyTour();
 
   const updateTourItemInfo = useCallback(() => {

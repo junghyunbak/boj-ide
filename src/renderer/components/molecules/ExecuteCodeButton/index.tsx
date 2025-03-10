@@ -9,11 +9,11 @@ import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 // [ ]: 채점중일 경우 버튼이 비활성화되어야 한다.
 // [ ]: 문제가 선택되어있지 않을 경우 버튼이 비활성화되어야 한다.
 export function ExecuteCodeButton() {
+  const tourRef = useRef<HTMLButtonElement>(null);
+
   const { problem } = useProblem();
   const { isJudging } = useJudge();
   const { startJudge } = useModifyJudge();
-
-  const tourRef = useRef<HTMLButtonElement>(null);
 
   useEventIpc(
     () => {
