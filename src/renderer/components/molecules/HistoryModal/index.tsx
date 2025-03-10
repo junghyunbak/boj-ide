@@ -68,6 +68,7 @@ export function HistoryModal() {
           outline: none;
           color: ${theme.colors.fg};
           gap: 0.25rem;
+          user-select: none;
           cursor: pointer;
         `}
       >
@@ -77,7 +78,7 @@ export function HistoryModal() {
             color: ${theme.colors.fg};
           `}
         />
-        <p>히스토리</p>
+        <p>방문 기록</p>
       </button>
 
       <NonModal isOpen={isHistoryModalOpen} inset="100% 0 auto 0" ref={modalRef}>
@@ -95,6 +96,7 @@ export function HistoryModal() {
                 display: flex;
                 flex-direction: column;
                 overflow-y: auto;
+                user-select: none;
               `}
             >
               {isHistoryEmpty ? (
