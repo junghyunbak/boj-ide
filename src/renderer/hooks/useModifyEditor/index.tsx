@@ -5,10 +5,12 @@ import { useShallow } from 'zustand/shallow';
 
 import { useModifyAlertModal } from '../useModifyAlertModal';
 
-export function useEditorController() {
+export function useModifyEditor() {
   const [setIsCodeStale] = useStore(useShallow((s) => [s.setIsCodeStale]));
   const [setEditorCode] = useStore(useShallow((s) => [s.setCode]));
   const [setProblemToCode] = useStore(useShallow((s) => [s.setProblemToCode]));
+  const [setEditorWidth] = useStore(useShallow((s) => [s.setEditorWidth]));
+  const [setEditorHeight] = useStore(useShallow((s) => [s.setEditorHeight]));
 
   const { fireAlertModal } = useModifyAlertModal();
 
@@ -104,6 +106,14 @@ export function useEditorController() {
     [getProblemCode, fireAlertModal, freshingEditorCode],
   );
 
+  const resizeEditorLayout = useCallback(
+    (width: number, height: number) => {
+      setEditorWidth(width);
+      setEditorHeight(height);
+    },
+    [setEditorHeight, setEditorWidth],
+  );
+
   return {
     getProblemCode,
     saveEditorCode,
@@ -112,5 +122,6 @@ export function useEditorController() {
     freshingEditorCode,
     updateEditorCode,
     initialEditorCode,
+    resizeEditorLayout,
   };
 }

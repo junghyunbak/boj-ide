@@ -5,13 +5,13 @@ import { v4 as uuidv4 } from 'uuid';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useEditorController } from '../useEditorController';
+import { useModifyEditor } from '../useModifyEditor';
 
 export function useModifyJudge() {
   const [setJudgeResults] = useStore(useShallow((s) => [s.setJudgeResult]));
   const [setJudgeId] = useStore(useShallow((s) => [s.setJudgeId]));
 
-  const { getProblemCode, saveEditorCode } = useEditorController();
+  const { getProblemCode, saveEditorCode } = useModifyEditor();
 
   const startJudge = useCallback(() => {
     const { problem, customTestCase: customTestcases, judgeId } = useStore.getState();

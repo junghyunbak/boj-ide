@@ -20,14 +20,6 @@ export * from './useClickOutOfModal';
  */
 export * from './useResponsiveLayout';
 
-/**
- * editor
- */
-export * from './useEditor';
-export * from './useEditorController';
-export * from './useEditorExtensions';
-export * from './useEditorVim';
-
 // ---------------
 
 /**
@@ -43,6 +35,7 @@ export * from './useAlertModal';
 export * from './useConfirmModal';
 export * from './useTestcase';
 export * from './useTheme';
+export * from './useEditor';
 
 /**
  * setup
@@ -52,6 +45,7 @@ export * from './useSetupTab';
 export * from './useSetupWebview';
 export * from './useSetupJudge';
 export * from './useSetupProblem';
+export * from './useSetupEditor';
 
 /**
  * fetch
@@ -73,6 +67,7 @@ export * from './useModifyAlertModal';
 export * from './useModifyConfirmModal';
 export * from './useModifyTestcase';
 export * from './useModifyTheme';
+export * from './useModifyEditor';
 
 /**
  * event
@@ -84,3 +79,4 @@ export * from './useEventWebview';
 export * from './useEventJudge';
 export * from './useEventFocus';
 export * from './useEventTab';
+export * from './useEventEditor';

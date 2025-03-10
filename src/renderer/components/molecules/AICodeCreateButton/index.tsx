@@ -7,7 +7,7 @@ import { useShallow } from 'zustand/shallow';
 
 import aiCreateImageSrc from '@/renderer/assets/gifs/ai-create.gif';
 
-import { useFetchAICode, useModifyAlertModal, useEditorController, useModifyConfirmModal } from '@/renderer/hooks';
+import { useFetchAICode, useModifyAlertModal, useModifyEditor, useModifyConfirmModal } from '@/renderer/hooks';
 
 import { AI_ERROR_MESSAGE, AI_EXECUTE_QUESTION_MESSAGE } from '@/renderer/constants';
 
@@ -20,7 +20,7 @@ export function AICodeCreateButton() {
   const { fireAlertModal } = useModifyAlertModal();
   const { fireConfirmModal } = useModifyConfirmModal();
 
-  const { updateEditorCode } = useEditorController();
+  const { updateEditorCode } = useModifyEditor();
   const { complete, completion, isLoading } = useFetchAICode({
     onError() {
       fireAlertModal('에러 발생', AI_ERROR_MESSAGE);

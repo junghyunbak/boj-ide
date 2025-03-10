@@ -1,4 +1,4 @@
-import { useModifyAlertModal, useEditorController, useProblem, useModifyConfirmModal } from '@/renderer/hooks';
+import { useModifyAlertModal, useModifyEditor, useProblem, useModifyConfirmModal } from '@/renderer/hooks';
 
 import { useStore } from '@/renderer/store';
 
@@ -9,7 +9,7 @@ import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 export function SetDefaultCodeButton() {
   const { problem } = useProblem();
 
-  const { getProblemCode, saveEditorCode } = useEditorController();
+  const { getProblemCode, saveEditorCode } = useModifyEditor();
 
   const { fireAlertModal } = useModifyAlertModal();
   const { fireConfirmModal } = useModifyConfirmModal();

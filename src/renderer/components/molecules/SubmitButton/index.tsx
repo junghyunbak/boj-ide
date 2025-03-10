@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 
-import { useEditorController, useModifyConfirmModal, useProblem } from '@/renderer/hooks';
+import { useModifyEditor, useModifyConfirmModal, useProblem } from '@/renderer/hooks';
 
 import { useStore } from '@/renderer/store';
 
@@ -13,7 +13,7 @@ export function SubmitButton() {
 
   const { fireConfirmModal } = useModifyConfirmModal();
 
-  const { getProblemCode } = useEditorController();
+  const { getProblemCode } = useModifyEditor();
 
   const tourRef = useRef<HTMLButtonElement>(null);
 
