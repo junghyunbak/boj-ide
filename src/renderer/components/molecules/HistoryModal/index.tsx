@@ -8,6 +8,7 @@ import { ReactComponent as History } from '@/renderer/assets/svgs/history.svg';
 
 import {
   useEventClickOutOfModal,
+  useEventWindow,
   useFetchProblem,
   useHistories,
   useModifyHistories,
@@ -30,10 +31,60 @@ export function HistoryModal() {
 
   const buttonRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [filterValue, setFilterValue] = useState('');
 
   useEventClickOutOfModal(buttonRef, modalRef, closeHistoryModal);
+
+  useEventWindow(
+    (e) => {
+      if (isHistoryModalOpen) {
+        switch (e.key) {
+          case 'ArrowDown':
+          case 'ArrowUp': {
+            e.preventDefault();
+
+            const historyItems = Array.from(document.querySelectorAll<HTMLDivElement>('.history-item'));
+
+            if (historyItems.length === 0) {
+              break;
+            }
+
+            const idx = historyItems.findIndex((item) => item === document.activeElement);
+
+            const nextItem =
+              idx === -1
+                ? historyItems[e.key === 'ArrowUp' ? historyItems.length - 1 : 0]
+                : historyItems[(idx + (e.key === 'ArrowUp' ? -1 : 1) + historyItems.length) % historyItems.length];
+
+            nextItem.focus();
+
+            break;
+          }
+          case 'Enter': {
+            const item = document.activeElement;
+
+            if (item instanceof HTMLElement) {
+              item.click();
+            }
+            break;
+          }
+          case 'Escape': {
+            closeHistoryModal();
+            break;
+          }
+          default: {
+            inputRef.current?.focus();
+
+            break;
+          }
+        }
+      }
+    },
+    [isHistoryModalOpen, closeHistoryModal],
+    'keydown',
+  );
 
   const handleHistoryBarClick = useCallback(() => {
     if (isHistoryModalOpen) {
@@ -112,12 +163,13 @@ export function HistoryModal() {
                 `}
               >
                 <input
+                  ref={inputRef}
                   css={(theme) => css`
                     width: 100%;
                     background-color: ${theme.colors.code};
                     border: 1px solid ${theme.colors.border};
                     border-radius: 4px;
-                    padding: 2px 4px;
+                    padding: 3px 4px;
                     outline: none;
                     color: ${theme.colors.fg};
                   `}
@@ -190,12 +242,16 @@ const HistoryItem = memo(({ problem }: HistoryItemProps) => {
 
   return (
     <div
+      className="history-item"
       css={(theme) => css`
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 2px 8px;
         user-select: none;
+        outline: none;
+
+        &:focus,
         &:hover {
           background-color: ${theme.colors.active};
           border-radius: 4px;
@@ -206,6 +262,7 @@ const HistoryItem = memo(({ problem }: HistoryItemProps) => {
         }
         cursor: pointer;
       `}
+      tabIndex={-1}
       onClick={handleItemClick}
     >
       <div
