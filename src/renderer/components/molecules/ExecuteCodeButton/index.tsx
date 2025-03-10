@@ -36,9 +36,7 @@ export function ExecuteCodeButton() {
       </ActionButton>
 
       <TourOverlay title="알고리즘 실행" tourRef={tourRef} myTourStep={4} guideLoc="leftTop">
-        <p>코드를 컴파일하고 실행합니다.</p>
-        <br />
-        <p>문제의 테스트케이스와 사용자가 추가한 테스트케이스가 모두 실행됩니다.</p>
+        <p>코드를 컴파일하고 문제와 사용자의 테스트케이스를 넣어 실행합니다.</p>
         <br />
         <p>
           💡 <code>F5</code> 키로 실행이 가능합니다.
