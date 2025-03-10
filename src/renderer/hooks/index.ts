@@ -1,11 +1,4 @@
 /**
- * modal
- */
-export * from './useClickOutOfModal';
-
-// ---------------
-
-/**
  * state
  */
 export * from './useProblem';
@@ -72,3 +65,4 @@ export * from './useEventEditor';
 export * from './useEventPaint';
 export * from './useEventFabric';
 export * from './useEventSyncLayout';
+export * from './useEventClickOutOfModal';

@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import { useClickOutOfModal, useModifyDailyProblems, useDailyProblem, useModifyTab } from '@/renderer/hooks';
+import { useModifyDailyProblems, useDailyProblem, useModifyTab, useEventClickOutOfModal } from '@/renderer/hooks';
 
 import { ReactComponent as ThreeDots } from '@/renderer/assets/svgs/three-dots.svg';
 
@@ -10,27 +10,39 @@ import { NonModal } from '@/renderer/components/atoms/modal/NonModal';
 import { ListButton } from '@/renderer/components/atoms/buttons/ListButton';
 
 export function TabOptions() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const modalRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const { toggleActiveDailyProblem } = useModifyDailyProblems();
+  const { clearTab } = useModifyTab();
 
   const { activeDailyProblem } = useDailyProblem();
 
-  const { clearTab } = useModifyTab();
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
 
-  const { modalRef, buttonRef } = useClickOutOfModal(() => {
-    setIsOpen(false);
-  });
+  const toggleModal = useCallback(() => {
+    setIsModalOpen(!isModalOpen);
+  }, [isModalOpen]);
 
-  const handleAllTabCloseButtonClick = () => {
+  useEventClickOutOfModal(buttonRef, modalRef, closeModal);
+
+  const handleButtonClick = useCallback(() => {
+    toggleModal();
+  }, [toggleModal]);
+
+  const handleAllTabCloseButtonClick = useCallback(() => {
     clearTab();
-    setIsOpen(false);
-  };
+    closeModal();
+  }, [clearTab, closeModal]);
 
-  const handleDailyProblemActiveToggleButtonClick = () => {
+  const handleDailyProblemActiveToggleButtonClick = useCallback(() => {
     toggleActiveDailyProblem();
-    setIsOpen(false);
-  };
+    closeModal();
+  }, [closeModal, toggleActiveDailyProblem]);
 
   return (
     <div
@@ -61,7 +73,7 @@ export function TabOptions() {
             border-radius: 4px;
             cursor: pointer;
 
-            ${isOpen
+            ${isModalOpen
               ? css`
                   background-color: ${theme.colors.active};
                 `
@@ -77,12 +89,12 @@ export function TabOptions() {
               color: ${theme.colors.fg};
             }
           `}
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={handleButtonClick}
         >
           <ThreeDots />
         </button>
 
-        <NonModal ref={modalRef} isOpen={isOpen} inset="100% 0 auto auto">
+        <NonModal ref={modalRef} isOpen={isModalOpen} inset="100% 0 auto auto">
           <div
             css={css`
               padding: 0.25rem 0;

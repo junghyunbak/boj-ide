@@ -1,8 +1,8 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import { useTheme, useClickOutOfModal, useModifyTheme } from '@/renderer/hooks';
+import { useTheme, useEventClickOutOfModal, useModifyTheme } from '@/renderer/hooks';
 
 import { SelectButton } from '@/renderer/components/atoms/buttons/SelectButton';
 import { NonModal } from '@/renderer/components/atoms/modal/NonModal';
@@ -10,39 +10,39 @@ import { ListButton } from '@/renderer/components/atoms/buttons/ListButton';
 
 import { type Themes } from '@/renderer/store/slices/theme';
 
-const THEMES: Themes[] = ['baekjoon', 'programmers'];
-
-const ThemeToKorStr = (theme: Themes) => {
-  switch (theme) {
-    case 'baekjoon':
-      return '백준';
-    case 'programmers':
-      return '프로그래머스';
-
-    default:
-      return '';
-  }
-};
+import { ThemeToKorStr } from '@/renderer/utils';
 
 export function ThemeButton() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const modalRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
   const { theme } = useTheme();
+
+  const THEMES = useMemo<Themes[]>(() => ['baekjoon', 'programmers'], []);
 
   const { updateTheme } = useModifyTheme();
 
-  const { buttonRef, modalRef } = useClickOutOfModal(() => {
+  const closeModal = useCallback(() => {
     setIsModalOpen(false);
-  });
+  }, []);
+
+  useEventClickOutOfModal(buttonRef, modalRef, closeModal);
 
   const handleSelectButtonClick = useCallback(() => {
     setIsModalOpen(!isModalOpen);
   }, [setIsModalOpen, isModalOpen]);
 
-  const handleThemeButtonClick = (newTheme: Themes) => () => {
-    updateTheme(newTheme);
-    setIsModalOpen(false);
-  };
+  const handleThemeButtonClick = useCallback(
+    (newTheme: Themes) => {
+      return () => {
+        updateTheme(newTheme);
+        closeModal();
+      };
+    },
+    [closeModal, updateTheme],
+  );
 
   return (
     <div

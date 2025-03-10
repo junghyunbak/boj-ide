@@ -1,13 +1,12 @@
-import { useRef } from 'react';
-
 import { isParentExist } from '@/renderer/utils';
 
 import { useEventWindow } from '../useEventWindow';
 
-export function useClickOutOfModal(callback: () => void) {
-  const buttonRef = useRef<HTMLButtonElement | null>(null);
-  const modalRef = useRef<HTMLDivElement | null>(null);
-
+export function useEventClickOutOfModal(
+  buttonRef: React.RefObject<HTMLButtonElement>,
+  modalRef: React.RefObject<HTMLDivElement>,
+  callback: () => void = () => {},
+) {
   useEventWindow(
     (e) => {
       if (isParentExist(e.target, modalRef.current, buttonRef.current)) {
@@ -16,9 +15,7 @@ export function useClickOutOfModal(callback: () => void) {
 
       callback();
     },
-    [callback],
+    [buttonRef, callback, modalRef],
     'click',
   );
-
-  return { buttonRef, modalRef };
 }
