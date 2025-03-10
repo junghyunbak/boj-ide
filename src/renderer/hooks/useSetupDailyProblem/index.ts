@@ -11,7 +11,7 @@ export function useSetupDailyProblems() {
   const { yyyySmmSdd, dailyProblems } = useFetchDailyProblem();
 
   useEffect(() => {
-    if (!dailyProblems) {
+    if (!dailyProblems || dailyProblems.length === 0) {
       return;
     }
 

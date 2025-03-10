@@ -36,6 +36,7 @@ export function useFetchDailyProblem() {
 
         if (
           !(problemNumbers instanceof Array) ||
+          !problemNumbers.length ||
           !problemNumbers.every((problemNumber) => typeof problemNumber === 'string')
         ) {
           throw new Error('');
@@ -43,7 +44,7 @@ export function useFetchDailyProblem() {
 
         return problemNumbers;
       } catch (e) {
-        return [];
+        return null;
       }
     },
   });
