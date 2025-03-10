@@ -103,7 +103,7 @@ export function HistoryModal() {
                     padding: 0.25rem;
                   `}
                 >
-                  히스토리가 존재하지 않습니다.
+                  문제 히스토리가 존재하지 않습니다.
                 </p>
               ) : (
                 histories.map((history, i) => {
