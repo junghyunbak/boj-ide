@@ -17,7 +17,6 @@ import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
 import { useModifyEditor } from '../useModifyEditor';
-import { useResponsiveLayout } from '../useResponsiveLayout';
 
 export function useEditor() {
   const [indentSpace] = useStore(useShallow((s) => [s.indentSpace]));
@@ -28,10 +27,11 @@ export function useEditor() {
   const [editorFontSize] = useStore(useShallow((s) => [s.fontSize]));
   const [editorLanguage] = useStore(useShallow((s) => [s.lang]));
 
+  const editorRef = useRef<HTMLDivElement>(null);
+
   const emotionTheme = useTheme();
-  const { syncEditorCode, resizeEditorLayout, saveEditorCode } = useModifyEditor();
-  const { containerRef } = useResponsiveLayout(resizeEditorLayout);
-  const editorRef = useRef<HTMLDivElement | null>(null);
+
+  const { syncEditorCode, saveEditorCode } = useModifyEditor();
 
   const shortcutExtensions = useMemo<Extension[]>(() => {
     return [
@@ -108,5 +108,5 @@ export function useEditor() {
     onChange: syncEditorCode,
   });
 
-  return { containerRef, editorRef, codemirror };
+  return { editorRef, codemirror };
 }

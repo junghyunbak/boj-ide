@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
-export function useResponsiveLayout(callback: (width: number, height: number) => void) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
+export function useEventSyncLayout(
+  cb: (width: number, height: number) => void,
+  containerRef: React.RefObject<HTMLElement>,
+) {
   useEffect(() => {
     const container = containerRef.current;
 
@@ -13,7 +14,7 @@ export function useResponsiveLayout(callback: (width: number, height: number) =>
     const observer = new ResizeObserver(([entry]) => {
       const { width, height } = entry.contentRect;
 
-      callback(width, height);
+      cb(width, height);
     });
 
     observer.observe(container);
@@ -22,7 +23,5 @@ export function useResponsiveLayout(callback: (width: number, height: number) =>
       observer.unobserve(container);
       observer.disconnect();
     };
-  }, [callback]);
-
-  return { containerRef };
+  }, [cb, containerRef]);
 }

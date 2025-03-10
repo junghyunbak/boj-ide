@@ -3,11 +3,6 @@
  */
 export * from './useClickOutOfModal';
 
-/**
- * layout
- */
-export * from './useResponsiveLayout';
-
 // ---------------
 
 /**
@@ -76,3 +71,4 @@ export * from './useEventTab';
 export * from './useEventEditor';
 export * from './useEventPaint';
 export * from './useEventFabric';
+export * from './useEventSyncLayout';
