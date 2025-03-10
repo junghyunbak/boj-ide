@@ -1,12 +1,13 @@
 import { act } from 'react';
+
 import { renderHook } from '@testing-library/react';
 
 import { createMockTestcase, createMockProblem } from '@/renderer/mock';
 
 import { useStore } from '@/renderer/store';
 
-import { useTestcase } from '.';
-import { useModifyTestcase } from '../useModifyTestcase';
+import { useModifyTestcase } from '.';
+import { useTestcase } from '../useTestcase';
 import { useModifyProblem } from '../useModifyProblem';
 
 const mockProblem = createMockProblem();

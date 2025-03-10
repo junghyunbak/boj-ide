@@ -1,4 +1,5 @@
 import { act } from 'react';
+
 import { renderHook } from '@testing-library/react';
 
 import { createMockBookmark, createMockExtension, createMockProblem } from '@/renderer/mock';
@@ -7,8 +8,8 @@ import { useStore } from '@/renderer/store';
 
 import { isBookmarkTab, isExtensionTab, isProblemTab } from '@/renderer/utils/typeGuard';
 
-import { useTab } from '.';
-import { useModifyTab } from '../useModifyTab';
+import { useModifyTab } from '.';
+import { useTab } from '../useTab';
 
 const mockBookmark = createMockBookmark();
 const mockExtension = createMockExtension();
