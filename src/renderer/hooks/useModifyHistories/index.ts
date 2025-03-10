@@ -30,6 +30,15 @@ export function useModifyHistories() {
     [setHistories],
   );
 
+  const removeHistoryWithProblemNumber = useCallback(
+    (willRemoveProblem: ProblemInfo) => {
+      setHistories((prev) => {
+        return prev.filter((problem) => problem.number !== willRemoveProblem.number);
+      });
+    },
+    [setHistories],
+  );
+
   const openHistoryModal = useCallback(() => {
     setIsHistoryModalOpen(true);
   }, [setIsHistoryModalOpen]);
@@ -45,6 +54,7 @@ export function useModifyHistories() {
   return {
     addHistory,
     removeHistory,
+    removeHistoryWithProblemNumber,
     openHistoryModal,
     closeHistoryModal,
     updateHistoryModalHeight,

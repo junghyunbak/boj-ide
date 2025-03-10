@@ -16,7 +16,6 @@ export function Nav() {
         position: relative;
       `}
     >
-      <HistoryModal />
       <div
         css={css`
           display: flex;
@@ -38,6 +37,8 @@ export function Nav() {
           <SubmitButton />
         </div>
       </div>
+
+      <HistoryModal />
     </div>
   );
 }

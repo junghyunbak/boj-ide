@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 
 import { css } from '@emotion/react';
 
@@ -31,6 +31,8 @@ export function HistoryModal() {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
+  const [filterValue, setFilterValue] = useState('');
+
   useEventClickOutOfModal(buttonRef, modalRef, closeHistoryModal);
 
   const handleHistoryBarClick = useCallback(() => {
@@ -47,7 +49,10 @@ export function HistoryModal() {
     <div
       css={css`
         position: absolute;
-        width: 25dvw;
+        width: 30dvw;
+        max-width: 500px;
+        display: flex;
+        justify-content: center;
       `}
     >
       <button
@@ -79,7 +84,7 @@ export function HistoryModal() {
         <p>방문 기록</p>
       </button>
 
-      <NonModal isOpen={isHistoryModalOpen} inset="100% 0 auto 0" ref={modalRef}>
+      <NonModal isOpen={isHistoryModalOpen} inset="-6px auto auto auto" ref={modalRef}>
         <SplitLayout vertical>
           <SplitLayout.Left
             px={verticalResizerPxOption}
@@ -89,27 +94,64 @@ export function HistoryModal() {
             <div
               css={css`
                 width: 100%;
+                min-width: 500px;
                 height: 100%;
-                padding: 0 4px;
+                user-select: none;
                 display: flex;
                 flex-direction: column;
-                overflow-y: auto;
-                user-select: none;
+                align-items: center;
               `}
             >
-              {isHistoryEmpty ? (
-                <p
-                  css={css`
-                    padding: 0.25rem;
+              <div
+                css={css`
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  width: 100%;
+                  padding: 4px;
+                `}
+              >
+                <input
+                  css={(theme) => css`
+                    width: 100%;
+                    background-color: ${theme.colors.code};
+                    border: 1px solid ${theme.colors.border};
+                    border-radius: 4px;
+                    padding: 2px 4px;
+                    outline: none;
+                    color: ${theme.colors.fg};
                   `}
-                >
-                  문제 히스토리가 존재하지 않습니다.
-                </p>
-              ) : (
-                histories.map((history, i) => {
-                  return <HistoryItem key={history.number} problem={history} historyIdx={i} />;
-                })
-              )}
+                  value={filterValue}
+                  onChange={(e) => setFilterValue(e.target.value)}
+                  placeholder="1000번: A+B"
+                />
+              </div>
+              <div
+                css={css`
+                  width: 100%;
+                  height: 100%;
+                  overflow-y: auto;
+                  padding: 0 4px;
+                  display: flex;
+                  flex-direction: column;
+                `}
+              >
+                {isHistoryEmpty ? (
+                  <p
+                    css={css`
+                      padding: 0.25rem;
+                    `}
+                  >
+                    문제 히스토리가 존재하지 않습니다.
+                  </p>
+                ) : (
+                  histories
+                    .filter((history) => `${history.number}번: ${history.name}`.includes(filterValue))
+                    .map((history) => {
+                      return <HistoryItem key={history.number} problem={history} />;
+                    })
+                )}
+              </div>
             </div>
           </SplitLayout.Left>
 
@@ -124,14 +166,13 @@ export function HistoryModal() {
 
 interface HistoryItemProps {
   problem: ProblemInfo;
-  historyIdx: number;
 }
 
-function HistoryItem({ problem, historyIdx }: HistoryItemProps) {
+const HistoryItem = memo(({ problem }: HistoryItemProps) => {
   const { tierBase64, title } = useFetchProblem(problem.number);
 
   const { gotoProblem } = useModifyWebview();
-  const { closeHistoryModal, removeHistory } = useModifyHistories();
+  const { closeHistoryModal, removeHistoryWithProblemNumber } = useModifyHistories();
 
   const handleItemClick = useCallback(() => {
     gotoProblem(problem);
@@ -142,9 +183,9 @@ function HistoryItem({ problem, historyIdx }: HistoryItemProps) {
     (e) => {
       e.stopPropagation();
 
-      removeHistory(historyIdx);
+      removeHistoryWithProblemNumber(problem);
     },
-    [removeHistory, historyIdx],
+    [removeHistoryWithProblemNumber, problem],
   );
 
   return (
@@ -203,4 +244,4 @@ function HistoryItem({ problem, historyIdx }: HistoryItemProps) {
       </div>
     </div>
   );
-}
+});
