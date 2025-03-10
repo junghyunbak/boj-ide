@@ -18,7 +18,7 @@ export function useModifyWebview() {
   const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
 
   const refreshWebviewTheme = useCallback(async (emotionTheme: Theme) => {
-    const { webview, webviewUrl, theme, insertCSSKey } = useStore.getState();
+    const { webview, theme, insertCSSKey } = useStore.getState();
 
     if (!webview) {
       return;
@@ -28,7 +28,7 @@ export function useModifyWebview() {
       webview.removeInsertedCSS(insertCSSKey);
     }
 
-    if (theme === 'programmers' && isBojProblemUrl(webviewUrl)) {
+    if (theme === 'programmers' && isBojProblemUrl(webview.getURL())) {
       const cssKey = await webview.insertCSS(createWebviewStyle(emotionTheme));
 
       // BUG: 곧바로 대입 시 비동기처리 되지 않는 이슈 존재
