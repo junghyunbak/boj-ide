@@ -55,6 +55,8 @@ export * from './useTheme';
 export * from './useSetupDailyProblem';
 export * from './useSetupTab';
 export * from './useSetupWebview';
+export * from './useSetupJudge';
+export * from './useSetupProblem';
 
 /**
  * fetch
@@ -86,4 +88,3 @@ export * from './useEventWebview';
 export * from './useEventJudge';
 export * from './useEventFocus';
 export * from './useEventTab';
-export * from './useEventProblem';

@@ -1,6 +1,6 @@
 import { MainPage } from '@/renderer/components/pages/MainPage';
 
-import { useTheme, useEventFocus, useEventApp, useEventProblem } from '@/renderer/hooks';
+import { useTheme, useEventFocus, useEventApp, useSetupProblem } from '@/renderer/hooks';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -24,7 +24,8 @@ const queryClient = new QueryClient({
 export default function App() {
   const { theme } = useTheme();
 
-  useEventProblem();
+  useSetupProblem();
+
   useEventFocus();
   useEventApp();
 

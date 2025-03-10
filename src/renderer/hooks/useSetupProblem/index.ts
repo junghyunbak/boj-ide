@@ -5,7 +5,7 @@ import { useShallow } from 'zustand/shallow';
 
 import { useProblem } from '../useProblem';
 
-export function useEventProblem() {
+export function useSetupProblem() {
   const { problem } = useProblem();
 
   const [setTestcaseInputProblemNumber] = useStore(useShallow((s) => [s.setTestcaseInputProblemNumber]));

@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import { useJudge, useEventJudge, useTestcase } from '@/renderer/hooks';
+import { useJudge, useEventJudge, useTestcase, useSetupJudge } from '@/renderer/hooks';
 
 import { TestCaseMaker } from '@/renderer/components/molecules/TestCaseMaker';
 import { Testcase } from '@/renderer/components/molecules/Testcase';
@@ -16,6 +16,8 @@ import {
 export function OutputContent() {
   const { judgeResults } = useJudge();
   const { allTestcase, tcKeyMap } = useTestcase();
+
+  useSetupJudge();
 
   useEventJudge();
 
