@@ -29,7 +29,11 @@ export function useModifyWebview() {
     }
 
     if (theme === 'programmers' && isBojProblemUrl(webviewUrl)) {
-      useStore.getState().insertCSSKey = await webview.insertCSS(createWebviewStyle(emotionTheme));
+      const cssKey = await webview.insertCSS(createWebviewStyle(emotionTheme));
+
+      // BUG: 곧바로 대입 시 비동기처리 되지 않는 이슈 존재
+      // 더 나은 구조로 변경 필요
+      useStore.getState().insertCSSKey = cssKey;
     }
   }, []);
 
