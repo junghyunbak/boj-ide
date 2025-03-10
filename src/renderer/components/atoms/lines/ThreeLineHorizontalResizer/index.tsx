@@ -6,6 +6,8 @@ export function ThreeLineHorizontalResizer() {
       css={(theme) => css`
         width: 100%;
 
+        background-color: ${theme.colors.bg};
+
         display: flex;
         align-items: center;
         flex-direction: column;

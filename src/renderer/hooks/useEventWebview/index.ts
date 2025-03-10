@@ -11,6 +11,7 @@ import { useEventIpc } from '../useEventIpc';
 import { useModifyWebview } from '../useModifyWebview';
 import { useModifyProblem } from '../useModifyProblem';
 import { useModifyTab } from '../useModifyTab';
+import { useModifyHistories } from '../useModifyHistories';
 
 export function useEventWebview() {
   const [webview] = useStore(useShallow((s) => [s.webview]));
@@ -22,6 +23,7 @@ export function useEventWebview() {
   const { refreshWebviewTheme, updateWebviewLoading, updateWebviewUrl } = useModifyWebview();
   const { updateProblem } = useModifyProblem();
   const { addProblemTab } = useModifyTab();
+  const { addHistory } = useModifyHistories();
 
   /**
    * 테마가 변경될 때 마다 웹뷰 스타일 갱신
@@ -76,6 +78,7 @@ export function useEventWebview() {
 
       updateProblem(problemInfo);
       addProblemTab(problemInfo);
+      addHistory(problemInfo);
     };
 
     const handleWebviewWillNavigate = (event: Electron.WillNavigateEvent) => {
@@ -102,6 +105,7 @@ export function useEventWebview() {
     updateWebviewUrl,
     updateProblem,
     addProblemTab,
+    addHistory,
     refreshWebviewTheme,
     updateWebviewLoading,
     emotionTheme,

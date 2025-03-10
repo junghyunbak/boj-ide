@@ -34,7 +34,7 @@ export function SetDefaultCodeButton() {
 
   return (
     <ActionButton onClick={handleSetDefaultButtonClick} disabled={!problem}>
-      기본 코드로 설정
+      기본 코드 설정
     </ActionButton>
   );
 }

@@ -10,6 +10,7 @@ type LeftProps = {
 
   px?: {
     min: number;
+    max: number;
   };
 };
 
@@ -37,10 +38,16 @@ export function Left({ children, initialRatio = 50, onRatioChange, px }: React.P
       const deltaX = (vertical ? clientY : clientX) - startX;
 
       if (px) {
+        const pixel = Math.max(px.min, Math.min(leftWidth + deltaX, px.max));
+
         if (vertical) {
-          left.style.height = `${Math.max(px.min, leftWidth + deltaX)}px`;
+          left.style.height = `${pixel}px`;
         } else {
-          left.style.width = `${Math.max(px.min, leftWidth + deltaX)}px`;
+          left.style.width = `${pixel}px`;
+        }
+
+        if (onRatioChange) {
+          onRatioChange(pixel);
         }
       } else {
         const ratio = Math.min(((leftWidth + deltaX) / (vertical ? height : width)) * 100, 100);
@@ -67,10 +74,10 @@ export function Left({ children, initialRatio = 50, onRatioChange, px }: React.P
         splitLayoutStore.getState().vertical
           ? css`
               width: 100%;
-              height: ${initialRatio}%;
+              height: ${initialRatio}${px ? 'px' : '%'};
             `
           : css`
-              width: ${initialRatio}%;
+              width: ${initialRatio}${px ? 'px' : '%'};
               height: 100%;
             `
       }
