@@ -4,21 +4,14 @@ import { Modal } from '@/renderer/components/atoms/modal/Modal';
 import { TextButton } from '@/renderer/components/atoms/buttons/TextButton';
 import { Markdown } from '@/renderer/components/atoms/Markdown';
 
-import { useAlertModalController, useAlertModalState, useWindowEvent } from '@/renderer/hooks';
+import { useModifyAlertModal, useAlertModal, useEventAlertModal } from '@/renderer/hooks';
 
 export function AlertModal() {
-  const { alertTitle, alertContent, isAlertModalOpen } = useAlertModalState();
-  const { closeAlertModal } = useAlertModalController();
+  const { alertTitle, alertContent, isAlertModalOpen } = useAlertModal();
 
-  useWindowEvent(
-    (e) => {
-      if (e.key === 'Escape' || e.key === 'Enter') {
-        closeAlertModal();
-      }
-    },
-    [closeAlertModal],
-    'keydown',
-  );
+  const { closeAlertModal } = useModifyAlertModal();
+
+  useEventAlertModal();
 
   const handleCloseButtonClick = () => {
     closeAlertModal();

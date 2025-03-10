@@ -1,9 +1,6 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
-
-import { useWebviewController } from '@/renderer/hooks';
+import { useModifyWebview, useWebview } from '@/renderer/hooks';
 
 import { MovableTab } from '../MovableTab';
 
@@ -13,16 +10,16 @@ interface TabExtensionProps {
 }
 
 export function TabExtension({ tab, index }: TabExtensionProps) {
-  const [webviewUrl] = useStore(useShallow((s) => [s.webviewUrl]));
+  const { webviewUrl } = useWebview();
 
-  const { gotoUrl } = useWebviewController();
+  const { gotoUrl } = useModifyWebview();
 
   const url = useMemo(() => `chrome-extension://${tab.id}${tab.path}`, [tab]);
   const isSelect = useMemo(() => webviewUrl === url, [webviewUrl, url]);
 
-  const handleExtensionItemClick = () => {
+  const handleExtensionItemClick = useCallback(() => {
     gotoUrl(url);
-  };
+  }, [gotoUrl, url]);
 
   return (
     <MovableTab tabIndex={index} isSelect={isSelect} onClick={handleExtensionItemClick}>

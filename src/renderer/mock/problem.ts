@@ -10,8 +10,8 @@ export const createMockProblem = (() => {
       name: values?.name || 'A + B',
       number: values?.number || number.toString(),
       testCase: values?.testCase || {
-        inputs: [],
-        outputs: [],
+        inputs: ['input example'],
+        outputs: ['output example'],
       },
       inputDesc: values?.inputDesc || faker.string.alpha(20),
     };

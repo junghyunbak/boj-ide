@@ -6,7 +6,7 @@ import { css } from '@emotion/react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useTour, useWindowEvent } from '@/renderer/hooks';
+import { useTour, useEventWindow, useModifyTour } from '@/renderer/hooks';
 
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 
@@ -55,7 +55,9 @@ function TourOverlayContent({ tourRef, children, myTourStep, title, guideLoc = '
 
   const popoverRef = useRef<HTMLDivElement>(null);
 
-  const { MAX_TOUR_STEP, isFirstStep, isLastStep, goNextStep, goPrevStep, closeTourStep } = useTour();
+  const { MAX_TOUR_STEP, isFirstStep, isLastStep } = useTour();
+
+  const { goNextStep, goPrevStep, closeTourStep } = useModifyTour();
 
   const updateTourItemInfo = useCallback(() => {
     if (!tourRef.current) {
@@ -78,9 +80,9 @@ function TourOverlayContent({ tourRef, children, myTourStep, title, guideLoc = '
     updateTourItemInfo();
   }, [updateTourItemInfo]);
 
-  useWindowEvent(updateTourItemInfo, [updateTourItemInfo], 'resize');
+  useEventWindow(updateTourItemInfo, [updateTourItemInfo], 'resize');
 
-  useWindowEvent(
+  useEventWindow(
     (e) => {
       switch (e.key) {
         case 'ArrowLeft':

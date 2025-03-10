@@ -31,7 +31,6 @@ export const ActionButton = forwardRef<HTMLButtonElement, ActionButtonProps>(
           padding: 0.4rem 0.8rem;
           background-color: ${bgColor};
           color: ${theme.colors.buttonFg};
-          white-space: nowrap;
           cursor: pointer;
 
           &:hover {

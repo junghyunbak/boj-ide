@@ -1,19 +1,28 @@
 import { type StateCreator } from 'zustand';
 
-import { WEBVIEW_HOME_URL } from '@/renderer/constants';
+import { BOJ_PROBLEM_1000 } from '@/renderer/constants';
 
+// TODO: BojView -> webview
 type BojViewSlice = {
+  webview: Electron.WebviewTag | null;
+  setWebview(webview: Electron.WebviewTag | null): void;
+
   webviewUrl: string;
-  setWebViewUrl: (url: string) => void;
+  setWebViewUrl(url: string): void;
 
   webviewIsLoading: boolean;
-  setWebviewIsLoading: (webviewIsLoading: boolean) => void;
+  setWebviewIsLoading(webviewIsLoading: boolean): void;
+
+  canGoBack: boolean;
+  setCanGoBack(canGoBack: boolean): void;
+
+  canGoForward: boolean;
+  setCanGoForward(canGoForward: boolean): void;
+
+  insertCSSKey: string | null;
 
   isResizerDrag: boolean;
   setIsDrag: (isDrag: boolean) => void;
-
-  webview: Electron.WebviewTag | null;
-  setWebview: (webview: Electron.WebviewTag | null) => void;
 
   baekjoonhubExtensionId: string | null;
   setBaekjoonhubExtensionId: (extensionId: string) => void;
@@ -25,21 +34,33 @@ export const createBojViewSlice: StateCreator<BojViewSlice> = (set): BojViewSlic
     set(() => ({ webview }));
   },
 
+  webviewUrl: BOJ_PROBLEM_1000,
+  setWebViewUrl(url) {
+    set(() => ({ webviewUrl: url }));
+  },
+
   webviewIsLoading: true,
   setWebviewIsLoading(webviewIsLoading) {
     set(() => ({ webviewIsLoading }));
   },
+
+  canGoBack: false,
+  setCanGoBack(canGoBack) {
+    set(() => ({ canGoBack }));
+  },
+
+  canGoForward: false,
+  setCanGoForward(canGoForward) {
+    set(() => ({ canGoForward }));
+  },
+
+  insertCSSKey: null,
 
   isResizerDrag: false,
   setIsDrag(isDrag) {
     set(() => ({
       isResizerDrag: isDrag,
     }));
-  },
-
-  webviewUrl: WEBVIEW_HOME_URL,
-  setWebViewUrl(url) {
-    set(() => ({ webviewUrl: url }));
   },
 
   baekjoonhubExtensionId: null,

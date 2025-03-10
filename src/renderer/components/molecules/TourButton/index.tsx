@@ -1,8 +1,9 @@
+import { useModifyTour } from '@/renderer/hooks';
+
 import { TransparentButton } from '@/renderer/components/atoms/buttons/TransparentButton';
-import { useTour } from '@/renderer/hooks/useTour';
 
 export function TourButton() {
-  const { openTourStep } = useTour();
+  const { openTourStep } = useModifyTour();
 
   return (
     <TransparentButton size="small" onClick={() => openTourStep()}>

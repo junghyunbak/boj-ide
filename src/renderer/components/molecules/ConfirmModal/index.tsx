@@ -1,33 +1,30 @@
-import { useEffect } from 'react';
 import { css } from '@emotion/react';
+
+import { useConfirmModal, useModifyConfirmModal } from '@/renderer/hooks';
+
 import { Modal } from '@/renderer/components/atoms/modal/Modal';
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
-import { useConfirmModalController, useConfirmModalState, useWindowEvent } from '@/renderer/hooks';
+import { useEventConfirmModal } from '@/renderer/hooks/useEventConfirmModal';
+import { useCallback } from 'react';
 
 export function ConfirmModal() {
-  const { confirmCallback, confirmMessage, isConfirmModalOpen } = useConfirmModalState();
-  const { cancelConfirmModal } = useConfirmModalController();
+  const { confirmCallback, confirmMessage, isConfirmModalOpen } = useConfirmModal();
 
-  useWindowEvent(
-    (e) => {
-      if (e.key === 'Escape') {
-        cancelConfirmModal();
-      }
-    },
-    [cancelConfirmModal],
-    'keydown',
-  );
+  const { cancelConfirmModal } = useModifyConfirmModal();
 
-  const handleOkButtonClick = () => {
+  useEventConfirmModal();
+
+  const handleOkButtonClick = useCallback(() => {
     if (confirmCallback instanceof Function) {
       confirmCallback();
     }
-    cancelConfirmModal();
-  };
 
-  const handleNoButtonClick = () => {
     cancelConfirmModal();
-  };
+  }, [cancelConfirmModal, confirmCallback]);
+
+  const handleNoButtonClick = useCallback(() => {
+    cancelConfirmModal();
+  }, [cancelConfirmModal]);
 
   return (
     <Modal isOpen={isConfirmModalOpen} onCloseButtonClick={handleNoButtonClick}>

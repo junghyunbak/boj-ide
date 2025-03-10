@@ -1,32 +1,39 @@
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 import { css } from '@emotion/react';
 
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
-
-import { useWebview } from '@/renderer/hooks';
+import { useWebview, useSetupWebview, useEventWebview, useDrag, useModifyWebview } from '@/renderer/hooks';
 
 import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
 
+import { ReactComponent as X } from '@/renderer/assets/svgs/x.svg';
+
+import {
+  BojViewLayout,
+  BojViewLoadingCloseButton,
+  BojViewLoadingContentParagraph,
+  BojViewLoadingLayout,
+  BojViewLodingContentBox,
+} from './index.style';
+
 export function BojView() {
-  const [isResizerDrag] = useStore(useShallow((s) => [s.isResizerDrag]));
-
-  const { startWebviewUrl, webviewIsLoading } = useWebview();
-
   const tourRef = useRef<HTMLDivElement>(null);
 
+  const { webviewIsLoading } = useWebview();
+  const { isResizerDrag } = useDrag();
+
+  const { updateWebviewLoading } = useModifyWebview();
+
+  useEventWebview();
+
+  const { startWebviewUrl } = useSetupWebview();
+
+  const handleWebviewLoadingCloseButtonClick = useCallback(() => {
+    updateWebviewLoading('finished');
+  }, [updateWebviewLoading]);
+
   return (
-    <div
-      css={css`
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        position: relative;
-      `}
-      ref={tourRef}
-    >
+    <BojViewLayout ref={tourRef}>
       <webview
         src={startWebviewUrl}
         css={css`
@@ -45,22 +52,14 @@ export function BojView() {
       />
 
       {webviewIsLoading && (
-        <div
-          css={(theme) => css`
-            position: absolute;
-            inset: 0;
-
-            background-color: ${theme.colors.bg};
-
-            font-size: 2rem;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          `}
-        >
-          로딩 중...
-        </div>
+        <BojViewLoadingLayout>
+          <BojViewLodingContentBox>
+            <BojViewLoadingContentParagraph>로딩 중...</BojViewLoadingContentParagraph>
+            <BojViewLoadingCloseButton onClick={handleWebviewLoadingCloseButtonClick}>
+              <X />
+            </BojViewLoadingCloseButton>
+          </BojViewLodingContentBox>
+        </BojViewLoadingLayout>
       )}
 
       <TourOverlay title="웹 뷰" tourRef={tourRef} myTourStep={1} guideLoc="right">
@@ -81,6 +80,6 @@ export function BojView() {
           브라우저에서 곧바로 문제를 열어볼 수 있습니다.
         </p>
       </TourOverlay>
-    </div>
+    </BojViewLayout>
   );
 }

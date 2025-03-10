@@ -1,8 +1,8 @@
-import { useFetchProblem, useProblem, useTab, useWebviewController } from '@/renderer/hooks';
+import { useFetchProblem, useModifyTab, useModifyWebview, useProblem, useEventIpc } from '@/renderer/hooks';
 
 import { MovableTab } from '@/renderer/components/molecules/MovableTab';
+
 import { placeholderLogo } from '@/renderer/assets/base64Images';
-import { useIpcEvent } from '@/renderer/hooks/useIpcEvent';
 
 interface TabProblemProps {
   tab: ProblemInfo;
@@ -11,13 +11,15 @@ interface TabProblemProps {
 
 export function TabProblem({ tab, index }: TabProblemProps) {
   const { problem } = useProblem();
-  const { removeTab } = useTab();
-  const { gotoProblem } = useWebviewController();
+
+  const { removeTab } = useModifyTab();
+  const { gotoProblem } = useModifyWebview();
+
   const { tierBase64 } = useFetchProblem(tab.number);
 
   const isSelect = problem?.number === tab.number;
 
-  useIpcEvent(
+  useEventIpc(
     () => {
       if (isSelect) {
         removeTab(index, isSelect);

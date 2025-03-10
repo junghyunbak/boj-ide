@@ -1,6 +1,12 @@
 import { type StateCreator } from 'zustand';
 
 type EditorSlice = {
+  editorWidth: number;
+  setEditorWidth(width: number): void;
+
+  editorHeight: number;
+  setEditorHeight(height: number): void;
+
   fontSize: number;
   setFontSize: (fontSize: number) => void;
 
@@ -33,6 +39,18 @@ type EditorSlice = {
 };
 
 export const createEditorSlice: StateCreator<EditorSlice> = (set, get): EditorSlice => ({
+  editorHeight: 0,
+  setEditorHeight(height) {
+    set(() => ({
+      editorHeight: height,
+    }));
+  },
+
+  editorWidth: 0,
+  setEditorWidth(width) {
+    set(() => ({ editorWidth: width }));
+  },
+
   problemToCode: new Map(),
   setProblemToCode(number, code) {
     const { problemToCode } = get();

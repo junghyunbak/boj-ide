@@ -1,14 +1,16 @@
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
+import { useCallback } from 'react';
+
+import { useModifySetting, useSetting } from '@/renderer/hooks';
 
 import { SettingButton } from '@/renderer/components/atoms/buttons/SettingButton';
 
 export function ToggleSettingButton() {
-  const [isSetting, setIsSetting] = useStore(useShallow((s) => [s.isSetting, s.setIsSetting]));
+  const { isSetting } = useSetting();
+  const { updateIsSetting } = useModifySetting();
 
-  const handleToggleButtonClick = () => {
-    setIsSetting(!isSetting);
-  };
+  const handleToggleButtonClick = useCallback(() => {
+    updateIsSetting(!isSetting);
+  }, [isSetting, updateIsSetting]);
 
   return <SettingButton onClick={handleToggleButtonClick} />;
 }

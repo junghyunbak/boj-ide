@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useTab } from '@/renderer/hooks';
+import { useModifyTab } from '@/renderer/hooks';
 
 import { getElementFromChildren } from '@/renderer/utils';
 
@@ -49,7 +49,7 @@ function MovableTabImpl({
   const [setIsDrag] = useStore(useShallow((s) => [s.setIsDrag])); // for webview
   const [setDestTabIndex] = useStore(useShallow((s) => [s.setDestTabIndex]));
 
-  const { reorderTab } = useTab();
+  const { reorderTab } = useModifyTab();
 
   /**
    * 드래그 이벤트 등록

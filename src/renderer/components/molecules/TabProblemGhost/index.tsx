@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useFetchProblem, useGhostTab, useTab, useWebviewController } from '@/renderer/hooks';
+import { useFetchProblem, useTab, useModifyDailyProblems, useModifyTab, useModifyWebview } from '@/renderer/hooks';
 
 import { placeholderLogo } from '@/renderer/assets/base64Images';
 
@@ -11,9 +11,12 @@ interface TabProblemGhostProps {
 }
 
 export function TabProblemGhost({ num }: TabProblemGhostProps) {
-  const { tabs, addProblemTab } = useTab();
-  const { removeTab } = useGhostTab();
-  const { gotoProblem } = useWebviewController();
+  const { tabs } = useTab();
+
+  const { addProblemTab } = useModifyTab();
+  const { gotoProblem } = useModifyWebview();
+  const { removeTab } = useModifyDailyProblems();
+
   const { tierBase64, title } = useFetchProblem(num);
 
   const handleCloseButtonClick = useCallback(() => {

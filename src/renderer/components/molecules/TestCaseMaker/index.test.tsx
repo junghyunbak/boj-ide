@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import { act } from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { render } from '@/renderer/utils/jest';
 import userEvent from '@testing-library/user-event';
@@ -24,7 +25,9 @@ describe('[UI] TestcaseMaker', () => {
 
       const $input = screen.getByPlaceholderText<HTMLInputElement>('문제 번호');
 
-      await userEvent.type($input, '1000');
+      await act(async () => {
+        await userEvent.type($input, '1000');
+      });
 
       const $addButton = screen.getByRole<HTMLButtonElement>('button');
 

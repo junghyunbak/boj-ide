@@ -1,13 +1,15 @@
-import { TextButton } from '@/renderer/components/atoms/buttons/TextButton';
-import { useTestcase } from '@/renderer/hooks';
 import { useCallback } from 'react';
+
+import { useModifyTestcase } from '@/renderer/hooks';
+
+import { TextButton } from '@/renderer/components/atoms/buttons/TextButton';
 
 interface TestcaseDeleteProps {
   idx: number;
 }
 
 export function TestcaseDelete({ idx }: TestcaseDeleteProps) {
-  const { removeCustomTestcase } = useTestcase();
+  const { removeCustomTestcase } = useModifyTestcase();
 
   const handleRemoveButtonClick = useCallback(() => {
     removeCustomTestcase(idx);

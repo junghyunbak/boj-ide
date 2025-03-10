@@ -1,78 +1,22 @@
-import { useState, useCallback } from 'react';
+import { useRef } from 'react';
 
-import { css } from '@emotion/react';
+import { useEventEditor, useEventSyncLayout, useModifyEditor, useSetupEditor } from '@/renderer/hooks';
 
-import { useResponsiveLayout, useEditor, useEditorVim } from '@/renderer/hooks';
-
-import { zIndex } from '@/renderer/styles';
+import { EditorCodemirrorBox, EditorLayout } from './index.style';
 
 export function EditorCodemirror() {
-  const [editorWidth, setEditorWidth] = useState(0);
-  const [editorHeight, setEditorHeight] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const resizeEditorLayout = useCallback((width: number, height: number) => {
-    setEditorWidth(width);
-    setEditorHeight(height);
-  }, []);
+  const { resizeEditorLayout } = useModifyEditor();
 
-  const { containerRef } = useResponsiveLayout(resizeEditorLayout);
+  const { editorRef, codemirror } = useSetupEditor();
 
-  const { editorRef, view } = useEditor({
-    width: editorWidth,
-    height: editorHeight,
-  });
-
-  /**
-   * 의존성 타입 꼬임으로 인해 타입 에러 발생
-   * codemirror/view 타입 에러 : Two different types with this name exist, but they are unrelated.
-   */
-  // @ts-ignore
-  useEditorVim({ editorRef, view });
+  useEventEditor({ ...codemirror, editorRef });
+  useEventSyncLayout(resizeEditorLayout, containerRef);
 
   return (
-    <div
-      css={(theme) => css`
-        width: 100%;
-        height: 100%;
-
-        .cm-tooltip {
-          z-index: ${zIndex.editor.tooltip} !important;
-        }
-
-        .cm-gutter {
-          padding: 0 10px 0 17px;
-        }
-
-        .cm-cursor {
-          border-color: ${theme.colors.fg};
-        }
-
-        .cm-fat-cursor {
-          background: ${theme.editor.cursorColor} !important;
-        }
-
-        .cm-editor:not(.cm-focused) .cm-fat-cursor {
-          outline: solid 1px ${theme.editor.cursorColor} !important;
-          background: transparent !important;
-        }
-
-        .cm-panels {
-          background-color: transparent;
-          border-top: 1px solid ${theme.colors.border};
-        }
-
-        .cm-vim-panel {
-          padding: 5px 10px;
-        }
-
-        .cm-panels input {
-          color: ${theme.colors.fg} !important;
-          font-family: hack;
-        }
-      `}
-      ref={containerRef}
-    >
-      <div ref={editorRef} />
-    </div>
+    <EditorLayout ref={containerRef}>
+      <EditorCodemirrorBox ref={editorRef} />
+    </EditorLayout>
   );
 }

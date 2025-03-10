@@ -1,173 +1,19 @@
-import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
-
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useTheme as useEmotionTheme } from '@emotion/react';
-
-import { getProblemInfo, isBojProblemUrl } from '@/renderer/utils';
-
-import { createWebviewStyle } from '@/renderer/styles';
-
-import { useWebviewController } from '../useWebviewController';
-import { useTab } from '../useTab';
-import { useProblem } from '../useProblem';
-import { useTheme } from '../useTheme';
-import { useIpcEvent } from '../useIpcEvent';
-
 export function useWebview() {
-  const [webview, setWebview] = useStore(useShallow((s) => [s.webview, s.setWebview]));
+  const [webview] = useStore(useShallow((s) => [s.webview]));
   const [webviewUrl] = useStore(useShallow((s) => [s.webviewUrl]));
   const [webviewIsLoading] = useStore(useShallow((s) => [s.webviewIsLoading]));
 
-  const [startWebviewUrl, setStartWebviewUrl] = useState(webviewUrl);
-
-  const emotionTheme = useEmotionTheme();
-  const { theme } = useTheme();
-  const { addProblemTab } = useTab();
-  const { updateProblem } = useProblem();
-  const { updateWebviewUrl, updateWebviewLoading } = useWebviewController();
-
-  const insertCSSKeyRef = useRef<string>('');
-  const bojOverrideStyle = useMemo(() => createWebviewStyle(emotionTheme), [emotionTheme]);
-
-  const refreshWebviewTheme = useCallback(async () => {
-    if (!webview) {
-      return;
-    }
-
-    if (insertCSSKeyRef.current) {
-      webview.removeInsertedCSS(insertCSSKeyRef.current);
-    }
-
-    if (theme === 'programmers' && isBojProblemUrl(webviewUrl)) {
-      insertCSSKeyRef.current = await webview.insertCSS(bojOverrideStyle);
-    }
-  }, [webview, theme, webviewUrl, bojOverrideStyle]);
-
-  /**
-   * 테마가 변경될 때 마다 웹뷰 스타일 갱신
-   */
-  useEffect(() => {
-    refreshWebviewTheme();
-  }, [refreshWebviewTheme]);
-
-  /**
-   * webview 상태 초기화
-   */
-  useEffect(() => {
-    const newWebview = document.querySelector<Electron.WebviewTag>('webview');
-
-    if (!newWebview) {
-      return function cleanup() {};
-    }
-
-    const handleWebviewDomReady = async () => {
-      setWebview(newWebview);
-    };
-
-    newWebview.addEventListener('dom-ready', handleWebviewDomReady);
-
-    return function cleanup() {
-      newWebview.removeEventListener('dom-ready', handleWebviewDomReady);
-    };
-  }, [setWebview, updateWebviewLoading]);
-
-  /**
-   * 마지막 접속 url 반영
-   */
-  useEffect(() => {
-    if (window.localStorage.getItem('webviewUrl')) {
-      const startUrl = window.localStorage.getItem('webviewUrl');
-
-      if (typeof startUrl === 'string') {
-        setStartWebviewUrl(startUrl);
-      }
-    }
-  }, []);
-
-  /**
-   * webview 새로고침 ipc 이벤트 초기화
-   */
-  useIpcEvent(
-    () => {
-      if (webview) {
-        webview.reload();
-      }
-    },
-    [webview],
-    'reload-webview',
-  );
-
-  /**
-   * webview url 변경 이벤트 초기화
-   */
-  useEffect(() => {
-    if (!webview) {
-      return function cleanup() {};
-    }
-
-    const handleWebviewDidFinishLoad = async () => {
-      await refreshWebviewTheme();
-
-      updateWebviewLoading('finished');
-
-      const url = webview.getURL() || '';
-
-      updateWebviewUrl(url);
-
-      if (!isBojProblemUrl(url)) {
-        updateProblem(null);
-        return;
-      }
-
-      const html = await webview.executeJavaScript('document.documentElement.outerHTML');
-      const realUrl = await webview.executeJavaScript('window.location.href');
-
-      const problemInfo = getProblemInfo(html, realUrl);
-
-      if (!problemInfo) {
-        return;
-      }
-
-      updateProblem(problemInfo);
-      addProblemTab(problemInfo);
-    };
-
-    const handleWebviewWillNavigate = (event: Electron.WillNavigateEvent) => {
-      if (isBojProblemUrl(event.url)) {
-        updateWebviewLoading('loading');
-      }
-    };
-
-    const handleWebviewDidFailLoad = () => {
-      updateWebviewLoading('finished');
-    };
-
-    webview.addEventListener('did-finish-load', handleWebviewDidFinishLoad);
-    webview.addEventListener('did-fail-load', handleWebviewDidFailLoad);
-    webview.addEventListener('will-navigate', handleWebviewWillNavigate);
-
-    return function cleanup() {
-      webview.removeEventListener('did-finish-load', handleWebviewDidFinishLoad);
-      webview.removeEventListener('did-fail-load', handleWebviewDidFailLoad);
-      webview.removeEventListener('will-navigate', handleWebviewWillNavigate);
-    };
-  }, [
-    webview,
-    updateWebviewUrl,
-    updateProblem,
-    addProblemTab,
-    refreshWebviewTheme,
-    webviewIsLoading,
-    updateWebviewLoading,
-  ]);
+  const [canGoBack] = useStore(useShallow((s) => [s.canGoBack]));
+  const [canGoForward] = useStore(useShallow((s) => [s.canGoForward]));
 
   return {
     webview,
     webviewUrl,
     webviewIsLoading,
-    startWebviewUrl,
-    refreshWebviewTheme,
+    canGoBack,
+    canGoForward,
   };
 }

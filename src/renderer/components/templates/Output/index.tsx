@@ -30,17 +30,15 @@ export function Output() {
       >
         <OutputContent />
 
-        <TourOverlay title="알고리즘 실행 결과" myTourStep={5} guideLoc="top" tourRef={tourRef}>
-          <p>코드를 실행한 결과가 출력됩니다.</p>
+        <TourOverlay title="테스트 결과 및 디버깅" myTourStep={5} guideLoc="leftTop" tourRef={tourRef}>
+          <p>테스트 결과가 표시되는 테이블과, 테스트케이스를 추가할 수 있는 생성기가 존재합니다.</p>
           <br />
           <ul>
             <li>
-              {' '}
-              상세 컬럼의 <b>열기</b> 버튼을 눌러 자세한 정보를 확인할 수 있습니다.{' '}
+              테이블의 상세 컬럼의 <b>열기</b> 버튼을 눌러 자세한 테스트 결과를 확인할 수 있습니다.
             </li>
             <li>
-              {' '}
-              <b>삭제</b>와 <b>수정</b>은 사용자 테스트케이스만 가능합니다.{' '}
+              사용자가 추가한 테스트케이스의 경우에만 <b>삭제</b>와 <b>수정</b>이 가능합니다.
             </li>
           </ul>
         </TourOverlay>

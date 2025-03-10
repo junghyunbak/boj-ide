@@ -1,23 +1,22 @@
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
-import { useConfirmModalController, useEditorController } from '@/renderer/hooks';
+import { useModifyEditor, useModifyConfirmModal, useProblem } from '@/renderer/hooks';
 
 import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
 
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 
 import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
 
 export function SubmitButton() {
-  const [problem] = useStore(useShallow((s) => [s.problem]));
-
-  const { fireConfirmModal } = useConfirmModalController();
-  const { getProblemCode } = useEditorController();
-
   const tourRef = useRef<HTMLButtonElement>(null);
 
-  const handleSubmitButtonClick = () => {
+  const { problem } = useProblem();
+
+  const { fireConfirmModal } = useModifyConfirmModal();
+  const { getProblemCode } = useModifyEditor();
+
+  const handleSubmitButtonClick = useCallback(() => {
     if (!problem) {
       return;
     }
@@ -34,7 +33,7 @@ export function SubmitButton() {
         },
       });
     });
-  };
+  }, [fireConfirmModal, getProblemCode, problem]);
 
   return (
     <>

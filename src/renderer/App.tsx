@@ -1,22 +1,9 @@
-import { useEffect } from 'react';
-
-import { BOJ_DOMAIN } from '@/common/constants';
-
 import { MainPage } from '@/renderer/components/pages/MainPage';
 
-import {
-  useAlertModalController,
-  useWebviewController,
-  useTheme,
-  useFocusRecovery,
-  useIpcEvent,
-} from '@/renderer/hooks';
+import { useTheme, useEventFocus, useEventApp, useSetupProblem } from '@/renderer/hooks';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
 
 import { Global, ThemeProvider } from '@emotion/react';
 
@@ -37,40 +24,10 @@ const queryClient = new QueryClient({
 export default function App() {
   const { theme } = useTheme();
 
-  const { fireAlertModal } = useAlertModalController();
-  const { gotoUrl } = useWebviewController();
+  useSetupProblem();
 
-  const [setBaekjoonhubExtensionId] = useStore(useShallow((s) => [s.setBaekjoonhubExtensionId]));
-
-  useFocusRecovery();
-
-  useIpcEvent(
-    ({ data: { message } }) => {
-      fireAlertModal('에러 발생', message);
-    },
-    [fireAlertModal],
-    'occur-error',
-  );
-
-  useIpcEvent(
-    ({ data: { problemNumber } }) => {
-      gotoUrl(`https://${BOJ_DOMAIN}/problem/${problemNumber}`);
-    },
-    [gotoUrl],
-    'open-problem',
-  );
-
-  useIpcEvent(
-    ({ data: { extensionId } }) => {
-      setBaekjoonhubExtensionId(extensionId);
-    },
-    [setBaekjoonhubExtensionId],
-    'set-baekjoonhub-id',
-  );
-
-  useEffect(() => {
-    window.electron.ipcRenderer.sendMessage('open-deep-link');
-  }, [fireAlertModal, gotoUrl, setBaekjoonhubExtensionId]);
+  useEventFocus();
+  useEventApp();
 
   return (
     <ThemeProvider theme={themes[theme]}>

@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { css } from '@emotion/react';
 
 import { useStore } from '@/renderer/store';
 
-import { useProblem, useAlertModalController, useTestcase } from '@/renderer/hooks';
+import { useProblem, useModifyAlertModal, useModifyTestcase, useTestcase } from '@/renderer/hooks';
 
 import { TextArea } from '@/renderer/components/atoms/textareas/TextArea';
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
@@ -13,25 +13,22 @@ import { ThreeLineHorizontalResizer } from '@/renderer/components/atoms/lines/Th
 
 import { SplitLayout } from '@/renderer/components/molecules/SplitLayout';
 
+import { TESTCASE_MAKER_TEXTAREA_DFEAULT_HEIGHT, TESTCASE_MAKER_TEXTAREA_MIN_HEIGHT } from '@/renderer/constants';
+
 // [v]: 문제 번호가 작성되어있다면 테스트케이스 추가 버튼이 활성화되어있어야 한다.
 // [v]: 문제가 초기화 되어있지 않다면, 테스트케이스 추가 버튼을 누를 수 없어야 한다
 // [v]: 문제가 초기화 되어있지만 표준 입/출력이 비어있다면, 테스트케이스 추가 버튼을 눌렀을 때 에러 메세지를 출력해야한다.
 export function TestCaseMaker() {
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
-  const [problemNumber, setProblemNumber] = useState('');
 
   const { problem } = useProblem();
-  const { addCustomTestcase } = useTestcase();
-  const { fireAlertModal } = useAlertModalController();
+  const { testcaseInputProblemNumber } = useTestcase();
 
-  useEffect(() => {
-    if (problem) {
-      setProblemNumber(problem.number);
-    }
-  }, [problem]);
+  const { addCustomTestcase, updateTestcaseInputProblemNumber } = useModifyTestcase();
+  const { fireAlertModal } = useModifyAlertModal();
 
-  const handleAddTestCaseButtonClick = () => {
+  const handleAddTestCaseButtonClick = useCallback(() => {
     const item: TC = {
       input,
       output,
@@ -45,28 +42,31 @@ export function TestCaseMaker() {
 
     window.electron.ipcRenderer.sendMessage('log-add-testcase', {
       data: {
-        number: problemNumber,
+        number: testcaseInputProblemNumber,
         language: useStore.getState().lang,
       },
     });
 
-    addCustomTestcase(item, problemNumber);
+    addCustomTestcase(item, testcaseInputProblemNumber);
 
     setInput('');
     setOutput('');
-  };
+  }, [addCustomTestcase, fireAlertModal, input, output, testcaseInputProblemNumber]);
 
-  const handleInputTextChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    if (!/^[0-9]*$/.test(e.target.value)) {
-      return;
-    }
+  const handleInputTextChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      if (!/^[0-9]*$/.test(e.target.value)) {
+        return;
+      }
 
-    setProblemNumber(e.target.value);
-  };
+      updateTestcaseInputProblemNumber(e.target.value);
+    },
+    [updateTestcaseInputProblemNumber],
+  );
 
-  const disabled = problem === null && problemNumber === '';
+  const disabled = problem === null && testcaseInputProblemNumber === '';
 
-  const splitLayoutPxOption = useMemo(() => ({ min: 100 }), []);
+  const splitLayoutPxOption = useMemo(() => ({ min: TESTCASE_MAKER_TEXTAREA_MIN_HEIGHT, max: Infinity }), []);
 
   return (
     <div
@@ -77,7 +77,7 @@ export function TestCaseMaker() {
       `}
     >
       <SplitLayout vertical>
-        <SplitLayout.Left px={splitLayoutPxOption}>
+        <SplitLayout.Left px={splitLayoutPxOption} initialRatio={TESTCASE_MAKER_TEXTAREA_DFEAULT_HEIGHT}>
           <div
             css={css`
               height: 100%;
@@ -90,14 +90,12 @@ export function TestCaseMaker() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="예제 입력"
               disabled={disabled}
-              style={{ minHeight: '100px' }}
             />
             <TextArea
               value={output}
               onChange={(e) => setOutput(e.target.value)}
               placeholder="예제 출력"
               disabled={disabled}
-              style={{ minHeight: '100px' }}
             />
           </div>
         </SplitLayout.Left>
@@ -114,7 +112,7 @@ export function TestCaseMaker() {
               gap: 0.5rem;
             `}
           >
-            {!problem && <TextInput value={problemNumber} onChange={handleInputTextChange} />}
+            {!problem && <TextInput value={testcaseInputProblemNumber} onChange={handleInputTextChange} />}
 
             <ActionButton onClick={handleAddTestCaseButtonClick} disabled={disabled}>
               테스트케이스 추가
