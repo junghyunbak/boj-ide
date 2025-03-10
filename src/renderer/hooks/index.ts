@@ -1,16 +1,4 @@
 /**
- * paint
- */
-export * from './useFabricCanvas';
-export * from './useFabricCanvasEvent';
-export * from './useFabricCanvasInit';
-export * from './useFabricCanvasController';
-
-export * from './usePaint';
-export * from './usePaintEvent';
-export * from './usePaintController';
-
-/**
  * modal
  */
 export * from './useClickOutOfModal';
@@ -36,6 +24,8 @@ export * from './useConfirmModal';
 export * from './useTestcase';
 export * from './useTheme';
 export * from './useEditor';
+export * from './usePaint';
+export * from './useFabric';
 
 /**
  * setup
@@ -46,6 +36,8 @@ export * from './useSetupWebview';
 export * from './useSetupJudge';
 export * from './useSetupProblem';
 export * from './useSetupEditor';
+export * from './useSetupPaint';
+export * from './useSetupFabric';
 
 /**
  * fetch
@@ -68,6 +60,8 @@ export * from './useModifyConfirmModal';
 export * from './useModifyTestcase';
 export * from './useModifyTheme';
 export * from './useModifyEditor';
+export * from './useModifyFabric';
+export * from './useModifyPaint';
 
 /**
  * event
@@ -80,3 +74,5 @@ export * from './useEventJudge';
 export * from './useEventFocus';
 export * from './useEventTab';
 export * from './useEventEditor';
+export * from './useEventPaint';
+export * from './useEventFabric';

@@ -10,7 +10,7 @@ import { ReactComponent as Pencil } from '@/renderer/assets/svgs/pencil.svg';
 import { ReactComponent as Expand } from '@/renderer/assets/svgs/expand.svg';
 import { ReactComponent as Shrink } from '@/renderer/assets/svgs/shrink.svg';
 
-import { usePaintController } from '@/renderer/hooks';
+import { useModifyPaint } from '@/renderer/hooks';
 
 import {
   PaintControllerBox,
@@ -33,7 +33,7 @@ export function EditorPaintController() {
     handlBrushColorButtonClick,
     handleBrushWidthButtonClick,
     handleButtonMouseDown,
-  } = usePaintController();
+  } = useModifyPaint();
 
   return (
     <PaintControllerBox>
@@ -120,7 +120,7 @@ export function EditorPaintController() {
 function PaintExpandButton() {
   const [isExpand] = useFabricStore(useShallow((s) => [s.isExpand]));
 
-  const { handleExpandButtonClick, handleButtonMouseDown } = usePaintController();
+  const { handleExpandButtonClick, handleButtonMouseDown } = useModifyPaint();
 
   return (
     <ExpandShrinkButton onClick={handleExpandButtonClick} onMouseDown={handleButtonMouseDown}>

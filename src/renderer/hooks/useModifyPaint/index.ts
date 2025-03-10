@@ -2,16 +2,15 @@ import { useCallback } from 'react';
 
 import { useFabricStore, useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
-import { useFabricCanvasController } from '../useFabricCanvasController';
+import { useModifyFabric } from '../useModifyFabric';
 
-export function usePaintController() {
-  const [paintRef] = useFabricStore(useShallow((s) => [s.paintRef]));
+export function useModifyPaint() {
   const [setMode] = useFabricStore(useShallow((s) => [s.setMode]));
   const [setBrushWidth] = useFabricStore(useShallow((s) => [s.setBrushWidth]));
   const [setBrushColor] = useFabricStore(useShallow((s) => [s.setBrushColor]));
-  const [isExpand, setIsExpand] = useFabricStore(useShallow((s) => [s.isExpand, s.setIsExpand]));
+  const [setIsExpand] = useFabricStore(useShallow((s) => [s.setIsExpand]));
 
-  const { backupFabricCanvasData } = useFabricCanvasController();
+  const { backupFabricCanvasData } = useModifyFabric();
 
   const handleFabricCanvasModeButtonClick = useCallback(
     (mode: FabricCanvasMode) => {
@@ -41,14 +40,18 @@ export function usePaintController() {
   );
 
   const handleExpandButtonClick = useCallback(() => {
+    const { isExpand } = useFabricStore.getState();
+
     setIsExpand(!isExpand);
-  }, [setIsExpand, isExpand]);
+  }, [setIsExpand]);
 
   const handleButtonMouseDown: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     /**
      * 버튼 클릭으로 인한 fabric canvas의 focus blur를 방지
      */
     e.preventDefault();
+
+    const { paintRef } = useFabricStore.getState();
 
     paintRef.current?.focus();
   };

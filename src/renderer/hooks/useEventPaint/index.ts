@@ -3,15 +3,15 @@ import { useEffect } from 'react';
 import { useFabricStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useFabricCanvasController } from '../useFabricCanvasController';
+import { useModifyFabric } from '../useModifyFabric';
 
-export function usePaintEvent() {
+export function useEventPaint() {
   const [setIsCtrlKeyPressed] = useFabricStore(useShallow((s) => [s.setIsCtrlKeyPressed]));
   const [setMode] = useFabricStore(useShallow((s) => [s.setMode]));
   const [paintRef] = useFabricStore(useShallow((s) => [s.paintRef]));
 
   const { unactiveAllFabricSelection, removeFabricActiveObject, activeAllFabricSelection, redo, undo } =
-    useFabricCanvasController();
+    useModifyFabric();
 
   /**
    * 그림판 단축키 이벤트 등록

@@ -5,45 +5,8 @@ import { useEffect } from 'react';
 import { useFabricStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useFabricCanvasController } from '../useFabricCanvasController';
-
-export function useFabricCanvasEvent() {
-  const [mode] = useFabricStore(useShallow((s) => [s.mode]));
+export function useEventFabric() {
   const [canvas] = useFabricStore(useShallow((s) => [s.canvas]));
-  const [brushWidth] = useFabricStore(useShallow((s) => [s.brushWidth]));
-  const [brushColor] = useFabricStore(useShallow((s) => [s.brushColor]));
-
-  const { changeHandMode, changeSelectMode, changePenMode } = useFabricCanvasController();
-
-  /**
-   * - 모드 (select, hand, pen)
-   * - 펜 두께
-   * - 펜 색상
-   *
-   * 이 변경될 때 마다 fabric 상태 업데이트
-   */
-  useEffect(() => {
-    switch (mode) {
-      case 'select':
-        changeSelectMode();
-        break;
-      case 'hand':
-        changeHandMode();
-        break;
-      case 'pen':
-      default:
-        changePenMode({ brushWidth, brushColor });
-        break;
-    }
-  }, [
-    mode,
-    brushWidth,
-    brushColor,
-    changeSelectMode,
-    changePenMode,
-    changeHandMode,
-    canvas, // 캔버스가 초기화 되기 이전에 실행될 수 있으므로, 의존성에 canvas를 꼭 추가해야 함.
-  ]);
 
   /**
    * fabric 캔버스에

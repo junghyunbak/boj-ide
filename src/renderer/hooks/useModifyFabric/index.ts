@@ -5,7 +5,7 @@ import { useFabricStore } from '@/renderer/store';
 import { fabric } from 'fabric';
 import { useShallow } from 'zustand/shallow';
 
-export function useFabricCanvasController() {
+export function useModifyFabric() {
   const [setIsHand] = useFabricStore(useShallow((s) => [s.setIsHand]));
 
   const backupFabricCanvasData = useCallback((problemNumber: string, canvas: fabric.Canvas | null) => {

@@ -1,27 +1,18 @@
-import { useEffect } from 'react';
-
 import { useFabricStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useFabricCanvasController } from '../useFabricCanvasController';
-import { usePaintEvent } from '../usePaintEvent';
+import { useModifyFabric } from '../useModifyFabric';
 import { useResponsiveLayout } from '../useResponsiveLayout';
 
 export function usePaint() {
-  const [setPaintRef] = useFabricStore(useShallow((s) => [s.setPaintRef]));
+  const [isExpand] = useFabricStore(useShallow((s) => [s.isExpand]));
 
-  const { containerRef } = useResponsiveLayout(useFabricCanvasController().updateFabricCanvasSize);
+  const { updateFabricCanvasSize } = useModifyFabric();
 
-  usePaintEvent();
-
-  /**
-   * paintRef 동기화
-   */
-  useEffect(() => {
-    setPaintRef(containerRef);
-  }, [containerRef, setPaintRef]);
+  const { containerRef } = useResponsiveLayout(updateFabricCanvasSize);
 
   return {
+    isExpand,
     containerRef,
   };
 }
