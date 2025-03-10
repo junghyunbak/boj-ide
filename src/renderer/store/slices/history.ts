@@ -1,4 +1,4 @@
-import { HISTORY_MODAL_DEFAULT_HEIGHT } from '@/renderer/components/molecules/HistoryModal';
+import { HISTORY_MODAL_DEFAULT_HEIGHT } from '@/renderer/constants';
 import { type StateCreator } from 'zustand';
 
 type HistorySlice = {

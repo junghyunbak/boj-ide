@@ -16,15 +16,13 @@ import {
 
 import { placeholderLogo } from '@/renderer/assets/base64Images';
 
-import { SplitLayout } from '../SplitLayout';
+import { HISTORY_MODAL_MAX_HEIGHT, HISTORY_MODAL_MIN_HEIGHT } from '@/renderer/constants';
 
-import { NonModal } from '../../atoms/modal/NonModal';
-import { XButton } from '../../atoms/buttons/XButton';
-import { ThreeLineHorizontalResizer } from '../../atoms/lines/ThreeLineHorizontalResizer';
+import { SplitLayout } from '@/renderer/components/molecules/SplitLayout';
 
-export const HISTORY_MODAL_MIN_HEIGHT = 0;
-export const HISTORY_MODAL_DEFAULT_HEIGHT = 250;
-export const HISTORY_MODAL_MAX_HEIGHT = 700;
+import { NonModal } from '@/renderer/components/atoms/modal/NonModal';
+import { XButton } from '@/renderer/components/atoms/buttons/XButton';
+import { ThreeLineHorizontalResizer } from '@/renderer/components/atoms/lines/ThreeLineHorizontalResizer';
 
 export function HistoryModal() {
   const { isHistoryModalOpen, histories, isHistoryEmpty } = useHistories();

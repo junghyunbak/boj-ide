@@ -13,8 +13,7 @@ import { ThreeLineHorizontalResizer } from '@/renderer/components/atoms/lines/Th
 
 import { SplitLayout } from '@/renderer/components/molecules/SplitLayout';
 
-const TESTCASE_MAKER_TEXTAREA_DFEAULT_HEIGHT = 130;
-const TESTCASE_MAKER_TEXTAREA_MIN_HEIGHT = 0;
+import { TESTCASE_MAKER_TEXTAREA_DFEAULT_HEIGHT, TESTCASE_MAKER_TEXTAREA_MIN_HEIGHT } from '@/renderer/constants';
 
 // [v]: 문제 번호가 작성되어있다면 테스트케이스 추가 버튼이 활성화되어있어야 한다.
 // [v]: 문제가 초기화 되어있지 않다면, 테스트케이스 추가 버튼을 누를 수 없어야 한다
