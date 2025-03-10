@@ -3,6 +3,8 @@ import { useCallback } from 'react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
+import { HISTORY_MAX_LENGTH } from '@/renderer/constants';
+
 export function useModifyHistories() {
   const [setHistories] = useStore(useShallow((s) => [s.setHistories]));
   const [setIsHistoryModalOpen] = useStore(useShallow((s) => [s.setIsHistoryModalOpen]));
@@ -10,23 +12,14 @@ export function useModifyHistories() {
   const addHistory = useCallback(
     (problemInfo: ProblemInfo) => {
       setHistories((prev) => {
-        return [problemInfo, ...prev.filter((problem) => problem.number !== problemInfo.number)];
+        return [problemInfo, ...prev.filter((problem) => problem.number !== problemInfo.number)].slice(
+          0,
+          HISTORY_MAX_LENGTH,
+        );
       });
     },
     [setHistories],
   );
-
-  const popHistory = useCallback(() => {
-    const { histories } = useStore.getState();
-
-    const next = [...histories];
-
-    const ret = next.pop();
-
-    setHistories(next);
-
-    return ret;
-  }, [setHistories]);
 
   const removeHistory = useCallback(
     (idx: number) => {
@@ -51,7 +44,6 @@ export function useModifyHistories() {
 
   return {
     addHistory,
-    popHistory,
     removeHistory,
     openHistoryModal,
     closeHistoryModal,
