@@ -1,25 +1,35 @@
 import { useCallback } from 'react';
 
 import { useStore } from '@/renderer/store';
+import { useShallow } from 'zustand/shallow';
 
 export function useModifyProblem() {
-  const updateProblem = useCallback((newProblem: ProblemInfo | null) => {
-    const { problem, setProblem } = useStore.getState();
-    if (!newProblem) {
-      setProblem(newProblem);
-      return;
-    }
+  const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
 
-    if (problem && problem.number === newProblem.number) {
-      problem.name = newProblem.name;
-      problem.testCase = newProblem.testCase;
-      problem.inputDesc = newProblem.inputDesc;
-      problem.testCase = newProblem.testCase;
-      return;
-    }
+  const updateProblem = useCallback(
+    (newProblem: ProblemInfo | null) => {
+      setProblem((prev) => {
+        if (!prev) {
+          return newProblem;
+        }
 
-    setProblem(newProblem);
-  }, []);
+        if (prev.number !== newProblem?.number) {
+          return newProblem;
+        }
+
+        if (prev.testCase.inputs.length === 0) {
+          return newProblem;
+        }
+
+        prev.name = newProblem.name;
+        prev.testCase = newProblem.testCase;
+        prev.inputDesc = newProblem.inputDesc;
+
+        return prev;
+      });
+    },
+    [setProblem],
+  );
 
   return {
     updateProblem,

@@ -2,9 +2,11 @@ import { type StateCreator } from 'zustand';
 
 type CustomTestcases = Record<string, TC[] | undefined>;
 
+type Problem = ProblemInfo | null;
+
 type ProblemSlice = {
-  problem: ProblemInfo | null;
-  setProblem(problem: ProblemInfo | null): void;
+  problem: Problem;
+  setProblem(fn: ((problem: Problem) => Problem) | Problem): void;
 
   customTestCase: CustomTestcases; // TODO: customTestCase -> customTestcases
   setCustomTestcases: (fn: (prev: CustomTestcases) => CustomTestcases) => void;
@@ -15,8 +17,8 @@ type ProblemSlice = {
 
 export const createProblemSlice: StateCreator<ProblemSlice> = (set, get): ProblemSlice => ({
   problem: null,
-  setProblem(problem) {
-    set(() => ({ problem }));
+  setProblem(fn) {
+    set((s) => ({ problem: typeof fn === 'function' ? fn(s.problem) : fn }));
   },
 
   customTestCase: {},
