@@ -21,11 +21,6 @@ export * from './useClickOutOfModal';
 export * from './useResponsiveLayout';
 
 /**
- * api
- */
-export * from './useStreamingAICode';
-
-/**
  * editor
  */
 export * from './useEditor';
@@ -63,6 +58,7 @@ export * from './useSetupProblem';
  */
 export * from './useFetchProblem';
 export * from './useFetchDailyProblem';
+export * from './useFetchAICode';
 
 /**
  * modify
