@@ -30,7 +30,7 @@ export function Output() {
       >
         <OutputContent />
 
-        <TourOverlay title="알고리즘 실행 결과" myTourStep={5} guideLoc="top" tourRef={tourRef}>
+        <TourOverlay title="알고리즘 실행 결과" myTourStep={5} guideLoc="leftTop" tourRef={tourRef}>
           <p>코드를 실행한 결과가 출력됩니다.</p>
           <br />
           <ul>
