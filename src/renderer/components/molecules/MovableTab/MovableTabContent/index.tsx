@@ -13,7 +13,7 @@ const CloseButtonType = (<MovableTabContentCloseButton />).type;
 const DetailType = (<MovableTabContentDetail />).type;
 
 function MovableTabContentImpl({ children }: React.PropsWithChildren) {
-  const { isSelect } = useMovableTabContext();
+  const { isSelect, ghost } = useMovableTabContext();
 
   const Icon = getElementFromChildren(children, IconType);
   const CloseButton = getElementFromChildren(children, CloseButtonType);
@@ -27,6 +27,12 @@ function MovableTabContentImpl({ children }: React.PropsWithChildren) {
         align-items: center;
 
         padding: 0.5rem 0.8rem;
+
+        ${ghost
+          ? css`
+              opacity: 0.5;
+            `
+          : css``}
 
         ${isSelect
           ? css`

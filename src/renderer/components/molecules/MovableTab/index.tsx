@@ -163,7 +163,7 @@ function MovableTabImpl({
 
   return (
     <MovableTabContext.Provider value={{ isSelect, tabIndex, ghost }}>
-      <TabLayout ref={containerRef} onClick={handleTabClick} ghost={ghost} polyfill={polyfill}>
+      <TabLayout ref={containerRef} onClick={handleTabClick} polyfill={polyfill}>
         {TopBorder}
         {RightBorder}
         {BottomBorder}
