@@ -8,19 +8,25 @@ import { useFetchDailyProblem } from '../useFetchDailyProblem';
 export function useSetupDailyProblems() {
   const [setDailyProblem] = useStore(useShallow((s) => [s.setDailyProblem]));
 
-  const { yyyySmmSdd, dailyProblems } = useFetchDailyProblem();
+  const data = useFetchDailyProblem();
 
   useEffect(() => {
-    if (!dailyProblems || dailyProblems.length === 0) {
+    if (!data) {
       return;
     }
 
     setDailyProblem((prev) => {
-      if (prev && prev[0] === yyyySmmSdd) {
-        return prev;
+      const { date, problemNumbers } = data;
+
+      if (!prev) {
+        return [date, problemNumbers];
       }
 
-      return [yyyySmmSdd, dailyProblems];
+      if (prev[0] !== date) {
+        return [date, problemNumbers];
+      }
+
+      return prev;
     });
-  }, [yyyySmmSdd, dailyProblems, setDailyProblem]);
+  }, [data, setDailyProblem]);
 }

@@ -1,56 +1,43 @@
-import { createDateString } from '@/renderer/utils';
+import { FETCH_DOMAIN } from '@/common/constants';
 import { useQuery } from '@tanstack/react-query';
-import { Octokit } from 'octokit';
+import axios from 'axios';
+import { z } from 'zod';
 
-const octokit = new Octokit({ throttle: { enabled: false } });
+const dailyProblemScheme = z.object({
+  date: z.string(),
+  problems: z.array(
+    z.object({
+      problemId: z.string(),
+      title: z.string(),
+      level: z.number(),
+    }),
+  ),
+});
 
 export function useFetchDailyProblem() {
-  const today = new Date();
-
-  const yyyySmmSdd = createDateString(today, 'yyyySmmSdd');
-
-  const { data: dailyProblems } = useQuery({
-    queryKey: [yyyySmmSdd],
-    queryFn: async ({ queryKey }) => {
+  const { data: dailyProblemObject } = useQuery({
+    queryKey: [],
+    queryFn: async () => {
       try {
-        const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-          owner: 'tony9402',
-          repo: 'baekjoon',
-          path: '/scripts/picked.json',
-          headers: {
-            'X-GitHub-Api-Version': '2022-11-28',
-          },
-        });
+        const { data } = await axios.get<z.infer<typeof dailyProblemScheme>>(`${FETCH_DOMAIN}/api/solved/daily`);
 
-        if (data instanceof Array || data.type !== 'file') {
-          throw new Error('');
-        }
+        const parseData = dailyProblemScheme.parse(data);
 
-        const dateToProblemNumbers = JSON.parse(atob(data.content));
-
-        if (!(dateToProblemNumbers instanceof Object)) {
-          throw new Error('');
-        }
-
-        const problemNumbers = dateToProblemNumbers[queryKey[0]];
-
-        if (
-          !(problemNumbers instanceof Array) ||
-          !problemNumbers.length ||
-          !problemNumbers.every((problemNumber) => typeof problemNumber === 'string')
-        ) {
-          throw new Error('');
-        }
-
-        return problemNumbers;
+        return parseData;
       } catch (e) {
+        console.error(e);
+
         return null;
       }
     },
   });
 
+  if (!dailyProblemObject) {
+    return null;
+  }
+
   return {
-    yyyySmmSdd,
-    dailyProblems,
+    date: dailyProblemObject.date,
+    problemNumbers: dailyProblemObject.problems.map((problem) => problem.problemId),
   };
 }

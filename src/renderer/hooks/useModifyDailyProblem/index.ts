@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useStore } from '@/renderer/store';
 
 export function useModifyDailyProblems() {
-  const removeTab = useCallback((removeProblem: string) => {
+  const removeDailyProblemTab = useCallback((removeProblem: string) => {
     const { setDailyProblem } = useStore.getState();
 
     setDailyProblem((prev) => {
@@ -21,5 +21,5 @@ export function useModifyDailyProblems() {
     setActiveDailyProblem(!activeDailyProblem);
   }, []);
 
-  return { removeTab, toggleActiveDailyProblem };
+  return { removeDailyProblemTab, toggleActiveDailyProblem };
 }

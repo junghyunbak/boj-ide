@@ -15,23 +15,21 @@ export function TabProblemGhost({ num }: TabProblemGhostProps) {
 
   const { addProblemTab } = useModifyTab();
   const { gotoProblem } = useModifyWebview();
-  const { removeTab } = useModifyDailyProblems();
+  const { removeDailyProblemTab } = useModifyDailyProblems();
 
   const { tierBase64, title } = useFetchProblem(num);
 
   const handleCloseButtonClick = useCallback(() => {
-    removeTab(num);
-  }, [removeTab, num]);
+    removeDailyProblemTab(num);
+  }, [removeDailyProblemTab, num]);
 
   const handleTabClick = useCallback(() => {
     const tmpProblem: ProblemInfo = { number: num, name: title, testCase: { inputs: [], outputs: [] } };
 
-    removeTab(num);
-
+    removeDailyProblemTab(num);
     addProblemTab(tmpProblem);
-
     gotoProblem(tmpProblem);
-  }, [num, title, removeTab, addProblemTab, gotoProblem]);
+  }, [num, title, removeDailyProblemTab, addProblemTab, gotoProblem]);
 
   return (
     <MovableTab tabIndex={tabs.length} onClick={handleTabClick} ghost>
