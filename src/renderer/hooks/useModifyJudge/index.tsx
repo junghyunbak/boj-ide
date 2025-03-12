@@ -37,7 +37,7 @@ export function useModifyJudge() {
     const inputs: string[] = [...problemTC.inputs, ...customTC.inputs];
     const outputs: string[] = [...problemTC.outputs, ...customTC.outputs];
 
-    saveFile();
+    saveFile({ silence: true });
 
     const n = Math.min(inputs.length, outputs.length);
 
