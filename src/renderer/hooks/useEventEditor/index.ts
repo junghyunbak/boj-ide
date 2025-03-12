@@ -8,6 +8,7 @@ import { useStore } from '@/renderer/store';
 import { useModifyEditor } from '../useModifyEditor';
 import { useEventIpc } from '../useEventIpc';
 import { useEditor } from '../useEditor';
+import { useEventElement } from '../useEventElement';
 
 export function useEventEditor() {
   const { editorRef, editorView, editorState, setEditorState } = useEditor();
@@ -84,14 +85,8 @@ export function useEventEditor() {
   /**
    * autoComplete 모달이 있을 경우에도 esc키 입력 시 Vim 일반 모드로 진입되게끔 이벤트 등록
    */
-  useEffect(() => {
-    const editor = editorRef.current;
-
-    if (!editor) {
-      return () => {};
-    }
-
-    const editorKeyDownHandler = (e: KeyboardEvent) => {
+  useEventElement(
+    (e) => {
       if (e.key === 'Escape' && editorView) {
         /**
          * 의존성 타입 꼬임으로 인해 타입 에러 발생
@@ -104,14 +99,11 @@ export function useEventEditor() {
           Vim.exitInsertMode(cm);
         }
       }
-    };
-
-    editor.addEventListener('keydown', editorKeyDownHandler);
-
-    return () => {
-      editor.removeEventListener('keydown', editorKeyDownHandler);
-    };
-  }, [editorRef, editorView]);
+    },
+    [editorView],
+    'keydown',
+    editorRef.current,
+  );
 
   /**
    * codemirror -> webview -> App
@@ -122,23 +114,16 @@ export function useEventEditor() {
    *            ^
    *            여기서 실행되는 blur 이벤트에서 포커스를 초기화 함.
    */
-  useEffect(() => {
-    const $cmContent = document.querySelector('.cm-content');
-
-    if (!($cmContent instanceof HTMLDivElement)) {
-      return function cleanup() {};
-    }
-
-    const handleCmContentBlur = () => {
-      $cmContent.blur();
-    };
-
-    $cmContent.addEventListener('blur', handleCmContentBlur);
-
-    return function cleanup() {
-      $cmContent.removeEventListener('blur', handleCmContentBlur);
-    };
-  }, [editorView]);
+  useEventElement(
+    (e) => {
+      if (e.target instanceof HTMLElement) {
+        e.target.blur();
+      }
+    },
+    [],
+    'blur',
+    editorView?.contentDOM,
+  );
 
   /**
    * 코드 초기화 이벤트 등록

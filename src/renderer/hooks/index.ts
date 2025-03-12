@@ -61,6 +61,7 @@ export * from './useModifyHistories';
  */
 export * from './useEventIpc';
 export * from './useEventWindow';
+export * from './useEventElement';
 export * from './useEventApp';
 export * from './useEventWebview';
 export * from './useEventJudge';
