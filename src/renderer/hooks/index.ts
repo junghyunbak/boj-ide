@@ -65,7 +65,6 @@ export * from './useEventElement';
 export * from './useEventApp';
 export * from './useEventWebview';
 export * from './useEventJudge';
-export * from './useEventFocus';
 export * from './useEventTab';
 export * from './useEventEditor';
 export * from './useEventPaint';

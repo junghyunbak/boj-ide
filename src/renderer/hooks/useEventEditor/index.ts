@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { Vim, getCM } from '@replit/codemirror-vim';
 import { EditorState } from '@uiw/react-codemirror';
@@ -9,8 +9,12 @@ import { useModifyEditor } from '../useModifyEditor';
 import { useEventIpc } from '../useEventIpc';
 import { useEditor } from '../useEditor';
 import { useEventElement } from '../useEventElement';
+import { useEventWindow } from '../useEventWindow';
 
 export function useEventEditor() {
+  const curFocusRef = useRef<Element | null>(null);
+  const lastFocusRef = useRef<Element | null>(null);
+
   const { editorRef, editorView, editorState, setEditorState } = useEditor();
 
   const { saveFile, initialEditorCode, getEditorValue, updateEditorVimMode } = useModifyEditor();
@@ -123,6 +127,40 @@ export function useEventEditor() {
     [],
     'blur',
     editorView?.contentDOM,
+  );
+
+  useEventWindow(
+    () => {
+      if (curFocusRef.current !== document.activeElement) {
+        curFocusRef.current = document.activeElement;
+      }
+    },
+    [],
+    'click',
+  );
+
+  useEventWindow(
+    () => {
+      lastFocusRef.current = curFocusRef.current;
+    },
+    [],
+    'blur',
+  );
+
+  useEventWindow(
+    () => {
+      setTimeout(() => {
+        const $view = editorView?.contentDOM;
+
+        const isNoFocus = document.activeElement === document.body;
+
+        if ($view && $view === lastFocusRef.current && isNoFocus) {
+          $view.focus();
+        }
+      }, 50);
+    },
+    [editorView],
+    'focus',
   );
 
   /**

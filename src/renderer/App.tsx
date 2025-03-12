@@ -1,6 +1,6 @@
 import { MainPage } from '@/renderer/components/pages/MainPage';
 
-import { useTheme, useEventFocus, useEventApp, useSetupProblem } from '@/renderer/hooks';
+import { useTheme, useEventApp, useSetupProblem } from '@/renderer/hooks';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -25,7 +25,6 @@ export default function App() {
 
   useSetupProblem();
 
-  useEventFocus();
   useEventApp();
 
   return (
