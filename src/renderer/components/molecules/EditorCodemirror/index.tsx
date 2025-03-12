@@ -9,12 +9,10 @@ export function EditorCodemirror() {
 
   const { editorRef } = useEditor();
 
-  const { resizeEditorLayout } = useModifyEditor();
+  useSetupEditor();
 
-  const { codemirror } = useSetupEditor();
-
-  useEventEditor(codemirror);
-  useEventSyncLayout(resizeEditorLayout, containerRef);
+  useEventEditor();
+  useEventSyncLayout(useModifyEditor().resizeEditorLayout, containerRef);
 
   return (
     <EditorLayout ref={containerRef}>

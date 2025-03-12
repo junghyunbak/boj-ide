@@ -1,3 +1,4 @@
+import { type EditorState, type EditorView } from '@uiw/react-codemirror';
 import { type StateCreator } from 'zustand';
 
 type EditorSlice = {
@@ -21,6 +22,15 @@ type EditorSlice = {
 
   vimMode: string;
   setVimMode: (mode: string) => void;
+
+  editorState: EditorState | undefined;
+  updateEditorState(editorState: EditorState | undefined): void;
+
+  setEditorState: React.Dispatch<React.SetStateAction<EditorState | undefined>> | null;
+  updateSetEditorState(setState: React.Dispatch<React.SetStateAction<EditorState | undefined>>): void;
+
+  editorView: EditorView | undefined;
+  updateEditorView(editorView: EditorView | undefined): void;
 
   /**
    * editor 값
@@ -112,4 +122,19 @@ export const createEditorSlice: StateCreator<EditorSlice> = (set, get): EditorSl
   },
 
   editorRef: { current: null },
+
+  editorState: undefined,
+  updateEditorState(editorState) {
+    set(() => ({ editorState }));
+  },
+
+  setEditorState: null,
+  updateSetEditorState(setState) {
+    set(() => ({ setEditorState: setState }));
+  },
+
+  editorView: undefined,
+  updateEditorView(editorView) {
+    set(() => ({ editorView }));
+  },
 });

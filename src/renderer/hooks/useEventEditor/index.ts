@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { Vim, getCM } from '@replit/codemirror-vim';
-import { useCodeMirror, EditorState } from '@uiw/react-codemirror';
+import { EditorState } from '@uiw/react-codemirror';
 
 import { useStore } from '@/renderer/store';
 
@@ -9,8 +9,8 @@ import { useModifyEditor } from '../useModifyEditor';
 import { useEventIpc } from '../useEventIpc';
 import { useEditor } from '../useEditor';
 
-export function useEventEditor({ view, state, setState }: ReturnType<typeof useCodeMirror>) {
-  const { editorRef } = useEditor();
+export function useEventEditor() {
+  const { editorRef, editorView, editorState, setEditorState } = useEditor();
 
   const { saveFile, initialEditorCode, getEditorValue, updateEditorVimMode } = useModifyEditor();
 
@@ -29,7 +29,7 @@ export function useEventEditor({ view, state, setState }: ReturnType<typeof useC
    * vim 모드 상태 전역 상태 동기화
    */
   useEffect(() => {
-    if (!view) {
+    if (!editorView) {
       return () => {};
     }
 
@@ -38,7 +38,7 @@ export function useEventEditor({ view, state, setState }: ReturnType<typeof useC
      * codemirror/state 타입 에러 : Two different types with this name exist, but they are unrelated.
      */
     // @ts-ignore
-    const cm = getCM(view);
+    const cm = getCM(editorView);
 
     if (!cm) {
       return () => {};
@@ -55,7 +55,7 @@ export function useEventEditor({ view, state, setState }: ReturnType<typeof useC
     return () => {
       cm.off('vim-mode-change', handleVimModeChange);
     };
-  }, [updateEditorVimMode, view]);
+  }, [updateEditorVimMode, editorView]);
 
   /**
    * Ctrl + R 단축키를 누르면 코드를 실행하는 이벤트 등록
@@ -67,17 +67,17 @@ export function useEventEditor({ view, state, setState }: ReturnType<typeof useC
       window.electron.ipcRenderer.on('ctrl-or-cmd-r-pressed', () => {
         const { mode, vimMode } = useStore.getState();
 
-        if (view && mode === 'vim' && /normal/i.test(vimMode)) {
+        if (editorView && mode === 'vim' && /normal/i.test(vimMode)) {
           /**
            * 의존성 타입 꼬임으로 인해 타입 에러 발생
            * codemirror/state 타입 에러 : Two different types with this name exist, but they are unrelated.
            */
           // @ts-ignore
-          redo(view);
+          redo(editorView);
         }
       });
     },
-    [view],
+    [editorView],
     'ctrl-or-cmd-r-pressed',
   );
 
@@ -92,13 +92,13 @@ export function useEventEditor({ view, state, setState }: ReturnType<typeof useC
     }
 
     const editorKeyDownHandler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && view) {
+      if (e.key === 'Escape' && editorView) {
         /**
          * 의존성 타입 꼬임으로 인해 타입 에러 발생
          * codemirror/view 타입 에러 : Two different types with this name exist, but they are unrelated.
          */
         // @ts-ignore
-        const cm = getCM(view);
+        const cm = getCM(editorView);
 
         if (cm) {
           Vim.exitInsertMode(cm);
@@ -111,7 +111,7 @@ export function useEventEditor({ view, state, setState }: ReturnType<typeof useC
     return () => {
       editor.removeEventListener('keydown', editorKeyDownHandler);
     };
-  }, [editorRef, view]);
+  }, [editorRef, editorView]);
 
   /**
    * codemirror -> webview -> App
@@ -138,7 +138,7 @@ export function useEventEditor({ view, state, setState }: ReturnType<typeof useC
     return function cleanup() {
       $cmContent.removeEventListener('blur', handleCmContentBlur);
     };
-  }, [view]);
+  }, [editorView]);
 
   /**
    * 코드 초기화 이벤트 등록
@@ -150,9 +150,12 @@ export function useEventEditor({ view, state, setState }: ReturnType<typeof useC
   useEventIpc(
     ({ data: { code } }) => {
       initialEditorCode(code);
-      setState(EditorState.create({ ...state }));
+
+      if (setEditorState) {
+        setEditorState(EditorState.create({ ...editorState }));
+      }
     },
-    [initialEditorCode, setState, state],
+    [editorState, initialEditorCode, setEditorState],
     'load-code-result',
   );
 }

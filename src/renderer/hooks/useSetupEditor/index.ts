@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 import { useCodeMirror } from '@uiw/react-codemirror';
 
@@ -11,9 +11,10 @@ export function useSetupEditor() {
   const { editorRef, editorCode, extensions, editorWidth, editorHeight, editorIndentSpace, editorLanguage } =
     useEditor();
 
-  const { saveFile, syncEditorCode, getEditorValue } = useModifyEditor();
+  const { saveFile, syncEditorCode, getEditorValue, updateEditorState, updateEditorView, updateSetEditorState } =
+    useModifyEditor();
 
-  const codemirror = useCodeMirror({
+  const { state, view, setState, setContainer } = useCodeMirror({
     value: editorCode,
     extensions,
     width: `${editorWidth}px`,
@@ -28,16 +29,23 @@ export function useSetupEditor() {
     onChange: syncEditorCode,
   });
 
-  const { setContainer } = codemirror;
-
   /**
-   * 에디터 초기화
+   * 에디터 렌더링
    */
   useEffect(() => {
     if (editorRef.current) {
       setContainer(editorRef.current);
     }
-  }, [editorRef, setContainer]);
+  }, [setContainer, editorRef]);
+
+  /**
+   * 에디터 상태 전역으로 동기화
+   */
+  useEffect(() => {
+    updateEditorState(state);
+    updateEditorView(view);
+    updateSetEditorState(setState);
+  }, [updateEditorState, state, updateEditorView, view, updateSetEditorState, setState]);
 
   /**
    * 문제/언어가 변경되면
@@ -56,9 +64,4 @@ export function useSetupEditor() {
       saveFile({ problem, language: editorLanguage, silence: true });
     };
   }, [problem, editorLanguage, saveFile, getEditorValue]);
-
-  return {
-    codemirror,
-    editorRef,
-  };
 }

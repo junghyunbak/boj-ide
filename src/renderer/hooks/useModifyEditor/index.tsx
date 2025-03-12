@@ -15,6 +15,10 @@ export function useModifyEditor() {
   const [setEditorLanguage] = useStore(useShallow((s) => [s.setLang]));
   const [setEditorVimMode] = useStore(useShallow((s) => [s.setVimMode]));
 
+  const [updateEditorState] = useStore(useShallow((s) => [s.updateEditorState]));
+  const [updateSetEditorState] = useStore(useShallow((s) => [s.updateSetEditorState]));
+  const [updateEditorView] = useStore(useShallow((s) => [s.updateEditorView]));
+
   const [setIsCodeStale] = useStore(useShallow((s) => [s.setIsCodeStale]));
 
   const { fireAlertModal } = useModifyAlertModal();
@@ -163,6 +167,9 @@ export function useModifyEditor() {
     updateEditorLanguage,
     updateEditorMode,
     updateEditorVimMode,
+    updateEditorState,
+    updateSetEditorState,
+    updateEditorView,
 
     stalingEditorCode,
     freshingEditorCode,

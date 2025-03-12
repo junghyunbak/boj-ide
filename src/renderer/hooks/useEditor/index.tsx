@@ -27,6 +27,9 @@ export function useEditor() {
   const [editorFontSize] = useStore(useShallow((s) => [s.fontSize]));
   const [editorLanguage] = useStore(useShallow((s) => [s.lang]));
   const [editorRef] = useStore(useShallow((s) => [s.editorRef]));
+  const [editorState] = useStore(useShallow((s) => [s.editorState]));
+  const [editorView] = useStore(useShallow((s) => [s.editorView]));
+  const [setEditorState] = useStore(useShallow((s) => [s.setEditorState]));
 
   const emotionTheme = useTheme();
 
@@ -104,5 +107,8 @@ export function useEditor() {
     editorLanguage,
     editorMode,
     editorRef,
+    editorState,
+    editorView,
+    setEditorState,
   };
 }
