@@ -12,6 +12,10 @@ type HistorySlice = {
 
   historyFilterValue: string;
   setHistoryFilterValue: (value: string) => void;
+
+  historyButtonRef: React.RefObject<HTMLButtonElement>;
+  historyModalInputRef: React.RefObject<HTMLInputElement>;
+  historyModalRef: React.RefObject<HTMLDivElement>;
 };
 
 export const createHistorySlice: StateCreator<HistorySlice> = (set, get): HistorySlice => ({
@@ -31,4 +35,8 @@ export const createHistorySlice: StateCreator<HistorySlice> = (set, get): Histor
   },
 
   historyModalHeight: HISTORY_MODAL_DEFAULT_HEIGHT,
+
+  historyButtonRef: { current: null },
+  historyModalRef: { current: null },
+  historyModalInputRef: { current: null },
 });

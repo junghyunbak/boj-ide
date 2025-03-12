@@ -73,3 +73,4 @@ export * from './useEventFabric';
 export * from './useEventSyncLayout';
 export * from './useEventClickOutOfModal';
 export * from './useEventAlertModal';
+export * from './useEventHistories';

@@ -8,7 +8,7 @@ import { ReactComponent as History } from '@/renderer/assets/svgs/history.svg';
 
 import {
   useEventClickOutOfModal,
-  useEventWindow,
+  useEventHistories,
   useHistories,
   useModifyHistories,
   useSetupHistories,
@@ -24,61 +24,22 @@ import { ThreeLineHorizontalResizer } from '@/renderer/components/atoms/lines/Th
 import { HistoryItem } from './HistoryItem';
 
 export function HistoryModal() {
-  const { isHistoryModalOpen, histories, isHistoryEmpty, historyFilterValue } = useHistories();
+  const {
+    isHistoryModalOpen,
+    histories,
+    isHistoryEmpty,
+    historyFilterValue,
+    historyButtonRef,
+    historyModalRef,
+    historyModalInputRef,
+  } = useHistories();
   const { closeHistoryModal, openHistoryModal, updateHistoryModalHeight, updateHistoryFilterValue } =
     useModifyHistories();
-  const { buttonRef, modalRef, inputRef } = useSetupHistories();
 
-  useEventClickOutOfModal(buttonRef, modalRef, closeHistoryModal);
+  useSetupHistories();
 
-  useEventWindow(
-    (e) => {
-      if (isHistoryModalOpen) {
-        switch (e.key) {
-          case 'ArrowDown':
-          case 'ArrowUp': {
-            e.preventDefault();
-
-            const historyItems = Array.from(document.querySelectorAll<HTMLDivElement>('.history-item'));
-
-            if (historyItems.length === 0) {
-              break;
-            }
-
-            const idx = historyItems.findIndex((item) => item === document.activeElement);
-
-            const nextItem =
-              idx === -1
-                ? historyItems[e.key === 'ArrowUp' ? historyItems.length - 1 : 0]
-                : historyItems[(idx + (e.key === 'ArrowUp' ? -1 : 1) + historyItems.length) % historyItems.length];
-
-            nextItem.focus();
-
-            break;
-          }
-          case 'Enter': {
-            const item = document.activeElement;
-
-            if (item instanceof HTMLElement) {
-              item.click();
-            }
-            break;
-          }
-          case 'Escape': {
-            closeHistoryModal();
-            break;
-          }
-          default: {
-            inputRef.current?.focus();
-
-            break;
-          }
-        }
-      }
-    },
-    [isHistoryModalOpen, closeHistoryModal, inputRef],
-    'keydown',
-  );
+  useEventClickOutOfModal(historyButtonRef, historyModalRef, closeHistoryModal);
+  useEventHistories();
 
   const handleHistoryFilterValueChange = useCallback<React.ChangeEventHandler<HTMLInputElement>>(
     (e) => {
@@ -110,7 +71,7 @@ export function HistoryModal() {
       <button
         type="button"
         onClick={handleHistoryBarClick}
-        ref={buttonRef}
+        ref={historyButtonRef}
         css={(theme) => css`
           width: 100%;
           display: flex;
@@ -141,9 +102,8 @@ export function HistoryModal() {
        * // TODO: 모달 테두리 둥글게
        * // TODO: 모달 크기 조절 바 input 까지로 변경
        * // TODO: 요소 닫기 버튼 hover 스타일 보이도록 수정
-       * // TODO: 모달 누르면 바로 input에 포커스 잡히도록 수정
        */}
-      <NonModal isOpen={isHistoryModalOpen} inset="-6px auto auto auto" ref={modalRef}>
+      <NonModal isOpen={isHistoryModalOpen} inset="-6px auto auto auto" ref={historyModalRef}>
         <SplitLayout vertical>
           <SplitLayout.Left
             px={verticalResizerPxOption}
@@ -171,7 +131,7 @@ export function HistoryModal() {
                 `}
               >
                 <input
-                  ref={inputRef}
+                  ref={historyModalInputRef}
                   css={(theme) => css`
                     width: 100%;
                     background-color: ${theme.colors.code};
