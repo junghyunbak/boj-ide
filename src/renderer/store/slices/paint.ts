@@ -5,17 +5,13 @@ type PaintSlice = {
   setIsExpand: (isExpand: boolean) => void;
 
   paintRef: React.RefObject<HTMLDivElement>;
-  setPaintRef: (ref: React.RefObject<HTMLDivElement>) => void;
 };
 
 export const createPaintSlice: StateCreator<PaintSlice> = (set, get): PaintSlice => ({
   isExpand: false,
   setIsExpand: (isExpand: boolean) => {
-    set((s) => ({ isExpand }));
+    set(() => ({ isExpand }));
   },
 
   paintRef: { current: null },
-  setPaintRef: (ref: React.RefObject<HTMLDivElement>) => {
-    set((s) => ({ paintRef: ref }));
-  },
 });

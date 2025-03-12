@@ -4,11 +4,13 @@ import { useFabricStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
 import { useModifyFabric } from '../useModifyFabric';
+import { usePaint } from '../usePaint';
 
 export function useEventPaint() {
   const [setIsCtrlKeyPressed] = useFabricStore(useShallow((s) => [s.setIsCtrlKeyPressed]));
   const [setMode] = useFabricStore(useShallow((s) => [s.setMode]));
-  const [paintRef] = useFabricStore(useShallow((s) => [s.paintRef]));
+
+  const { paintRef } = usePaint();
 
   const { unactiveAllFabricSelection, removeFabricActiveObject, activeAllFabricSelection, redo, undo } =
     useModifyFabric();

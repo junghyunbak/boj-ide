@@ -4,7 +4,6 @@ import {
   useFabric,
   usePaint,
   useModifyPaint,
-  useSetupPaint,
   useEventPaint,
   useSetupFabric,
   useEventFabric,
@@ -27,7 +26,6 @@ export function EditorPaint() {
   const { handlePaintBlur } = useModifyPaint();
   const { updateFabricCanvasSize } = useModifyFabric();
 
-  useSetupPaint(containerRef);
   useSetupFabric(canvasRef);
 
   useEventPaint();
