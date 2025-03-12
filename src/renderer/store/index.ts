@@ -12,10 +12,9 @@ import { createBojViewSlice } from './slices/bojView';
 import { createTabSlice } from './slices/tab';
 import { createTourSlice } from './slices/tour';
 import { createHistorySlice } from './slices/history';
-
-import { createFabricSlice } from './slices/fabric';
-import { createPaintSlice } from './slices/paint';
 import { createThemeSlice } from './slices/theme';
+
+import { createPaintSlice } from './slices/paint';
 
 export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createJudgeSlice> &
@@ -127,12 +126,11 @@ export const useStore = create<StoreState>()(
 /**
  * fabric canvas store
  */
-type FabricStoreState = ReturnType<typeof createFabricSlice> & ReturnType<typeof createPaintSlice>;
+type FabricStoreState = ReturnType<typeof createPaintSlice>;
 
 export const useFabricStore = create<FabricStoreState>()(
   persist(
     (...a) => ({
-      ...createFabricSlice(...a),
       ...createPaintSlice(...a),
     }),
     {

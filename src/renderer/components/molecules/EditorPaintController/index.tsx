@@ -1,7 +1,6 @@
-import { css } from '@emotion/react';
+import { useCallback } from 'react';
 
-import { useFabricStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
+import { css } from '@emotion/react';
 
 import { ReactComponent as Mouse } from '@/renderer/assets/svgs/mouse.svg';
 import { ReactComponent as Hand } from '@/renderer/assets/svgs/hand.svg';
@@ -10,7 +9,7 @@ import { ReactComponent as Pencil } from '@/renderer/assets/svgs/pencil.svg';
 import { ReactComponent as Expand } from '@/renderer/assets/svgs/expand.svg';
 import { ReactComponent as Shrink } from '@/renderer/assets/svgs/shrink.svg';
 
-import { useFabric, useModifyPaint } from '@/renderer/hooks';
+import { useModifyPaint, usePaint } from '@/renderer/hooks';
 
 import {
   PaintControllerBox,
@@ -20,18 +19,52 @@ import {
   ExpandShrinkButton,
 } from './index.style';
 
-const BRUSH_WIDTHS: BrushWidth[] = [2, 4, 8];
-const BRUSH_COLORS: BrushColor[] = ['black', 'red', 'blue'];
-
 export function EditorPaintController() {
-  const { brushColor, brushWidth, mode } = useFabric();
+  const { isExpand, paintRef, brushColor, brushWidth, mode, BRUSH_WIDTHS, BRUSH_COLORS } = usePaint();
+  const { updatePaintMode, updateBrushColor, updateBrushWidth, updateIsExpand } = useModifyPaint();
 
-  const {
-    handleFabricCanvasModeButtonClick,
-    handlBrushColorButtonClick,
-    handleBrushWidthButtonClick,
-    handleButtonMouseDown,
-  } = useModifyPaint();
+  const handleFabricCanvasModeButtonClick = useCallback(
+    (newMode: FabricCanvasMode) => {
+      return () => {
+        updatePaintMode(newMode);
+      };
+    },
+    [updatePaintMode],
+  );
+
+  const handleBrushWidthButtonClick = useCallback(
+    (width: BrushWidth) => {
+      return () => {
+        updateBrushWidth(width);
+      };
+    },
+    [updateBrushWidth],
+  );
+
+  const handlBrushColorButtonClick = useCallback(
+    (color: BrushColor) => {
+      return () => {
+        updateBrushColor(color);
+      };
+    },
+    [updateBrushColor],
+  );
+
+  const handleButtonMouseDown = useCallback<React.MouseEventHandler<HTMLButtonElement>>(
+    (e) => {
+      /**
+       * 버튼 클릭으로 인한 fabric canvas의 focus blur를 방지
+       */
+      e.preventDefault();
+
+      paintRef.current?.focus();
+    },
+    [paintRef],
+  );
+
+  const handleExpandButtonClick = useCallback(() => {
+    updateIsExpand(!isExpand);
+  }, [updateIsExpand, isExpand]);
 
   return (
     <PaintControllerBox>
@@ -110,19 +143,9 @@ export function EditorPaintController() {
         </PaintFabricControllerButtonGroupBox>
       </PaintFabricControllerBox>
 
-      <PaintExpandButton />
+      <ExpandShrinkButton onClick={handleExpandButtonClick} onMouseDown={handleButtonMouseDown}>
+        {isExpand ? <Shrink /> : <Expand />}
+      </ExpandShrinkButton>
     </PaintControllerBox>
-  );
-}
-
-function PaintExpandButton() {
-  const [isExpand] = useFabricStore(useShallow((s) => [s.isExpand]));
-
-  const { handleExpandButtonClick, handleButtonMouseDown } = useModifyPaint();
-
-  return (
-    <ExpandShrinkButton onClick={handleExpandButtonClick} onMouseDown={handleButtonMouseDown}>
-      {isExpand ? <Shrink /> : <Expand />}
-    </ExpandShrinkButton>
   );
 }

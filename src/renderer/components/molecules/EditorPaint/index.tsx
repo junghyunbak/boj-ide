@@ -1,40 +1,28 @@
-import { useRef } from 'react';
+import { useCallback } from 'react';
 
-import {
-  useFabric,
-  usePaint,
-  useModifyPaint,
-  useEventPaint,
-  useSetupFabric,
-  useEventFabric,
-  useEventSyncLayout,
-  useModifyFabric,
-} from '@/renderer/hooks';
+import { usePaint, useModifyPaint, useEventPaint, useSetupPaint, useEventSyncLayout } from '@/renderer/hooks';
+
+import { EditorPaintController } from '@/renderer/components/molecules/EditorPaintController';
 
 import { PaintLayout } from './index.style';
 
-import { EditorPaintController } from '../EditorPaintController';
-
-// [ ]: 요소를 선택하고 delete 키를 입력하면 요소가 삭제되어야한다.
-// [ ]: v키를 입력하면 모드가 'select'로 변경되어야한다.
 export function EditorPaint() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const { isExpand, paintRef, canvasRef } = usePaint();
 
-  const { isExpand } = usePaint();
-  const { canvasRef } = useFabric();
+  const { backupPaint, updatePaintLayout } = useModifyPaint();
 
-  const { handlePaintBlur } = useModifyPaint();
-  const { updateFabricCanvasSize } = useModifyFabric();
-
-  useSetupFabric(canvasRef);
+  useSetupPaint();
 
   useEventPaint();
-  useEventFabric();
-  useEventSyncLayout(updateFabricCanvasSize, containerRef);
+  useEventSyncLayout(updatePaintLayout, paintRef);
+
+  const handlePaintBlur = useCallback(() => {
+    backupPaint();
+  }, [backupPaint]);
 
   return (
-    <PaintLayout isExpand={isExpand} tabIndex={0} ref={containerRef} onBlur={handlePaintBlur}>
-      <canvas ref={canvasRef} />
+    <PaintLayout ref={paintRef} isExpand={isExpand} tabIndex={0}>
+      <canvas ref={canvasRef} onBlur={handlePaintBlur} />
 
       <EditorPaintController />
     </PaintLayout>
