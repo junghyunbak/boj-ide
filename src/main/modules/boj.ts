@@ -12,8 +12,11 @@ import { IpcError, sentryErrorHandler, sentryLogging } from '@/main/error';
 export class Boj {
   private mainWindow: BrowserWindow;
 
-  constructor(mainWindow: BrowserWindow) {
+  private onCreateBrowserWindow: (browserWindow: BrowserWindow) => void;
+
+  constructor(mainWindow: BrowserWindow, onCreateBrowserWindow: (browserWindow: BrowserWindow) => void) {
     this.mainWindow = mainWindow;
+    this.onCreateBrowserWindow = onCreateBrowserWindow;
   }
 
   build() {
@@ -28,6 +31,8 @@ export class Boj {
       const browserWindow = new BrowserWindow({
         webPreferences: {},
       });
+
+      this.onCreateBrowserWindow(browserWindow);
 
       // @ts-ignore
       const browser = await pie.connect(app, puppeteer);

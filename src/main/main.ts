@@ -68,7 +68,9 @@ const createWindow = async () => {
 
   new Judge(mainWindow).build();
   new Code(mainWindow).build();
-  new Boj(mainWindow).build();
+  new Boj(mainWindow, (browserWindow) => {
+    popupWindows.push(browserWindow);
+  }).build();
   new Logger().build();
   new MenuBuilder(mainWindow).buildMenu();
 
@@ -160,6 +162,8 @@ app.on('browser-window-focus', () => {
       const [deletedPopupWindow] = popupWindows.splice(focusPopupWindowIdx, 1);
 
       deletedPopupWindow.destroy();
+
+      popupWindows = popupWindows.filter((browserWindow) => !browserWindow.isDestroyed());
     }
   });
 
@@ -183,8 +187,6 @@ app.on('web-contents-created', (e, contents) => {
       if (contents.getURL().startsWith('chrome-extension://')) {
         if (mainWindow) {
           ipc.send(mainWindow.webContents, 'reload-webview', undefined);
-
-          popupWindows = popupWindows.filter((browserWindow) => !browserWindow.isDestroyed());
 
           sentryLogging('[로그] 익스텐션 팝업 창을 닫았습니다.');
         }
