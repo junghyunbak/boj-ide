@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { css } from '@emotion/react';
 
@@ -6,24 +6,16 @@ import { useStore } from '@/renderer/store';
 
 import { ReactComponent as History } from '@/renderer/assets/svgs/history.svg';
 
-import {
-  useEventClickOutOfModal,
-  useEventWindow,
-  useFetchProblem,
-  useHistories,
-  useModifyHistories,
-  useModifyWebview,
-} from '@/renderer/hooks';
-
-import { placeholderLogo } from '@/renderer/assets/base64Images';
+import { useEventClickOutOfModal, useEventWindow, useHistories, useModifyHistories } from '@/renderer/hooks';
 
 import { HISTORY_MODAL_MAX_HEIGHT, HISTORY_MODAL_MIN_HEIGHT } from '@/renderer/constants';
 
 import { SplitLayout } from '@/renderer/components/molecules/SplitLayout';
 
 import { NonModal } from '@/renderer/components/atoms/modal/NonModal';
-import { XButton } from '@/renderer/components/atoms/buttons/XButton';
 import { ThreeLineHorizontalResizer } from '@/renderer/components/atoms/lines/ThreeLineHorizontalResizer';
+
+import { HistoryItem } from './HistoryItem';
 
 export function HistoryModal() {
   const { isHistoryModalOpen, histories, isHistoryEmpty } = useHistories();
@@ -135,6 +127,13 @@ export function HistoryModal() {
         <p>방문 기록</p>
       </button>
 
+      {/**
+       * // TODO: 모달 내 input 크기 변경
+       * // TODO: 모달 테두리 둥글게
+       * // TODO: 모달 크기 조절 바 input 까지로 변경
+       * // TODO: 요소 닫기 버튼 hover 스타일 보이도록 수정
+       * // TODO: 모달 누르면 바로 input에 포커스 잡히도록 수정
+       */}
       <NonModal isOpen={isHistoryModalOpen} inset="-6px auto auto auto" ref={modalRef}>
         <SplitLayout vertical>
           <SplitLayout.Left
@@ -215,90 +214,3 @@ export function HistoryModal() {
     </div>
   );
 }
-
-interface HistoryItemProps {
-  problem: ProblemInfo;
-}
-
-const HistoryItem = memo(({ problem }: HistoryItemProps) => {
-  const { tierBase64, title } = useFetchProblem(problem.number);
-
-  const { gotoProblem } = useModifyWebview();
-  const { closeHistoryModal, removeHistoryWithProblemNumber } = useModifyHistories();
-
-  const handleItemClick = useCallback(() => {
-    gotoProblem(problem);
-    closeHistoryModal();
-  }, [gotoProblem, problem, closeHistoryModal]);
-
-  const handleDeleteButtonClick = useCallback<React.MouseEventHandler<HTMLButtonElement>>(
-    (e) => {
-      e.stopPropagation();
-
-      removeHistoryWithProblemNumber(problem);
-    },
-    [removeHistoryWithProblemNumber, problem],
-  );
-
-  return (
-    <div
-      className="history-item"
-      css={(theme) => css`
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 2px 8px;
-        user-select: none;
-        outline: none;
-
-        &:focus,
-        &:hover {
-          background-color: ${theme.colors.active};
-          border-radius: 4px;
-
-          & * {
-            opacity: 1;
-          }
-        }
-        cursor: pointer;
-      `}
-      tabIndex={-1}
-      onClick={handleItemClick}
-    >
-      <div
-        css={css`
-          display: flex;
-          gap: 0.5rem;
-          flex: 1;
-          overflow: hidden;
-        `}
-      >
-        <img
-          css={css`
-            width: 0.75rem;
-          `}
-          src={tierBase64 || placeholderLogo}
-        />
-        <p
-          css={(theme) => css`
-            width: 100%;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            color: ${theme.colors.fg};
-          `}
-        >
-          {`${problem.number}번: ${title}`}
-        </p>
-      </div>
-
-      <div
-        css={css`
-          opacity: 0;
-        `}
-      >
-        <XButton onClick={handleDeleteButtonClick} />
-      </div>
-    </div>
-  );
-});
