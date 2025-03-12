@@ -4,20 +4,15 @@ import { Vim, getCM } from '@replit/codemirror-vim';
 import { useCodeMirror, EditorState } from '@uiw/react-codemirror';
 
 import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
 
 import { useModifyEditor } from '../useModifyEditor';
 import { useEventIpc } from '../useEventIpc';
+import { useEditor } from '../useEditor';
 
-export function useEventEditor({
-  view,
-  editorRef,
-  state,
-  setState,
-}: ReturnType<typeof useCodeMirror> & { editorRef: React.MutableRefObject<HTMLDivElement | null> }) {
-  const [setVimMode] = useStore(useShallow((s) => [s.setVimMode]));
+export function useEventEditor({ view, state, setState }: ReturnType<typeof useCodeMirror>) {
+  const { editorRef } = useEditor();
 
-  const { saveFile, initialEditorCode, getEditorValue } = useModifyEditor();
+  const { saveFile, initialEditorCode, getEditorValue, updateEditorVimMode } = useModifyEditor();
 
   /**
    * Vim(:w) 코드 저장 이벤트 등록
@@ -51,7 +46,7 @@ export function useEventEditor({
 
     const handleVimModeChange = (data: any) => {
       if ('mode' in data && typeof data.mode === 'string') {
-        setVimMode(data.mode);
+        updateEditorVimMode(data.mode);
       }
     };
 
@@ -60,7 +55,7 @@ export function useEventEditor({
     return () => {
       cm.off('vim-mode-change', handleVimModeChange);
     };
-  }, [setVimMode, view]);
+  }, [updateEditorVimMode, view]);
 
   /**
    * Ctrl + R 단축키를 누르면 코드를 실행하는 이벤트 등록

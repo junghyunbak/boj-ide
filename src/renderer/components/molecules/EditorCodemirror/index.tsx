@@ -1,17 +1,19 @@
 import { useRef } from 'react';
 
-import { useEventEditor, useEventSyncLayout, useModifyEditor, useSetupEditor } from '@/renderer/hooks';
+import { useEditor, useEventEditor, useEventSyncLayout, useModifyEditor, useSetupEditor } from '@/renderer/hooks';
 
 import { EditorCodemirrorBox, EditorLayout } from './index.style';
 
 export function EditorCodemirror() {
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const { editorRef } = useEditor();
+
   const { resizeEditorLayout } = useModifyEditor();
 
-  const { editorRef, codemirror } = useSetupEditor();
+  const { codemirror } = useSetupEditor();
 
-  useEventEditor({ ...codemirror, editorRef });
+  useEventEditor(codemirror);
   useEventSyncLayout(resizeEditorLayout, containerRef);
 
   return (

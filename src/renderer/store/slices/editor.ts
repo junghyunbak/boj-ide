@@ -27,6 +27,8 @@ type EditorSlice = {
    */
   editorValue: Map<string | undefined, string>;
 
+  editorRef: React.RefObject<HTMLDivElement>;
+
   /**
    * 적절하지 않은 slice에 존재하는 상태들
    */
@@ -108,4 +110,6 @@ export const createEditorSlice: StateCreator<EditorSlice> = (set, get): EditorSl
   setIndentSpace(count) {
     set(() => ({ indentSpace: count }));
   },
+
+  editorRef: { current: null },
 });

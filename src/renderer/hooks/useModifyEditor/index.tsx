@@ -13,6 +13,7 @@ export function useModifyEditor() {
   const [setEditorFontSize] = useStore(useShallow((s) => [s.setFontSize]));
   const [setEditorIndentSpace] = useStore(useShallow((s) => [s.setIndentSpace]));
   const [setEditorLanguage] = useStore(useShallow((s) => [s.setLang]));
+  const [setEditorVimMode] = useStore(useShallow((s) => [s.setVimMode]));
 
   const [setIsCodeStale] = useStore(useShallow((s) => [s.setIsCodeStale]));
 
@@ -44,6 +45,13 @@ export function useModifyEditor() {
       setEditorLanguage(language);
     },
     [setEditorLanguage],
+  );
+
+  const updateEditorVimMode = useCallback(
+    (vimMode: string) => {
+      setEditorVimMode(vimMode);
+    },
+    [setEditorVimMode],
   );
 
   const stalingEditorCode = useCallback(() => {
@@ -154,6 +162,7 @@ export function useModifyEditor() {
     updateEditorIndentSpace,
     updateEditorLanguage,
     updateEditorMode,
+    updateEditorVimMode,
 
     stalingEditorCode,
     freshingEditorCode,

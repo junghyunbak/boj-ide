@@ -7,10 +7,9 @@ import { useProblem } from '../useProblem';
 import { useEditor } from '../useEditor';
 
 export function useSetupEditor() {
-  const editorRef = useRef<HTMLDivElement>(null);
-
   const { problem } = useProblem();
-  const { editorCode, extensions, editorWidth, editorHeight, editorIndentSpace, editorLanguage } = useEditor();
+  const { editorRef, editorCode, extensions, editorWidth, editorHeight, editorIndentSpace, editorLanguage } =
+    useEditor();
 
   const { saveFile, syncEditorCode, getEditorValue } = useModifyEditor();
 
