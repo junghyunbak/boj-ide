@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { css } from '@emotion/react';
 
@@ -6,7 +6,13 @@ import { useStore } from '@/renderer/store';
 
 import { ReactComponent as History } from '@/renderer/assets/svgs/history.svg';
 
-import { useEventClickOutOfModal, useEventWindow, useHistories, useModifyHistories } from '@/renderer/hooks';
+import {
+  useEventClickOutOfModal,
+  useEventWindow,
+  useHistories,
+  useModifyHistories,
+  useSetupHistories,
+} from '@/renderer/hooks';
 
 import { HISTORY_MODAL_MAX_HEIGHT, HISTORY_MODAL_MIN_HEIGHT } from '@/renderer/constants';
 
@@ -18,14 +24,10 @@ import { ThreeLineHorizontalResizer } from '@/renderer/components/atoms/lines/Th
 import { HistoryItem } from './HistoryItem';
 
 export function HistoryModal() {
-  const { isHistoryModalOpen, histories, isHistoryEmpty } = useHistories();
-  const { closeHistoryModal, openHistoryModal, updateHistoryModalHeight } = useModifyHistories();
-
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const modalRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const [filterValue, setFilterValue] = useState('');
+  const { isHistoryModalOpen, histories, isHistoryEmpty, historyFilterValue } = useHistories();
+  const { closeHistoryModal, openHistoryModal, updateHistoryModalHeight, updateHistoryFilterValue } =
+    useModifyHistories();
+  const { buttonRef, modalRef, inputRef } = useSetupHistories();
 
   useEventClickOutOfModal(buttonRef, modalRef, closeHistoryModal);
 
@@ -74,8 +76,15 @@ export function HistoryModal() {
         }
       }
     },
-    [isHistoryModalOpen, closeHistoryModal],
+    [isHistoryModalOpen, closeHistoryModal, inputRef],
     'keydown',
+  );
+
+  const handleHistoryFilterValueChange = useCallback<React.ChangeEventHandler<HTMLInputElement>>(
+    (e) => {
+      updateHistoryFilterValue(e.target.value);
+    },
+    [updateHistoryFilterValue],
   );
 
   const handleHistoryBarClick = useCallback(() => {
@@ -172,8 +181,8 @@ export function HistoryModal() {
                     outline: none;
                     color: ${theme.colors.fg};
                   `}
-                  value={filterValue}
-                  onChange={(e) => setFilterValue(e.target.value)}
+                  value={historyFilterValue}
+                  onChange={handleHistoryFilterValueChange}
                   placeholder="1000번: A+B"
                 />
               </div>
@@ -197,7 +206,7 @@ export function HistoryModal() {
                   </p>
                 ) : (
                   histories
-                    .filter((history) => `${history.number}번: ${history.name}`.includes(filterValue))
+                    .filter((history) => `${history.number}번: ${history.name}`.includes(historyFilterValue))
                     .map((history) => {
                       return <HistoryItem key={history.number} problem={history} />;
                     })

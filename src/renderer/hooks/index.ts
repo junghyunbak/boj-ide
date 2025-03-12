@@ -29,6 +29,7 @@ export * from './useSetupProblem';
 export * from './useSetupEditor';
 export * from './useSetupPaint';
 export * from './useSetupFabric';
+export * from './useSetupHistories';
 
 /**
  * fetch

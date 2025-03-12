@@ -9,6 +9,9 @@ type HistorySlice = {
   setIsHistoryModalOpen(isOpen: boolean): void;
 
   historyModalHeight: number;
+
+  historyFilterValue: string;
+  setHistoryFilterValue: (value: string) => void;
 };
 
 export const createHistorySlice: StateCreator<HistorySlice> = (set, get): HistorySlice => ({
@@ -20,6 +23,11 @@ export const createHistorySlice: StateCreator<HistorySlice> = (set, get): Histor
   isHistoryModalOpen: false,
   setIsHistoryModalOpen(isOpen) {
     set(() => ({ isHistoryModalOpen: isOpen }));
+  },
+
+  historyFilterValue: '',
+  setHistoryFilterValue(value) {
+    set(() => ({ historyFilterValue: value }));
   },
 
   historyModalHeight: HISTORY_MODAL_DEFAULT_HEIGHT,

@@ -8,6 +8,7 @@ import { HISTORY_MAX_LENGTH } from '@/renderer/constants';
 export function useModifyHistories() {
   const [setHistories] = useStore(useShallow((s) => [s.setHistories]));
   const [setIsHistoryModalOpen] = useStore(useShallow((s) => [s.setIsHistoryModalOpen]));
+  const [setHistoryFilterValue] = useStore(useShallow((s) => [s.setHistoryFilterValue]));
 
   const addHistory = useCallback(
     (problemInfo: ProblemInfo) => {
@@ -51,6 +52,13 @@ export function useModifyHistories() {
     useStore.getState().historyModalHeight = height;
   }, []);
 
+  const updateHistoryFilterValue = useCallback(
+    (value: string) => {
+      setHistoryFilterValue(value);
+    },
+    [setHistoryFilterValue],
+  );
+
   return {
     addHistory,
     removeHistory,
@@ -58,5 +66,6 @@ export function useModifyHistories() {
     openHistoryModal,
     closeHistoryModal,
     updateHistoryModalHeight,
+    updateHistoryFilterValue,
   };
 }
