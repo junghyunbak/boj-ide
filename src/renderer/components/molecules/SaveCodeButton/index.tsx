@@ -10,11 +10,11 @@ export function SaveCodeButton() {
   const { problem } = useProblem();
   const [isCodeStale] = useStore(useShallow((s) => [s.isCodeStale]));
 
-  const { saveEditorCode } = useModifyEditor();
+  const { saveFile } = useModifyEditor();
 
   const handleSaveCodeButtonClick = useCallback(() => {
-    saveEditorCode();
-  }, [saveEditorCode]);
+    saveFile();
+  }, [saveFile]);
 
   return (
     <ActionButton onClick={handleSaveCodeButtonClick} disabled={!problem || !isCodeStale}>

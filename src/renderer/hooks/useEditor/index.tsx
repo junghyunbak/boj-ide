@@ -29,7 +29,7 @@ export function useEditor() {
 
   const emotionTheme = useTheme();
 
-  const { saveEditorCode } = useModifyEditor();
+  const { saveFile } = useModifyEditor();
 
   const shortcutExtensions = useMemo<Extension[]>(() => {
     return [
@@ -43,7 +43,7 @@ export function useEditor() {
         {
           key: 'Ctrl-s',
           run: () => {
-            saveEditorCode();
+            saveFile();
             return false;
           },
         },
@@ -52,13 +52,13 @@ export function useEditor() {
         {
           key: 'Meta-s',
           run: () => {
-            saveEditorCode();
+            saveFile();
             return false;
           },
         },
       ]),
     ];
-  }, [saveEditorCode]);
+  }, [saveFile]);
 
   const codeExtensions = useMemo<Extension[]>(() => {
     return [

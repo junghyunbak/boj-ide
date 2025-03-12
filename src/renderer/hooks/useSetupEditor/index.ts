@@ -12,7 +12,7 @@ export function useSetupEditor() {
   const { problem } = useProblem();
   const { editorCode, extensions, editorWidth, editorHeight, editorIndentSpace, editorLanguage } = useEditor();
 
-  const { saveEditorCode, syncEditorCode } = useModifyEditor();
+  const { saveFile, syncEditorCode, getEditorValue } = useModifyEditor();
 
   const codemirror = useCodeMirror({
     value: editorCode,
@@ -53,10 +53,10 @@ export function useSetupEditor() {
       });
     }
 
-    return () => {
-      saveEditorCode({ silence: true });
+    return function cleanup() {
+      saveFile({ problem, language: editorLanguage, silence: true });
     };
-  }, [problem, editorLanguage, saveEditorCode]);
+  }, [problem, editorLanguage, saveFile, getEditorValue]);
 
   return {
     codemirror,

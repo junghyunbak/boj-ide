@@ -2,8 +2,6 @@ import { type StateCreator } from 'zustand';
 
 type CustomTestcases = Record<string, TC[] | undefined>;
 
-type Problem = ProblemInfo | null;
-
 type ProblemSlice = {
   problem: Problem;
   setProblem(fn: ((problem: Problem) => Problem) | Problem): void;

@@ -1,29 +1,11 @@
 import { type StateCreator } from 'zustand';
 
 type EditorSlice = {
-  editorWidth: number;
-  setEditorWidth(width: number): void;
-
-  editorHeight: number;
-  setEditorHeight(height: number): void;
-
-  fontSize: number;
-  setFontSize: (fontSize: number) => void;
-
-  problemToCode: Map<string | undefined, string>;
-  setProblemToCode: (number: string, code: string) => void;
-
+  /**
+   * editor 상태
+   */
   code: string;
   setCode: (code: string) => void;
-
-  mode: EditorMode;
-  setMode: (mode: EditorMode) => void;
-
-  lang: Language;
-  setLang: (lang: Language) => void;
-
-  isSetting: boolean;
-  setIsSetting: (isSetting: boolean) => void;
 
   isCodeStale: boolean;
   setIsCodeStale: (isCodeStale: boolean) => void;
@@ -31,11 +13,40 @@ type EditorSlice = {
   indentSpace: IndentSpace;
   setIndentSpace: (count: IndentSpace) => void;
 
-  isPaintOpen: boolean;
-  setIsPaintOpen: (isOpen: boolean) => void;
+  editorWidth: number;
+  setEditorWidth(width: number): void;
+
+  editorHeight: number;
+  setEditorHeight(height: number): void;
 
   vimMode: string;
   setVimMode: (mode: string) => void;
+
+  /**
+   * editor 값
+   */
+  editorValue: Map<string | undefined, string>;
+
+  /**
+   * 적절하지 않은 slice에 존재하는 상태들
+   */
+  isSetting: boolean;
+  setIsSetting: (isSetting: boolean) => void;
+
+  isPaintOpen: boolean;
+  setIsPaintOpen: (isOpen: boolean) => void;
+
+  /**
+   * persist 요소
+   */
+  mode: EditorMode;
+  setMode: (mode: EditorMode) => void;
+
+  lang: Language;
+  setLang: (lang: Language) => void;
+
+  fontSize: number;
+  setFontSize: (fontSize: number) => void;
 };
 
 export const createEditorSlice: StateCreator<EditorSlice> = (set, get): EditorSlice => ({
@@ -51,12 +62,7 @@ export const createEditorSlice: StateCreator<EditorSlice> = (set, get): EditorSl
     set(() => ({ editorWidth: width }));
   },
 
-  problemToCode: new Map(),
-  setProblemToCode(number, code) {
-    const { problemToCode } = get();
-
-    problemToCode.set(number, code);
-  },
+  editorValue: new Map(),
 
   vimMode: 'NORMAL',
   setVimMode: (mode: string) => {

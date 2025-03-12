@@ -11,10 +11,10 @@ export function useModifyJudge() {
   const [setJudgeResults] = useStore(useShallow((s) => [s.setJudgeResult]));
   const [setJudgeId] = useStore(useShallow((s) => [s.setJudgeId]));
 
-  const { getProblemCode, saveEditorCode } = useModifyEditor();
+  const { getEditorValue, saveFile } = useModifyEditor();
 
   const startJudge = useCallback(() => {
-    const { problem, customTestCase: customTestcases, judgeId } = useStore.getState();
+    const { problem, lang: language, customTestCase: customTestcases, judgeId } = useStore.getState();
 
     if (!problem) {
       return;
@@ -37,20 +37,17 @@ export function useModifyJudge() {
     const inputs: string[] = [...problemTC.inputs, ...customTC.inputs];
     const outputs: string[] = [...problemTC.outputs, ...customTC.outputs];
 
+    saveFile();
+
     const n = Math.min(inputs.length, outputs.length);
 
     setJudgeResults(() => Array(n).fill(undefined));
-    saveEditorCode({ silence: true });
-
-    const { number } = problem;
-    const { lang: language } = useStore.getState();
-    const code = getProblemCode();
 
     window.electron.ipcRenderer.sendMessage('judge-start', {
       data: {
-        code,
+        code: getEditorValue(),
         language,
-        number,
+        number: problem.number,
         judgeId,
         testCase: {
           inputs,
@@ -58,7 +55,7 @@ export function useModifyJudge() {
         },
       },
     });
-  }, [getProblemCode, saveEditorCode, setJudgeResults]);
+  }, [getEditorValue, saveFile, setJudgeResults]);
 
   const resetJudge = useCallback(() => {
     setJudgeResults(() => []);

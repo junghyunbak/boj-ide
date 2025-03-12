@@ -46,21 +46,56 @@ export const useStore = create<StoreState>()(
       name: 'zustandStore',
       partialize: (s) => {
         const {
+          /**
+           * problem
+           */
           problem,
+
+          /**
+           * editor
+           */
           lang,
           mode,
+          fontSize,
+
+          /**
+           * layout
+           */
           leftRatio,
           topRatio,
           paintLeftRatio,
+
+          /**
+           * tab
+           */
           problemHistories,
-          customTestCase,
-          fontSize,
-          isPaintOpen,
-          theme,
-          tourStep,
           dailyProblem,
           activeDailyProblem,
+
+          /**
+           * testcase
+           */
           testcaseInputProblemNumber,
+          customTestCase,
+
+          /**
+           * paint
+           */
+          isPaintOpen,
+
+          /**
+           * theme
+           */
+          theme,
+
+          /**
+           * tour
+           */
+          tourStep,
+
+          /**
+           * history
+           */
           histories,
           historyModalHeight,
         } = s;

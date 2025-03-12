@@ -1,3 +1,5 @@
+type Problem = ProblemInfo | null;
+
 type ProblemInfo = {
   name: string;
   number: string;

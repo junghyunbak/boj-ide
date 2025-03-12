@@ -1,8 +1,6 @@
 import { useCallback } from 'react';
 
-import { useModifyAlertModal, useModifyEditor, useProblem, useModifyConfirmModal } from '@/renderer/hooks';
-
-import { useStore } from '@/renderer/store';
+import { useModifyAlertModal, useModifyEditor, useProblem, useModifyConfirmModal, useEditor } from '@/renderer/hooks';
 
 import { languageToExt } from '@/renderer/utils';
 
@@ -10,27 +8,25 @@ import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 
 export function SetDefaultCodeButton() {
   const { problem } = useProblem();
+  const { editorLanguage } = useEditor();
 
-  const { getProblemCode, saveEditorCode } = useModifyEditor();
-
+  const { getEditorValue, saveFile } = useModifyEditor();
   const { fireAlertModal } = useModifyAlertModal();
   const { fireConfirmModal } = useModifyConfirmModal();
 
   const handleSetDefaultButtonClick = useCallback(() => {
     fireConfirmModal('현재 코드를 기본 코드로 저장하시겠습니까?', async () => {
-      const { lang } = useStore.getState();
+      saveFile();
 
       const result = await window.electron.ipcRenderer.invoke('save-default-code', {
-        data: { language: lang, code: getProblemCode() },
+        data: { language: editorLanguage, code: getEditorValue() },
       });
 
-      saveEditorCode({ silence: true });
-
       if (result && result.data.isSaved) {
-        fireAlertModal('안내', `default.${languageToExt(lang)} 파일이 성공적으로 업데이트 되었습니다.`);
+        fireAlertModal('안내', `default.${languageToExt(editorLanguage)} 파일이 성공적으로 업데이트 되었습니다.`);
       }
     });
-  }, [fireAlertModal, fireConfirmModal, getProblemCode, saveEditorCode]);
+  }, [editorLanguage, fireAlertModal, fireConfirmModal, getEditorValue, saveFile]);
 
   return (
     <ActionButton onClick={handleSetDefaultButtonClick} disabled={!problem}>

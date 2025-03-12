@@ -17,14 +17,18 @@ export function useEventEditor({
 }: ReturnType<typeof useCodeMirror> & { editorRef: React.MutableRefObject<HTMLDivElement | null> }) {
   const [setVimMode] = useStore(useShallow((s) => [s.setVimMode]));
 
-  const { saveEditorCode, initialEditorCode } = useModifyEditor();
+  const { saveFile, initialEditorCode, getEditorValue } = useModifyEditor();
 
   /**
    * Vim(:w) 코드 저장 이벤트 등록
    */
   useEffect(() => {
-    Vim.defineEx('write', 'w', saveEditorCode);
-  }, [saveEditorCode]);
+    const handleVimWriteCommand = () => {
+      saveFile();
+    };
+
+    Vim.defineEx('write', 'w', handleVimWriteCommand);
+  }, [saveFile, getEditorValue]);
 
   /**
    * vim 모드 상태 전역 상태 동기화

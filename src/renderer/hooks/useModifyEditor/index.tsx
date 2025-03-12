@@ -6,15 +6,15 @@ import { useShallow } from 'zustand/shallow';
 import { useModifyAlertModal } from '../useModifyAlertModal';
 
 export function useModifyEditor() {
-  const [setIsCodeStale] = useStore(useShallow((s) => [s.setIsCodeStale]));
   const [setEditorCode] = useStore(useShallow((s) => [s.setCode]));
-  const [setProblemToCode] = useStore(useShallow((s) => [s.setProblemToCode]));
   const [setEditorWidth] = useStore(useShallow((s) => [s.setEditorWidth]));
   const [setEditorHeight] = useStore(useShallow((s) => [s.setEditorHeight]));
   const [setEditorMode] = useStore(useShallow((s) => [s.setMode]));
   const [setEditorFontSize] = useStore(useShallow((s) => [s.setFontSize]));
   const [setEditorIndentSpace] = useStore(useShallow((s) => [s.setIndentSpace]));
   const [setEditorLanguage] = useStore(useShallow((s) => [s.setLang]));
+
+  const [setIsCodeStale] = useStore(useShallow((s) => [s.setIsCodeStale]));
 
   const { fireAlertModal } = useModifyAlertModal();
 
@@ -46,23 +46,6 @@ export function useModifyEditor() {
     [setEditorLanguage],
   );
 
-  // TODO: 테스트
-  const getProblemCode = useCallback(() => {
-    const { problem, problemToCode, lang } = useStore.getState();
-
-    return problemToCode.get(`${problem?.number}|${lang}`) || '';
-  }, []);
-
-  // TODO: 테스트
-  const setProblemCode = useCallback(
-    (code: string) => {
-      const { problem, lang } = useStore.getState();
-
-      setProblemToCode(`${problem?.number}|${lang}`, code);
-    },
-    [setProblemToCode],
-  );
-
   const stalingEditorCode = useCallback(() => {
     setIsCodeStale(true);
   }, [setIsCodeStale]);
@@ -71,56 +54,78 @@ export function useModifyEditor() {
     setIsCodeStale(false);
   }, [setIsCodeStale]);
 
-  /**
-   * - 에디터 입력
-   */
-  const syncEditorCode = useCallback(
-    (code: string) => {
-      setProblemCode(code);
-      stalingEditorCode();
+  const getEditorValue = useCallback(
+    (problem: Problem = useStore.getState().problem, language: Language = useStore.getState().lang) => {
+      const { editorValue } = useStore.getState();
+
+      const key = `${problem?.number}|${language}`;
+
+      return editorValue.get(key) || '';
     },
-    [setProblemCode, stalingEditorCode],
+    [],
   );
 
-  /**
-   * - AI 입력 템플릿 생성
-   */
+  const setEditorValue = useCallback((code: string) => {
+    const { problem, lang, editorValue } = useStore.getState();
+
+    const key = `${problem?.number}|${lang}`;
+
+    editorValue.set(key, code);
+  }, []);
+
+  // 에디터 편집으로 인한 코드 동기화에 사용
+  const syncEditorCode = useCallback(
+    (code: string) => {
+      setEditorValue(code);
+      setEditorCode(code);
+
+      stalingEditorCode();
+    },
+    [setEditorCode, setEditorValue, stalingEditorCode],
+  );
+
+  // 'AI 표준 입력 생성' 기능 사용으로 인한 코드 초기화에 사용
   const updateEditorCode = useCallback(
     (code: string) => {
       setEditorCode(code);
-      setProblemCode(code);
+      setEditorValue(code);
+
       stalingEditorCode();
     },
-    [setEditorCode, setProblemCode, stalingEditorCode],
+    [setEditorCode, setEditorValue, stalingEditorCode],
   );
 
-  /**
-   * - 문제/언어 변경 시 코드 로딩
-   */
+  // 문제, 언어 변경으로 인한 코드 초기화에 사용
   const initialEditorCode = useCallback(
     (code: string) => {
       setEditorCode(code);
-      setProblemCode(code);
+      setEditorValue(code);
+
       freshingEditorCode();
     },
-    [setEditorCode, setProblemCode, freshingEditorCode],
+    [setEditorCode, setEditorValue, freshingEditorCode],
   );
 
-  /**
-   * 코드가 오래되지 않았을 경우에만 저장하는 함수
-   */
-  const saveEditorCode = useCallback(
-    async (opt?: { silence?: boolean }) => {
-      const { problem, isCodeStale, lang } = useStore.getState();
+  const saveFile = useCallback(
+    async (
+      data: {
+        problem?: Problem;
+        language?: Language;
+        silence?: boolean;
+      } = {},
+    ) => {
+      const { problem = useStore.getState().problem, language = useStore.getState().lang, silence = false } = data;
+
+      const { isCodeStale } = useStore.getState();
 
       if (!problem || !isCodeStale) {
         return;
       }
 
-      const code = getProblemCode();
+      const code = getEditorValue(problem, language);
 
       const res = await window.electron.ipcRenderer.invoke('save-code', {
-        data: { number: problem.number, language: lang, code },
+        data: { number: problem.number, language, code },
       });
 
       if (!res || !res.data.isSaved) {
@@ -129,13 +134,11 @@ export function useModifyEditor() {
 
       freshingEditorCode();
 
-      if (opt && opt.silence) {
-        return;
+      if (!silence) {
+        fireAlertModal('안내', '저장이 완료되었습니다.');
       }
-
-      fireAlertModal('안내', '저장이 완료되었습니다.');
     },
-    [getProblemCode, fireAlertModal, freshingEditorCode],
+    [fireAlertModal, freshingEditorCode, getEditorValue],
   );
 
   const resizeEditorLayout = useCallback(
@@ -147,20 +150,22 @@ export function useModifyEditor() {
   );
 
   return {
-    getProblemCode,
-    saveEditorCode,
-    syncEditorCode,
+    updateEditorFontSize,
+    updateEditorIndentSpace,
+    updateEditorLanguage,
+    updateEditorMode,
 
     stalingEditorCode,
     freshingEditorCode,
 
-    updateEditorFontSize,
-    updateEditorIndentSpace,
-    updateEditorLanguage,
-    updateEditorCode,
-    updateEditorMode,
+    getEditorValue,
+    setEditorValue,
 
+    syncEditorCode,
+    updateEditorCode,
     initialEditorCode,
+
+    saveFile,
 
     resizeEditorLayout,
   };
