@@ -48,10 +48,6 @@ export function useModifyHistories() {
     setIsHistoryModalOpen(false);
   }, [setIsHistoryModalOpen]);
 
-  const updateHistoryModalHeight = useCallback((height: number) => {
-    useStore.getState().historyModalHeight = height;
-  }, []);
-
   const updateHistoryFilterValue = useCallback(
     (value: string) => {
       setHistoryFilterValue(value);
@@ -65,7 +61,6 @@ export function useModifyHistories() {
     removeHistoryWithProblemNumber,
     openHistoryModal,
     closeHistoryModal,
-    updateHistoryModalHeight,
     updateHistoryFilterValue,
   };
 }

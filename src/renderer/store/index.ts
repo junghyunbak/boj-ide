@@ -63,6 +63,7 @@ export const useStore = create<StoreState>()(
           leftRatio,
           topRatio,
           paintLeftRatio,
+          historyModalHeight,
 
           /**
            * tab
@@ -96,7 +97,6 @@ export const useStore = create<StoreState>()(
            * history
            */
           histories,
-          historyModalHeight,
         } = s;
 
         return {

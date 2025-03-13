@@ -1,14 +1,12 @@
 import { useCallback, useMemo } from 'react';
 
-import { css } from '@emotion/react';
-
-import { useStore } from '@/renderer/store';
-
 import {
   useEventClickOutOfModal,
   useEventHistories,
   useHistories,
+  useLayout,
   useModifyHistories,
+  useModifyLayout,
   useSetupHistories,
 } from '@/renderer/hooks';
 
@@ -43,8 +41,10 @@ export function ProblemHistory() {
     historyModalRef,
     historyModalInputRef,
   } = useHistories();
-  const { closeHistoryModal, openHistoryModal, updateHistoryModalHeight, updateHistoryFilterValue } =
-    useModifyHistories();
+  const { historyModalHeight } = useLayout();
+
+  const { closeHistoryModal, openHistoryModal, updateHistoryFilterValue } = useModifyHistories();
+  const { updateHistoryModalHeight } = useModifyLayout();
 
   useSetupHistories();
 
@@ -89,7 +89,7 @@ export function ProblemHistory() {
           <SplitLayout vertical>
             <SplitLayout.Left
               px={verticalResizerPxOption}
-              initialRatio={useStore.getState().historyModalHeight}
+              initialRatio={historyModalHeight}
               onRatioChange={updateHistoryModalHeight}
             >
               <ProblemHistoryModalListBox>

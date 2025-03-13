@@ -81,8 +81,14 @@ export function MainPage() {
   );
 }
 
+/**
+ * isPaintOpen 상태로 인한 불필요한 리렌더링을 없애기 위해 분리
+ */
 function PaintAndEditor() {
   const [isPaintOpen] = useStore(useShallow((s) => [s.isPaintOpen]));
+
+  const { paintRatio } = useLayout();
+  const { updatePaintRatio } = useModifyLayout();
 
   return (
     <SplitLayout>
@@ -91,10 +97,7 @@ function PaintAndEditor() {
        * 올바르게 렌더링되지 않음.
        */}
       {isPaintOpen && (
-        <SplitLayout.Left
-          initialRatio={useStore.getState().paintLeftRatio}
-          onRatioChange={useStore.getState().setPaintLeftRatio}
-        >
+        <SplitLayout.Left initialRatio={paintRatio} onRatioChange={updatePaintRatio}>
           <EditorPaint />
         </SplitLayout.Left>
       )}

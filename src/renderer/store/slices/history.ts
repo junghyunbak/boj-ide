@@ -1,17 +1,14 @@
-import { HISTORY_MODAL_DEFAULT_HEIGHT } from '@/renderer/constants';
 import { type StateCreator } from 'zustand';
 
 type HistorySlice = {
   histories: ProblemInfo[];
-  setHistories: (fn: ((histories: ProblemInfo[]) => ProblemInfo[]) | ProblemInfo[]) => void;
+  setHistories(fn: ((histories: ProblemInfo[]) => ProblemInfo[]) | ProblemInfo[]): void;
 
   isHistoryModalOpen: boolean;
   setIsHistoryModalOpen(isOpen: boolean): void;
 
-  historyModalHeight: number;
-
   historyFilterValue: string;
-  setHistoryFilterValue: (value: string) => void;
+  setHistoryFilterValue(value: string): void;
 
   historyButtonRef: React.RefObject<HTMLButtonElement>;
   historyModalInputRef: React.RefObject<HTMLInputElement>;
@@ -33,8 +30,6 @@ export const createHistorySlice: StateCreator<HistorySlice> = (set, get): Histor
   setHistoryFilterValue(value) {
     set(() => ({ historyFilterValue: value }));
   },
-
-  historyModalHeight: HISTORY_MODAL_DEFAULT_HEIGHT,
 
   historyButtonRef: { current: null },
   historyModalRef: { current: null },

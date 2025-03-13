@@ -1,4 +1,5 @@
 import { type StateCreator } from 'zustand';
+import { HISTORY_MODAL_DEFAULT_HEIGHT } from '@/renderer/constants';
 
 type LayoutSlice = {
   /**
@@ -10,13 +11,16 @@ type LayoutSlice = {
    * └─────────┴─────────┘
    */
   leftRatio: number;
-  setLeftRatio: (leftRatio: number) => void;
+  setLeftRatio(leftRatio: number): void;
 
   topRatio: number;
-  setTopRatio: (topRatio: number) => void;
+  setTopRatio(topRatio: number): void;
 
   paintLeftRatio: number;
-  setPaintLeftRatio: (ratio: number) => void;
+  setPaintLeftRatio(ratio: number): void;
+
+  historyModalHeight: number;
+  setHistoryModalHeight(px: number): void;
 };
 
 export const createLayoutSlice: StateCreator<LayoutSlice> = (set): LayoutSlice => ({
@@ -37,5 +41,10 @@ export const createLayoutSlice: StateCreator<LayoutSlice> = (set): LayoutSlice =
     set(() => ({
       paintLeftRatio: ratio,
     }));
+  },
+
+  historyModalHeight: HISTORY_MODAL_DEFAULT_HEIGHT,
+  setHistoryModalHeight(px) {
+    set(() => ({ historyModalHeight: px }));
   },
 });
