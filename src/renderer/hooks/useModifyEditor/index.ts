@@ -89,11 +89,10 @@ export function useModifyEditor() {
   const syncEditorCode = useCallback(
     (code: string) => {
       setEditorValue(code);
-      setEditorCode(code);
 
       stalingEditorCode();
     },
-    [setEditorCode, setEditorValue, stalingEditorCode],
+    [setEditorValue, stalingEditorCode],
   );
 
   // 'AI 표준 입력 생성' 기능 사용으로 인한 코드 초기화에 사용

@@ -1,4 +1,4 @@
-import { act, useEffect, useRef } from 'react';
+import { act } from 'react';
 
 import { renderHook } from '@testing-library/react';
 
