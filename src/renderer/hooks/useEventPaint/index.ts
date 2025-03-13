@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { useFabricStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
@@ -11,6 +11,9 @@ import { useEventElement } from '../useEventElement';
 
 export function useEventPaint() {
   const [setMode] = useFabricStore(useShallow((s) => [s.setMode]));
+
+  const prevMode = useRef<FabricCanvasMode>('pen');
+  const isPressed = useRef(false);
 
   const { paintRef, canvas } = usePaint();
 
@@ -104,47 +107,38 @@ export function useEventPaint() {
   /**
    * 스페이스바 클릭 시 일시적으로 'hand' 모드로 변경
    */
-  useEffect(() => {
-    const paint = paintRef.current;
-
-    if (!paint) {
-      return function cleanup() {};
-    }
-
-    let prevMode: FabricCanvasMode = 'pen';
-    let isPressed = false;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (isPressed) {
+  useEventElement(
+    (e) => {
+      if (isPressed.current) {
         return;
       }
 
       if (e.key === ' ') {
         setMode((prev) => {
-          prevMode = prev;
+          prevMode.current = prev;
           return 'hand';
         });
       }
 
-      isPressed = true;
-    };
+      isPressed.current = true;
+    },
+    [isPressed, setMode],
+    'keydown',
+    paintRef.current,
+  );
 
-    const handleKeyUp = (e: KeyboardEvent) => {
-      isPressed = false;
+  useEventElement(
+    (e) => {
+      isPressed.current = false;
 
       if (e.key === ' ') {
-        setMode(prevMode);
+        setMode(prevMode.current);
       }
-    };
-
-    paint.addEventListener('keydown', handleKeyDown);
-    paint.addEventListener('keyup', handleKeyUp);
-
-    return function cleanup() {
-      paint.removeEventListener('keydown', handleKeyDown);
-      paint.removeEventListener('keyup', handleKeyUp);
-    };
-  }, [paintRef, setMode]);
+    },
+    [isPressed, setMode],
+    'keyup',
+    paintRef.current,
+  );
 
   /**
    * fabric 캔버스에

@@ -1,9 +1,9 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useStore } from '@/renderer/store';
 
-import { useModifyDrag, useModifyTab } from '@/renderer/hooks';
+import { useEventElement, useEventWindow, useModifyDrag, useModifyTab } from '@/renderer/hooks';
 
 import { getElementFromChildren } from '@/renderer/utils';
 
@@ -41,6 +41,7 @@ function MovableTabImpl({
   onClick = () => {},
 }: React.PropsWithChildren<MovableTabImplProps>) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const isClicked = useRef(false);
 
   const [isAfterImageShow, setIsAfterImageShow] = useState(false);
 
@@ -50,36 +51,37 @@ function MovableTabImpl({
   /**
    * 드래그 이벤트 등록
    */
-  useEffect(() => {
-    const container = containerRef.current;
+  const disableDrag = polyfill || ghost;
 
-    if (!container) {
-      return function cleanup() {};
-    }
-
-    let isClicked: boolean = false;
-
-    const disableDrag = polyfill || ghost;
-
-    const handleTabMouseDown = () => {
+  useEventElement(
+    () => {
       if (disableDrag) {
         return;
       }
 
-      isClicked = true;
+      isClicked.current = true;
       updateIsResizerDrag(true);
-    };
+    },
+    [disableDrag, updateIsResizerDrag],
+    'mousedown',
+    containerRef.current,
+  );
 
-    const handleTabMouseMove = (e: MouseEvent) => {
+  useEventElement(
+    (e) => {
+      if (!(containerRef.current instanceof HTMLElement)) {
+        return;
+      }
+
       /**
        * 드래그 중 일때 잔상이 보이도록 드래그 중임을 mousemove에서 처리
        */
-      if (isClicked) {
+      if (isClicked.current) {
         setIsAfterImageShow(true);
         updateIsTabDrag(true);
       }
 
-      const [{ x: containerX, width: containerWidth }] = container.getClientRects();
+      const [{ x: containerX, width: containerWidth }] = containerRef.current.getClientRects();
       const { clientX } = e;
 
       const startX = containerX;
@@ -91,41 +93,37 @@ function MovableTabImpl({
       } else if (middleX < clientX && clientX <= endX) {
         updateDestTabIndex(tabIndex + 1);
       }
-    };
+    },
+    [disableDrag, tabIndex, updateDestTabIndex, updateIsTabDrag],
+    'mousemove',
+    containerRef.current,
+  );
 
-    const handleWindowMouseUp = () => {
+  useEventElement(
+    (e) => {
+      e.preventDefault();
+    },
+    [],
+    'contextmenu',
+    containerRef.current,
+  );
+
+  useEventWindow(
+    () => {
       const { destTabIndex } = useStore.getState();
 
-      if (isClicked && destTabIndex !== null) {
+      if (isClicked.current && destTabIndex !== null) {
         reorderTab(tabIndex, destTabIndex);
       }
 
-      isClicked = false;
+      isClicked.current = false;
       updateIsResizerDrag(false);
       updateIsTabDrag(false);
       setIsAfterImageShow(false);
-    };
-
-    const handleMouseRightButtonClick = (e: MouseEvent) => {
-      e.preventDefault();
-    };
-
-    container.addEventListener('contextmenu', handleMouseRightButtonClick);
-    container.addEventListener('mousedown', handleTabMouseDown);
-    container.addEventListener('mousemove', handleTabMouseMove);
-    window.addEventListener('mouseup', handleWindowMouseUp);
-
-    return function cleanup() {
-      if (!container) {
-        return;
-      }
-
-      container.removeEventListener('contextmenu', handleMouseRightButtonClick);
-      container.removeEventListener('mousedown', handleTabMouseDown);
-      container.removeEventListener('mousemove', handleTabMouseMove);
-      window.removeEventListener('mouseup', handleWindowMouseUp);
-    };
-  }, [tabIndex, polyfill, ghost, reorderTab, updateIsResizerDrag, updateIsTabDrag, updateDestTabIndex]);
+    },
+    [reorderTab, tabIndex, updateIsResizerDrag, updateIsTabDrag],
+    'mouseup',
+  );
 
   /**
    * 탭 생성 시 스크롤을 요소 위치로 이동
@@ -139,13 +137,13 @@ function MovableTabImpl({
   /**
    * 탭 클릭 시 스크롤을 요소 위치로 이동
    */
-  const handleTabClick = () => {
+  const handleTabClick = useCallback(() => {
     onClick();
 
     if (containerRef.current) {
       containerRef.current.scrollIntoView();
     }
-  };
+  }, [onClick]);
 
   const TopBorder = getElementFromChildren(children, TopBorderType);
   const BottomBorder = getElementFromChildren(children, BottomBorderType);
