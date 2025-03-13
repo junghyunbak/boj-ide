@@ -75,29 +75,23 @@ export function ProblemHistory() {
         <ProblemHistoryButtonParagraph>방문 기록</ProblemHistoryButtonParagraph>
       </ProblemHistoryButton>
 
-      {/**
-       * // TODO: 모달 내 input 크기 변경
-       * // TODO: 모달 테두리 둥글게
-       * // TODO: 모달 크기 조절 바 input 까지로 변경
-       * // TODO: 요소 닫기 버튼 hover 스타일 보이도록 수정
-       */}
-      <NonModal isOpen={isHistoryModalOpen} inset="-6px auto auto auto" ref={historyModalRef}>
-        <SplitLayout vertical>
-          <SplitLayout.Left
-            px={verticalResizerPxOption}
-            initialRatio={useStore.getState().historyModalHeight}
-            onRatioChange={updateHistoryModalHeight}
-          >
-            <ProblemHistoryModalLayout>
-              <ProblemHistoryModalInputBox>
-                <ProblemHistoryModalInput
-                  ref={historyModalInputRef}
-                  value={historyFilterValue}
-                  onChange={handleHistoryFilterValueChange}
-                  placeholder="1000번: A+B"
-                />
-              </ProblemHistoryModalInputBox>
+      <NonModal isOpen={isHistoryModalOpen} inset="-8px auto auto auto" ref={historyModalRef} border="round">
+        <ProblemHistoryModalLayout>
+          <ProblemHistoryModalInputBox>
+            <ProblemHistoryModalInput
+              ref={historyModalInputRef}
+              value={historyFilterValue}
+              onChange={handleHistoryFilterValueChange}
+              placeholder="1000번: A+B"
+            />
+          </ProblemHistoryModalInputBox>
 
+          <SplitLayout vertical>
+            <SplitLayout.Left
+              px={verticalResizerPxOption}
+              initialRatio={useStore.getState().historyModalHeight}
+              onRatioChange={updateHistoryModalHeight}
+            >
               <ProblemHistoryModalListBox>
                 {isHistoryEmpty ? (
                   <ProblemHistoryModalPlaceholder>문제 히스토리가 존재하지 않습니다.</ProblemHistoryModalPlaceholder>
@@ -111,13 +105,13 @@ export function ProblemHistory() {
                   </ProblemHistoryModalList>
                 )}
               </ProblemHistoryModalListBox>
-            </ProblemHistoryModalLayout>
-          </SplitLayout.Left>
+            </SplitLayout.Left>
 
-          <SplitLayout.Resizer>
-            <ThreeLineHorizontalResizer />
-          </SplitLayout.Resizer>
-        </SplitLayout>
+            <SplitLayout.Resizer>
+              <ThreeLineHorizontalResizer />
+            </SplitLayout.Resizer>
+          </SplitLayout>
+        </ProblemHistoryModalLayout>
       </NonModal>
     </ProblemHistoryLayout>
   );
