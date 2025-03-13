@@ -16,6 +16,6 @@ export function useEventClickOutOfModal(
       callback();
     },
     [buttonRef, callback, modalRef],
-    'click',
+    'mousedown',
   );
 }
