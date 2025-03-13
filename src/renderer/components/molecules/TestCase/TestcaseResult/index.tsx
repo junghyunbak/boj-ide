@@ -9,16 +9,16 @@ export function TestcaseResult() {
 
   const { isJudging } = useJudge();
 
-  if (isJudging) {
-    return <Text type="채점 중">채점 중</Text>;
-  }
-
   if (judgeResult) {
     return (
       <Text type={judgeResult.result} fontWeight={judgeResult.result === '맞았습니다!!' ? 'bold' : 'normal'}>
-        {isJudging ? '채점 중' : judgeResult.result}
+        {judgeResult.result}
       </Text>
     );
+  }
+
+  if (isJudging) {
+    return <Text type="채점 중">채점 중</Text>;
   }
 
   return null;
