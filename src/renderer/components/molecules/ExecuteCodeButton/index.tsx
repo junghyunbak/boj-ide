@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 import { useEventIpc, useJudge, useModifyJudge, useProblem } from '@/renderer/hooks';
 
@@ -6,8 +6,6 @@ import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
 
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 
-// [ ]: 채점중일 경우 버튼이 비활성화되어야 한다.
-// [ ]: 문제가 선택되어있지 않을 경우 버튼이 비활성화되어야 한다.
 export function ExecuteCodeButton() {
   const tourRef = useRef<HTMLButtonElement>(null);
 
@@ -25,9 +23,9 @@ export function ExecuteCodeButton() {
     'judge-request',
   );
 
-  const handleExecuteButtonClick = () => {
+  const handleExecuteButtonClick = useCallback(() => {
     startJudge();
-  };
+  }, [startJudge]);
 
   return (
     <>

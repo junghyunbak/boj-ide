@@ -1,14 +1,18 @@
+import { useCallback } from 'react';
+
 import { css } from '@emotion/react';
 
 import { ReactComponent as Github } from '@/renderer/assets/svgs/github.svg';
 
 export function GithubButton() {
+  const handleGithubButtonClick = useCallback(() => {
+    window.open('https://github.com/junghyunbak/boj-ide', '_blank');
+  }, []);
+
   return (
     <button
       type="button"
-      onClick={() => {
-        window.open('https://github.com/junghyunbak/boj-ide', '_blank');
-      }}
+      onClick={handleGithubButtonClick}
       css={(theme) => css`
         border: none;
         display: flex;
