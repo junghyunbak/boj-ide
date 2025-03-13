@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { SubmitButton } from '@/renderer/components/molecules/SubmitButton';
 import { WebviewController } from '@/renderer/components/molecules/WebviewController';
 import { ThemeButton } from '@/renderer/components/molecules/ThemeButton';
-import { HistoryModal } from '../../molecules/HistoryModal';
+import { ProblemHistory } from '@/renderer/components/molecules/ProblemHistory';
 
 export function Nav() {
   return (
@@ -38,7 +38,7 @@ export function Nav() {
         </div>
       </div>
 
-      <HistoryModal />
+      <ProblemHistory />
     </div>
   );
 }

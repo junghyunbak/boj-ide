@@ -46,6 +46,7 @@ declare module '@emotion/react' {
 
       disabledFg: string;
 
+      hover: string;
       active: string;
       accent: string;
       code: string;
@@ -88,6 +89,7 @@ export const themes: Record<Themes, Theme> = {
       scrollbarHover: '#0000004c',
       scrollbarActive: '#0000004c',
 
+      hover: '#f5f5f5',
       accent: '#808080',
       active: '#eee',
       border: '#ddd',
@@ -133,6 +135,7 @@ export const themes: Record<Themes, Theme> = {
 
       disabledFg: '#808080',
 
+      hover: '#172334',
       accent: '#B2C0CC',
       active: '#202B3D',
       border: '#172334',
