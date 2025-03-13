@@ -18,4 +18,12 @@ export function useEventClickOutOfModal(
     [buttonRef, callback, modalRef],
     'mousedown',
   );
+
+  useEventWindow(
+    () => {
+      callback();
+    },
+    [callback],
+    'blur',
+  );
 }
