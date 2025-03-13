@@ -28,7 +28,7 @@ export function TabBookmark({ tab, index }: TabBookmarkProps) {
       <MovableTab.MovableTabLeftBorder />
       <MovableTab.MovableTabRightBorder />
 
-      <MovableTab.MovableTabLeftLine />
+      {index === 0 && <MovableTab.MovableTabLeftLine />}
 
       <MovableTab.MovableTabContent>
         <MovableTab.MovableTabContent.MovableTabContentIcon src={tab.logoImgBase64} />

@@ -28,7 +28,7 @@ export function TabExtension({ tab, index }: TabExtensionProps) {
       <MovableTab.MovableTabLeftBorder />
       <MovableTab.MovableTabRightBorder />
 
-      <MovableTab.MovableTabLeftLine />
+      {index === 0 && <MovableTab.MovableTabLeftLine />}
 
       <MovableTab.MovableTabContent>
         <MovableTab.MovableTabContent.MovableTabContentIcon src={tab.logoImgBase64} />

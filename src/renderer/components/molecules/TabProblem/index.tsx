@@ -44,7 +44,7 @@ export function TabProblem({ tab, index }: TabProblemProps) {
       <MovableTab.MovableTabLeftBorder />
       <MovableTab.MovableTabRightBorder />
 
-      <MovableTab.MovableTabLeftLine />
+      {index === 0 && <MovableTab.MovableTabLeftLine />}
 
       <MovableTab.MovableTabContent>
         <MovableTab.MovableTabContent.MovableTabContentIcon src={tierBase64 || placeholderLogo} />
