@@ -2,9 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import { useStore } from '@/renderer/store';
-
-import { useProblem, useModifyAlertModal, useModifyTestcase, useTestcase } from '@/renderer/hooks';
+import { useProblem, useModifyAlertModal, useModifyTestcase, useTestcase, useEditor } from '@/renderer/hooks';
 
 import { TextArea } from '@/renderer/components/atoms/textareas/TextArea';
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
@@ -24,6 +22,7 @@ export function TestCaseMaker() {
 
   const { problem } = useProblem();
   const { testcaseInputProblemNumber } = useTestcase();
+  const { editorLanguage } = useEditor();
 
   const { addCustomTestcase, updateTestcaseInputProblemNumber } = useModifyTestcase();
   const { fireAlertModal } = useModifyAlertModal();
@@ -43,7 +42,7 @@ export function TestCaseMaker() {
     window.electron.ipcRenderer.sendMessage('log-add-testcase', {
       data: {
         number: testcaseInputProblemNumber,
-        language: useStore.getState().lang,
+        language: editorLanguage,
       },
     });
 
@@ -51,7 +50,7 @@ export function TestCaseMaker() {
 
     setInput('');
     setOutput('');
-  }, [addCustomTestcase, fireAlertModal, input, output, testcaseInputProblemNumber]);
+  }, [addCustomTestcase, editorLanguage, fireAlertModal, input, output, testcaseInputProblemNumber]);
 
   const handleInputTextChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
     (e) => {

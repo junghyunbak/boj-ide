@@ -2,8 +2,6 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { css } from '@emotion/react';
 
-import { useStore } from '@/renderer/store';
-
 import aiCreateImageSrc from '@/renderer/assets/gifs/ai-create.gif';
 
 import {
@@ -12,6 +10,7 @@ import {
   useModifyEditor,
   useModifyConfirmModal,
   useProblem,
+  useEditor,
 } from '@/renderer/hooks';
 
 import { AI_ERROR_MESSAGE, AI_EXECUTE_QUESTION_MESSAGE } from '@/renderer/constants';
@@ -23,6 +22,7 @@ export function AICodeCreateButton() {
   const tourRef = useRef<HTMLButtonElement>(null);
 
   const { problem } = useProblem();
+  const { editorLanguage, editorIndentSpace } = useEditor();
 
   const { fireAlertModal } = useModifyAlertModal();
   const { fireConfirmModal } = useModifyConfirmModal();
@@ -47,12 +47,10 @@ export function AICodeCreateButton() {
         return;
       }
 
-      const { lang } = useStore.getState();
-
       window.electron.ipcRenderer.sendMessage('log-execute-ai-create', {
         data: {
           number: problem.number,
-          language: lang,
+          language: editorLanguage,
         },
       });
 
@@ -60,12 +58,12 @@ export function AICodeCreateButton() {
         body: {
           inputs: problem.testCase.inputs,
           inputDesc: problem.inputDesc,
-          language: useStore.getState().lang,
-          indentSpace: useStore.getState().indentSpace,
+          language: editorLanguage,
+          indentSpace: editorIndentSpace,
         },
       });
     });
-  }, [complete, fireConfirmModal, problem]);
+  }, [complete, editorIndentSpace, editorLanguage, fireConfirmModal, problem]);
 
   return (
     <>
