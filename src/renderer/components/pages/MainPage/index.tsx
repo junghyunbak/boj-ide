@@ -18,9 +18,14 @@ import { TabAfterImage } from '@/renderer/components/molecules/TabAfterImage';
 import { EditorPaint } from '@/renderer/components/molecules/EditorPaint';
 import { SplitLayout } from '@/renderer/components/molecules/SplitLayout';
 
+import { useLayout, useModifyLayout } from '@/renderer/hooks';
+
 import { ExpandedPaintStandardBox } from './index.style';
 
 export function MainPage() {
+  const { webviewRatio, editorRatio } = useLayout();
+  const { updateWebviewRatio, updateEditorRatio } = useModifyLayout();
+
   return (
     <div
       css={css`
@@ -40,10 +45,7 @@ export function MainPage() {
         `}
       >
         <SplitLayout>
-          <SplitLayout.Left
-            initialRatio={useStore.getState().leftRatio}
-            onRatioChange={useStore.getState().setLeftRatio}
-          >
+          <SplitLayout.Left initialRatio={webviewRatio} onRatioChange={updateWebviewRatio}>
             <BojView />
           </SplitLayout.Left>
 
@@ -56,10 +58,7 @@ export function MainPage() {
           <SplitLayout.Right>
             <ExpandedPaintStandardBox>
               <SplitLayout vertical>
-                <SplitLayout.Left
-                  initialRatio={useStore.getState().topRatio}
-                  onRatioChange={useStore.getState().setTopRatio}
-                >
+                <SplitLayout.Left initialRatio={editorRatio} onRatioChange={updateEditorRatio}>
                   <PaintAndEditor />
                 </SplitLayout.Left>
 

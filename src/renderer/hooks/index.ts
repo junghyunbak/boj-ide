@@ -16,6 +16,7 @@ export * from './usePaint';
 export * from './useDrag';
 export * from './useSetting';
 export * from './useHistories';
+export * from './useLayout';
 
 /**
  * setup
@@ -53,6 +54,7 @@ export * from './useModifyEditor';
 export * from './useModifyPaint';
 export * from './useModifySetting';
 export * from './useModifyHistories';
+export * from './useModifyLayout';
 
 /**
  * event
