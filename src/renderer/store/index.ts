@@ -13,9 +13,10 @@ import { createTabSlice } from './slices/tab';
 import { createTourSlice } from './slices/tour';
 import { createHistorySlice } from './slices/history';
 import { createThemeSlice } from './slices/theme';
+import { createVimSlice } from './slices/vim';
+import { createDragSlice } from './slices/drag';
 
 import { createPaintSlice } from './slices/paint';
-import { createDragSlice } from './slices/drag';
 
 export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createJudgeSlice> &
@@ -27,7 +28,8 @@ export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createThemeSlice> &
   ReturnType<typeof createTourSlice> &
   ReturnType<typeof createHistorySlice> &
-  ReturnType<typeof createDragSlice>;
+  ReturnType<typeof createDragSlice> &
+  ReturnType<typeof createVimSlice>;
 
 export const useStore = create<StoreState>()(
   persist(
@@ -43,6 +45,7 @@ export const useStore = create<StoreState>()(
       ...createTourSlice(...a),
       ...createHistorySlice(...a),
       ...createDragSlice(...a),
+      ...createVimSlice(...a),
     }),
     {
       name: 'zustandStore',

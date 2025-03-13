@@ -20,9 +20,6 @@ type EditorSlice = {
   editorHeight: number;
   setEditorHeight(height: number): void;
 
-  vimMode: string;
-  setVimMode: (mode: string) => void;
-
   editorState: EditorState | undefined;
   updateEditorState(editorState: EditorState | undefined): void;
 
@@ -72,11 +69,6 @@ export const createEditorSlice: StateCreator<EditorSlice> = (set, get): EditorSl
   },
 
   editorValue: new Map(),
-
-  vimMode: 'NORMAL',
-  setVimMode: (mode: string) => {
-    set(() => ({ vimMode: mode }));
-  },
 
   isCodeStale: false,
   setIsCodeStale(isCodeStale) {

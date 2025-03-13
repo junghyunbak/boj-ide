@@ -17,6 +17,7 @@ export * from './useDrag';
 export * from './useSetting';
 export * from './useHistories';
 export * from './useLayout';
+export * from './useVim';
 
 /**
  * setup
@@ -56,6 +57,7 @@ export * from './useModifySetting';
 export * from './useModifyHistories';
 export * from './useModifyLayout';
 export * from './useModifyDrag';
+export * from './useModifyVim';
 
 /**
  * event

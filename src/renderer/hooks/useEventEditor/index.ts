@@ -10,6 +10,7 @@ import { useEventIpc } from '../useEventIpc';
 import { useEditor } from '../useEditor';
 import { useEventElement } from '../useEventElement';
 import { useEventWindow } from '../useEventWindow';
+import { useModifyVim } from '../useModifyVim';
 
 export function useEventEditor() {
   const curFocusRef = useRef<Element | null>(null);
@@ -17,7 +18,8 @@ export function useEventEditor() {
 
   const { editorRef, editorView, editorState, setEditorState } = useEditor();
 
-  const { saveFile, initialEditorCode, getEditorValue, updateEditorVimMode } = useModifyEditor();
+  const { saveFile, initialEditorCode, getEditorValue } = useModifyEditor();
+  const { updateVimMode } = useModifyVim();
 
   /**
    * Vim(:w) 코드 저장 이벤트 등록
@@ -51,7 +53,7 @@ export function useEventEditor() {
 
     const handleVimModeChange = (data: any) => {
       if ('mode' in data && typeof data.mode === 'string') {
-        updateEditorVimMode(data.mode);
+        updateVimMode(data.mode);
       }
     };
 
@@ -60,7 +62,7 @@ export function useEventEditor() {
     return () => {
       cm.off('vim-mode-change', handleVimModeChange);
     };
-  }, [updateEditorVimMode, editorView]);
+  }, [updateVimMode, editorView]);
 
   /**
    * Ctrl + R 단축키를 누르면 코드를 실행하는 이벤트 등록
