@@ -1,40 +1,23 @@
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
+/* eslint-disable react-hooks/rules-of-hooks */
+import { useDrag } from '@/renderer/hooks';
 
 import { useMovableTabContext } from '../MovableTabContext';
 
 import { LineBox, LineLayout } from './index.style';
 
-export function MovableTabLeftLine() {
-  const { tabIndex } = useMovableTabContext();
+const MovableTabLineImpl = (dir: 'left' | 'right') =>
+  function () {
+    const { tabIndex } = useMovableTabContext();
+    const { isTabDrag, destTabIndex } = useDrag();
 
-  const [isTabDrag] = useStore(useShallow((s) => [s.isTabDrag]));
-  const [destTabIndex] = useStore(useShallow((s) => [s.destTabIndex]));
+    const isHidden = !isTabDrag || destTabIndex !== (dir === 'left' ? tabIndex : tabIndex + 1);
 
-  const isHidden = !isTabDrag || destTabIndex !== tabIndex;
+    return (
+      <LineLayout dir={dir}>
+        <LineBox isHidden={isHidden} />
+      </LineLayout>
+    );
+  };
 
-  if (tabIndex !== 0) {
-    return null;
-  }
-
-  return (
-    <LineLayout dir="left">
-      <LineBox isHidden={isHidden} />
-    </LineLayout>
-  );
-}
-
-export function MovableTabRightLine() {
-  const { tabIndex } = useMovableTabContext();
-
-  const [isTabDrag] = useStore(useShallow((s) => [s.isTabDrag]));
-  const [destTabIndex] = useStore(useShallow((s) => [s.destTabIndex]));
-
-  const isHidden = !isTabDrag || destTabIndex !== tabIndex + 1;
-
-  return (
-    <LineLayout dir="right">
-      <LineBox isHidden={isHidden} />
-    </LineLayout>
-  );
-}
+export const MovableTabLeftLine = MovableTabLineImpl('left');
+export const MovableTabRightLine = MovableTabLineImpl('right');

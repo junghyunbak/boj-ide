@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
 
 import { useModifyDrag, useModifyTab } from '@/renderer/hooks';
 
@@ -45,10 +44,7 @@ function MovableTabImpl({
 
   const [isAfterImageShow, setIsAfterImageShow] = useState(false);
 
-  const [setIsTabDrag] = useStore(useShallow((s) => [s.setIsTabDrag])); // for tabs
-  const [setDestTabIndex] = useStore(useShallow((s) => [s.setDestTabIndex]));
-
-  const { updateIsResizerDrag } = useModifyDrag();
+  const { updateIsResizerDrag, updateIsTabDrag, updateDestTabIndex } = useModifyDrag();
   const { reorderTab } = useModifyTab();
 
   /**
@@ -80,7 +76,7 @@ function MovableTabImpl({
        */
       if (isClicked) {
         setIsAfterImageShow(true);
-        setIsTabDrag(true);
+        updateIsTabDrag(true);
       }
 
       const [{ x: containerX, width: containerWidth }] = container.getClientRects();
@@ -91,9 +87,9 @@ function MovableTabImpl({
       const endX = containerX + containerWidth;
 
       if (startX < clientX && clientX <= middleX) {
-        setDestTabIndex(tabIndex);
+        updateDestTabIndex(tabIndex);
       } else if (middleX < clientX && clientX <= endX) {
-        setDestTabIndex(tabIndex + 1);
+        updateDestTabIndex(tabIndex + 1);
       }
     };
 
@@ -106,7 +102,7 @@ function MovableTabImpl({
 
       isClicked = false;
       updateIsResizerDrag(false);
-      setIsTabDrag(false);
+      updateIsTabDrag(false);
       setIsAfterImageShow(false);
     };
 
@@ -129,7 +125,7 @@ function MovableTabImpl({
       container.removeEventListener('mousemove', handleTabMouseMove);
       window.removeEventListener('mouseup', handleWindowMouseUp);
     };
-  }, [tabIndex, polyfill, reorderTab, setDestTabIndex, setIsTabDrag, ghost, updateIsResizerDrag]);
+  }, [tabIndex, polyfill, ghost, reorderTab, updateIsResizerDrag, updateIsTabDrag, updateDestTabIndex]);
 
   /**
    * 탭 생성 시 스크롤을 요소 위치로 이동

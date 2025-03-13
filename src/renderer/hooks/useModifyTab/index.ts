@@ -11,6 +11,7 @@ import { useModifyWebview } from '../useModifyWebview';
 
 export function useModifyTab() {
   const [setTabs] = useStore(useShallow((s) => [s.setProblemHistories]));
+
   const { gotoUrl, gotoProblem } = useModifyWebview();
 
   const addProblemTab = useCallback(

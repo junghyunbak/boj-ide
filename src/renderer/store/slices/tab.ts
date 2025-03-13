@@ -3,23 +3,21 @@ import { type StateCreator } from 'zustand';
 type DailyProblem = [string, string[]] | null;
 
 type TabSlice = {
-  problemHistories: Tab[]; // TODO: problemHistories -> tabs
-  setProblemHistories: (fn: (prev: Tab[]) => Tab[]) => void; // TODO: setProblemHistories -> setTabs
+  /**
+   * // TODO: problemHistories -> tabs
+   * // TODO: setProblemHistories -> setTabs
+   */
+  problemHistories: Tab[];
+  setProblemHistories(fn: (prev: Tab[]) => Tab[]): void;
 
+  /**
+   * 데일리 문제 탭
+   */
   dailyProblem: DailyProblem;
-  setDailyProblem: (fn: (prev: DailyProblem) => DailyProblem) => void;
+  setDailyProblem(fn: (prev: DailyProblem) => DailyProblem): void;
 
   activeDailyProblem: boolean;
-  setActiveDailyProblem: (active: boolean) => void;
-
-  destTabIndex: number | null;
-  setDestTabIndex: (index: number | null) => void;
-
-  isTabDrag: boolean;
-  setIsTabDrag: (isDrag: boolean) => void;
-
-  currentAfterImageUrl: string;
-  setCurrentAfterImageUrl: (url: string) => void;
+  setActiveDailyProblem(active: boolean): void;
 };
 
 export const createTabSlice: StateCreator<TabSlice> = (set): TabSlice => ({
@@ -36,20 +34,5 @@ export const createTabSlice: StateCreator<TabSlice> = (set): TabSlice => ({
   activeDailyProblem: true,
   setActiveDailyProblem(active) {
     set(() => ({ activeDailyProblem: active }));
-  },
-
-  destTabIndex: null,
-  setDestTabIndex(index) {
-    set(() => ({ destTabIndex: index }));
-  },
-
-  isTabDrag: false,
-  setIsTabDrag(isDrag) {
-    set(() => ({ isTabDrag: isDrag }));
-  },
-
-  currentAfterImageUrl: '',
-  setCurrentAfterImageUrl(url) {
-    set(() => ({ currentAfterImageUrl: url }));
   },
 });
