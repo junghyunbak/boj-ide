@@ -113,11 +113,11 @@ export function useModifyTab() {
   );
 
   const clearTab = useCallback(() => {
-    const { problemHistories: currentTabs } = useStore.getState();
+    const { problemHistories: currentTabs, problem } = useStore.getState();
 
     setTabs((prev) => prev.filter((tab) => !isProblemTab(tab)));
 
-    if (currentTabs.filter(isProblemTab).length > 0) {
+    if (currentTabs.filter(isProblemTab).length > 0 && problem) {
       gotoUrl(WEBVIEW_HOME_URL);
     }
   }, [gotoUrl, setTabs]);
