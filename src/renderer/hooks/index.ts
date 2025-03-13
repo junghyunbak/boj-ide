@@ -55,6 +55,7 @@ export * from './useModifyPaint';
 export * from './useModifySetting';
 export * from './useModifyHistories';
 export * from './useModifyLayout';
+export * from './useModifyDrag';
 
 /**
  * event

@@ -21,9 +21,6 @@ type BojViewSlice = {
 
   insertCSSKey: string | null;
 
-  isResizerDrag: boolean;
-  setIsDrag: (isDrag: boolean) => void;
-
   baekjoonhubExtensionId: string | null;
   setBaekjoonhubExtensionId: (extensionId: string) => void;
 };
@@ -55,13 +52,6 @@ export const createBojViewSlice: StateCreator<BojViewSlice> = (set): BojViewSlic
   },
 
   insertCSSKey: null,
-
-  isResizerDrag: false,
-  setIsDrag(isDrag) {
-    set(() => ({
-      isResizerDrag: isDrag,
-    }));
-  },
 
   baekjoonhubExtensionId: null,
   setBaekjoonhubExtensionId(extensionId) {

@@ -1,7 +1,5 @@
 import { css } from '@emotion/react';
 
-import { useStore } from '@/renderer/store';
-
 import { zIndex } from '@/renderer/styles';
 
 import { Nav } from '@/renderer/components/organisms/Nav';
@@ -17,13 +15,15 @@ import { TabAfterImage } from '@/renderer/components/molecules/TabAfterImage';
 import { EditorPaint } from '@/renderer/components/molecules/EditorPaint';
 import { SplitLayout } from '@/renderer/components/molecules/SplitLayout';
 
-import { useLayout, useModifyLayout } from '@/renderer/hooks';
+import { useLayout, useModifyDrag, useModifyLayout } from '@/renderer/hooks';
 
 import { ExpandedPaintStandardBox } from './index.style';
 
 export function MainPage() {
   const { webviewRatio, editorRatio, paintRatio, isPaintOpen } = useLayout();
+
   const { updateWebviewRatio, updateEditorRatio, updatePaintRatio } = useModifyLayout();
+  const { updateIsResizerDrag } = useModifyDrag();
 
   return (
     <div
@@ -49,8 +49,8 @@ export function MainPage() {
           </SplitLayout.Left>
 
           <SplitLayout.Resizer
-            onDragStart={() => useStore.getState().setIsDrag(true)}
-            onDragEnd={() => useStore.getState().setIsDrag(false)}
+            onDragStart={() => updateIsResizerDrag(true)}
+            onDragEnd={() => updateIsResizerDrag(false)}
             zIndex={zIndex.resizer.webview}
           />
 
@@ -77,7 +77,11 @@ export function MainPage() {
                   </SplitLayout>
                 </SplitLayout.Left>
 
-                <SplitLayout.Resizer zIndex={zIndex.resizer.editor} />
+                <SplitLayout.Resizer
+                  zIndex={zIndex.resizer.editor}
+                  onDragStart={() => updateIsResizerDrag(true)}
+                  onDragEnd={() => updateIsResizerDrag(false)}
+                />
 
                 <SplitLayout.Right>
                   <Output />

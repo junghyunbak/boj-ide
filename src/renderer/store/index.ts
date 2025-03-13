@@ -15,6 +15,7 @@ import { createHistorySlice } from './slices/history';
 import { createThemeSlice } from './slices/theme';
 
 import { createPaintSlice } from './slices/paint';
+import { createDragSlice } from './slices/drag';
 
 export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createJudgeSlice> &
@@ -25,7 +26,8 @@ export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createTabSlice> &
   ReturnType<typeof createThemeSlice> &
   ReturnType<typeof createTourSlice> &
-  ReturnType<typeof createHistorySlice>;
+  ReturnType<typeof createHistorySlice> &
+  ReturnType<typeof createDragSlice>;
 
 export const useStore = create<StoreState>()(
   persist(
@@ -40,6 +42,7 @@ export const useStore = create<StoreState>()(
       ...createThemeSlice(...a),
       ...createTourSlice(...a),
       ...createHistorySlice(...a),
+      ...createDragSlice(...a),
     }),
     {
       name: 'zustandStore',

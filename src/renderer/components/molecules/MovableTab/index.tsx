@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useModifyTab } from '@/renderer/hooks';
+import { useModifyDrag, useModifyTab } from '@/renderer/hooks';
 
 import { getElementFromChildren } from '@/renderer/utils';
 
@@ -46,9 +46,9 @@ function MovableTabImpl({
   const [isAfterImageShow, setIsAfterImageShow] = useState(false);
 
   const [setIsTabDrag] = useStore(useShallow((s) => [s.setIsTabDrag])); // for tabs
-  const [setIsDrag] = useStore(useShallow((s) => [s.setIsDrag])); // for webview
   const [setDestTabIndex] = useStore(useShallow((s) => [s.setDestTabIndex]));
 
+  const { updateIsResizerDrag } = useModifyDrag();
   const { reorderTab } = useModifyTab();
 
   /**
@@ -71,7 +71,7 @@ function MovableTabImpl({
       }
 
       isClicked = true;
-      setIsDrag(true);
+      updateIsResizerDrag(true);
     };
 
     const handleTabMouseMove = (e: MouseEvent) => {
@@ -105,7 +105,7 @@ function MovableTabImpl({
       }
 
       isClicked = false;
-      setIsDrag(false);
+      updateIsResizerDrag(false);
       setIsTabDrag(false);
       setIsAfterImageShow(false);
     };
@@ -129,7 +129,7 @@ function MovableTabImpl({
       container.removeEventListener('mousemove', handleTabMouseMove);
       window.removeEventListener('mouseup', handleWindowMouseUp);
     };
-  }, [tabIndex, polyfill, reorderTab, setDestTabIndex, setIsTabDrag, setIsDrag, ghost]);
+  }, [tabIndex, polyfill, reorderTab, setDestTabIndex, setIsTabDrag, ghost, updateIsResizerDrag]);
 
   /**
    * 탭 생성 시 스크롤을 요소 위치로 이동
