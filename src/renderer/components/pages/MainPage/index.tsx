@@ -1,7 +1,6 @@
 import { css } from '@emotion/react';
 
 import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
 
 import { zIndex } from '@/renderer/styles';
 
@@ -23,8 +22,8 @@ import { useLayout, useModifyLayout } from '@/renderer/hooks';
 import { ExpandedPaintStandardBox } from './index.style';
 
 export function MainPage() {
-  const { webviewRatio, editorRatio } = useLayout();
-  const { updateWebviewRatio, updateEditorRatio } = useModifyLayout();
+  const { webviewRatio, editorRatio, paintRatio, isPaintOpen } = useLayout();
+  const { updateWebviewRatio, updateEditorRatio, updatePaintRatio } = useModifyLayout();
 
   return (
     <div
@@ -59,7 +58,23 @@ export function MainPage() {
             <ExpandedPaintStandardBox>
               <SplitLayout vertical>
                 <SplitLayout.Left initialRatio={editorRatio} onRatioChange={updateEditorRatio}>
-                  <PaintAndEditor />
+                  <SplitLayout>
+                    {/**
+                     * fragment를 사용하여 한번에 Left, Resizer를 렌더링 할 경우
+                     * 올바르게 렌더링되지 않음.
+                     */}
+                    {isPaintOpen && (
+                      <SplitLayout.Left initialRatio={paintRatio} onRatioChange={updatePaintRatio}>
+                        <EditorPaint />
+                      </SplitLayout.Left>
+                    )}
+
+                    {isPaintOpen && <SplitLayout.Resizer zIndex={zIndex.resizer.paint} />}
+
+                    <SplitLayout.Right>
+                      <Editor />
+                    </SplitLayout.Right>
+                  </SplitLayout>
                 </SplitLayout.Left>
 
                 <SplitLayout.Resizer zIndex={zIndex.resizer.editor} />
@@ -78,35 +93,5 @@ export function MainPage() {
       <ConfirmModal />
       <TabAfterImage />
     </div>
-  );
-}
-
-/**
- * isPaintOpen 상태로 인한 불필요한 리렌더링을 없애기 위해 분리
- */
-function PaintAndEditor() {
-  const [isPaintOpen] = useStore(useShallow((s) => [s.isPaintOpen]));
-
-  const { paintRatio } = useLayout();
-  const { updatePaintRatio } = useModifyLayout();
-
-  return (
-    <SplitLayout>
-      {/**
-       * fragment를 사용하여 한번에 Left, Resizer를 렌더링 할 경우
-       * 올바르게 렌더링되지 않음.
-       */}
-      {isPaintOpen && (
-        <SplitLayout.Left initialRatio={paintRatio} onRatioChange={updatePaintRatio}>
-          <EditorPaint />
-        </SplitLayout.Left>
-      )}
-
-      {isPaintOpen && <SplitLayout.Resizer zIndex={zIndex.resizer.paint} />}
-
-      <SplitLayout.Right>
-        <Editor />
-      </SplitLayout.Right>
-    </SplitLayout>
   );
 }

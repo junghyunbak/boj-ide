@@ -8,6 +8,7 @@ export function useModifyLayout() {
   const [setTopRatio] = useStore(useShallow((s) => [s.setTopRatio]));
   const [setPaintLeftRatio] = useStore(useShallow((s) => [s.setPaintLeftRatio]));
   const [setHistoryModalHeight] = useStore(useShallow((s) => [s.setHistoryModalHeight]));
+  const [setIsPaintOpen] = useStore(useShallow((s) => [s.setIsPaintOpen]));
 
   const updateWebviewRatio = useCallback(
     (webviewRatio: number) => {
@@ -37,5 +38,12 @@ export function useModifyLayout() {
     [setHistoryModalHeight],
   );
 
-  return { updateWebviewRatio, updateEditorRatio, updatePaintRatio, updateHistoryModalHeight };
+  const updateIsPaintOpen = useCallback(
+    (isOpen: boolean) => {
+      setIsPaintOpen(isOpen);
+    },
+    [setIsPaintOpen],
+  );
+
+  return { updateWebviewRatio, updateEditorRatio, updatePaintRatio, updateHistoryModalHeight, updateIsPaintOpen };
 }

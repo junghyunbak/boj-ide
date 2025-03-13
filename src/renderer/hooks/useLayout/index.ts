@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 
 import { useStore } from '@/renderer/store';
+import { useShallow } from 'zustand/shallow';
 
 export function useLayout() {
   const webviewRatio = useRef(useStore.getState().leftRatio).current;
@@ -9,7 +10,10 @@ export function useLayout() {
 
   const historyModalHeight = useRef(useStore.getState().historyModalHeight).current;
 
+  const [isPaintOpen] = useStore(useShallow((s) => [s.isPaintOpen]));
+
   return {
+    isPaintOpen,
     webviewRatio,
     editorRatio,
     paintRatio,

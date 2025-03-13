@@ -21,6 +21,9 @@ type LayoutSlice = {
 
   historyModalHeight: number;
   setHistoryModalHeight(px: number): void;
+
+  isPaintOpen: boolean;
+  setIsPaintOpen: (isOpen: boolean) => void;
 };
 
 export const createLayoutSlice: StateCreator<LayoutSlice> = (set): LayoutSlice => ({
@@ -46,5 +49,10 @@ export const createLayoutSlice: StateCreator<LayoutSlice> = (set): LayoutSlice =
   historyModalHeight: HISTORY_MODAL_DEFAULT_HEIGHT,
   setHistoryModalHeight(px) {
     set(() => ({ historyModalHeight: px }));
+  },
+
+  isPaintOpen: false,
+  setIsPaintOpen(isOpen) {
+    set(() => ({ isPaintOpen: isOpen }));
   },
 });

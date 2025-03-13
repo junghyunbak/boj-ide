@@ -81,4 +81,14 @@ describe('[Custom Hooks] 레이아웃 상태 변경 훅', () => {
 
     expect(all.length).toBe(1);
   });
+
+  it('그림판 열림 상태를 true로 변경할 경우, 올바르게 변경되어야 한다.', () => {
+    const { result } = renderHook(() => ({ ...useLayout(), ...useModifyLayout() }));
+
+    act(() => {
+      result.current.updateIsPaintOpen(true);
+    });
+
+    expect(result.current.isPaintOpen).toBe(true);
+  });
 });

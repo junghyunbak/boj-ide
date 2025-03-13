@@ -3,9 +3,6 @@ import ReactDOM from 'react-dom';
 
 import { css } from '@emotion/react';
 
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
-
 import { useTour, useEventWindow, useModifyTour } from '@/renderer/hooks';
 
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
@@ -34,7 +31,7 @@ interface TourOverlayProps extends React.PropsWithChildren {
 }
 
 export function TourOverlay(props: TourOverlayProps) {
-  const [tourStep] = useStore(useShallow((s) => [s.tourStep]));
+  const { tourStep } = useTour();
 
   const { myTourStep } = props;
 
