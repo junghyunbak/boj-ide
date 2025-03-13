@@ -1,14 +1,11 @@
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
-
-import { useModifyEditor, useProblem } from '@/renderer/hooks';
+import { useEditor, useModifyEditor, useProblem } from '@/renderer/hooks';
 
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 import { useCallback } from 'react';
 
 export function SaveCodeButton() {
   const { problem } = useProblem();
-  const [isCodeStale] = useStore(useShallow((s) => [s.isCodeStale]));
+  const { isCodeStale } = useEditor();
 
   const { saveFile } = useModifyEditor();
 

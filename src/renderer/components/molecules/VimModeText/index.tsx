@@ -8,8 +8,8 @@ import { useShallow } from 'zustand/shallow';
 import { languageToExt } from '@/renderer/utils';
 
 export function VimModeText() {
+  const { isCodeStale } = useEditor();
   const [vimMode] = useStore(useShallow((s) => [s.vimMode]));
-  const [isCodeStale] = useStore(useShallow((s) => [s.isCodeStale]));
 
   const { editorMode, editorLanguage } = useEditor();
   const { problem } = useProblem();

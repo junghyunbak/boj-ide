@@ -9,7 +9,7 @@ import { useEditor } from '../useEditor';
 import { useModifyEditor } from '.';
 
 describe('[Custom Hooks] 에디터 상태 수정 훅', () => {
-  it('에디터 내용을 동기화 할 경우, 리렌더링이 발생하지 않아야 한다.', () => {
+  it('에디터 내용 동기화 시, 데이터 신선도 변경으로 인한 한번의 리렌더링만이 발생해야 한다.', () => {
     const all: any[] = [];
 
     const { result } = renderHook(
@@ -18,7 +18,7 @@ describe('[Custom Hooks] 에디터 상태 수정 훅', () => {
         all.push(value);
         return value;
       },
-      { wrapper: ({ children }) => <ThemeProvider theme={themes['baekjoon']}>{children}</ThemeProvider> },
+      { wrapper: ({ children }) => <ThemeProvider theme={themes.baekjoon}>{children}</ThemeProvider> },
     );
 
     act(() => {
@@ -27,9 +27,11 @@ describe('[Custom Hooks] 에디터 상태 수정 훅', () => {
       result.current.syncEditorCode('12');
       result.current.syncEditorCode('123');
       result.current.syncEditorCode('1234');
+      result.current.syncEditorCode('12345');
     });
 
-    expect(all.length).toBe(1);
-    expect(result.current.getEditorValue()).toBe('1234');
+    expect(all.length).toBe(2);
+    expect(result.current.isCodeStale).toBe(true);
+    expect(result.current.getEditorValue()).toBe('12345');
   });
 });
