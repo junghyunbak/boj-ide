@@ -245,6 +245,7 @@
           "universal"
         ]
       },
+      "artifactName": "BOJ-IDE-${version}.${ext}",
       "type": "distribution",
       "hardenedRuntime": true,
       "entitlements": "assets/entitlements.mac.plist",
@@ -266,6 +267,7 @@
       ]
     },
     "win": {
+      "artifactName": "BOJ-IDE-setup-${version}.${ext}",
       "target": [
         "nsis"
       ]
