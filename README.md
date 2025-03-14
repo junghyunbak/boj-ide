@@ -1,14 +1,14 @@
-|다운로드|메뉴얼|버그제보 및 문의|
-|-|-|-|
-|[링크](https://github.com/junghyunbak/boj-ide/releases)|[링크](https://boj-ide.gitbook.io/boj-ide-docs)|[링크](https://github.com/junghyunbak/boj-ide/issues)|
-
-<img src="https://github.com/junghyunbak/boj-ide/blob/master/assets/icons/64x64.png"/>
-
-## BOJ IDE
+## 소개
 
 백준 문제 풀이에 사용되는 도구들을 한곳에 모아 제공하는 데스크톱 앱 입니다.
 
-## 기능 요약
+## 다운로드
+
+|<img width="70px" src="https://github.com/user-attachments/assets/b3d81a17-25cd-4862-8a4b-baacb233a3ea"/>|<img width="70px" src="https://github.com/user-attachments/assets/31a67d43-efe4-43ba-88f1-d9288a067139"/>|
+|-|-|
+|[다운로드](https://github.com/junghyunbak/boj-ide/releases/download/1.15.21/BOJ-IDE-1.15.21.dmg)|[다운로드](BOJ-IDE-setup-1.15.21.exe)|
+
+## 기능
 
 ![Group 12](https://github.com/user-attachments/assets/e707716a-8894-424c-b34a-99d88ac83804)
 
