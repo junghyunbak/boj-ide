@@ -4,9 +4,8 @@
 
 ## 다운로드
 
-|<img width="70px" src="https://github.com/user-attachments/assets/b3d81a17-25cd-4862-8a4b-baacb233a3ea"/>|<img width="70px" src="https://github.com/user-attachments/assets/31a67d43-efe4-43ba-88f1-d9288a067139"/>|
+|<a href="https://github.com/junghyunbak/boj-ide/releases/download/1.15.21/BOJ-IDE-1.15.21.dmg"><img width="70px" src="https://github.com/user-attachments/assets/b3d81a17-25cd-4862-8a4b-baacb233a3ea"/></a>|<a href="https://github.com/junghyunbak/boj-ide/releases/download/1.15.21/BOJ-IDE-setup-1.15.21.exe"><img width="70px" src="https://github.com/user-attachments/assets/31a67d43-efe4-43ba-88f1-d9288a067139"/></a>|
 |-|-|
-|[다운로드](https://github.com/junghyunbak/boj-ide/releases/download/1.15.21/BOJ-IDE-1.15.21.dmg)|[다운로드](BOJ-IDE-setup-1.15.21.exe)|
 
 ## 기능
 
