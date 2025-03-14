@@ -31,6 +31,10 @@ export function TabProblemGhost({ num }: TabProblemGhostProps) {
     gotoProblem(tmpProblem);
   }, [num, title, removeDailyProblemTab, addProblemTab, gotoProblem]);
 
+  if (!title) {
+    return null;
+  }
+
   return (
     <MovableTab tabIndex={tabs.length} onClick={handleTabClick} ghost>
       <MovableTab.MovableTabBottomBorder />
