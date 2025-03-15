@@ -47,17 +47,12 @@ export class Judge {
 
   private isCliExist(language: Language) {
     if (!checkCli(langToJudgeInfo[language].cli)) {
-      console.error(Object.entries(process.env).filter(([key]) => key.toLowerCase() === 'path'));
-
       throw new Error(
         [
           `${this.getCliType(language)} \`${langToJudgeInfo[language].cli}\` 가 설치되어있지 않습니다.`,
-          `<img src="https://github.com/user-attachments/assets/1f5765b2-4039-48b1-a9e3-f9ccebbf2dc9" style="width: 500px"/>`,
-          `1. ${this.getCliType(language)} \`${langToJudgeInfo[language].cli}\`를 설치합니다.`,
-          `2. 설치한 \`${langToJudgeInfo[language].cli}\`를 환경변수에 등록합니다.`,
-          `3. 터미널에서 \`$ ${langToJudgeInfo[language].cli} --version\` 명령어를 실행하여 버전이 올바르게 출력되는지 확인합니다.`,
-          `4. 앱을 재실행합니다.`,
-          '그럼에도 동작하지 않는 경우 [Github Issues](https://github.com/junghyunbak/boj-ide/issues) 채널로 문의해주세요.',
+          `<img src="https://github.com/user-attachments/assets/bf775ca3-db48-4112-95b7-4e2bc876755c" style="width: 500px"/>`,
+          `프로그램 설치 후 환경변수 설정을 통해 \`--version\` 명령어로 버전을 확인할 수 있어야 합니다.<br/><br/>`,
+          `[참고 Q&A] ["Python3을 분명 설치했음에도 이를 인식하지 못합니다."](https://boj-ide.gitbook.io/boj-ide-docs/qa/cli)`,
         ].join('\n\n'),
       );
     }
