@@ -5,11 +5,6 @@ import { zIndex } from '@/renderer/styles';
 export const EditorLayout = styled.div`
   width: 100%;
   height: 100%;
-`;
-
-export const EditorCodemirrorBox = styled.div`
-  width: 100%;
-  height: 100%;
 
   .cm-tooltip {
     z-index: ${zIndex.editor.tooltip} !important;

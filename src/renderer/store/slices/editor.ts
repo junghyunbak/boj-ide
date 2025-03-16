@@ -1,4 +1,5 @@
-import { type EditorState, type EditorView } from '@uiw/react-codemirror';
+import { type EditorState } from '@codemirror/state';
+import { type EditorView } from '@codemirror/view';
 import { type StateCreator } from 'zustand';
 
 type EditorSlice = {

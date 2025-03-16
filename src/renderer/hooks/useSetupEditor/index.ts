@@ -1,51 +1,174 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
-import { useCodeMirror } from '@uiw/react-codemirror';
+import { useTheme } from '@emotion/react';
+
+import { EditorState, Prec, type Extension } from '@codemirror/state';
+import { EditorView, keymap } from '@codemirror/view';
+import { basicSetup } from 'codemirror';
+import { foldService, indentUnit } from '@codemirror/language';
+import { createTheme } from '@uiw/codemirror-themes';
+import { indentMore } from '@codemirror/commands';
+import { acceptCompletion } from '@codemirror/autocomplete';
+import { Vim, getCM, vim } from '@replit/codemirror-vim';
+import { javascript } from '@codemirror/lang-javascript';
+import { cpp } from '@codemirror/lang-cpp';
+import { python } from '@codemirror/lang-python';
+import { java } from '@codemirror/lang-java';
 
 import { useModifyEditor } from '../useModifyEditor';
 import { useProblem } from '../useProblem';
 import { useEditor } from '../useEditor';
 
+// TODO: gutter 관련 옵션 커스텀 (강조, 접기)
 export function useSetupEditor() {
   const { problem } = useProblem();
-  const { editorRef, editorCode, extensions, editorWidth, editorHeight, editorIndentSpace, editorLanguage } =
+  const { editorMode, editorRef, editorCode, editorState, editorFontSize, editorIndentSpace, editorLanguage } =
     useEditor();
 
   const { saveFile, syncEditorCode, getEditorValue, updateEditorState, updateEditorView, updateSetEditorState } =
     useModifyEditor();
 
-  const { state, view, setState, setContainer } = useCodeMirror({
-    value: editorCode,
-    extensions,
-    width: `${editorWidth}px`,
-    height: `${editorHeight}px`,
-    indentWithTab: false,
-    theme: 'none',
-    basicSetup: {
-      tabSize: editorIndentSpace,
-      highlightActiveLineGutter: false,
-      foldGutter: false,
-    },
-    onChange: syncEditorCode,
-  });
+  const emotionTheme = useTheme();
 
-  /**
-   * 에디터 렌더링
-   */
+  const codeExtensions = useMemo<Extension[]>(() => {
+    return [
+      editorMode === 'vim' && vim(),
+      editorLanguage === 'C++14' && cpp(),
+      editorLanguage === 'C++17' && cpp(),
+      editorLanguage === 'Java11' && java(),
+      editorLanguage === 'node.js' && javascript(),
+      editorLanguage === 'Python3' && python(),
+    ].filter((value) => typeof value === 'object');
+  }, [editorLanguage, editorMode]);
+
+  const themeExtensions = useMemo<Extension[]>(() => {
+    return [
+      EditorView.theme({
+        '&': {
+          height: '100%',
+        },
+        '.cm-content': {
+          fontSize: `${editorFontSize}px`,
+          fontFamily: 'hack',
+        },
+        '.cm-gutters': {
+          fontSize: `${editorFontSize}px`,
+          fontFamily: 'hack',
+        },
+        /**
+         * // TODO: extensions로 처리
+         */
+        '.cm-foldGutter': {
+          display: 'none !important',
+        },
+        '.cm-activeLineGutter': {
+          'background-color': 'transparent !important',
+        },
+      }),
+      createTheme({
+        theme: emotionTheme.theme,
+        settings: emotionTheme.editor.settings,
+        styles: emotionTheme.editor.styles,
+      }),
+    ];
+  }, [editorFontSize, emotionTheme]);
+
   useEffect(() => {
-    if (editorRef.current) {
-      setContainer(editorRef.current);
+    const updateListener = EditorView.updateListener.of((update) => {
+      if (update.docChanged) {
+        syncEditorCode(update.state.doc.toString());
+      }
+    });
+
+    const newEditorState = EditorState.create({
+      doc: editorCode,
+      extensions: [
+        Prec.highest(
+          keymap.of([
+            {
+              key: 'Escape',
+              run: (editorView) => {
+                const cm = getCM(editorView);
+
+                if (cm) {
+                  Vim.exitInsertMode(cm);
+                }
+
+                return false;
+              },
+            },
+          ]),
+        ),
+        basicSetup,
+        updateListener,
+        foldService.of(() => null),
+        indentUnit.of(' '.repeat(editorIndentSpace)),
+        vim(),
+        keymap.of([
+          {
+            key: 'Tab',
+            run: acceptCompletion,
+          },
+          {
+            key: 'Tab',
+            run: ({ state, dispatch }) => {
+              if (state.selection.ranges.some((r) => !r.empty)) {
+                return indentMore({ state, dispatch });
+              }
+
+              dispatch(
+                state.update(state.replaceSelection(' '.repeat(editorIndentSpace)), {
+                  scrollIntoView: true,
+                  userEvent: 'input',
+                }),
+              );
+
+              return true;
+            },
+          },
+        ]),
+        keymap.of([
+          {
+            key: 'Ctrl-s',
+            run: () => {
+              saveFile();
+              return false;
+            },
+          },
+        ]),
+        keymap.of([
+          {
+            key: 'Meta-s',
+            run: () => {
+              saveFile();
+              return false;
+            },
+          },
+        ]),
+        ...codeExtensions,
+        ...themeExtensions,
+      ],
+    });
+
+    updateEditorState(newEditorState);
+  }, [editorCode, updateEditorState, syncEditorCode, saveFile, codeExtensions, themeExtensions, editorIndentSpace]);
+
+  useEffect(() => {
+    if (!editorRef.current) {
+      return function cleanup() {};
     }
-  }, [setContainer, editorRef]);
 
-  /**
-   * 에디터 상태 전역으로 동기화
-   */
-  useEffect(() => {
-    updateEditorState(state);
-    updateEditorView(view);
-    updateSetEditorState(setState);
-  }, [updateEditorState, state, updateEditorView, view, updateSetEditorState, setState]);
+    const editorView = new EditorView({
+      state: editorState,
+      parent: editorRef.current,
+    });
+
+    updateEditorView(editorView);
+
+    return function cleanup() {
+      editorView.destroy();
+    };
+  }, [editorRef, editorCode, editorState, updateEditorView]);
 
   /**
    * 문제/언어가 변경되면

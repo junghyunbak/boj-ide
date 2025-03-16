@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 import { Vim, getCM } from '@replit/codemirror-vim';
-import { EditorState } from '@uiw/react-codemirror';
+import { EditorState } from '@codemirror/state';
 
 import { useStore } from '@/renderer/store';
 
@@ -16,7 +16,7 @@ export function useEventEditor() {
   const curFocusRef = useRef<Element | null>(null);
   const lastFocusRef = useRef<Element | null>(null);
 
-  const { editorRef, editorView, editorState, setEditorState } = useEditor();
+  const { editorView, editorState, setEditorState } = useEditor();
 
   const { saveFile, initialEditorCode, getEditorValue } = useModifyEditor();
   const { updateVimMode } = useModifyVim();
@@ -86,29 +86,6 @@ export function useEventEditor() {
     },
     [editorView],
     'ctrl-or-cmd-r-pressed',
-  );
-
-  /**
-   * autoComplete 모달이 있을 경우에도 esc키 입력 시 Vim 일반 모드로 진입되게끔 이벤트 등록
-   */
-  useEventElement(
-    (e) => {
-      if (e.key === 'Escape' && editorView) {
-        /**
-         * 의존성 타입 꼬임으로 인해 타입 에러 발생
-         * codemirror/view 타입 에러 : Two different types with this name exist, but they are unrelated.
-         */
-        // @ts-ignore
-        const cm = getCM(editorView);
-
-        if (cm) {
-          Vim.exitInsertMode(cm);
-        }
-      }
-    },
-    [editorView],
-    'keydown',
-    editorRef.current,
   );
 
   /**
