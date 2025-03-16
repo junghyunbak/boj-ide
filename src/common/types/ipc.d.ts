@@ -18,6 +18,7 @@ type ChannelToMessage = {
   'log-execute-ai-create': [MessageTemplate<MyOmit<CodeInfo, 'code'>>];
   'log-toggle-paint': [MessageTemplate<MyOmit<CodeInfo, 'code'>>];
   'quit-app': [];
+  'clipboard-copy-image': [MessageTemplate<{ dataUrl: string }>, MessageTemplate<SaveResult>];
 
   /**
    * client
@@ -49,6 +50,7 @@ type ElectronChannels = keyof Pick<
   | 'log-execute-ai-create'
   | 'log-toggle-paint'
   | 'quit-app'
+  | 'clipboard-copy-image'
 >;
 
 type ClientChannels = keyof Pick<

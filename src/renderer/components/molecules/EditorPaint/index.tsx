@@ -5,6 +5,7 @@ import { usePaint, useModifyPaint, useEventPaint, useSetupPaint, useEventSyncLay
 import { EditorPaintController } from '@/renderer/components/molecules/EditorPaintController';
 
 import { PaintLayout } from './index.style';
+import { CaptureCodeButton } from '../CaptureCodeButton';
 
 export function EditorPaint() {
   const { isExpand, paintRef, canvasRef } = usePaint();
@@ -25,6 +26,7 @@ export function EditorPaint() {
       <canvas ref={canvasRef} onBlur={handlePaintBlur} />
 
       <EditorPaintController />
+      <CaptureCodeButton />
     </PaintLayout>
   );
 }
