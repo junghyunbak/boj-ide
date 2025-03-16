@@ -25,8 +25,7 @@ export function useSetupEditor() {
   const { editorMode, editorRef, editorCode, editorState, editorFontSize, editorIndentSpace, editorLanguage } =
     useEditor();
 
-  const { saveFile, syncEditorCode, getEditorValue, updateEditorState, updateEditorView, updateSetEditorState } =
-    useModifyEditor();
+  const { saveFile, syncEditorCode, getEditorValue, updateEditorState, updateEditorView } = useModifyEditor();
 
   const emotionTheme = useTheme();
 
@@ -103,7 +102,6 @@ export function useSetupEditor() {
         updateListener,
         foldService.of(() => null),
         indentUnit.of(' '.repeat(editorIndentSpace)),
-        vim(),
         keymap.of([
           {
             key: 'Tab',
