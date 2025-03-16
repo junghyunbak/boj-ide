@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 import { Vim, getCM } from '@replit/codemirror-vim';
+import { redo } from '@codemirror/commands';
 
 import { useStore } from '@/renderer/store';
 
@@ -36,14 +37,9 @@ export function useEventEditor() {
    */
   useEffect(() => {
     if (!editorView) {
-      return () => {};
+      return function cleanup() {};
     }
 
-    /**
-     * 의존성 타입 꼬임으로 인해 타입 에러 발생
-     * codemirror/state 타입 에러 : Two different types with this name exist, but they are unrelated.
-     */
-    // @ts-ignore
     const cm = getCM(editorView);
 
     if (!cm) {
@@ -58,7 +54,7 @@ export function useEventEditor() {
 
     cm.on('vim-mode-change', handleVimModeChange);
 
-    return () => {
+    return function cleanup() {
       cm.off('vim-mode-change', handleVimModeChange);
     };
   }, [updateVimMode, editorView]);
@@ -78,7 +74,6 @@ export function useEventEditor() {
            * 의존성 타입 꼬임으로 인해 타입 에러 발생
            * codemirror/state 타입 에러 : Two different types with this name exist, but they are unrelated.
            */
-          // @ts-ignore
           redo(editorView);
         }
       });
