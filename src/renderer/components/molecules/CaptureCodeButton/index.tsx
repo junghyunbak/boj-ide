@@ -13,7 +13,7 @@ export function CaptureCodeButton() {
   const { canvas } = usePaint();
   const { fireAlertModal } = useModifyAlertModal();
 
-  const theme = useTheme();
+  const emotionTheme = useTheme();
 
   const handleCreateImageButtonClick = useCallback(async () => {
     if (!editorView || !canvas) {
@@ -47,7 +47,7 @@ export function CaptureCodeButton() {
     const width = mar - mil + paddingX * 2;
     const height = mab - mit + paddingY * 2;
 
-    const mainCanvas = new fabric.Canvas('mainCanvas', { backgroundColor: theme.colors.bg, width, height });
+    const mainCanvas = new fabric.Canvas('mainCanvas', { backgroundColor: emotionTheme.colors.bg, width, height });
 
     canvasObjects.forEach((obj) =>
       // @ts-ignore
@@ -68,7 +68,7 @@ export function CaptureCodeButton() {
     });
 
     fireAlertModal('안내', isSaved ? '이미지가 클립보드에 복사되었습니다.' : '복사에 실패하였습니다.');
-  }, [editorView, canvas, theme, fireAlertModal]);
+  }, [editorView, canvas, emotionTheme, fireAlertModal]);
 
   return (
     <div
@@ -93,7 +93,8 @@ export function CaptureCodeButton() {
         onClick={handleCreateImageButtonClick}
       >
         <Copy
-          css={css`
+          css={(theme) => css`
+            color: ${theme.colors.fg};
             width: 1rem;
           `}
         />
