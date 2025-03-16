@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
 
 import { Vim, getCM } from '@replit/codemirror-vim';
-import { EditorState } from '@codemirror/state';
 
 import { useStore } from '@/renderer/store';
 
@@ -16,9 +15,9 @@ export function useEventEditor() {
   const curFocusRef = useRef<Element | null>(null);
   const lastFocusRef = useRef<Element | null>(null);
 
-  const { editorView, editorState, setEditorState } = useEditor();
+  const { editorView } = useEditor();
 
-  const { saveFile, initialEditorCode, getEditorValue } = useModifyEditor();
+  const { saveFile, getEditorValue } = useModifyEditor();
   const { updateVimMode } = useModifyVim();
 
   /**
@@ -140,24 +139,5 @@ export function useEventEditor() {
     },
     [editorView],
     'focus',
-  );
-
-  /**
-   * 코드 초기화 이벤트 등록
-   *
-   * 코드 초기화 시 codemirror state가 사용되기 때문에,
-   * useEffect에서 invoke의 응답값으로 상태를 초기화 할 경우 순환 실행이 발생하여
-   * on 이벤트로 초기화 하도록 구현
-   */
-  useEventIpc(
-    ({ data: { code } }) => {
-      initialEditorCode(code);
-
-      if (setEditorState) {
-        setEditorState(EditorState.create({ ...editorState }));
-      }
-    },
-    [editorState, initialEditorCode, setEditorState],
-    'load-code-result',
   );
 }

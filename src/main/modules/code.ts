@@ -108,11 +108,7 @@ export class Code {
     ipc.handle('load-code', async (e, { data }) => {
       const code = this.load(data);
 
-      ipc.send(this.webContents, 'load-code-result', {
-        data: { code },
-      });
-
-      return undefined;
+      return { data: { code } };
     });
   }
 }

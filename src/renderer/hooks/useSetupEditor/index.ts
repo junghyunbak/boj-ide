@@ -5,7 +5,7 @@ import { useTheme } from '@emotion/react';
 import { EditorState, Prec, type Extension } from '@codemirror/state';
 import { EditorView, keymap } from '@codemirror/view';
 import { basicSetup } from 'codemirror';
-import { foldService, indentUnit } from '@codemirror/language';
+import { indentUnit } from '@codemirror/language';
 import { createTheme } from '@uiw/codemirror-themes';
 import { indentMore } from '@codemirror/commands';
 import { acceptCompletion } from '@codemirror/autocomplete';
@@ -25,7 +25,7 @@ export function useSetupEditor() {
   const { editorMode, editorRef, editorCode, editorState, editorFontSize, editorIndentSpace, editorLanguage } =
     useEditor();
 
-  const { saveFile, syncEditorCode, getEditorValue, updateEditorState, updateEditorView } = useModifyEditor();
+  const { saveFile, syncEditorCode, updateEditorState, updateEditorView, initialEditorCode } = useModifyEditor();
 
   const emotionTheme = useTheme();
 
@@ -100,7 +100,6 @@ export function useSetupEditor() {
         ),
         basicSetup,
         updateListener,
-        foldService.of(() => null),
         indentUnit.of(' '.repeat(editorIndentSpace)),
         keymap.of([
           {
@@ -124,8 +123,6 @@ export function useSetupEditor() {
               return true;
             },
           },
-        ]),
-        keymap.of([
           {
             key: 'Ctrl-s',
             run: () => {
@@ -133,8 +130,6 @@ export function useSetupEditor() {
               return false;
             },
           },
-        ]),
-        keymap.of([
           {
             key: 'Meta-s',
             run: () => {
@@ -175,14 +170,20 @@ export function useSetupEditor() {
    * - 새로운 코드 로딩
    */
   useEffect(() => {
-    if (problem) {
-      window.electron.ipcRenderer.invoke('load-code', {
-        data: { number: problem.number, language: editorLanguage },
-      });
-    }
+    (async () => {
+      if (problem) {
+        const {
+          data: { code },
+        } = await window.electron.ipcRenderer.invoke('load-code', {
+          data: { number: problem.number, language: editorLanguage },
+        });
+
+        initialEditorCode(code);
+      }
+    })();
 
     return function cleanup() {
       saveFile({ problem, language: editorLanguage, silence: true });
     };
-  }, [problem, editorLanguage, saveFile, getEditorValue]);
+  }, [problem, editorLanguage, saveFile, initialEditorCode]);
 }

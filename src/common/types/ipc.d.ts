@@ -6,7 +6,7 @@ type ChannelToMessage = {
   /**
    * electron
    */
-  'load-code': [MessageTemplate<MyOmit<CodeInfo, 'code'>>];
+  'load-code': [MessageTemplate<MyOmit<CodeInfo, 'code'>>, MessageTemplate<Pick<CodeInfo, 'code'>>];
   'load-files': [undefined, MessageTemplate<{ problemNumbers: number[] }>];
   'save-code': [MessageTemplate<CodeInfo>, MessageTemplate<SaveResult>];
   'save-default-code': [MessageTemplate<MyOmit<CodeInfo, 'number'>>, MessageTemplate<SaveResult>];
@@ -23,7 +23,6 @@ type ChannelToMessage = {
   /**
    * client
    */
-  'load-code-result': [MessageTemplate<Pick<CodeInfo, 'code'>>];
   'judge-result': [MessageTemplate<JudgeResult>];
   'judge-reset': [];
   'judge-request': [];
@@ -55,7 +54,6 @@ type ElectronChannels = keyof Pick<
 
 type ClientChannels = keyof Pick<
   ChannelToMessage,
-  | 'load-code-result'
   | 'judge-reset'
   | 'judge-result'
   | 'judge-request'
