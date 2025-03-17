@@ -159,6 +159,11 @@ export function useSetupEditor() {
           run: acceptCompletion,
         },
         {
+          /**
+           * [insertTab](https://github.com/codemirror/commands/blob/d6b6d01c470ab6e82c01d084474c7007a5e7c64e/src/commands.ts#L909)
+           *
+           * insertTab 기본 동작을 그대로 가져가되, tab 대신 공백이 추가되도록 커스텀
+           */
           key: 'Tab',
           run: ({ state, dispatch }) => {
             if (state.selection.ranges.some((r) => !r.empty)) {
