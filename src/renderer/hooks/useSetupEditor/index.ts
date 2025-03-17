@@ -23,6 +23,7 @@ import {
   acceptCompletion,
   autocompletion,
   closeBrackets,
+  closeBracketsKeymap,
   closeCompletion,
   completionKeymap,
 } from '@codemirror/autocomplete';
@@ -134,6 +135,7 @@ export function useSetupEditor() {
       keymap.of(defaultKeymap),
       keymap.of(historyKeymap),
       keymap.of(searchKeymap),
+      keymap.of(closeBracketsKeymap),
       Prec.highest(
         keymap.of([
           ...completionKeymap.filter(({ key }) => key !== 'Escape'),
