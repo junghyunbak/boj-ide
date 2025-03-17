@@ -6,6 +6,8 @@ import { useShallow } from 'zustand/shallow';
 import { fabric } from 'fabric';
 
 export function useModifyPaint() {
+  const [setCanvas] = useFabricStore(useShallow((s) => [s.setCanvas]));
+
   const [setMode] = useFabricStore(useShallow((s) => [s.setMode]));
   const [setBrushWidth] = useFabricStore(useShallow((s) => [s.setBrushWidth]));
   const [setBrushColor] = useFabricStore(useShallow((s) => [s.setBrushColor]));
@@ -15,6 +17,13 @@ export function useModifyPaint() {
   const [setIsCtrlKeyPressed] = useFabricStore(useShallow((s) => [s.setIsCtrlKeyPressed]));
 
   const [setProblemToFabricJSON] = useFabricStore(useShallow((s) => [s.setProblemToFabricJSON]));
+
+  const updateCanvas = useCallback(
+    (canvas: fabric.Canvas) => {
+      setCanvas(canvas);
+    },
+    [setCanvas],
+  );
 
   const updatePaintLayout = useCallback((width: number, height: number) => {
     const { canvas } = useFabricStore.getState();
@@ -173,6 +182,7 @@ export function useModifyPaint() {
   return {
     backupPaint,
 
+    updateCanvas,
     updatePaintLayout,
     updatePaintMode,
     updateIsCtrlKeyPressed,

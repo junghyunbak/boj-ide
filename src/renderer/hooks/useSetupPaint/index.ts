@@ -1,8 +1,5 @@
 import { useEffect } from 'react';
 
-import { useFabricStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
-
 import { fabric } from 'fabric';
 import 'fabric-history';
 
@@ -11,12 +8,10 @@ import { usePaint } from '../usePaint';
 import { useModifyPaint } from '../useModifyPaint';
 
 export function useSetupPaint() {
-  const [setCanvas] = useFabricStore(useShallow((s) => [s.setCanvas]));
-
   const { problem } = useProblem();
   const { canvas, canvasRef, mode, brushWidth, brushColor, problemToFabricJSON } = usePaint();
 
-  const { changeHandMode, changeSelectMode, changePenMode, backupPaint } = useModifyPaint();
+  const { changeHandMode, changeSelectMode, changePenMode, backupPaint, updateCanvas } = useModifyPaint();
 
   /**
    * - 모드 (select, hand, pen)
@@ -57,13 +52,13 @@ export function useSetupPaint() {
     }
 
     const newCanvas = new fabric.Canvas(canvasRef.current);
-    setCanvas(newCanvas);
+    updateCanvas(newCanvas);
 
     return function cleanup() {
       backupPaint(problem);
       newCanvas.dispose();
     };
-  }, [problem, setCanvas, canvasRef, backupPaint]);
+  }, [problem, canvasRef, backupPaint, updateCanvas]);
 
   /**
    * 새롭게 생성 된 캔버스에 기존 데이터를 로딩한다.
