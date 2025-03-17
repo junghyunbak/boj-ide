@@ -2,13 +2,25 @@ import { useEffect, useMemo } from 'react';
 
 import { useTheme } from '@emotion/react';
 
+import { zIndex } from '@/renderer/styles';
+
 import { EditorState, Prec, type Extension } from '@codemirror/state';
-import { EditorView, keymap } from '@codemirror/view';
-import { basicSetup } from 'codemirror';
-import { indentUnit } from '@codemirror/language';
+import {
+  EditorView,
+  keymap,
+  lineNumbers,
+  highlightSpecialChars,
+  drawSelection,
+  dropCursor,
+  highlightActiveLine,
+  rectangularSelection,
+  crosshairCursor,
+} from '@codemirror/view';
+import { bracketMatching, indentOnInput, indentUnit } from '@codemirror/language';
 import { createTheme } from '@uiw/codemirror-themes';
-import { indentMore } from '@codemirror/commands';
-import { acceptCompletion } from '@codemirror/autocomplete';
+import { defaultKeymap, indentMore, history, historyKeymap } from '@codemirror/commands';
+import { acceptCompletion, autocompletion, closeBrackets } from '@codemirror/autocomplete';
+import { highlightSelectionMatches, search, searchKeymap } from '@codemirror/search';
 import { Vim, getCM, vim } from '@replit/codemirror-vim';
 import { javascript } from '@codemirror/lang-javascript';
 import { cpp } from '@codemirror/lang-cpp';
@@ -19,7 +31,6 @@ import { useModifyEditor } from '../useModifyEditor';
 import { useProblem } from '../useProblem';
 import { useEditor } from '../useEditor';
 
-// TODO: gutter 관련 옵션 커스텀 (강조, 접기)
 export function useSetupEditor() {
   const { problem } = useProblem();
   const { editorMode, editorRef, editorCode, editorState, editorFontSize, editorIndentSpace, editorLanguage } =
@@ -28,6 +39,8 @@ export function useSetupEditor() {
   const { saveFile, syncEditorCode, updateEditorState, updateEditorView, initialEditorCode } = useModifyEditor();
 
   const emotionTheme = useTheme();
+
+  const indentString = useMemo(() => ' '.repeat(editorIndentSpace), [editorIndentSpace]);
 
   const codeExtensions = useMemo<Extension[]>(() => {
     return [
@@ -41,29 +54,67 @@ export function useSetupEditor() {
   }, [editorLanguage, editorMode]);
 
   const themeExtensions = useMemo<Extension[]>(() => {
+    const spec: ExtractParams<typeof EditorView.theme>[0] = {
+      '&': {
+        height: '100%',
+      },
+      /**
+       * content
+       */
+      '.cm-content': {
+        fontSize: `${editorFontSize}px`,
+        fontFamily: 'hack',
+      },
+      /**
+       * gutter
+       */
+      '.cm-gutters': {
+        fontSize: `${editorFontSize}px`,
+        fontFamily: 'hack',
+      },
+      '.cm-gutter': {
+        padding: '0 10px 0 17px',
+      },
+      /**
+       * auto completion
+       */
+      '.cm-tooltip': {
+        zIndex: `${zIndex.editor.tooltip} !important`,
+      },
+      /**
+       * pannel
+       */
+      '.cm-vim-panel': {
+        padding: '5px 10px',
+      },
+      '.cm-panels': {
+        backgroundColor: 'transparent',
+        borderTop: `1px solid ${emotionTheme.colors.border}`,
+      },
+      '.cm-panels input': {
+        color: `${emotionTheme.colors.fg} !important`,
+        fontFamily: 'hack',
+      },
+      /**
+       * cursor
+       */
+      '.cm-cursor, .cm-dropCursor': {
+        borderLeftColor: `${emotionTheme.colors.fg}`,
+      },
+      '&:not(.cm-focused) .cm-fat-cursor': {
+        background: 'none !important',
+      },
+    };
+
+    if (emotionTheme.editor.settings.caret) {
+      spec['.cm-fat-cursor'] = {
+        outline: `solid 1px ${emotionTheme.editor.settings.caret} !important`,
+        background: `${emotionTheme.editor.settings.caret} !important`,
+      };
+    }
+
     return [
-      EditorView.theme({
-        '&': {
-          height: '100%',
-        },
-        '.cm-content': {
-          fontSize: `${editorFontSize}px`,
-          fontFamily: 'hack',
-        },
-        '.cm-gutters': {
-          fontSize: `${editorFontSize}px`,
-          fontFamily: 'hack',
-        },
-        /**
-         * // TODO: extensions로 처리
-         */
-        '.cm-foldGutter': {
-          display: 'none !important',
-        },
-        '.cm-activeLineGutter': {
-          'background-color': 'transparent !important',
-        },
-      }),
+      EditorView.theme(spec),
       createTheme({
         theme: emotionTheme.theme,
         settings: emotionTheme.editor.settings,
@@ -72,80 +123,114 @@ export function useSetupEditor() {
     ];
   }, [editorFontSize, emotionTheme]);
 
-  useEffect(() => {
-    const updateListener = EditorView.updateListener.of((update) => {
-      if (update.docChanged) {
-        syncEditorCode(update.state.doc.toString());
-      }
-    });
-
-    const newEditorState = EditorState.create({
-      doc: editorCode,
-      extensions: [
-        Prec.highest(
-          keymap.of([
-            {
-              key: 'Escape',
-              run: (editorView) => {
-                const cm = getCM(editorView);
-
-                if (cm) {
-                  Vim.exitInsertMode(cm);
-                }
-
-                return false;
-              },
-            },
-          ]),
-        ),
-        basicSetup,
-        updateListener,
-        indentUnit.of(' '.repeat(editorIndentSpace)),
+  const keymapExtensions = useMemo<Extension[]>(
+    () => [
+      Prec.highest(
         keymap.of([
           {
-            key: 'Tab',
-            run: acceptCompletion,
-          },
-          {
-            key: 'Tab',
-            run: ({ state, dispatch }) => {
-              if (state.selection.ranges.some((r) => !r.empty)) {
-                return indentMore({ state, dispatch });
+            key: 'Escape',
+            run: (editorView) => {
+              const cm = getCM(editorView);
+
+              if (cm) {
+                Vim.exitInsertMode(cm);
               }
 
-              dispatch(
-                state.update(state.replaceSelection(' '.repeat(editorIndentSpace)), {
-                  scrollIntoView: true,
-                  userEvent: 'input',
-                }),
-              );
-
-              return true;
-            },
-          },
-          {
-            key: 'Ctrl-s',
-            run: () => {
-              saveFile();
-              return false;
-            },
-          },
-          {
-            key: 'Meta-s',
-            run: () => {
-              saveFile();
               return false;
             },
           },
         ]),
+      ),
+      keymap.of(defaultKeymap),
+      keymap.of(historyKeymap),
+      keymap.of(searchKeymap),
+      indentUnit.of(indentString),
+      keymap.of([
+        {
+          key: 'Tab',
+          run: acceptCompletion,
+        },
+        {
+          key: 'Tab',
+          run: ({ state, dispatch }) => {
+            if (state.selection.ranges.some((r) => !r.empty)) {
+              return indentMore({ state, dispatch });
+            }
+
+            dispatch(
+              state.update(state.replaceSelection(indentString), {
+                scrollIntoView: true,
+                userEvent: 'input',
+              }),
+            );
+
+            return true;
+          },
+        },
+        {
+          key: 'Ctrl-s',
+          run: () => {
+            saveFile();
+            return false;
+          },
+        },
+        {
+          key: 'Meta-s',
+          run: () => {
+            saveFile();
+            return false;
+          },
+        },
+      ]),
+    ],
+    [indentString, saveFile],
+  );
+
+  const updateExtension = useMemo<Extension>(
+    () =>
+      EditorView.updateListener.of((update) => {
+        if (update.docChanged) {
+          syncEditorCode(update.state.doc.toString());
+        }
+      }),
+    [syncEditorCode],
+  );
+
+  /**
+   * codemirror state
+   */
+  useEffect(() => {
+    const newEditorState = EditorState.create({
+      doc: editorCode,
+      extensions: [
+        ...keymapExtensions,
+        updateExtension,
+        lineNumbers(),
+        highlightSpecialChars(),
+        history(),
+        dropCursor(),
+        indentOnInput(),
+        drawSelection(),
+        bracketMatching(),
+        closeBrackets(),
+        autocompletion(),
+        highlightActiveLine(),
+        highlightSelectionMatches(),
+        rectangularSelection(),
+        search(),
+        crosshairCursor(),
+        EditorState.allowMultipleSelections.of(true),
         ...codeExtensions,
         ...themeExtensions,
       ],
     });
 
     updateEditorState(newEditorState);
-  }, [editorCode, updateEditorState, syncEditorCode, saveFile, codeExtensions, themeExtensions, editorIndentSpace]);
+  }, [editorCode, updateEditorState, codeExtensions, themeExtensions, keymapExtensions, updateExtension]);
 
+  /**
+   * codemirror view
+   */
   useEffect(() => {
     if (!editorRef.current) {
       return function cleanup() {};

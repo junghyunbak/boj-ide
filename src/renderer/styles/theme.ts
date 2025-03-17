@@ -55,7 +55,6 @@ declare module '@emotion/react' {
     editor: {
       settings: CreateThemeOptions['settings'];
       styles: CreateThemeOptions['styles'];
-      cursorColor: string;
     };
   }
 }
@@ -99,12 +98,13 @@ export const themes: Record<Themes, Theme> = {
       settings: {
         ...defaultSettingsEclipse,
 
+        caret: undefined,
+
         gutterForeground: '#808080',
         gutterBackground: '#f9f9f9',
         gutterBorder: '#ddd',
       },
       styles: eclipseLightStyle,
-      cursorColor: '#ff9696',
     },
   },
   programmers: {
@@ -149,6 +149,8 @@ export const themes: Record<Themes, Theme> = {
 
         selection: '#44576c',
         selectionMatch: '#44576c',
+
+        caret: '#7e7',
 
         lineHighlight: adjustTransparency('#202B3D', '#263747', 0.2),
       },
@@ -200,7 +202,6 @@ export const themes: Record<Themes, Theme> = {
           color: '#FFEB3B',
         },
       ],
-      cursorColor: '#7e7',
     },
   },
 };
