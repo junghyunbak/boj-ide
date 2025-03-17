@@ -12,15 +12,16 @@ import { useModifyWebview } from '../useModifyWebview';
 import { useModifyProblem } from '../useModifyProblem';
 import { useModifyTab } from '../useModifyTab';
 import { useModifyHistories } from '../useModifyHistories';
+import { useWebview } from '../useWebview';
 
 export function useEventWebview() {
-  const [webview] = useStore(useShallow((s) => [s.webview]));
+  const { webview } = useWebview();
+  const emotionTheme = useTheme();
+
   const [setCanGoBack] = useStore(useShallow((s) => [s.setCanGoBack]));
   const [setCanGoForward] = useStore(useShallow((s) => [s.setCanGoForward]));
 
-  const emotionTheme = useTheme();
-
-  const { refreshWebviewTheme, updateWebviewLoading, updateWebviewUrl } = useModifyWebview();
+  const { refreshWebviewTheme, updateWebviewLoading, updateWebviewUrl, updateStartUrl } = useModifyWebview();
   const { updateProblem } = useModifyProblem();
   const { addProblemTab } = useModifyTab();
   const { addHistory } = useModifyHistories();
@@ -54,13 +55,13 @@ export function useEventWebview() {
     }
 
     const handleWebviewDidFinishLoad = async () => {
+      const url = webview.getURL() || '';
+
       await refreshWebviewTheme(emotionTheme);
 
       updateWebviewLoading('finished');
-
-      const url = webview.getURL() || '';
-
       updateWebviewUrl(url);
+      updateStartUrl(url);
 
       if (!isBojProblemUrl(url)) {
         updateProblem(null);
@@ -69,7 +70,6 @@ export function useEventWebview() {
 
       const html = await webview.executeJavaScript('document.documentElement.outerHTML');
       const realUrl = await webview.executeJavaScript('window.location.href');
-
       const problemInfo = getProblemInfo(html, realUrl);
 
       if (!problemInfo) {
@@ -109,6 +109,7 @@ export function useEventWebview() {
     refreshWebviewTheme,
     updateWebviewLoading,
     emotionTheme,
+    updateStartUrl,
   ]);
 
   useEffect(() => {

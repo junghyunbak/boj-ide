@@ -16,6 +16,18 @@ export function useModifyWebview() {
   const [setWebviewUrl] = useStore(useShallow((s) => [s.setWebViewUrl]));
   const [setWebviewIsLoading] = useStore(useShallow((s) => [s.setWebviewIsLoading]));
   const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
+  const [setStartUrl] = useStore(useShallow((s) => [s.setStartUrl]));
+
+  const updateStartUrl = useCallback(
+    (url: string) => {
+      if (url.startsWith('chrome-extension://')) {
+        return;
+      }
+
+      setStartUrl(url);
+    },
+    [setStartUrl],
+  );
 
   const refreshWebviewTheme = useCallback(async (emotionTheme: Theme) => {
     const { webview, theme, insertCSSKey } = useStore.getState();
@@ -39,14 +51,6 @@ export function useModifyWebview() {
 
   const updateWebviewUrl = useCallback(
     (url: string) => {
-      /**
-       * zustand persist를 사용하지 않는 이유
-       * : chrome-extsion:// 으로 시작하는 url을 마지막 접속 url에서 거르기 위함.
-       */
-      if (!url.startsWith('chrome-extension://')) {
-        window.localStorage.setItem('webviewUrl', url);
-      }
-
       setWebviewUrl(url);
     },
     [setWebviewUrl],
@@ -131,6 +135,7 @@ export function useModifyWebview() {
     goForward,
     reload,
     openExternal,
+    updateStartUrl,
     updateWebviewUrl,
     updateWebviewLoading,
   };

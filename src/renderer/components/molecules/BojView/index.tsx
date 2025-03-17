@@ -19,14 +19,14 @@ import {
 export function BojView() {
   const tourRef = useRef<HTMLDivElement>(null);
 
-  const { webviewIsLoading } = useWebview();
+  const { webviewIsLoading, webviewStartUrl } = useWebview();
   const { isResizerDrag } = useDrag();
 
   const { updateWebviewLoading } = useModifyWebview();
 
   useEventWebview();
 
-  const { startWebviewUrl } = useSetupWebview();
+  useSetupWebview();
 
   const handleWebviewLoadingCloseButtonClick = useCallback(() => {
     updateWebviewLoading('finished');
@@ -35,7 +35,7 @@ export function BojView() {
   return (
     <BojViewLayout ref={tourRef}>
       <webview
-        src={startWebviewUrl}
+        src={webviewStartUrl}
         css={css`
           position: absolute;
           inset: 0;

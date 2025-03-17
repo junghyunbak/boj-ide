@@ -103,6 +103,11 @@ export const useStore = create<StoreState>()(
            * history
            */
           histories,
+
+          /**
+           * webview
+           */
+          startUrl,
         } = s;
 
         return {
@@ -123,6 +128,7 @@ export const useStore = create<StoreState>()(
           testcaseInputProblemNumber,
           histories,
           historyModalHeight,
+          startUrl,
         };
       },
     },

@@ -13,6 +13,9 @@ type BojViewSlice = {
   webviewIsLoading: boolean;
   setWebviewIsLoading(webviewIsLoading: boolean): void;
 
+  startUrl: string;
+  setStartUrl(url: string): void;
+
   canGoBack: boolean;
   setCanGoBack(canGoBack: boolean): void;
 
@@ -56,5 +59,10 @@ export const createBojViewSlice: StateCreator<BojViewSlice> = (set): BojViewSlic
   baekjoonhubExtensionId: null,
   setBaekjoonhubExtensionId(extensionId) {
     set(() => ({ baekjoonhubExtensionId: extensionId }));
+  },
+
+  startUrl: BOJ_PROBLEM_1000,
+  setStartUrl(url) {
+    set(() => ({ startUrl: url }));
   },
 });

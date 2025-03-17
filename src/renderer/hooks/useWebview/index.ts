@@ -1,3 +1,5 @@
+import { useRef } from 'react';
+
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
@@ -9,10 +11,13 @@ export function useWebview() {
   const [canGoBack] = useStore(useShallow((s) => [s.canGoBack]));
   const [canGoForward] = useStore(useShallow((s) => [s.canGoForward]));
 
+  const webviewStartUrl = useRef(useStore.getState().startUrl).current;
+
   return {
     webview,
     webviewUrl,
     webviewIsLoading,
+    webviewStartUrl,
     canGoBack,
     canGoForward,
   };
