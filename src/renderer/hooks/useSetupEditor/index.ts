@@ -274,13 +274,17 @@ export function useSetupEditor() {
   useEffect(() => {
     (async () => {
       if (problem) {
-        const {
-          data: { code },
-        } = await window.electron.ipcRenderer.invoke('load-code', {
+        const result = await window.electron.ipcRenderer.invoke('load-code', {
           data: { number: problem.number, language: editorLanguage },
         });
 
-        initialEditorCode(code);
+        if (result) {
+          const {
+            data: { code },
+          } = result;
+
+          initialEditorCode(code);
+        }
       }
     })();
 

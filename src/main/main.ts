@@ -77,20 +77,16 @@ const createWindow = async () => {
   ipc.handle('clipboard-copy-image', async (e, { data: { dataUrl } }) => {
     let isSaved: boolean;
 
-    if (/data:,/.test(dataUrl)) {
-      isSaved = false;
-    } else {
-      try {
-        clipboard.writeImage(nativeImage.createFromDataURL(dataUrl));
+    try {
+      clipboard.writeImage(nativeImage.createFromDataURL(dataUrl));
 
-        isSaved = true;
-      } catch (err) {
-        if (err instanceof Error) {
-          sentryErrorHandler(err);
-        }
-
-        isSaved = false;
+      isSaved = true;
+    } catch (err) {
+      if (err instanceof Error) {
+        sentryErrorHandler(err);
       }
+
+      isSaved = false;
     }
 
     return { data: { isSaved } };

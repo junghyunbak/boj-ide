@@ -1,3 +1,6 @@
+type Send = 0;
+type Receive = 1;
+
 /**
  * key: 채널 이름
  * value: [전송 데이터, 응답 데이터(invoke의 경우만 존재)]

@@ -61,13 +61,13 @@ export function CaptureCodeButton() {
       }),
     );
 
-    const {
-      data: { isSaved },
-    } = await window.electron.ipcRenderer.invoke('clipboard-copy-image', {
+    const result = await window.electron.ipcRenderer.invoke('clipboard-copy-image', {
       data: { dataUrl: mainCanvas.toDataURL({ format: 'png' }) },
     });
 
-    fireAlertModal('안내', isSaved ? '이미지가 클립보드에 복사되었습니다.' : '복사에 실패하였습니다.');
+    if (result && result.data.isSaved) {
+      fireAlertModal('안내', '이미지가 클립보드에 복사되었습니다.');
+    }
   }, [editorView, canvas, emotionTheme, fireAlertModal]);
 
   return (

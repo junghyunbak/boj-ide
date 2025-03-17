@@ -3,21 +3,28 @@ import { ipcMain } from 'electron';
 import { IpcErrorHandler } from '@/main/error';
 
 export class Ipc {
-  on<T extends ElectronChannels>(
-    channel: T,
-    listener: (e: Electron.IpcMainEvent, message: ChannelToMessage[T][0]) => void | Promise<void>,
+  on<Channel extends ElectronChannels>(
+    channel: Channel,
+    listener: (e: Electron.IpcMainEvent, message: ChannelToMessage[Channel][Send]) => void,
   ): void {
     ipcMain.on(channel, IpcErrorHandler(channel, listener, this.send));
   }
 
-  handle<T extends ElectronChannels>(
-    channel: T,
-    listener: (e: Electron.IpcMainInvokeEvent, message: ChannelToMessage[T][0]) => Promise<ChannelToMessage[T][1]>,
+  handle<Channel extends ElectronChannels>(
+    channel: Channel,
+    listener: (
+      e: Electron.IpcMainInvokeEvent,
+      message: ChannelToMessage[Channel][Send],
+    ) => Promise<ChannelToMessage[Channel][Receive]>,
   ): void {
     ipcMain.handle(channel, IpcErrorHandler(channel, listener, this.send));
   }
 
-  send<T extends ClientChannels>(webContents: Electron.WebContents, channel: T, message: ChannelToMessage[T][0]): void {
+  send<Channel extends ClientChannels>(
+    webContents: Electron.WebContents,
+    channel: Channel,
+    message: ChannelToMessage[Channel][Send],
+  ): void {
     webContents.send(channel, message);
   }
 }

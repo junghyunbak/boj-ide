@@ -13,14 +13,18 @@ export class IpcError extends Error {
   }
 }
 
-export function IpcErrorHandler<T extends Electron.IpcMainEvent | Electron.IpcMainInvokeEvent>(
-  channel: string,
-  listener: (e: T, ...args: any[]) => Promise<any> | any,
+export function IpcErrorHandler<
+  Channel extends ElectronChannels,
+  Event extends Electron.IpcMainEvent | Electron.IpcMainInvokeEvent,
+  ListenerReturnValue = Event extends Electron.IpcMainEvent ? void : PromiseLike<ChannelToMessage[Channel][Receive]>,
+>(
+  channel: Channel,
+  listener: (e: Event, message: ChannelToMessage[Channel][Send]) => ListenerReturnValue,
   send: Ipc['send'],
 ) {
-  return async (e: T, ...args: any[]): Promise<any> => {
+  return async (e: Event, message: ChannelToMessage[Channel][Send]): Promise<ListenerReturnValue | null> => {
     try {
-      const result = listener(e, ...args);
+      const result = listener(e, message);
 
       if (result instanceof Promise) {
         return await result;

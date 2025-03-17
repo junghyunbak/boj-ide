@@ -13,7 +13,7 @@ export function useEventTab() {
     () => {
       if (problemTabCount === 0 || !problem) {
         fireConfirmModal('종료하시겠습니까?', () => {
-          window.electron.ipcRenderer.sendMessage('quit-app');
+          window.electron.ipcRenderer.sendMessage('quit-app', undefined);
         });
       }
     },

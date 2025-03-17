@@ -43,6 +43,6 @@ export function useEventApp() {
    * deep link에 의해 앱이 실행되었는지 체크
    */
   useEffect(() => {
-    window.electron.ipcRenderer.sendMessage('open-deep-link');
+    window.electron.ipcRenderer.sendMessage('open-deep-link', undefined);
   }, []);
 }
