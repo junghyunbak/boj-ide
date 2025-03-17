@@ -11,7 +11,6 @@ export function useEditor() {
   const [editorState] = useStore(useShallow((s) => [s.editorState]));
   const [editorView] = useStore(useShallow((s) => [s.editorView]));
   const [isCodeStale] = useStore(useShallow((s) => [s.isCodeStale]));
-  const [setEditorState] = useStore(useShallow((s) => [s.setEditorState]));
 
   return {
     editorCode,
@@ -22,7 +21,6 @@ export function useEditor() {
     editorRef,
     editorState,
     editorView,
-    setEditorState,
     isCodeStale,
   };
 }
