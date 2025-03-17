@@ -32,13 +32,11 @@ export function IpcErrorHandler<T extends Electron.IpcMainEvent | Electron.IpcMa
         send(e.sender, 'judge-reset', undefined);
         send(e.sender, 'occur-error', { data: { message: err.message } });
 
-        const isProd = process.env.NODE_ENV === 'production';
-
-        if (err instanceof IpcError && err.errorType !== 'personal' && isProd) {
+        if (err instanceof IpcError && err.errorType === 'personal') {
           return null;
         }
 
-        if (isProd) {
+        if (process.env.NODE_ENV === 'production') {
           sentryErrorHandler(err);
         }
       }
