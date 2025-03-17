@@ -19,9 +19,15 @@ import {
 import { bracketMatching, indentOnInput, indentUnit } from '@codemirror/language';
 import { createTheme } from '@uiw/codemirror-themes';
 import { defaultKeymap, indentMore, history, historyKeymap } from '@codemirror/commands';
-import { acceptCompletion, autocompletion, closeBrackets } from '@codemirror/autocomplete';
+import {
+  acceptCompletion,
+  autocompletion,
+  closeBrackets,
+  closeCompletion,
+  completionKeymap,
+} from '@codemirror/autocomplete';
 import { highlightSelectionMatches, search, searchKeymap } from '@codemirror/search';
-import { Vim, getCM, vim } from '@replit/codemirror-vim';
+import { vim } from '@replit/codemirror-vim';
 import { javascript } from '@codemirror/lang-javascript';
 import { cpp } from '@codemirror/lang-cpp';
 import { python } from '@codemirror/lang-python';
@@ -125,25 +131,27 @@ export function useSetupEditor() {
 
   const keymapExtensions = useMemo<Extension[]>(
     () => [
+      keymap.of(defaultKeymap),
+      keymap.of(historyKeymap),
+      keymap.of(searchKeymap),
       Prec.highest(
         keymap.of([
+          ...completionKeymap.filter(({ key }) => key !== 'Escape'),
           {
             key: 'Escape',
-            run: (editorView) => {
-              const cm = getCM(editorView);
-
-              if (cm) {
-                Vim.exitInsertMode(cm);
-              }
+            run: (view) => {
+              /**
+               * closeCompletion 내부에서 true를 반환하기 때문에 vim Escape 동작이 차단된다.
+               *
+               * 커스텀하여 false를 반환하도록 수정
+               */
+              closeCompletion(view);
 
               return false;
             },
           },
         ]),
       ),
-      keymap.of(defaultKeymap),
-      keymap.of(historyKeymap),
-      keymap.of(searchKeymap),
       indentUnit.of(indentString),
       keymap.of([
         {
@@ -213,7 +221,9 @@ export function useSetupEditor() {
         drawSelection(),
         bracketMatching(),
         closeBrackets(),
-        autocompletion(),
+        autocompletion({
+          defaultKeymap: false,
+        }),
         highlightActiveLine(),
         highlightSelectionMatches(),
         rectangularSelection(),
