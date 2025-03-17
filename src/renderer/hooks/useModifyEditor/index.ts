@@ -7,8 +7,6 @@ import { useModifyAlertModal } from '../useModifyAlertModal';
 
 export function useModifyEditor() {
   const [setEditorCode] = useStore(useShallow((s) => [s.setCode]));
-  const [setEditorWidth] = useStore(useShallow((s) => [s.setEditorWidth]));
-  const [setEditorHeight] = useStore(useShallow((s) => [s.setEditorHeight]));
   const [setEditorMode] = useStore(useShallow((s) => [s.setMode]));
   const [setEditorFontSize] = useStore(useShallow((s) => [s.setFontSize]));
   const [setEditorIndentSpace] = useStore(useShallow((s) => [s.setIndentSpace]));
@@ -144,14 +142,6 @@ export function useModifyEditor() {
     [fireAlertModal, freshingEditorCode, getEditorValue],
   );
 
-  const resizeEditorLayout = useCallback(
-    (width: number, height: number) => {
-      setEditorWidth(width);
-      setEditorHeight(height);
-    },
-    [setEditorHeight, setEditorWidth],
-  );
-
   return {
     updateEditorFontSize,
     updateEditorIndentSpace,
@@ -172,7 +162,5 @@ export function useModifyEditor() {
     initialEditorCode,
 
     saveFile,
-
-    resizeEditorLayout,
   };
 }

@@ -15,12 +15,6 @@ type EditorSlice = {
   indentSpace: IndentSpace;
   setIndentSpace: (count: IndentSpace) => void;
 
-  editorWidth: number;
-  setEditorWidth(width: number): void;
-
-  editorHeight: number;
-  setEditorHeight(height: number): void;
-
   editorState: EditorState | undefined;
   updateEditorState(editorState: EditorState | undefined): void;
 
@@ -57,18 +51,6 @@ type EditorSlice = {
 };
 
 export const createEditorSlice: StateCreator<EditorSlice> = (set, get): EditorSlice => ({
-  editorHeight: 0,
-  setEditorHeight(height) {
-    set(() => ({
-      editorHeight: height,
-    }));
-  },
-
-  editorWidth: 0,
-  setEditorWidth(width) {
-    set(() => ({ editorWidth: width }));
-  },
-
   editorValue: new Map(),
 
   isCodeStale: false,
