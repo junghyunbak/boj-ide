@@ -50,12 +50,11 @@ export function CaptureCodeButton() {
     const mainCanvas = new fabric.Canvas('mainCanvas', { backgroundColor: emotionTheme.colors.bg, width, height });
 
     canvasObjects.forEach((obj) =>
-      // @ts-ignore
-      obj.clone((obj: fabric.Object) => {
+      obj.clone((cloneObj: fabric.Object) => {
         mainCanvas.add(
-          obj.set({
-            left: (obj.left ?? -Infinity) - mil + paddingX,
-            top: (obj.top ?? -Infinity) - mit + paddingY,
+          cloneObj.set({
+            left: (cloneObj.left ?? -Infinity) - mil + paddingX,
+            top: (cloneObj.top ?? -Infinity) - mit + paddingY,
           }),
         );
       }),
