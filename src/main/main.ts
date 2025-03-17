@@ -1,5 +1,5 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
-import { app, BrowserWindow, shell, globalShortcut, clipboard, nativeImage } from 'electron';
+import { app, BrowserWindow, shell, globalShortcut } from 'electron';
 import pie from 'puppeteer-in-electron';
 
 import path from 'path';
@@ -18,7 +18,7 @@ import {
 
 import { PRELOAD_PATH, USER_DATA_PATH } from '@/main/constants';
 
-import { MenuBuilder, Boj, Code, Judge, SentryService, AppUpdater, Logger } from '@/main/modules';
+import { MenuBuilder, Boj, Code, Judge, SentryService, AppUpdater, Logger, Clipboard } from '@/main/modules';
 
 SentryService.init();
 
@@ -73,24 +73,7 @@ const createWindow = async () => {
   }).build();
   new Logger().build();
   new MenuBuilder(mainWindow).buildMenu();
-
-  ipc.handle('clipboard-copy-image', async (e, { data: { dataUrl } }) => {
-    let isSaved: boolean;
-
-    try {
-      clipboard.writeImage(nativeImage.createFromDataURL(dataUrl));
-
-      isSaved = true;
-    } catch (err) {
-      if (err instanceof Error) {
-        sentryErrorHandler(err);
-      }
-
-      isSaved = false;
-    }
-
-    return { data: { isSaved } };
-  });
+  new Clipboard(mainWindow).build();
 
   if (isProd) {
     new AppUpdater(mainWindow).build();
