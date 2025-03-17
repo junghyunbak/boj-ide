@@ -18,9 +18,6 @@ type EditorSlice = {
   editorState: EditorState | undefined;
   updateEditorState(editorState: EditorState | undefined): void;
 
-  setEditorState: React.Dispatch<React.SetStateAction<EditorState | undefined>> | null;
-  updateSetEditorState(setState: React.Dispatch<React.SetStateAction<EditorState | undefined>>): void;
-
   editorView: EditorView | undefined;
   updateEditorView(editorView: EditorView | undefined): void;
 
@@ -93,11 +90,6 @@ export const createEditorSlice: StateCreator<EditorSlice> = (set, get): EditorSl
   editorState: undefined,
   updateEditorState(editorState) {
     set(() => ({ editorState }));
-  },
-
-  setEditorState: null,
-  updateSetEditorState(setState) {
-    set(() => ({ setEditorState: setState }));
   },
 
   editorView: undefined,

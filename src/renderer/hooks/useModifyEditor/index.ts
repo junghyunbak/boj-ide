@@ -13,7 +13,6 @@ export function useModifyEditor() {
   const [setEditorLanguage] = useStore(useShallow((s) => [s.setLang]));
 
   const [updateEditorState] = useStore(useShallow((s) => [s.updateEditorState]));
-  const [updateSetEditorState] = useStore(useShallow((s) => [s.updateSetEditorState]));
   const [updateEditorView] = useStore(useShallow((s) => [s.updateEditorView]));
 
   const [setIsCodeStale] = useStore(useShallow((s) => [s.setIsCodeStale]));
@@ -148,7 +147,6 @@ export function useModifyEditor() {
     updateEditorLanguage,
     updateEditorMode,
     updateEditorState,
-    updateSetEditorState,
     updateEditorView,
 
     stalingEditorCode,
