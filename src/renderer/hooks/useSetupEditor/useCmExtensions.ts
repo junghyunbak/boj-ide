@@ -209,22 +209,43 @@ export function useCmExtensions() {
 
   const basicExtensions = useMemo<Extension[]>(
     () => [
+      /**
+       * 줄 번호
+       */
       lineNumbers(),
-      highlightSpecialChars(),
+      /**
+       * 히스토리
+       */
       history(),
-      dropCursor(),
+      /**
+       * 자동완성
+       */
       indentOnInput(),
-      drawSelection(),
-      bracketMatching(),
       closeBrackets(),
       autocompletion({
         defaultKeymap: false,
       }),
-      highlightActiveLine(),
-      highlightSelectionMatches(),
-      rectangularSelection(),
+      /**
+       * 검색 모듈
+       */
       search(),
+      /**
+       * 코드 하이라이팅
+       */
+      drawSelection(),
+      bracketMatching(),
+      highlightSelectionMatches(),
+      highlightSpecialChars(),
+      highlightActiveLine(),
+      /**
+       * 커서
+       */
+      dropCursor(),
       crosshairCursor(),
+      /**
+       * 다중 선택
+       */
+      rectangularSelection(),
       EditorState.allowMultipleSelections.of(true),
     ],
     [],
