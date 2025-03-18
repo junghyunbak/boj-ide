@@ -16,7 +16,8 @@ import {
 } from './index.style';
 
 export function EditorSettings() {
-  const { editorMode, editorFontSize, editorIndentSpace, EDITOR_INDENT_SPACES, EDITOR_MODES } = useEditor();
+  const { editorMode, editorFontSize, editorIndentSpace, EDITOR_INDENT_SPACES, EDITOR_MODES, EDITOR_FONT_SIZES } =
+    useEditor();
 
   const { updateIsSetting } = useModifySetting();
   const { updateEditorMode, updateEditorFontSize, updateEditorIndentSpace } = useModifyEditor();
@@ -102,7 +103,7 @@ export function EditorSettings() {
         <SettingGroupLabelBox>에디터 폰트 크기</SettingGroupLabelBox>
         <SettingGroupControleBox>
           <select value={editorFontSize} onChange={handleSelectOptionChange}>
-            {[8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map((fontSize, i) => {
+            {EDITOR_FONT_SIZES.map((fontSize, i) => {
               return <option key={i}>{fontSize}</option>;
             })}
           </select>
