@@ -66,17 +66,15 @@ export function useEventEditor() {
    * */
   useEventIpc(
     () => {
-      window.electron.ipcRenderer.on('ctrl-or-cmd-r-pressed', () => {
-        const { mode, vimMode } = useStore.getState();
+      const { mode, vimMode } = useStore.getState();
 
-        if (editorView && mode === 'vim' && /normal/i.test(vimMode)) {
-          /**
-           * 의존성 타입 꼬임으로 인해 타입 에러 발생
-           * codemirror/state 타입 에러 : Two different types with this name exist, but they are unrelated.
-           */
-          redo(editorView);
-        }
-      });
+      if (editorView && mode === 'vim' && /normal/i.test(vimMode)) {
+        /**
+         * 의존성 타입 꼬임으로 인해 타입 에러 발생
+         * codemirror/state 타입 에러 : Two different types with this name exist, but they are unrelated.
+         */
+        redo(editorView);
+      }
     },
     [editorView],
     'ctrl-or-cmd-r-pressed',
