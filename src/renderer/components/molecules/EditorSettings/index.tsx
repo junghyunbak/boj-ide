@@ -15,11 +15,8 @@ import {
   SettingTitleParagraph,
 } from './index.style';
 
-const EditorMode: EditorMode[] = ['normal', 'vim'];
-const EditorIndentSpace: IndentSpace[] = [2, 4];
-
 export function EditorSettings() {
-  const { editorMode, editorFontSize, editorIndentSpace } = useEditor();
+  const { editorMode, editorFontSize, editorIndentSpace, EDITOR_INDENT_SPACES, EDITOR_MODES } = useEditor();
 
   const { updateIsSetting } = useModifySetting();
   const { updateEditorMode, updateEditorFontSize, updateEditorIndentSpace } = useModifyEditor();
@@ -82,7 +79,7 @@ export function EditorSettings() {
                 padding: 0;
               `}
             >
-              {EditorMode.map((mode, i) => {
+              {EDITOR_MODES.map((mode, i) => {
                 return (
                   <label key={i}>
                     <input
@@ -116,7 +113,7 @@ export function EditorSettings() {
         <SettingGroupLabelBox>들여쓰기 공백 크기</SettingGroupLabelBox>
         <SettingGroupControleBox>
           <select value={editorIndentSpace} onChange={handleIndentSpaceOptionChange}>
-            {EditorIndentSpace.map((indentSpace, i) => {
+            {EDITOR_INDENT_SPACES.map((indentSpace, i) => {
               return <option key={i}>{indentSpace}</option>;
             })}
           </select>

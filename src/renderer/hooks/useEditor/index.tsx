@@ -1,4 +1,5 @@
 import { useStore } from '@/renderer/store';
+import { useRef } from 'react';
 import { useShallow } from 'zustand/shallow';
 
 export function useEditor() {
@@ -12,6 +13,9 @@ export function useEditor() {
   const [editorView] = useStore(useShallow((s) => [s.editorView]));
   const [isCodeStale] = useStore(useShallow((s) => [s.isCodeStale]));
 
+  const EDITOR_MODES = useRef<EditorMode[]>(['normal', 'vim']).current;
+  const EDITOR_INDENT_SPACES = useRef<IndentSpace[]>([2, 4]).current;
+
   return {
     editorCode,
     editorFontSize,
@@ -22,5 +26,7 @@ export function useEditor() {
     editorState,
     editorView,
     isCodeStale,
+    EDITOR_MODES,
+    EDITOR_INDENT_SPACES,
   };
 }
