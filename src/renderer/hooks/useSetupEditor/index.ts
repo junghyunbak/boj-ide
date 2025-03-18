@@ -1,272 +1,80 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 
-import { useTheme } from '@emotion/react';
-
-import { zIndex } from '@/renderer/styles';
-
-import { EditorState, Prec, type Extension } from '@codemirror/state';
-import {
-  EditorView,
-  keymap,
-  lineNumbers,
-  highlightSpecialChars,
-  drawSelection,
-  dropCursor,
-  highlightActiveLine,
-  rectangularSelection,
-  crosshairCursor,
-} from '@codemirror/view';
-import { bracketMatching, indentOnInput, indentUnit } from '@codemirror/language';
-import { createTheme } from '@uiw/codemirror-themes';
-import { defaultKeymap, indentMore, history, historyKeymap } from '@codemirror/commands';
-import {
-  acceptCompletion,
-  autocompletion,
-  closeBrackets,
-  closeBracketsKeymap,
-  closeCompletion,
-  completionKeymap,
-} from '@codemirror/autocomplete';
-import { highlightSelectionMatches, search, searchKeymap } from '@codemirror/search';
-import { vim } from '@replit/codemirror-vim';
-import { javascript } from '@codemirror/lang-javascript';
-import { cpp } from '@codemirror/lang-cpp';
-import { python } from '@codemirror/lang-python';
-import { java } from '@codemirror/lang-java';
+import { EditorState, StateEffect } from '@codemirror/state';
+import { EditorView } from '@codemirror/view';
 
 import { useModifyEditor } from '../useModifyEditor';
 import { useProblem } from '../useProblem';
 import { useEditor } from '../useEditor';
+import { useCmExtensions } from './useCmExtensions';
 
 export function useSetupEditor() {
   const { problem } = useProblem();
-  const { editorMode, editorRef, editorCode, editorState, editorFontSize, editorIndentSpace, editorLanguage } =
-    useEditor();
+  const { editorRef, editorCode, editorState, editorLanguage, editorView } = useEditor();
+  const { extensions } = useCmExtensions();
 
-  const { saveFile, syncEditorCode, updateEditorState, updateEditorView, initialEditorCode } = useModifyEditor();
-
-  const emotionTheme = useTheme();
-
-  const indentString = useMemo(() => ' '.repeat(editorIndentSpace), [editorIndentSpace]);
-
-  const codeExtensions = useMemo<Extension[]>(() => {
-    return [
-      editorMode === 'vim' && vim(),
-      editorLanguage === 'C++14' && cpp(),
-      editorLanguage === 'C++17' && cpp(),
-      editorLanguage === 'Java11' && java(),
-      editorLanguage === 'node.js' && javascript(),
-      editorLanguage === 'Python3' && python(),
-    ].filter((value) => typeof value === 'object');
-  }, [editorLanguage, editorMode]);
-
-  const themeExtensions = useMemo<Extension[]>(() => {
-    const spec: ExtractParams<typeof EditorView.theme>[0] = {
-      '&': {
-        height: '100%',
-      },
-      /**
-       * content
-       */
-      '.cm-content': {
-        fontSize: `${editorFontSize}px`,
-        fontFamily: 'hack',
-      },
-      /**
-       * gutter
-       */
-      '.cm-gutters': {
-        fontSize: `${editorFontSize}px`,
-        fontFamily: 'hack',
-      },
-      '.cm-gutter': {
-        padding: '0 10px 0 17px',
-      },
-      /**
-       * auto completion
-       */
-      '.cm-tooltip': {
-        zIndex: `${zIndex.editor.tooltip} !important`,
-      },
-      /**
-       * pannel
-       */
-      '.cm-vim-panel': {
-        padding: '5px 10px',
-      },
-      '.cm-panels': {
-        backgroundColor: 'transparent',
-        borderTop: `1px solid ${emotionTheme.colors.border}`,
-      },
-      '.cm-panels input': {
-        color: `${emotionTheme.colors.fg} !important`,
-        fontFamily: 'hack',
-      },
-      /**
-       * cursor
-       */
-      '.cm-cursor, .cm-dropCursor': {
-        borderLeftColor: `${emotionTheme.colors.fg}`,
-      },
-      '&:not(.cm-focused) .cm-fat-cursor': {
-        background: 'none !important',
-      },
-    };
-
-    if (emotionTheme.editor.settings.caret) {
-      spec['.cm-fat-cursor'] = {
-        outline: `solid 1px ${emotionTheme.editor.settings.caret} !important`,
-        background: `${emotionTheme.editor.settings.caret} !important`,
-      };
-    }
-
-    return [
-      EditorView.theme(spec),
-      createTheme({
-        theme: emotionTheme.theme,
-        settings: emotionTheme.editor.settings,
-        styles: emotionTheme.editor.styles,
-      }),
-    ];
-  }, [editorFontSize, emotionTheme]);
-
-  const keymapExtensions = useMemo<Extension[]>(
-    () => [
-      keymap.of(defaultKeymap),
-      keymap.of(historyKeymap),
-      keymap.of(searchKeymap),
-      keymap.of(closeBracketsKeymap),
-      Prec.highest(
-        keymap.of([
-          ...completionKeymap.filter(({ key }) => key !== 'Escape'),
-          {
-            key: 'Escape',
-            run: (view) => {
-              /**
-               * closeCompletion 내부에서 true를 반환하기 때문에 vim Escape 동작이 차단된다.
-               *
-               * 커스텀하여 false를 반환하도록 수정
-               */
-              closeCompletion(view);
-
-              return false;
-            },
-          },
-        ]),
-      ),
-      indentUnit.of(indentString),
-      keymap.of([
-        {
-          key: 'Tab',
-          run: acceptCompletion,
-        },
-        {
-          /**
-           * [insertTab](https://github.com/codemirror/commands/blob/d6b6d01c470ab6e82c01d084474c7007a5e7c64e/src/commands.ts#L909)
-           *
-           * insertTab 기본 동작을 그대로 가져가되, tab 대신 공백이 추가되도록 커스텀
-           */
-          key: 'Tab',
-          run: ({ state, dispatch }) => {
-            if (state.selection.ranges.some((r) => !r.empty)) {
-              return indentMore({ state, dispatch });
-            }
-
-            dispatch(
-              state.update(state.replaceSelection(indentString), {
-                scrollIntoView: true,
-                userEvent: 'input',
-              }),
-            );
-
-            return true;
-          },
-        },
-        {
-          key: 'Ctrl-s',
-          run: () => {
-            saveFile();
-            return false;
-          },
-        },
-        {
-          key: 'Meta-s',
-          run: () => {
-            saveFile();
-            return false;
-          },
-        },
-      ]),
-    ],
-    [indentString, saveFile],
-  );
-
-  const updateExtension = useMemo<Extension>(
-    () =>
-      EditorView.updateListener.of((update) => {
-        if (update.docChanged) {
-          syncEditorCode(update.state.doc.toString());
-        }
-      }),
-    [syncEditorCode],
-  );
+  const { saveFile, updateEditorState, updateEditorView, initialEditorCode } = useModifyEditor();
 
   /**
-   * codemirror state
+   * codemirror 상태 초기화 및 재생성
    */
   useEffect(() => {
     const newEditorState = EditorState.create({
       doc: editorCode,
-      extensions: [
-        ...keymapExtensions,
-        updateExtension,
-        lineNumbers(),
-        highlightSpecialChars(),
-        history(),
-        dropCursor(),
-        indentOnInput(),
-        drawSelection(),
-        bracketMatching(),
-        closeBrackets(),
-        autocompletion({
-          defaultKeymap: false,
-        }),
-        highlightActiveLine(),
-        highlightSelectionMatches(),
-        rectangularSelection(),
-        search(),
-        crosshairCursor(),
-        EditorState.allowMultipleSelections.of(true),
-        ...codeExtensions,
-        ...themeExtensions,
-      ],
+      extensions,
     });
 
     updateEditorState(newEditorState);
-  }, [editorCode, updateEditorState, codeExtensions, themeExtensions, keymapExtensions, updateExtension]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    /**
+     * editorCode가 변경되는 경우
+     *
+     * - 문제가 변경되어 파일을 읽어들이는 경우
+     * - AI 표준입력 코드 생성으로 인해 코드가 초기화되는 경우
+     *
+     * 두 경우에 기존 히스토리가 제거되어야 하므로 의존성 배열에 추가
+     */
+    editorCode,
+    updateEditorState,
+    /**
+     * extensions가 변경될 때 마다 상태가 재생성되면
+     * 코드, 히스토리 등 현재 상태가 없어지기 때문에 의존성 배열에서 고의적으로 제거
+     */
+    // ,extensions
+  ]);
 
   /**
-   * codemirror view
+   * extensions 변경 시 업데이트
+   */
+  useEffect(() => {
+    if (editorView) {
+      editorView.dispatch({ effects: StateEffect.reconfigure.of(extensions) });
+    }
+  }, [extensions, editorView]);
+
+  /**
+   * codemirror 뷰 생성 및 제거
    */
   useEffect(() => {
     if (!editorRef.current) {
       return function cleanup() {};
     }
 
-    const editorView = new EditorView({
+    const newEditorView = new EditorView({
       state: editorState,
       parent: editorRef.current,
     });
 
-    updateEditorView(editorView);
+    updateEditorView(newEditorView);
 
     return function cleanup() {
-      editorView.destroy();
+      newEditorView.destroy();
     };
-  }, [editorRef, editorCode, editorState, updateEditorView]);
+  }, [editorRef, editorState, updateEditorView]);
 
   /**
-   * 문제/언어가 변경되면
+   * 문제, 언어 변경 시
    *
    * - 기존 코드 저장
    * - 새로운 코드 로딩
