@@ -8,6 +8,7 @@ export const SettingLayout = styled.div`
   flex-direction: column;
   gap: 1rem;
   position: relative;
+  background-color: ${({ theme }) => theme.colors.bg};
 `;
 
 export const SettingCloseButtonBox = styled.div`

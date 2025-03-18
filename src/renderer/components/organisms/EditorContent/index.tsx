@@ -16,27 +16,27 @@ export function EditorContent() {
   const { problem } = useProblem();
   const { isSetting } = useSetting();
 
-  const Content = (() => {
-    if (isSetting) {
-      return <EditorSettings />;
-    }
-
-    if (problem) {
-      return <EditorCodemirror />;
-    }
-
-    return <EditorPlaceholder />;
-  })();
-
   return (
     <div
       ref={tourRef}
       css={css`
         flex: 1;
         overflow: hidden;
+        position: relative;
       `}
     >
-      {Content}
+      {problem ? <EditorCodemirror /> : <EditorPlaceholder />}
+
+      {isSetting && (
+        <div
+          css={css`
+            position: absolute;
+            inset: 0;
+          `}
+        >
+          <EditorSettings />
+        </div>
+      )}
 
       <TourOverlay title="에디터" tourRef={tourRef} myTourStep={2} guideLoc="left">
         <p>문제 풀이를 위한 알고리즘을 작성합니다.</p>
