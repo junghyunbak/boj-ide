@@ -7,9 +7,11 @@ import { useModifyEditor } from '../useModifyEditor';
 import { useProblem } from '../useProblem';
 import { useEditor } from '../useEditor';
 import { useCmExtensions } from './useCmExtensions';
+import { useSetting } from '../useSetting';
 
 export function useSetupEditor() {
   const { problem } = useProblem();
+  const { isSetting } = useSetting();
   const { editorRef, editorCode, editorState, editorLanguage, editorView } = useEditor();
   const { extensions } = useCmExtensions();
 
@@ -100,4 +102,13 @@ export function useSetupEditor() {
       saveFile({ problem, language: editorLanguage, silence: true });
     };
   }, [problem, editorLanguage, saveFile, initialEditorCode]);
+
+  /**
+   * 설정 창이 닫히면 자등으로 뷰에 포커스
+   */
+  useEffect(() => {
+    if (!isSetting && editorView) {
+      editorView.focus();
+    }
+  }, [isSetting, editorView]);
 }
