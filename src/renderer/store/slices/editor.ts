@@ -6,17 +6,6 @@ type EditorSlice = {
   /**
    * editor 상태
    */
-  code: string; // TODO: code -> initialCode
-  setCode: (code: string) => void;
-
-  aiCode: string;
-  setAiCode: (code: string) => void;
-
-  problemToStale: Map<string, boolean>;
-  setProblemToStale: (key: string, value: boolean) => void;
-
-  indentSpace: IndentSpace;
-  setIndentSpace: (count: IndentSpace) => void;
 
   editorState: EditorState | undefined;
   updateEditorState(editorState: EditorState | undefined): void;
@@ -24,10 +13,16 @@ type EditorSlice = {
   editorView: EditorView | undefined;
   updateEditorView(editorView: EditorView | undefined): void;
 
+  indentSpace: IndentSpace;
+  setIndentSpace: (count: IndentSpace) => void;
+
+  problemToStale: Map<string, boolean>;
+  setProblemToStale: (key: string, value: boolean) => void;
+
   /**
    * editor 값
    */
-  editorValue: Map<string | undefined, string>;
+  editorValue: Map<string | undefined, string | null>;
 
   editorRef: React.RefObject<HTMLDivElement>;
 
@@ -69,16 +64,6 @@ export const createEditorSlice: StateCreator<EditorSlice> = (set, get): EditorSl
   fontSize: 14,
   setFontSize(fontSize) {
     set(() => ({ fontSize }));
-  },
-
-  code: '',
-  setCode(code) {
-    set(() => ({ code }));
-  },
-
-  aiCode: '',
-  setAiCode(code) {
-    set(() => ({ aiCode: code }));
   },
 
   mode: 'normal',

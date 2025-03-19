@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
 
-import { useEditor, useEventIpc, useJudge, useModifyEditor, useModifyJudge, useProblem } from '@/renderer/hooks';
+import { useEditor, useJudge, useModifyEditor, useModifyJudge, useProblem } from '@/renderer/hooks';
 
 import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
 
@@ -14,22 +14,13 @@ export function ExecuteCodeButton() {
   const { editorLanguage } = useEditor();
 
   const { startJudge } = useModifyJudge();
-  const { saveFile } = useModifyEditor();
-
-  useEventIpc(
-    () => {
-      if (!isJudging) {
-        saveFile(problem, editorLanguage);
-        startJudge();
-      }
-    },
-    [editorLanguage, isJudging, problem, saveFile, startJudge],
-    'judge-request',
-  );
+  const { saveCode, updateProblemToStale } = useModifyEditor();
 
   const handleExecuteButtonClick = useCallback(() => {
+    saveCode(problem, editorLanguage);
+    updateProblemToStale(problem, editorLanguage, false);
     startJudge();
-  }, [startJudge]);
+  }, [startJudge, saveCode, updateProblemToStale, problem, editorLanguage]);
 
   return (
     <>

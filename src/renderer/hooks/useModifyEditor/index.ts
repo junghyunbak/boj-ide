@@ -6,14 +6,11 @@ import { useShallow } from 'zustand/shallow';
 import { useModifyAlertModal } from '../useModifyAlertModal';
 
 export function useModifyEditor() {
-  const [setEditorCode] = useStore(useShallow((s) => [s.setCode]));
   const [setEditorMode] = useStore(useShallow((s) => [s.setMode]));
   const [setEditorFontSize] = useStore(useShallow((s) => [s.setFontSize]));
   const [setEditorIndentSpace] = useStore(useShallow((s) => [s.setIndentSpace]));
   const [setEditorLanguage] = useStore(useShallow((s) => [s.setLang]));
   const [setProblemToStale] = useStore(useShallow((s) => [s.setProblemToStale]));
-
-  const [setAiCode] = useStore(useShallow((s) => [s.setAiCode]));
 
   const [updateEditorState] = useStore(useShallow((s) => [s.updateEditorState]));
   const [updateEditorView] = useStore(useShallow((s) => [s.updateEditorView]));
@@ -57,67 +54,36 @@ export function useModifyEditor() {
     [setEditorLanguage],
   );
 
-  const getEditorValue = useCallback(
-    (problem: Problem = useStore.getState().problem, language: Language = useStore.getState().lang) => {
-      const { editorValue } = useStore.getState();
+  const getEditorValue = useCallback((problem: Problem, editorLanguage: Language) => {
+    const key = `${problem?.number}|${editorLanguage}`;
 
-      const key = `${problem?.number}|${language}`;
+    return useStore.getState().editorValue.get(key);
+  }, []);
 
-      return editorValue.get(key);
-    },
-    [],
-  );
+  const setEditorValue = useCallback((problem: Problem, editorLanguage: Language, code: string | null) => {
+    const key = `${problem?.number}|${editorLanguage}`;
 
-  const setEditorValue = useCallback((code: string) => {
-    const { problem, lang, editorValue } = useStore.getState();
-
-    const key = `${problem?.number}|${lang}`;
-
-    editorValue.set(key, code);
+    useStore.getState().editorValue.set(key, code);
   }, []);
 
   const syncEditorCode = useCallback(
-    (code: string) => {
-      setEditorValue(code);
+    (problem: Problem, editorLanguage: Language, code: string) => {
+      setEditorValue(problem, editorLanguage, code);
     },
     [setEditorValue],
   );
 
-  const updateEditorCodeByAI = useCallback(
-    (code: string) => {
-      setAiCode(code);
-      setEditorValue(code);
-    },
-    [setAiCode, setEditorValue],
-  );
-
-  const updateEditorCodeByFileIO = useCallback(
-    (code: string) => {
-      setEditorCode(code);
-      setEditorValue(code);
-    },
-    [setEditorCode, setEditorValue],
-  );
-
-  const saveFile = useCallback(
-    async (problem: Problem, editorLanguage: Language, silence = false) => {
+  const saveCode = useCallback(
+    async (problem: Problem, editorLanguage: Language) => {
       if (!problem) {
         return;
       }
 
-      const response = await window.electron.ipcRenderer.invoke('save-code', {
+      await window.electron.ipcRenderer.invoke('save-code', {
         data: { number: problem.number, language: editorLanguage, code: getEditorValue(problem, editorLanguage) || '' },
       });
-
-      if (!response || !response.data.isSaved) {
-        return;
-      }
-
-      if (!silence) {
-        fireAlertModal('안내', '저장이 완료되었습니다.');
-      }
     },
-    [fireAlertModal, getEditorValue],
+    [getEditorValue],
   );
 
   return {
@@ -133,9 +99,7 @@ export function useModifyEditor() {
     setEditorValue,
 
     syncEditorCode,
-    updateEditorCodeByAI,
-    updateEditorCodeByFileIO,
 
-    saveFile,
+    saveCode,
   };
 }

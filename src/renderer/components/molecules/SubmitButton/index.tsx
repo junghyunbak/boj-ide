@@ -21,17 +21,15 @@ export function SubmitButton() {
     }
 
     fireConfirmModal('제출하시겠습니까?', () => {
-      const code = getEditorValue() || '';
-
       window.electron.ipcRenderer.sendMessage('submit-code', {
         data: {
-          code,
+          code: getEditorValue(problem, editorLanguage) || '',
           language: editorLanguage,
           number: problem.number,
         },
       });
     });
-  }, [editorLanguage, fireConfirmModal, getEditorValue, problem]);
+  }, [fireConfirmModal, getEditorValue, problem, editorLanguage]);
 
   return (
     <>

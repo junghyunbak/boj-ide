@@ -43,7 +43,7 @@ export function useCmExtensions() {
   const { editorMode, editorFontSize, editorIndentSpace, editorLanguage } = useEditor();
   const emotionTheme = useTheme();
 
-  const { saveFile, syncEditorCode, updateProblemToStale } = useModifyEditor();
+  const { saveCode, setEditorValue, updateProblemToStale } = useModifyEditor();
 
   const indentString = useMemo(() => ' '.repeat(editorIndentSpace), [editorIndentSpace]);
 
@@ -183,31 +183,35 @@ export function useCmExtensions() {
         {
           key: 'Ctrl-s',
           run: () => {
-            saveFile(problem, editorLanguage);
+            saveCode(problem, editorLanguage);
+            updateProblemToStale(problem, editorLanguage, false);
             return false;
           },
         },
         {
           key: 'Meta-s',
           run: () => {
-            saveFile(problem, editorLanguage);
+            saveCode(problem, editorLanguage);
+            updateProblemToStale(problem, editorLanguage, false);
             return false;
           },
         },
       ]),
     ],
-    [editorLanguage, indentString, problem, saveFile],
+    [editorLanguage, indentString, problem, saveCode, updateProblemToStale],
   );
 
   const updateExtension = useMemo<Extension>(
     () =>
       EditorView.updateListener.of((update) => {
         if (update.docChanged) {
-          syncEditorCode(update.state.doc.toString());
+          const code = update.state.doc.toString();
+
+          setEditorValue(problem, editorLanguage, code);
           updateProblemToStale(problem, editorLanguage, true);
         }
       }),
-    [syncEditorCode, updateProblemToStale, problem, editorLanguage],
+    [setEditorValue, updateProblemToStale, problem, editorLanguage],
   );
 
   const basicExtensions = useMemo<Extension[]>(

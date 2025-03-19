@@ -43,7 +43,7 @@ export function useModifyJudge() {
 
     window.electron.ipcRenderer.sendMessage('judge-start', {
       data: {
-        code: getEditorValue() || '',
+        code: getEditorValue(problem, language) || '',
         language,
         number: problem.number,
         judgeId,

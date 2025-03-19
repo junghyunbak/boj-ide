@@ -7,12 +7,12 @@ export function SaveCodeButton() {
   const { problem } = useProblem();
   const { problemToStale, editorLanguage } = useEditor();
 
-  const { saveFile, updateProblemToStale } = useModifyEditor();
+  const { saveCode, updateProblemToStale } = useModifyEditor();
 
   const handleSaveCodeButtonClick = useCallback(() => {
-    saveFile(problem, editorLanguage);
+    saveCode(problem, editorLanguage);
     updateProblemToStale(problem, editorLanguage, false);
-  }, [saveFile, updateProblemToStale, problem, editorLanguage]);
+  }, [saveCode, updateProblemToStale, problem, editorLanguage]);
 
   const isCodeStale = problemToStale.get(`${problem?.number}|${editorLanguage}`);
 

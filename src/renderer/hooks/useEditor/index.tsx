@@ -3,25 +3,24 @@ import { useRef } from 'react';
 import { useShallow } from 'zustand/shallow';
 
 export function useEditor() {
-  const [editorIndentSpace] = useStore(useShallow((s) => [s.indentSpace]));
-  const [editorCode] = useStore(useShallow((s) => [s.code]));
-  const [editorMode] = useStore(useShallow((s) => [s.mode]));
-  const [editorFontSize] = useStore(useShallow((s) => [s.fontSize]));
-  const [editorLanguage] = useStore(useShallow((s) => [s.lang]));
-  const [editorRef] = useStore(useShallow((s) => [s.editorRef]));
   const [editorState] = useStore(useShallow((s) => [s.editorState]));
   const [editorView] = useStore(useShallow((s) => [s.editorView]));
 
-  const [problemToStale] = useStore(useShallow((s) => [s.problemToStale]));
+  const [editorLanguage] = useStore(useShallow((s) => [s.lang]));
 
-  const [aiCode] = useStore(useShallow((s) => [s.aiCode]));
+  const [editorMode] = useStore(useShallow((s) => [s.mode]));
+  const [editorIndentSpace] = useStore(useShallow((s) => [s.indentSpace]));
+  const [editorFontSize] = useStore(useShallow((s) => [s.fontSize]));
+
+  const [editorRef] = useStore(useShallow((s) => [s.editorRef]));
+
+  const [problemToStale] = useStore(useShallow((s) => [s.problemToStale]));
 
   const EDITOR_FONT_SIZES = useRef<number[]>([8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]).current;
   const EDITOR_MODES = useRef<EditorMode[]>(['normal', 'vim']).current;
   const EDITOR_INDENT_SPACES = useRef<IndentSpace[]>([2, 4]).current;
 
   return {
-    editorCode,
     editorFontSize,
     editorIndentSpace,
     editorLanguage,
@@ -29,7 +28,6 @@ export function useEditor() {
     editorRef,
     editorState,
     editorView,
-    aiCode,
     problemToStale,
     EDITOR_FONT_SIZES,
     EDITOR_MODES,

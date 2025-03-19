@@ -9,27 +9,19 @@ import { useEditor } from '@/renderer/hooks';
 import { useMovableTabContext } from '../../MovableTabContext';
 
 interface MovableTabContentCloseButtonProps {
-  problemNumber?: string | null;
+  problem?: Problem;
   onClick?: () => void;
 }
 
 export function MovableTabContentCloseButton({
-  problemNumber = null,
+  problem = null,
   onClick = () => {},
 }: MovableTabContentCloseButtonProps) {
   const { isSelect, isHover } = useMovableTabContext();
+
   const [isCloseButtonHover, setIsCloseButtonHover] = useState(false);
 
   const { editorLanguage, problemToStale } = useEditor();
-
-  const handleCloseButtonClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    onClick();
-
-    /**
-     * 버블링을 차단하지 않으면 닫기 동작 뿐만 아니라, 탭 클릭 동작도 발생하기 때문에 중요한 코드
-     */
-    e.stopPropagation();
-  };
 
   const handleMouseEnter = useCallback(() => {
     setIsCloseButtonHover(true);
@@ -39,27 +31,40 @@ export function MovableTabContentCloseButton({
     setIsCloseButtonHover(false);
   }, []);
 
-  const isProblem = problemNumber !== null;
-  const isStale = problemToStale.get(`${problemNumber}|${editorLanguage}`);
+  const key = `${problem?.number}|${editorLanguage}`;
 
-  const isXButtonShow = isHover || isSelect;
+  const isProblem = problem !== null;
+  const isStale = problemToStale.get(key);
+
   const isStaleBallShow = isProblem && isStale;
+
+  const handleCloseButtonClick = useCallback<React.MouseEventHandler<HTMLButtonElement>>(
+    (e) => {
+      /**
+       * 버블링을 차단하지 않으면 닫기 동작 뿐만 아니라, 탭 클릭 동작도 발생하기 때문에 중요한 코드
+       */
+      e.stopPropagation();
+
+      onClick();
+    },
+    [onClick],
+  );
 
   const Content = (() => {
     if (isStaleBallShow) {
       if (isCloseButtonHover) {
-        return <XButton />;
+        return <XButton onClick={handleCloseButtonClick} />;
       }
 
       return <StaleBall />;
     }
 
     if (isHover) {
-      return <XButton />;
+      return <XButton onClick={handleCloseButtonClick} />;
     }
 
     if (isSelect) {
-      return <XButton />;
+      return <XButton onClick={handleCloseButtonClick} />;
     }
 
     return null;

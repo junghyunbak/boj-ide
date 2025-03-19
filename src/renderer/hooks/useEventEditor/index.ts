@@ -12,6 +12,8 @@ import { useEventElement } from '../useEventElement';
 import { useEventWindow } from '../useEventWindow';
 import { useModifyVim } from '../useModifyVim';
 import { useProblem } from '../useProblem';
+import { useJudge } from '../useJudge';
+import { useModifyJudge } from '../useModifyJudge';
 
 export function useEventEditor() {
   const curFocusRef = useRef<Element | null>(null);
@@ -19,9 +21,26 @@ export function useEventEditor() {
 
   const { problem } = useProblem();
   const { editorView, editorLanguage } = useEditor();
+  const { isJudging } = useJudge();
 
-  const { saveFile, getEditorValue, updateProblemToStale } = useModifyEditor();
+  const { startJudge } = useModifyJudge();
+  const { saveCode, getEditorValue, updateProblemToStale } = useModifyEditor();
   const { updateVimMode } = useModifyVim();
+
+  /**
+   * f5 코드실행 이벤트 등록
+   */
+  useEventIpc(
+    () => {
+      if (!isJudging) {
+        saveCode(problem, editorLanguage);
+        updateProblemToStale(problem, editorLanguage, false);
+        startJudge();
+      }
+    },
+    [editorLanguage, isJudging, problem, saveCode, startJudge, updateProblemToStale],
+    'judge-request',
+  );
 
   /**
    * Vim(:w) 코드 저장 이벤트 등록
@@ -29,11 +48,11 @@ export function useEventEditor() {
   useEffect(() => {
     const handleVimWriteCommand = () => {
       updateProblemToStale(problem, editorLanguage, false);
-      saveFile(problem, editorLanguage);
+      saveCode(problem, editorLanguage);
     };
 
     Vim.defineEx('write', 'w', handleVimWriteCommand);
-  }, [saveFile, getEditorValue, updateProblemToStale, problem, editorLanguage]);
+  }, [saveCode, getEditorValue, updateProblemToStale, problem, editorLanguage]);
 
   /**
    * vim 모드 상태 전역 상태 동기화
