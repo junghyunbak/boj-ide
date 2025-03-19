@@ -11,7 +11,9 @@ export function useEditor() {
   const [editorRef] = useStore(useShallow((s) => [s.editorRef]));
   const [editorState] = useStore(useShallow((s) => [s.editorState]));
   const [editorView] = useStore(useShallow((s) => [s.editorView]));
-  const [isCodeStale] = useStore(useShallow((s) => [s.isCodeStale]));
+
+  const [problemToStale] = useStore(useShallow((s) => [s.problemToStale]));
+
   const [aiCode] = useStore(useShallow((s) => [s.aiCode]));
 
   const EDITOR_FONT_SIZES = useRef<number[]>([8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]).current;
@@ -28,7 +30,7 @@ export function useEditor() {
     editorState,
     editorView,
     aiCode,
-    isCodeStale,
+    problemToStale,
     EDITOR_FONT_SIZES,
     EDITOR_MODES,
     EDITOR_INDENT_SPACES,

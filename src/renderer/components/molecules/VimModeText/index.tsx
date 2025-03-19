@@ -4,14 +4,21 @@ import { useEditor, useProblem, useVim } from '@/renderer/hooks';
 
 import { languageToExt } from '@/renderer/utils';
 
+/**
+ * // TODO: vim mode text -> saved status 컴포넌트로 변경
+ *
+ * 저장됨 상태는 항상 아래에 표시되도록 수정
+ */
 export function VimModeText() {
-  const { editorMode, editorLanguage, isCodeStale } = useEditor();
+  const { editorMode, editorLanguage, problemToStale } = useEditor();
   const { problem } = useProblem();
   const { vimMode } = useVim();
 
   if (!problem || !vimMode || editorMode === 'normal') {
     return null;
   }
+
+  const isCodeStale = problemToStale.get(`${problem.number}|${editorLanguage}}`);
 
   return (
     <div

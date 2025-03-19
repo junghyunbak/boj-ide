@@ -11,14 +11,16 @@ import { useEditor } from '../useEditor';
 import { useEventElement } from '../useEventElement';
 import { useEventWindow } from '../useEventWindow';
 import { useModifyVim } from '../useModifyVim';
+import { useProblem } from '../useProblem';
 
 export function useEventEditor() {
   const curFocusRef = useRef<Element | null>(null);
   const lastFocusRef = useRef<Element | null>(null);
 
-  const { editorView } = useEditor();
+  const { problem } = useProblem();
+  const { editorView, editorLanguage } = useEditor();
 
-  const { saveFile, getEditorValue } = useModifyEditor();
+  const { saveFile, getEditorValue, updateProblemToStale } = useModifyEditor();
   const { updateVimMode } = useModifyVim();
 
   /**
@@ -26,11 +28,12 @@ export function useEventEditor() {
    */
   useEffect(() => {
     const handleVimWriteCommand = () => {
-      saveFile();
+      updateProblemToStale(problem, editorLanguage, false);
+      saveFile(problem, editorLanguage);
     };
 
     Vim.defineEx('write', 'w', handleVimWriteCommand);
-  }, [saveFile, getEditorValue]);
+  }, [saveFile, getEditorValue, updateProblemToStale, problem, editorLanguage]);
 
   /**
    * vim 모드 상태 전역 상태 동기화

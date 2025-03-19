@@ -11,15 +11,23 @@ export function useModifyEditor() {
   const [setEditorFontSize] = useStore(useShallow((s) => [s.setFontSize]));
   const [setEditorIndentSpace] = useStore(useShallow((s) => [s.setIndentSpace]));
   const [setEditorLanguage] = useStore(useShallow((s) => [s.setLang]));
+  const [setProblemToStale] = useStore(useShallow((s) => [s.setProblemToStale]));
 
   const [setAiCode] = useStore(useShallow((s) => [s.setAiCode]));
 
   const [updateEditorState] = useStore(useShallow((s) => [s.updateEditorState]));
   const [updateEditorView] = useStore(useShallow((s) => [s.updateEditorView]));
 
-  const [setIsCodeStale] = useStore(useShallow((s) => [s.setIsCodeStale]));
-
   const { fireAlertModal } = useModifyAlertModal();
+
+  const updateProblemToStale = useCallback(
+    (problem: Problem, editorLanguage: Language, isStale: boolean) => {
+      const key = `${problem?.number}|${editorLanguage}`;
+
+      setProblemToStale(key, isStale);
+    },
+    [setProblemToStale],
+  );
 
   const updateEditorMode = useCallback(
     (mode: EditorMode) => {
@@ -49,14 +57,6 @@ export function useModifyEditor() {
     [setEditorLanguage],
   );
 
-  const stalingEditorCode = useCallback(() => {
-    setIsCodeStale(true);
-  }, [setIsCodeStale]);
-
-  const freshingEditorCode = useCallback(() => {
-    setIsCodeStale(false);
-  }, [setIsCodeStale]);
-
   const getEditorValue = useCallback(
     (problem: Problem = useStore.getState().problem, language: Language = useStore.getState().lang) => {
       const { editorValue } = useStore.getState();
@@ -76,78 +76,52 @@ export function useModifyEditor() {
     editorValue.set(key, code);
   }, []);
 
-  // 에디터 편집으로 인한 코드 동기화에 사용
   const syncEditorCode = useCallback(
     (code: string) => {
       setEditorValue(code);
-
-      stalingEditorCode();
     },
-    [setEditorValue, stalingEditorCode],
+    [setEditorValue],
   );
 
-  // 'AI 표준 입력 생성' 기능 사용으로 인한 코드 초기화에 사용
-  const updateAiCode = useCallback(
+  const updateEditorCodeByAI = useCallback(
     (code: string) => {
       setAiCode(code);
       setEditorValue(code);
-
-      stalingEditorCode();
     },
-    [setEditorCode, setEditorValue, stalingEditorCode],
+    [setAiCode, setEditorValue],
   );
 
-  // 문제, 언어 변경으로 인한 코드 초기화에 사용
-  const initialEditorCode = useCallback(
-    (code: string, isFresh = true) => {
+  const updateEditorCodeByFileIO = useCallback(
+    (code: string) => {
       setEditorCode(code);
       setEditorValue(code);
-
-      if(isFresh) {
-        freshingEditorCode();
-      } else { 
-        stalingEditorCode();
-      }
     },
-    [setEditorCode, setEditorValue, freshingEditorCode],
+    [setEditorCode, setEditorValue],
   );
 
   const saveFile = useCallback(
-    async (
-      data: {
-        problem?: Problem;
-        language?: Language;
-        silence?: boolean;
-      } = {},
-    ) => {
-      const { problem = useStore.getState().problem, language = useStore.getState().lang, silence = false } = data;
-
-      const { isCodeStale } = useStore.getState();
-
-      if (!problem || !isCodeStale) {
+    async (problem: Problem, editorLanguage: Language, silence = false) => {
+      if (!problem) {
         return;
       }
 
-      const code = getEditorValue(problem, language) || '';
-
-      const res = await window.electron.ipcRenderer.invoke('save-code', {
-        data: { number: problem.number, language, code },
+      const response = await window.electron.ipcRenderer.invoke('save-code', {
+        data: { number: problem.number, language: editorLanguage, code: getEditorValue(problem, editorLanguage) || '' },
       });
 
-      if (!res || !res.data.isSaved) {
+      if (!response || !response.data.isSaved) {
         return;
       }
-
-      freshingEditorCode();
 
       if (!silence) {
         fireAlertModal('안내', '저장이 완료되었습니다.');
       }
     },
-    [fireAlertModal, freshingEditorCode, getEditorValue],
+    [fireAlertModal, getEditorValue],
   );
 
   return {
+    updateProblemToStale,
     updateEditorFontSize,
     updateEditorIndentSpace,
     updateEditorLanguage,
@@ -155,15 +129,12 @@ export function useModifyEditor() {
     updateEditorState,
     updateEditorView,
 
-    stalingEditorCode,
-    freshingEditorCode,
-
     getEditorValue,
     setEditorValue,
 
     syncEditorCode,
-    updateAiCode,
-    initialEditorCode,
+    updateEditorCodeByAI,
+    updateEditorCodeByFileIO,
 
     saveFile,
   };

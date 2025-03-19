@@ -36,12 +36,14 @@ import { createTheme } from '@uiw/codemirror-themes';
 
 import { useModifyEditor } from '../useModifyEditor';
 import { useEditor } from '../useEditor';
+import { useProblem } from '../useProblem';
 
 export function useCmExtensions() {
+  const { problem } = useProblem();
   const { editorMode, editorFontSize, editorIndentSpace, editorLanguage } = useEditor();
   const emotionTheme = useTheme();
 
-  const { saveFile, syncEditorCode } = useModifyEditor();
+  const { saveFile, syncEditorCode, updateProblemToStale } = useModifyEditor();
 
   const indentString = useMemo(() => ' '.repeat(editorIndentSpace), [editorIndentSpace]);
 
@@ -181,20 +183,20 @@ export function useCmExtensions() {
         {
           key: 'Ctrl-s',
           run: () => {
-            saveFile();
+            saveFile(problem, editorLanguage);
             return false;
           },
         },
         {
           key: 'Meta-s',
           run: () => {
-            saveFile();
+            saveFile(problem, editorLanguage);
             return false;
           },
         },
       ]),
     ],
-    [indentString, saveFile],
+    [editorLanguage, indentString, problem, saveFile],
   );
 
   const updateExtension = useMemo<Extension>(
@@ -202,9 +204,10 @@ export function useCmExtensions() {
       EditorView.updateListener.of((update) => {
         if (update.docChanged) {
           syncEditorCode(update.state.doc.toString());
+          updateProblemToStale(problem, editorLanguage, true);
         }
       }),
-    [syncEditorCode],
+    [syncEditorCode, updateProblemToStale, problem, editorLanguage],
   );
 
   const basicExtensions = useMemo<Extension[]>(

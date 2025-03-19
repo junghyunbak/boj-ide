@@ -11,7 +11,7 @@ export function useModifyJudge() {
   const [setJudgeResults] = useStore(useShallow((s) => [s.setJudgeResult]));
   const [setJudgeId] = useStore(useShallow((s) => [s.setJudgeId]));
 
-  const { getEditorValue, saveFile } = useModifyEditor();
+  const { getEditorValue } = useModifyEditor();
 
   const startJudge = useCallback(() => {
     const { problem, lang: language, customTestCase: customTestcases, judgeId } = useStore.getState();
@@ -37,8 +37,6 @@ export function useModifyJudge() {
     const inputs: string[] = [...problemTC.inputs, ...customTC.inputs];
     const outputs: string[] = [...problemTC.outputs, ...customTC.outputs];
 
-    saveFile({ silence: true });
-
     const n = Math.min(inputs.length, outputs.length);
 
     setJudgeResults(() => Array(n).fill(undefined));
@@ -55,7 +53,7 @@ export function useModifyJudge() {
         },
       },
     });
-  }, [getEditorValue, saveFile, setJudgeResults]);
+  }, [getEditorValue, setJudgeResults]);
 
   const resetJudge = useCallback(() => {
     setJudgeResults(() => []);

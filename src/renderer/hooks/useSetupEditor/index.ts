@@ -9,7 +9,7 @@ import { useEditor } from '../useEditor';
 import { useCmExtensions } from './useCmExtensions';
 import { useSetting } from '../useSetting';
 
-const External = Annotation.define<boolean>()
+const External = Annotation.define<boolean>();
 
 export function useSetupEditor() {
   const { problem } = useProblem();
@@ -17,7 +17,15 @@ export function useSetupEditor() {
   const { editorRef, editorCode, editorState, editorLanguage, editorView, aiCode } = useEditor();
   const { extensions } = useCmExtensions();
 
-  const { saveFile, updateEditorState, updateEditorView, initialEditorCode, getEditorValue } = useModifyEditor();
+  const {
+    saveFile,
+    updateEditorState,
+    updateEditorView,
+    getEditorValue,
+    updateProblemToStale,
+    updateEditorCodeByFileIO,
+    updateEditorCodeByAI,
+  } = useModifyEditor();
 
   /**
    * codemirror 상태 초기화 및 재생성
@@ -116,22 +124,25 @@ export function useSetupEditor() {
 
           const latestCode = getEditorValue();
 
-          if(latestCode !== undefined) {
-            initialEditorCode(latestCode, latestCode === code)
-          } else { 
-            initialEditorCode(code);
+          if (latestCode === undefined || latestCode === code) {
+            updateEditorCodeByFileIO(code);
+            updateProblemToStale(problem, editorLanguage, false);
+            return;
           }
+
+          updateProblemToStale(problem, editorLanguage, true);
+          updateEditorCodeByFileIO(latestCode);
         }
       }
     })();
 
-    return function cleanup(){
+    return function cleanup() {
       /**
        * 문제 변경 시 파일을 읽어오는 시간이 걸릴 경우, 이전 문제의 코드를 장시간 보여줄 수 있기 때문에
        * 이를 초기화하는 코드를 작성
        */
-    }
-  }, [problem, editorLanguage, saveFile, initialEditorCode]);
+    };
+  }, [problem, editorLanguage, saveFile, getEditorValue, updateProblemToStale, updateEditorCodeByFileIO]);
 
   /**
    * 설정 창이 닫히면 자등으로 뷰에 포커스

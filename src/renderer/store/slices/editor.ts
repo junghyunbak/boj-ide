@@ -6,14 +6,14 @@ type EditorSlice = {
   /**
    * editor 상태
    */
-  code: string;
+  code: string; // TODO: code -> initialCode
   setCode: (code: string) => void;
 
   aiCode: string;
   setAiCode: (code: string) => void;
 
-  isCodeStale: boolean;
-  setIsCodeStale: (isCodeStale: boolean) => void;
+  problemToStale: Map<string, boolean>;
+  setProblemToStale: (key: string, value: boolean) => void;
 
   indentSpace: IndentSpace;
   setIndentSpace: (count: IndentSpace) => void;
@@ -53,9 +53,17 @@ type EditorSlice = {
 export const createEditorSlice: StateCreator<EditorSlice> = (set, get): EditorSlice => ({
   editorValue: new Map(),
 
-  isCodeStale: false,
-  setIsCodeStale(isCodeStale) {
-    set(() => ({ isCodeStale }));
+  problemToStale: new Map(),
+  setProblemToStale(key, value) {
+    set((s) => {
+      const nextProblemToStale = new Map(s.problemToStale.entries());
+
+      nextProblemToStale.set(key, value);
+
+      return {
+        problemToStale: nextProblemToStale,
+      };
+    });
   },
 
   fontSize: 14,
