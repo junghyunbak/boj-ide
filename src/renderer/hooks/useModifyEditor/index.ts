@@ -63,7 +63,7 @@ export function useModifyEditor() {
 
       const key = `${problem?.number}|${language}`;
 
-      return editorValue.get(key) || '';
+      return editorValue.get(key);
     },
     [],
   );
@@ -99,11 +99,15 @@ export function useModifyEditor() {
 
   // 문제, 언어 변경으로 인한 코드 초기화에 사용
   const initialEditorCode = useCallback(
-    (code: string) => {
+    (code: string, isFresh = true) => {
       setEditorCode(code);
       setEditorValue(code);
 
-      freshingEditorCode();
+      if(isFresh) {
+        freshingEditorCode();
+      } else { 
+        stalingEditorCode();
+      }
     },
     [setEditorCode, setEditorValue, freshingEditorCode],
   );
@@ -124,7 +128,7 @@ export function useModifyEditor() {
         return;
       }
 
-      const code = getEditorValue(problem, language);
+      const code = getEditorValue(problem, language) || '';
 
       const res = await window.electron.ipcRenderer.invoke('save-code', {
         data: { number: problem.number, language, code },

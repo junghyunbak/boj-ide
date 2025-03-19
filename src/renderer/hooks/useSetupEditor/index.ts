@@ -17,7 +17,7 @@ export function useSetupEditor() {
   const { editorRef, editorCode, editorState, editorLanguage, editorView, aiCode } = useEditor();
   const { extensions } = useCmExtensions();
 
-  const { saveFile, updateEditorState, updateEditorView, initialEditorCode } = useModifyEditor();
+  const { saveFile, updateEditorState, updateEditorView, initialEditorCode, getEditorValue } = useModifyEditor();
 
   /**
    * codemirror 상태 초기화 및 재생성
@@ -77,6 +77,7 @@ export function useSetupEditor() {
     };
   }, [editorRef, editorState, updateEditorView]);
 
+  /*
   useEffect(() => {
     if(!editorView) {
       return;
@@ -93,6 +94,7 @@ export function useSetupEditor() {
       annotations: [External.of(true)],
     });
   }, [aiCode, editorView]);
+  */
 
   /**
    * 문제, 언어 변경 시
@@ -112,14 +114,23 @@ export function useSetupEditor() {
             data: { code },
           } = result;
 
-          initialEditorCode(code);
+          const latestCode = getEditorValue();
+
+          if(latestCode !== undefined) {
+            initialEditorCode(latestCode, latestCode === code)
+          } else { 
+            initialEditorCode(code);
+          }
         }
       }
     })();
 
-    return function cleanup() {
-      saveFile({ problem, language: editorLanguage, silence: true });
-    };
+    return function cleanup(){
+      /**
+       * 문제 변경 시 파일을 읽어오는 시간이 걸릴 경우, 이전 문제의 코드를 장시간 보여줄 수 있기 때문에
+       * 이를 초기화하는 코드를 작성
+       */
+    }
   }, [problem, editorLanguage, saveFile, initialEditorCode]);
 
   /**

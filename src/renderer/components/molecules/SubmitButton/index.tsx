@@ -21,7 +21,7 @@ export function SubmitButton() {
     }
 
     fireConfirmModal('제출하시겠습니까?', () => {
-      const code = getEditorValue();
+      const code = getEditorValue() || '';
 
       window.electron.ipcRenderer.sendMessage('submit-code', {
         data: {

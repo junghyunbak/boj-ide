@@ -19,7 +19,7 @@ export function SetDefaultCodeButton() {
       saveFile();
 
       const result = await window.electron.ipcRenderer.invoke('save-default-code', {
-        data: { language: editorLanguage, code: getEditorValue() },
+        data: { language: editorLanguage, code: getEditorValue() || '' },
       });
 
       if (result && result.data.isSaved) {
