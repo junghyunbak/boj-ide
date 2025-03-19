@@ -3,27 +3,23 @@ import { useCallback } from 'react';
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-import { useModifyAlertModal } from '../useModifyAlertModal';
-
 export function useModifyEditor() {
-  const [setEditorMode] = useStore(useShallow((s) => [s.setMode]));
-  const [setEditorFontSize] = useStore(useShallow((s) => [s.setFontSize]));
-  const [setEditorIndentSpace] = useStore(useShallow((s) => [s.setIndentSpace]));
-  const [setEditorLanguage] = useStore(useShallow((s) => [s.setLang]));
-  const [setProblemToStale] = useStore(useShallow((s) => [s.setProblemToStale]));
-
   const [updateEditorState] = useStore(useShallow((s) => [s.updateEditorState]));
   const [updateEditorView] = useStore(useShallow((s) => [s.updateEditorView]));
 
-  const { fireAlertModal } = useModifyAlertModal();
+  const [setEditorLanguage] = useStore(useShallow((s) => [s.setLang]));
 
-  const updateProblemToStale = useCallback(
-    (problem: Problem, editorLanguage: Language, isStale: boolean) => {
-      const key = `${problem?.number}|${editorLanguage}`;
+  const [setEditorMode] = useStore(useShallow((s) => [s.setMode]));
+  const [setEditorFontSize] = useStore(useShallow((s) => [s.setFontSize]));
+  const [setEditorIndentSpace] = useStore(useShallow((s) => [s.setIndentSpace]));
 
-      setProblemToStale(key, isStale);
+  const [setProblemToStale] = useStore(useShallow((s) => [s.setProblemToStale]));
+
+  const updateEditorLanguage = useCallback(
+    (language: Language) => {
+      setEditorLanguage(language);
     },
-    [setProblemToStale],
+    [setEditorLanguage],
   );
 
   const updateEditorMode = useCallback(
@@ -47,11 +43,13 @@ export function useModifyEditor() {
     [setEditorIndentSpace],
   );
 
-  const updateEditorLanguage = useCallback(
-    (language: Language) => {
-      setEditorLanguage(language);
+  const updateProblemToStale = useCallback(
+    (problem: Problem, editorLanguage: Language, isStale: boolean) => {
+      const key = `${problem?.number}|${editorLanguage}`;
+
+      setProblemToStale(key, isStale);
     },
-    [setEditorLanguage],
+    [setProblemToStale],
   );
 
   const getEditorValue = useCallback((problem: Problem, editorLanguage: Language) => {
@@ -65,13 +63,6 @@ export function useModifyEditor() {
 
     useStore.getState().editorValue.set(key, code);
   }, []);
-
-  const syncEditorCode = useCallback(
-    (problem: Problem, editorLanguage: Language, code: string) => {
-      setEditorValue(problem, editorLanguage, code);
-    },
-    [setEditorValue],
-  );
 
   const saveCode = useCallback(
     async (problem: Problem, editorLanguage: Language) => {
@@ -87,18 +78,19 @@ export function useModifyEditor() {
   );
 
   return {
-    updateProblemToStale,
-    updateEditorFontSize,
-    updateEditorIndentSpace,
-    updateEditorLanguage,
-    updateEditorMode,
     updateEditorState,
     updateEditorView,
 
+    updateEditorLanguage,
+
+    updateEditorFontSize,
+    updateEditorIndentSpace,
+    updateEditorMode,
+
+    updateProblemToStale,
+
     getEditorValue,
     setEditorValue,
-
-    syncEditorCode,
 
     saveCode,
   };

@@ -13,7 +13,7 @@ export function SubmitButton() {
   const { editorLanguage } = useEditor();
 
   const { fireConfirmModal } = useModifyConfirmModal();
-  const { getEditorValue } = useModifyEditor();
+  const { getEditorValue, saveCode, updateProblemToStale } = useModifyEditor();
 
   const handleSubmitButtonClick = useCallback(() => {
     if (!problem) {
@@ -21,6 +21,9 @@ export function SubmitButton() {
     }
 
     fireConfirmModal('제출하시겠습니까?', () => {
+      saveCode(problem, editorLanguage);
+      updateProblemToStale(problem, editorLanguage, false);
+
       window.electron.ipcRenderer.sendMessage('submit-code', {
         data: {
           code: getEditorValue(problem, editorLanguage) || '',
@@ -29,7 +32,7 @@ export function SubmitButton() {
         },
       });
     });
-  }, [fireConfirmModal, getEditorValue, problem, editorLanguage]);
+  }, [fireConfirmModal, getEditorValue, saveCode, updateProblemToStale, problem, editorLanguage]);
 
   return (
     <>
