@@ -12,6 +12,8 @@ export function useModifyEditor() {
   const [setEditorIndentSpace] = useStore(useShallow((s) => [s.setIndentSpace]));
   const [setEditorLanguage] = useStore(useShallow((s) => [s.setLang]));
 
+  const [setAiCode] = useStore(useShallow((s) => [s.setAiCode]));
+
   const [updateEditorState] = useStore(useShallow((s) => [s.updateEditorState]));
   const [updateEditorView] = useStore(useShallow((s) => [s.updateEditorView]));
 
@@ -85,9 +87,9 @@ export function useModifyEditor() {
   );
 
   // 'AI 표준 입력 생성' 기능 사용으로 인한 코드 초기화에 사용
-  const updateEditorCode = useCallback(
+  const updateAiCode = useCallback(
     (code: string) => {
-      setEditorCode(code);
+      setAiCode(code);
       setEditorValue(code);
 
       stalingEditorCode();
@@ -156,7 +158,7 @@ export function useModifyEditor() {
     setEditorValue,
 
     syncEditorCode,
-    updateEditorCode,
+    updateAiCode,
     initialEditorCode,
 
     saveFile,

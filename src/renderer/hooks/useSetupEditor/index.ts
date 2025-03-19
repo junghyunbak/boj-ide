@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { EditorState, StateEffect } from '@codemirror/state';
+import { Annotation, EditorState, StateEffect } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 
 import { useModifyEditor } from '../useModifyEditor';
@@ -9,10 +9,12 @@ import { useEditor } from '../useEditor';
 import { useCmExtensions } from './useCmExtensions';
 import { useSetting } from '../useSetting';
 
+const External = Annotation.define<boolean>()
+
 export function useSetupEditor() {
   const { problem } = useProblem();
   const { isSetting } = useSetting();
-  const { editorRef, editorCode, editorState, editorLanguage, editorView } = useEditor();
+  const { editorRef, editorCode, editorState, editorLanguage, editorView, aiCode } = useEditor();
   const { extensions } = useCmExtensions();
 
   const { saveFile, updateEditorState, updateEditorView, initialEditorCode } = useModifyEditor();
@@ -33,7 +35,7 @@ export function useSetupEditor() {
      * editorCode가 변경되는 경우
      *
      * - 문제가 변경되어 파일을 읽어들이는 경우
-     * - AI 표준입력 코드 생성으로 인해 코드가 초기화되는 경우
+     * - AI 표준입력 코드 생성으로 인해 코드가 초기화되는 경우 // TODO: AI 생성으로 인한 코드 변경시에는 상태 재생성을 한번만 하도록 최적화해야함.
      *
      * 두 경우에 기존 히스토리가 제거되어야 하므로 의존성 배열에 추가
      */
@@ -74,6 +76,23 @@ export function useSetupEditor() {
       newEditorView.destroy();
     };
   }, [editorRef, editorState, updateEditorView]);
+
+  useEffect(() => {
+    if(!editorView) {
+      return;
+    }
+
+    const currentValue = editorView.state.doc.toString();
+
+    if(currentValue === aiCode) {
+      return;
+    }
+
+    editorView.dispatch({
+      changes: { from:0, to: currentValue.length, insert: aiCode },
+      annotations: [External.of(true)],
+    });
+  }, [aiCode, editorView]);
 
   /**
    * 문제, 언어 변경 시

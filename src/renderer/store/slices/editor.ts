@@ -9,6 +9,9 @@ type EditorSlice = {
   code: string;
   setCode: (code: string) => void;
 
+  aiCode: string;
+  setAiCode: (code: string) => void;
+
   isCodeStale: boolean;
   setIsCodeStale: (isCodeStale: boolean) => void;
 
@@ -63,6 +66,11 @@ export const createEditorSlice: StateCreator<EditorSlice> = (set, get): EditorSl
   code: '',
   setCode(code) {
     set(() => ({ code }));
+  },
+
+  aiCode: '',
+  setAiCode(code) {
+    set(() => ({ aiCode: code }));
   },
 
   mode: 'normal',

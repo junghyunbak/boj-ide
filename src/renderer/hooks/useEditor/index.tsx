@@ -12,6 +12,7 @@ export function useEditor() {
   const [editorState] = useStore(useShallow((s) => [s.editorState]));
   const [editorView] = useStore(useShallow((s) => [s.editorView]));
   const [isCodeStale] = useStore(useShallow((s) => [s.isCodeStale]));
+  const [aiCode] = useStore(useShallow((s) => [s.aiCode]));
 
   const EDITOR_FONT_SIZES = useRef<number[]>([8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]).current;
   const EDITOR_MODES = useRef<EditorMode[]>(['normal', 'vim']).current;
@@ -26,6 +27,7 @@ export function useEditor() {
     editorRef,
     editorState,
     editorView,
+    aiCode,
     isCodeStale,
     EDITOR_FONT_SIZES,
     EDITOR_MODES,

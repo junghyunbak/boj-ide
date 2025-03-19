@@ -26,7 +26,7 @@ export function AICodeCreateButton() {
 
   const { fireAlertModal } = useModifyAlertModal();
   const { fireConfirmModal } = useModifyConfirmModal();
-  const { updateEditorCode } = useModifyEditor();
+  const { updateAiCode } = useModifyEditor();
 
   const { complete, completion, isLoading } = useFetchAICode({
     onError() {
@@ -38,8 +38,8 @@ export function AICodeCreateButton() {
    * 결과가 변경될 때 마다 에디터 갱신
    */
   useEffect(() => {
-    updateEditorCode(completion);
-  }, [completion, updateEditorCode]);
+    updateAiCode(completion);
+  }, [completion, updateAiCode]);
 
   const handleAICodeCreateButtonClick = useCallback(() => {
     fireConfirmModal(AI_EXECUTE_QUESTION_MESSAGE, async () => {
