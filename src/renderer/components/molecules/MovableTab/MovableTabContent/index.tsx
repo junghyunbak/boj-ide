@@ -41,10 +41,6 @@ function MovableTabContentImpl({ children }: React.PropsWithChildren) {
           : css`
               background-color: ${theme.colors.tabBg};
             `}
-
-        &:hover * {
-          opacity: 1;
-        }
       `}
     >
       {Icon}

@@ -43,6 +43,7 @@ function MovableTabImpl({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const isClicked = useRef(false);
 
+  const [isHover, setIsHover] = useState(false);
   const [isAfterImageShow, setIsAfterImageShow] = useState(false);
 
   const { updateIsResizerDrag, updateIsTabDrag, updateDestTabIndex } = useModifyDrag();
@@ -145,6 +146,14 @@ function MovableTabImpl({
     }
   }, [onClick]);
 
+  const handleMouseEnter = useCallback(() => {
+    setIsHover(true);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setIsHover(false);
+  }, []);
+
   const TopBorder = getElementFromChildren(children, TopBorderType);
   const BottomBorder = getElementFromChildren(children, BottomBorderType);
   const LeftBorder = getElementFromChildren(children, LeftBorderType);
@@ -156,8 +165,14 @@ function MovableTabImpl({
   const RightLine = getElementFromChildren(children, RightLineType);
 
   return (
-    <MovableTabContext.Provider value={{ isSelect, tabIndex, ghost }}>
-      <TabLayout ref={containerRef} onClick={handleTabClick} polyfill={polyfill}>
+    <MovableTabContext.Provider value={{ isSelect, tabIndex, ghost, isHover }}>
+      <TabLayout
+        ref={containerRef}
+        onClick={handleTabClick}
+        polyfill={polyfill}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         {TopBorder}
         {RightBorder}
         {BottomBorder}

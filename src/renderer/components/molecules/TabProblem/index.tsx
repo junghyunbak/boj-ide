@@ -51,7 +51,10 @@ export function TabProblem({ tab, index }: TabProblemProps) {
         <MovableTab.MovableTabContent.MovableTabContentDetail>
           {`${tab.number}번: ${tab.name}`}
         </MovableTab.MovableTabContent.MovableTabContentDetail>
-        <MovableTab.MovableTabContent.MovableTabContentCloseButton onClick={handleTabCloseButtonClick} />
+        <MovableTab.MovableTabContent.MovableTabContentCloseButton
+          onClick={handleTabCloseButtonClick}
+          problemNumber={tab.number}
+        />
       </MovableTab.MovableTabContent>
 
       <MovableTab.MovableTabRightLine />
