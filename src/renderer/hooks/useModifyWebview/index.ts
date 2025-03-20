@@ -89,8 +89,6 @@ export function useModifyWebview() {
       updateWebviewUrl(url);
       setProblem(problemInfo);
 
-      console.log('테스트트ㅡ으으');
-
       webview.loadURL(url).catch(console.error);
 
       return true;
