@@ -15,7 +15,8 @@ export function useSetupEditor() {
   const { editorRef, editorState, editorLanguage, editorView } = useEditor();
   const { extensions } = useCmExtensions();
 
-  const { updateEditorState, updateEditorView, getEditorValue, updateProblemToStale } = useModifyEditor();
+  const { updateEditorState, updateEditorView, getEditorValue, updateProblemToStale, setEditorValue } =
+    useModifyEditor();
 
   const createEditorState = useCallback(
     (initialCode: string) => {
@@ -97,14 +98,26 @@ export function useSetupEditor() {
       // TEST: 작성중이던 코드가 존재하면 불러온 코드와 다를 경우에만 코드를 stale한 상태로 변경한다.
       // TEST: 작성중이던 코드가 존재하지 않으면 불러온 데이터를 사용한다.
       // TEST: 작성중이던 코드가 존재하지 않으면 fresh한 상태로 업데이트 한다.
+      // TEST: 불러온 데이터로 문제 번호/언어 별 코드를 변경시켜야 한다.
 
-      const isCodeExist = typeof latestCode === 'string';
-
-      updateEditorState(createEditorState(isCodeExist ? latestCode : code));
-
-      updateProblemToStale(problem, editorLanguage, isCodeExist && latestCode !== code);
+      if (typeof latestCode === 'string') {
+        updateEditorState(createEditorState(latestCode));
+        updateProblemToStale(problem, editorLanguage, true);
+      } else {
+        updateEditorState(createEditorState(code));
+        updateProblemToStale(problem, editorLanguage, false);
+        setEditorValue(problem, editorLanguage, code);
+      }
     })();
-  }, [problem, editorLanguage, getEditorValue, updateProblemToStale, createEditorState, updateEditorState]);
+  }, [
+    problem,
+    editorLanguage,
+    getEditorValue,
+    updateProblemToStale,
+    createEditorState,
+    updateEditorState,
+    setEditorValue,
+  ]);
 
   /**
    * 설정 창이 닫히면 자등으로 뷰에 포커스
