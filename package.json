@@ -36,25 +36,30 @@
   ],
   "main": "./.erb/dll/main.js",
   "scripts": {
+    "⬇️⬇️⬇️⬇️⬇️ build ⬇️⬇️⬇️⬇️⬇️": "▼▼▼▼▼ build ▼▼▼▼▼",
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
     "build:dll": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.ts",
     "build:main": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.main.prod.ts",
     "build:renderer": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.prod.ts",
-    "postinstall": "ts-node .erb/scripts/check-native-dep.js && electron-builder install-app-deps && npm run build:dll",
+    "rebuild": "electron-rebuild --parallel --types prod,dev,optional --module-dir release/app",
+    "⬇️⬇️⬇️⬇️⬇️ lint ⬇️⬇️⬇️⬇️⬇️": "▼▼▼▼▼ lint ▼▼▼▼▼",
     "lint": "cross-env NODE_ENV=development eslint ./src --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "cross-env NODE_ENV=development eslint ./src --ext .js,.jsx,.ts,.tsx --fix",
+    "⬇️⬇️⬇️⬇️⬇️ package ⬇️⬇️⬇️⬇️⬇️": "▼▼▼▼▼ package ▼▼▼▼▼",
     "package": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --publish never && npm run build:dll",
     "package:mac": "/bin/bash ./package-mac-signed.sh",
-    "package:windows": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --win --publish never && npm run build:dll",
-    "rebuild": "electron-rebuild --parallel --types prod,dev,optional --module-dir release/app",
+    "⬇️⬇️⬇️⬇️⬇️ dev ⬇️⬇️⬇️⬇️⬇️": "▼▼▼▼▼ dev ▼▼▼▼▼",
+    "postinstall": "ts-node .erb/scripts/check-native-dep.js && electron-builder install-app-deps && npm run build:dll",
     "prestart": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.main.dev.ts",
     "start": "ts-node ./.erb/scripts/check-port-in-use.js && npm run prestart && npm run start:renderer",
     "start:main": "concurrently -k \"cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --watch --config ./.erb/configs/webpack.config.main.dev.ts\" \"electronmon .\"",
     "start:preload": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.preload.dev.ts",
     "start:renderer": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack serve --config ./.erb/configs/webpack.config.renderer.dev.ts",
+    "⬇️⬇️⬇️⬇️⬇️ test ⬇️⬇️⬇️⬇️⬇️": "▼▼▼▼▼ test ▼▼▼▼▼",
     "test": "jest --verbose --watchAll",
     "test:main": "jest --verbose --watchAll ./src/main",
-    "test:renderer": "jest --verbose --watchAll ./src/renderer"
+    "test:renderer": "jest --verbose --watchAll ./src/renderer",
+    "test:renderer:integration": "jest --verbose --watchAll ./src/__tests__/integration"
   },
   "browserslist": [
     "extends browserslist-config-erb"
@@ -96,6 +101,10 @@
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/.erb/mocks/fileMock.js",
       "\\.(css|less|sass|scss)$": "identity-obj-proxy",
+      "\\.svg": "<rootDir>/.erb/mocks/svg.js",
+      "react-markdown": "<rootDir>/.erb/mocks/emptyMock.js",
+      "remark-gfm": "<rootDir>/src/renderer/mock/emptyMock.ts",
+      "rehype-raw": "<rootDir>/src/renderer/mock/emptyMock.ts",
       "^@/(.*)": "<rootDir>/src/$1"
     },
     "setupFiles": [
