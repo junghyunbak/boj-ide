@@ -14,8 +14,6 @@ export function useEditor() {
 
   const [editorRef] = useStore(useShallow((s) => [s.editorRef]));
 
-  const [problemToStale] = useStore(useShallow((s) => [s.problemToStale]));
-
   const EDITOR_FONT_SIZES = useRef<number[]>([8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]).current;
   const EDITOR_MODES = useRef<EditorMode[]>(['normal', 'vim']).current;
   const EDITOR_INDENT_SPACES = useRef<IndentSpace[]>([2, 4]).current;
@@ -28,7 +26,6 @@ export function useEditor() {
     editorRef,
     editorState,
     editorView,
-    problemToStale,
     EDITOR_FONT_SIZES,
     EDITOR_MODES,
     EDITOR_INDENT_SPACES,

@@ -8,6 +8,7 @@ import { useProblem } from '../useProblem';
 import { useEditor } from '../useEditor';
 import { useCmExtensions } from './useCmExtensions';
 import { useSetting } from '../useSetting';
+import { useModifyStale } from '../useModifyStale';
 
 export function useSetupEditor() {
   const { problem } = useProblem();
@@ -15,8 +16,8 @@ export function useSetupEditor() {
   const { editorRef, editorState, editorLanguage, editorView } = useEditor();
   const { extensions } = useCmExtensions();
 
-  const { updateEditorState, updateEditorView, getEditorValue, updateProblemToStale, setEditorValue } =
-    useModifyEditor();
+  const { updateEditorState, updateEditorView, getEditorValue, setEditorValue } = useModifyEditor();
+  const { updateProblemToStale } = useModifyStale();
 
   const createEditorState = useCallback(
     (initialCode: string) => {

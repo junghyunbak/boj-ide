@@ -13,8 +13,6 @@ export function useModifyEditor() {
   const [setEditorFontSize] = useStore(useShallow((s) => [s.setFontSize]));
   const [setEditorIndentSpace] = useStore(useShallow((s) => [s.setIndentSpace]));
 
-  const [setProblemToStale] = useStore(useShallow((s) => [s.setProblemToStale]));
-
   const updateEditorLanguage = useCallback(
     (language: Language) => {
       setEditorLanguage(language);
@@ -41,15 +39,6 @@ export function useModifyEditor() {
       setEditorIndentSpace(indentSpace);
     },
     [setEditorIndentSpace],
-  );
-
-  const updateProblemToStale = useCallback(
-    (problem: Problem, editorLanguage: Language, isStale: boolean) => {
-      const key = `${problem?.number}|${editorLanguage}`;
-
-      setProblemToStale(key, isStale);
-    },
-    [setProblemToStale],
   );
 
   const getEditorValue = useCallback((problem: Problem, editorLanguage: Language) => {
@@ -86,8 +75,6 @@ export function useModifyEditor() {
     updateEditorFontSize,
     updateEditorIndentSpace,
     updateEditorMode,
-
-    updateProblemToStale,
 
     getEditorValue,
     setEditorValue,

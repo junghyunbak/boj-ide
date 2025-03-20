@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
 
-import { useModifyEditor, useModifyConfirmModal, useProblem, useEditor } from '@/renderer/hooks';
+import { useModifyEditor, useModifyConfirmModal, useProblem, useEditor, useModifyStale } from '@/renderer/hooks';
 
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 
@@ -13,7 +13,8 @@ export function SubmitButton() {
   const { editorLanguage } = useEditor();
 
   const { fireConfirmModal } = useModifyConfirmModal();
-  const { getEditorValue, saveCode, updateProblemToStale } = useModifyEditor();
+  const { getEditorValue, saveCode } = useModifyEditor();
+  const { updateProblemToStale } = useModifyStale();
 
   const handleSubmitButtonClick = useCallback(() => {
     if (!problem) {

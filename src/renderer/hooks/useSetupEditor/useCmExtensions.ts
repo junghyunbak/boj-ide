@@ -37,13 +37,15 @@ import { createTheme } from '@uiw/codemirror-themes';
 import { useModifyEditor } from '../useModifyEditor';
 import { useEditor } from '../useEditor';
 import { useProblem } from '../useProblem';
+import { useModifyStale } from '../useModifyStale';
 
 export function useCmExtensions() {
   const { problem } = useProblem();
   const { editorMode, editorFontSize, editorIndentSpace, editorLanguage } = useEditor();
   const emotionTheme = useTheme();
 
-  const { saveCode, setEditorValue, updateProblemToStale } = useModifyEditor();
+  const { saveCode, setEditorValue } = useModifyEditor();
+  const { updateProblemToStale } = useModifyStale();
 
   const indentString = useMemo(() => ' '.repeat(editorIndentSpace), [editorIndentSpace]);
 

@@ -15,6 +15,7 @@ import { createHistorySlice } from './slices/history';
 import { createThemeSlice } from './slices/theme';
 import { createVimSlice } from './slices/vim';
 import { createDragSlice } from './slices/drag';
+import { createStaleSlice } from './slices/stale';
 
 import { createPaintSlice } from './slices/paint';
 
@@ -29,11 +30,13 @@ export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createTourSlice> &
   ReturnType<typeof createHistorySlice> &
   ReturnType<typeof createDragSlice> &
-  ReturnType<typeof createVimSlice>;
+  ReturnType<typeof createVimSlice> &
+  ReturnType<typeof createStaleSlice>;
 
 export const useStore = create<StoreState>()(
   persist(
     (...a) => ({
+      ...createStaleSlice(...a),
       ...createBojViewSlice(...a),
       ...createEditorSlice(...a),
       ...createJudgeSlice(...a),

@@ -16,9 +16,6 @@ type EditorSlice = {
   indentSpace: IndentSpace;
   setIndentSpace: (count: IndentSpace) => void;
 
-  problemToStale: Map<string, boolean>;
-  setProblemToStale: (key: string, value: boolean) => void;
-
   /**
    * editor 값
    */
@@ -47,19 +44,6 @@ type EditorSlice = {
 
 export const createEditorSlice: StateCreator<EditorSlice> = (set, get): EditorSlice => ({
   editorValue: new Map(),
-
-  problemToStale: new Map(),
-  setProblemToStale(key, value) {
-    set((s) => {
-      const nextProblemToStale = new Map(s.problemToStale.entries());
-
-      nextProblemToStale.set(key, value);
-
-      return {
-        problemToStale: nextProblemToStale,
-      };
-    });
-  },
 
   fontSize: 14,
   setFontSize(fontSize) {

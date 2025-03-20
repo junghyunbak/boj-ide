@@ -5,7 +5,7 @@ import { placeholderLogo } from '@/renderer/assets/base64Images';
 import { XButton } from '@/renderer/components/atoms/buttons/XButton';
 import { StaleBall } from '@/renderer/components/atoms/StaleBall';
 
-import { useFetchProblem, useModifyWebview, useModifyHistories, useEditor } from '@/renderer/hooks';
+import { useFetchProblem, useModifyWebview, useModifyHistories, useEditor, useStale } from '@/renderer/hooks';
 
 import {
   ProblemHistoryItem,
@@ -24,7 +24,8 @@ export const ProblemHistoriItem = memo(({ problem }: ProblemHistoriItemProps) =>
   const [isHover, setIsHover] = useState(false);
 
   const { tierBase64, title } = useFetchProblem(problem.number);
-  const { editorLanguage, problemToStale } = useEditor();
+  const { problemToStale } = useStale();
+  const { editorLanguage } = useEditor();
 
   const { gotoProblem } = useModifyWebview();
   const { closeHistoryModal, removeHistoryWithProblemNumber } = useModifyHistories();

@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import { useEditor, useProblem, useVim } from '@/renderer/hooks';
+import { useEditor, useProblem, useStale, useVim } from '@/renderer/hooks';
 
 import { languageToExt } from '@/renderer/utils';
 
@@ -10,7 +10,8 @@ import { languageToExt } from '@/renderer/utils';
  * 저장됨 상태는 항상 아래에 표시되도록 수정
  */
 export function VimModeText() {
-  const { editorMode, editorLanguage, problemToStale } = useEditor();
+  const { problemToStale } = useStale();
+  const { editorMode, editorLanguage } = useEditor();
   const { problem } = useProblem();
   const { vimMode } = useVim();
 

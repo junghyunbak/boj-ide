@@ -1,6 +1,13 @@
 import { useCallback } from 'react';
 
-import { useModifyAlertModal, useModifyEditor, useProblem, useModifyConfirmModal, useEditor } from '@/renderer/hooks';
+import {
+  useModifyAlertModal,
+  useModifyEditor,
+  useProblem,
+  useModifyConfirmModal,
+  useEditor,
+  useModifyStale,
+} from '@/renderer/hooks';
 
 import { languageToExt } from '@/renderer/utils';
 
@@ -10,7 +17,8 @@ export function SetDefaultCodeButton() {
   const { problem } = useProblem();
   const { editorLanguage } = useEditor();
 
-  const { getEditorValue, saveCode, updateProblemToStale } = useModifyEditor();
+  const { getEditorValue, saveCode } = useModifyEditor();
+  const { updateProblemToStale } = useModifyStale();
   const { fireAlertModal } = useModifyAlertModal();
   const { fireConfirmModal } = useModifyConfirmModal();
 
