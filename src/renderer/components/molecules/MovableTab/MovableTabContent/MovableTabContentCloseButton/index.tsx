@@ -22,8 +22,8 @@ export function MovableTabContentCloseButton({
 
   const [isCloseButtonHover, setIsCloseButtonHover] = useState(false);
 
-  const { problemToStale } = useStale();
   const { editorLanguage } = useEditor();
+  const { isStale } = useStale(problem, editorLanguage);
 
   const handleMouseEnter = useCallback(() => {
     setIsCloseButtonHover(true);
@@ -33,12 +33,7 @@ export function MovableTabContentCloseButton({
     setIsCloseButtonHover(false);
   }, []);
 
-  const key = `${problem?.number}|${editorLanguage}`;
-
-  const isProblem = problem !== null;
-  const isStale = problemToStale.get(key);
-
-  const isStaleBallShow = isProblem && isStale;
+  const isStaleBallShow = problem && isStale;
 
   const handleCloseButtonClick = useCallback<React.MouseEventHandler<HTMLButtonElement>>(
     (e) => {

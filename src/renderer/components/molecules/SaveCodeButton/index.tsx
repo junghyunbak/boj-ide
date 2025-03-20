@@ -6,7 +6,7 @@ import { useCallback } from 'react';
 export function SaveCodeButton() {
   const { problem } = useProblem();
   const { editorLanguage } = useEditor();
-  const { problemToStale } = useStale();
+  const { isStale } = useStale(problem, editorLanguage);
 
   const { saveCode } = useModifyEditor();
   const { updateProblemToStale } = useModifyStale();
@@ -16,10 +16,8 @@ export function SaveCodeButton() {
     updateProblemToStale(problem, editorLanguage, false);
   }, [saveCode, updateProblemToStale, problem, editorLanguage]);
 
-  const isCodeStale = problemToStale.get(`${problem?.number}|${editorLanguage}`);
-
   return (
-    <ActionButton onClick={handleSaveCodeButtonClick} disabled={isCodeStale === undefined ? true : !isCodeStale}>
+    <ActionButton onClick={handleSaveCodeButtonClick} disabled={isStale === undefined ? true : !isStale}>
       저장
     </ActionButton>
   );

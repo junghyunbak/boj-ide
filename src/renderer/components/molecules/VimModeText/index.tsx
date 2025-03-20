@@ -10,16 +10,14 @@ import { languageToExt } from '@/renderer/utils';
  * 저장됨 상태는 항상 아래에 표시되도록 수정
  */
 export function VimModeText() {
-  const { problemToStale } = useStale();
-  const { editorMode, editorLanguage } = useEditor();
   const { problem } = useProblem();
+  const { editorMode, editorLanguage } = useEditor();
   const { vimMode } = useVim();
+  const { isStale } = useStale(problem, editorLanguage);
 
   if (!problem || !vimMode || editorMode === 'normal') {
     return null;
   }
-
-  const isCodeStale = problemToStale.get(`${problem.number}|${editorLanguage}}`);
 
   return (
     <div
@@ -36,9 +34,7 @@ export function VimModeText() {
           font-size: 0.875rem;
         `}
       >
-        {isCodeStale
-          ? `-- ${vimMode.toUpperCase()} --`
-          : `"${problem.number}.${languageToExt(editorLanguage)}" written`}
+        {isStale ? `-- ${vimMode.toUpperCase()} --` : `"${problem.number}.${languageToExt(editorLanguage)}" written`}
       </p>
     </div>
   );

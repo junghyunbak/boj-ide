@@ -24,8 +24,8 @@ export const ProblemHistoriItem = memo(({ problem }: ProblemHistoriItemProps) =>
   const [isHover, setIsHover] = useState(false);
 
   const { tierBase64, title } = useFetchProblem(problem.number);
-  const { problemToStale } = useStale();
   const { editorLanguage } = useEditor();
+  const { isStale } = useStale(problem, editorLanguage);
 
   const { gotoProblem } = useModifyWebview();
   const { closeHistoryModal, removeHistoryWithProblemNumber } = useModifyHistories();
@@ -52,14 +52,12 @@ export const ProblemHistoriItem = memo(({ problem }: ProblemHistoriItemProps) =>
     setIsHover(false);
   }, []);
 
-  const isCodeStale = problemToStale.get(`${problem.number}|${editorLanguage}`);
-
   const Content = (() => {
     if (isHover) {
       return <XButton onClick={handleDeleteButtonClick} />;
     }
 
-    if (isCodeStale) {
+    if (isStale) {
       return <StaleBall />;
     }
 
