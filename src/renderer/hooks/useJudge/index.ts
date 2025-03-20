@@ -3,6 +3,7 @@ import { useShallow } from 'zustand/shallow';
 
 export function useJudge() {
   const [judgeResults] = useStore(useShallow((s) => [s.judgeResult]));
+  const [judgeId] = useStore(useShallow((s) => [s.judgeId]));
 
   const isJudgingEnd = judgeResults.length !== 0 && judgeResults.every((judgeResult) => judgeResult);
   const isJudging = judgeResults.length !== 0 && !isJudgingEnd;
@@ -16,13 +17,14 @@ export function useJudge() {
   const isCorrect = totalCount === correctCount;
 
   return {
+    judgeResults,
+    judgeId,
+
     isJudging,
     isJudgingEnd,
     isCorrect,
 
     totalCount,
     correctCount,
-
-    judgeResults,
   };
 }

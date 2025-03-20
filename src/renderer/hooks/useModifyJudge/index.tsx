@@ -13,47 +13,32 @@ export function useModifyJudge() {
 
   const { getEditorValue } = useModifyEditor();
 
-  const startJudge = useCallback(() => {
-    const { problem, lang: language, customTestCase: customTestcases, judgeId } = useStore.getState();
+  const startJudge = useCallback(
+    (problem: Problem, editorLanguage: Language, testcases: TC[], judgeId: string) => {
+      if (!problem) {
+        return;
+      }
 
-    if (!problem) {
-      return;
-    }
+      const inputs = testcases.map((tc) => tc.input);
+      const outputs = testcases.map((tc) => tc.output);
 
-    const problemTC = problem.testCase;
-    const customTC = (customTestcases[problem.number] || []).reduce<{ inputs: string[]; outputs: string[] }>(
-      (prev, cur) => {
-        prev.inputs.push(cur.input);
-        prev.outputs.push(cur.output);
+      setJudgeResults(() => Array(testcases.length).fill(undefined));
 
-        return prev;
-      },
-      {
-        inputs: [],
-        outputs: [],
-      },
-    );
-
-    const inputs: string[] = [...problemTC.inputs, ...customTC.inputs];
-    const outputs: string[] = [...problemTC.outputs, ...customTC.outputs];
-
-    const n = Math.min(inputs.length, outputs.length);
-
-    setJudgeResults(() => Array(n).fill(undefined));
-
-    window.electron.ipcRenderer.sendMessage('judge-start', {
-      data: {
-        code: getEditorValue(problem, language) || '',
-        language,
-        number: problem.number,
-        judgeId,
-        testCase: {
-          inputs,
-          outputs,
+      window.electron.ipcRenderer.sendMessage('judge-start', {
+        data: {
+          code: getEditorValue(problem, editorLanguage) || '',
+          language: editorLanguage,
+          number: problem.number,
+          judgeId,
+          testCase: {
+            inputs,
+            outputs,
+          },
         },
-      },
-    });
-  }, [getEditorValue, setJudgeResults]);
+      });
+    },
+    [getEditorValue, setJudgeResults],
+  );
 
   const resetJudge = useCallback(() => {
     setJudgeResults(() => []);

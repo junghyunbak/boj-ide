@@ -14,6 +14,7 @@ import { useModifyVim } from '../useModifyVim';
 import { useProblem } from '../useProblem';
 import { useJudge } from '../useJudge';
 import { useModifyJudge } from '../useModifyJudge';
+import { useTestcase } from '../useTestcase';
 
 export function useEventEditor() {
   const curFocusRef = useRef<Element | null>(null);
@@ -21,7 +22,8 @@ export function useEventEditor() {
 
   const { problem } = useProblem();
   const { editorView, editorLanguage } = useEditor();
-  const { isJudging } = useJudge();
+  const { isJudging, judgeId } = useJudge();
+  const { allTestcase } = useTestcase();
 
   const { startJudge } = useModifyJudge();
   const { saveCode, getEditorValue, updateProblemToStale } = useModifyEditor();
@@ -35,10 +37,10 @@ export function useEventEditor() {
       if (!isJudging) {
         saveCode(problem, editorLanguage);
         updateProblemToStale(problem, editorLanguage, false);
-        startJudge();
+        startJudge(problem, editorLanguage, allTestcase, judgeId);
       }
     },
-    [editorLanguage, isJudging, problem, saveCode, startJudge, updateProblemToStale],
+    [allTestcase, editorLanguage, isJudging, judgeId, problem, saveCode, startJudge, updateProblemToStale],
     'judge-request',
   );
 
