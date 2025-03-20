@@ -1,10 +1,9 @@
 import { useEffect } from 'react';
 
-import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
+import { useModifyWebview } from '../useModifyWebview';
 
 export function useSetupWebview() {
-  const [setWebview] = useStore(useShallow((s) => [s.setWebview]));
+  const { updateWebview } = useModifyWebview();
 
   /**
    * webview 상태 초기화
@@ -17,7 +16,7 @@ export function useSetupWebview() {
     }
 
     const handleWebviewDomReady = async () => {
-      setWebview(newWebview);
+      updateWebview(newWebview);
     };
 
     newWebview.addEventListener('dom-ready', handleWebviewDomReady);
@@ -25,5 +24,5 @@ export function useSetupWebview() {
     return function cleanup() {
       newWebview.removeEventListener('dom-ready', handleWebviewDomReady);
     };
-  }, [setWebview]);
+  }, [updateWebview]);
 }

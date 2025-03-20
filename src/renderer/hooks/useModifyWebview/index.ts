@@ -17,6 +17,14 @@ export function useModifyWebview() {
   const [setWebviewIsLoading] = useStore(useShallow((s) => [s.setWebviewIsLoading]));
   const [setProblem] = useStore(useShallow((s) => [s.setProblem]));
   const [setStartUrl] = useStore(useShallow((s) => [s.setStartUrl]));
+  const [setWebview] = useStore(useShallow((s) => [s.setWebview]));
+
+  const updateWebview = useCallback(
+    (webview: Electron.WebviewTag) => {
+      setWebview(webview);
+    },
+    [setWebview],
+  );
 
   const updateStartUrl = useCallback(
     (url: string) => {
@@ -81,6 +89,8 @@ export function useModifyWebview() {
       updateWebviewUrl(url);
       setProblem(problemInfo);
 
+      console.log('테스트트ㅡ으으');
+
       webview.loadURL(url).catch(console.error);
 
       return true;
@@ -138,5 +148,6 @@ export function useModifyWebview() {
     updateStartUrl,
     updateWebviewUrl,
     updateWebviewLoading,
+    updateWebview,
   };
 }
