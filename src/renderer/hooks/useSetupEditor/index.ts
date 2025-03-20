@@ -15,7 +15,7 @@ export function useSetupEditor() {
   const { editorRef, editorState, editorLanguage, editorView } = useEditor();
   const { extensions } = useCmExtensions();
 
-  const { saveCode, updateEditorState, updateEditorView, getEditorValue, updateProblemToStale } = useModifyEditor();
+  const { updateEditorState, updateEditorView, getEditorValue, updateProblemToStale } = useModifyEditor();
 
   const createEditorState = useCallback(
     (initialCode: string) => {
@@ -74,38 +74,37 @@ export function useSetupEditor() {
    * - 새로운 코드 로딩
    */
   useEffect(() => {
+    if (!problem) {
+      return;
+    }
+
     (async () => {
-      if (problem) {
-        const result = await window.electron.ipcRenderer.invoke('load-code', {
-          data: { number: problem.number, language: editorLanguage },
-        });
+      const response = await window.electron.ipcRenderer.invoke('load-code', {
+        data: { number: problem.number, language: editorLanguage },
+      });
 
-        if (result) {
-          const {
-            data: { code },
-          } = result;
-
-          const latestCode = getEditorValue(problem, editorLanguage);
-
-          if (latestCode === undefined || latestCode === null || latestCode === code) {
-            updateEditorState(createEditorState(code));
-            updateProblemToStale(problem, editorLanguage, false);
-            return;
-          }
-
-          updateEditorState(createEditorState(latestCode));
-          updateProblemToStale(problem, editorLanguage, true);
-        }
+      if (!response) {
+        return;
       }
-    })();
 
-    return function cleanup() {
-      /**
-       * 문제 변경 시 파일을 읽어오는 시간이 걸릴 경우, 이전 문제의 코드를 장시간 보여줄 수 있기 때문에
-       * 이를 초기화하는 코드를 작성
-       */
-    };
-  }, [problem, editorLanguage, saveCode, getEditorValue, updateProblemToStale, createEditorState, updateEditorState]);
+      const {
+        data: { code },
+      } = response;
+
+      const latestCode = getEditorValue(problem, editorLanguage);
+
+      // TEST: 작성중이던 코드가 존재하면 이를 사용한다.
+      // TEST: 작성중이던 코드가 존재하면 불러온 코드와 다를 경우에만 코드를 stale한 상태로 변경한다.
+      // TEST: 작성중이던 코드가 존재하지 않으면 불러온 데이터를 사용한다.
+      // TEST: 작성중이던 코드가 존재하지 않으면 fresh한 상태로 업데이트 한다.
+
+      const isCodeExist = typeof latestCode === 'string';
+
+      updateEditorState(createEditorState(isCodeExist ? latestCode : code));
+
+      updateProblemToStale(problem, editorLanguage, isCodeExist && latestCode !== code);
+    })();
+  }, [problem, editorLanguage, getEditorValue, updateProblemToStale, createEditorState, updateEditorState]);
 
   /**
    * 설정 창이 닫히면 자등으로 뷰에 포커스
