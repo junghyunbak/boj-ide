@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { css } from '@emotion/react';
 
 import { XButton } from '@/renderer/components/atoms/buttons/XButton';
+import { StaleBall } from '@/renderer/components/atoms/StaleBall';
 
 import { useEditor } from '@/renderer/hooks';
 
@@ -86,20 +87,5 @@ export function MovableTabContentCloseButton({
     >
       {Content}
     </div>
-  );
-}
-
-function StaleBall() {
-  return (
-    <div
-      css={(theme) => css`
-        width: 8px;
-        aspect-ratio: 1/1;
-        border-radius: 9999px;
-        background-color: ${theme.colors.fg};
-
-        position: absolute;
-      `}
-    />
   );
 }

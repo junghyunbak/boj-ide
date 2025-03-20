@@ -46,5 +46,10 @@ export const ProblemHistoryItemContentParagraph = styled.p`
 `;
 
 export const ProblmHistoryItemCloseButtonBox = styled.div`
-  opacity: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 1rem;
+  aspect-ratio: 1/1;
 `;
