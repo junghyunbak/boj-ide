@@ -102,7 +102,7 @@ export function useSetupEditor() {
 
       if (typeof latestCode === 'string') {
         updateEditorState(createEditorState(latestCode));
-        updateProblemToStale(problem, editorLanguage, true);
+        updateProblemToStale(problem, editorLanguage, latestCode !== code);
       } else {
         updateEditorState(createEditorState(code));
         updateProblemToStale(problem, editorLanguage, false);
