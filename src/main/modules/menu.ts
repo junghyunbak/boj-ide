@@ -57,7 +57,7 @@ export class MenuBuilder {
       label: 'Electron',
       submenu: [
         {
-          label: 'About ElectronReact',
+          label: 'About BOJ IDE',
           selector: 'orderFrontStandardAboutPanel:',
         },
         { type: 'separator' },
