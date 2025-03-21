@@ -17,7 +17,11 @@ export function SaveCodeButton() {
   }, [saveCode, updateProblemToStale, problem, editorLanguage]);
 
   return (
-    <ActionButton onClick={handleSaveCodeButtonClick} disabled={isStale === undefined ? true : !isStale}>
+    <ActionButton
+      onClick={handleSaveCodeButtonClick}
+      disabled={isStale === undefined ? true : !isStale}
+      data-testid="save-code-button"
+    >
       저장
     </ActionButton>
   );

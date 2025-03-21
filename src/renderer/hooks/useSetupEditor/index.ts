@@ -19,6 +19,7 @@ export function useSetupEditor() {
   const { updateEditorState, updateEditorView, getEditorValue, setEditorValue } = useModifyEditor();
   const { updateProblemToStale } = useModifyStale();
 
+  // TODO: Modify 훅으로 이동
   const createEditorState = useCallback(
     (initialCode: string) => {
       const newEditorState = EditorState.create({
@@ -61,6 +62,8 @@ export function useSetupEditor() {
       state: editorState,
       parent: editorRef.current,
     });
+
+    newEditorView.contentDOM.setAttribute('data-testid', 'cm-editor');
 
     updateEditorView(newEditorView);
 

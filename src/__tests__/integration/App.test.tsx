@@ -7,7 +7,7 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 
 const mockProblem = createMockProblem({
-  name: 'A + B',
+  name: '테스트 문제',
   number: '1000',
 });
 
@@ -104,15 +104,38 @@ beforeEach(() => {
 
 describe('App', () => {
   it('문제가 초기화되면 에디터가 활성화 되어야 한다.', async () => {
-    render(<App />);
+    const { container } = render(<App />);
 
-    const tabEl = screen.getByText('1000번: A + B');
+    const $tabEl = screen.getByText('1000번: 테스트 문제');
 
     await act(async () => {
-      await userEvent.click(tabEl);
+      await userEvent.click($tabEl);
     });
 
     expect(screen.getByText('에디터로딩완료')).toBeInTheDocument();
+  });
+
+  it('에디터의 내용을 변경할 경우, 내용이 변경되고 편집됨을 알리는 UI가 렌더링 되어야한다.', async () => {
+    const { container } = render(<App />);
+
+    const $tabEl = screen.getByText('1000번: 테스트 문제');
+
+    await act(async () => {
+      await userEvent.click($tabEl);
+    });
+
+    const $cmEditor = screen.getByTestId('cm-editor');
+
+    await act(async () => {
+      await userEvent.type($cmEditor, '박정현');
+    });
+
+    const $staleBall = screen.getByTestId('stale-ball');
+    const $saveCodeButton = screen.getByTestId<HTMLButtonElement>('save-code-button');
+
+    expect(screen.getByText('박정현에디터로딩완료')).toBeInTheDocument();
+    expect($saveCodeButton.disabled).toBe(false);
+    expect($staleBall).toBeInTheDocument();
   });
 
   // TEST: 수정 후 문제전환
