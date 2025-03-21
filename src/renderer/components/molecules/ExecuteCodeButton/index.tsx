@@ -24,13 +24,13 @@ export function ExecuteCodeButton() {
 
   const { startJudge } = useModifyJudge();
   const { saveCode } = useModifyEditor();
-  const { updateProblemToStale } = useModifyStale();
 
   const handleExecuteButtonClick = useCallback(() => {
-    saveCode(problem, editorLanguage);
-    updateProblemToStale(problem, editorLanguage, false);
-    startJudge(problem, editorLanguage, allTestcase, judgeId);
-  }, [saveCode, updateProblemToStale, startJudge, allTestcase, judgeId, problem, editorLanguage]);
+    (async () => {
+      await saveCode(problem, editorLanguage);
+      startJudge(problem, editorLanguage, allTestcase, judgeId);
+    })();
+  }, [saveCode, startJudge, allTestcase, judgeId, problem, editorLanguage]);
 
   return (
     <>

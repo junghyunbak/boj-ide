@@ -186,7 +186,7 @@ export function useCmExtensions() {
           key: 'Ctrl-s',
           run: () => {
             saveCode(problem, editorLanguage);
-            updateProblemToStale(problem, editorLanguage, false);
+
             return false;
           },
         },
@@ -194,13 +194,13 @@ export function useCmExtensions() {
           key: 'Meta-s',
           run: () => {
             saveCode(problem, editorLanguage);
-            updateProblemToStale(problem, editorLanguage, false);
+
             return false;
           },
         },
       ]),
     ],
-    [editorLanguage, indentString, problem, saveCode, updateProblemToStale],
+    [editorLanguage, indentString, problem, saveCode],
   );
 
   const updateExtension = useMemo<Extension>(

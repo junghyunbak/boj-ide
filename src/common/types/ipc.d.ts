@@ -1,3 +1,6 @@
+/**
+ * 클라이언트 기준
+ */
 type Send = 0;
 type Receive = 1;
 

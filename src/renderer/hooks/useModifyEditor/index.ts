@@ -1,7 +1,12 @@
 import { useCallback } from 'react';
 
+import { languageToExt } from '@/renderer/utils';
+
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
+
+import { useModifyStale } from '../useModifyStale';
+import { useModifyAlertModal } from '../useModifyAlertModal';
 
 export function useModifyEditor() {
   const [updateEditorState] = useStore(useShallow((s) => [s.updateEditorState]));
@@ -12,6 +17,9 @@ export function useModifyEditor() {
   const [setEditorMode] = useStore(useShallow((s) => [s.setMode]));
   const [setEditorFontSize] = useStore(useShallow((s) => [s.setFontSize]));
   const [setEditorIndentSpace] = useStore(useShallow((s) => [s.setIndentSpace]));
+
+  const { updateProblemToStale } = useModifyStale();
+  const { fireAlertModal } = useModifyAlertModal();
 
   const updateEditorLanguage = useCallback(
     (language: Language) => {
@@ -59,11 +67,32 @@ export function useModifyEditor() {
         return;
       }
 
-      await window.electron.ipcRenderer.invoke('save-code', {
+      const result = await window.electron.ipcRenderer.invoke('save-code', {
         data: { number: problem.number, language: editorLanguage, code: getEditorValue(problem, editorLanguage) || '' },
       });
+
+      if (result && result.data.isSaved) {
+        updateProblemToStale(problem, editorLanguage, false);
+      }
     },
-    [getEditorValue],
+    [getEditorValue, updateProblemToStale],
+  );
+
+  const saveDefaultCode = useCallback(
+    async (problem: Problem, editorLanguage: Language) => {
+      if (!problem) {
+        return;
+      }
+
+      const result = await window.electron.ipcRenderer.invoke('save-default-code', {
+        data: { language: editorLanguage, code: getEditorValue(problem, editorLanguage) || '' },
+      });
+
+      if (result && result.data.isSaved) {
+        fireAlertModal('안내', `default.${languageToExt(editorLanguage)} 파일이 성공적으로 업데이트 되었습니다.`);
+      }
+    },
+    [fireAlertModal, getEditorValue],
   );
 
   return {
@@ -80,5 +109,6 @@ export function useModifyEditor() {
     setEditorValue,
 
     saveCode,
+    saveDefaultCode,
   };
 }

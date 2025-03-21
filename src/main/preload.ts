@@ -16,7 +16,7 @@ const electronHandler = {
     },
     on<Channel extends ClientChannels>(
       channel: Channel,
-      listener: (message: ChannelToMessage[Channel][Receive]) => void,
+      listener: (message: ChannelToMessage[Channel][Receive]) => void | Promise<void>,
     ) {
       const subscription = (_event: Electron.IpcRendererEvent, message: ChannelToMessage[Channel][Receive]) =>
         listener(message);

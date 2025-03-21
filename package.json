@@ -102,7 +102,7 @@
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/.erb/mocks/fileMock.js",
       "\\.(css|less|sass|scss)$": "identity-obj-proxy",
       "\\.svg": "<rootDir>/.erb/mocks/svg.js",
-      "react-markdown": "<rootDir>/.erb/mocks/emptyMock.js",
+      "react-markdown": "<rootDir>/.erb/mocks/ReactMarkdownMock.tsx",
       "remark-gfm": "<rootDir>/.erb/mocks/emptyMock.js",
       "rehype-raw": "<rootDir>/.erb/mocks/emptyMock.js",
       "^@/(.*)": "<rootDir>/src/$1"
