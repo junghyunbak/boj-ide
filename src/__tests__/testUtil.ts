@@ -5,12 +5,24 @@ import userEvent from '@testing-library/user-event';
 
 import { useLanguage, useModifyEditor } from '@/renderer/hooks';
 
+/**
+ * element
+ */
 export function isSaveButtonDisabled(): boolean {
   const $saveCodeButton = screen.getByTestId<HTMLButtonElement>('save-code-button');
 
   return $saveCodeButton.disabled;
 }
 
+export function getStaleBall(problem: ProblemInfo) {
+  const $problemStaleBall = screen.queryByTestId(`stale-ball-${problem.number}`);
+
+  return $problemStaleBall;
+}
+
+/**
+ * user event
+ */
 export async function clickProblemTab(problem: ProblemInfo) {
   const $problemTab = screen.getByText(`${problem.number}번: ${problem.name}`);
 
@@ -33,48 +45,6 @@ export async function typeVimWriteCommand() {
   await act(async () => {
     await userEvent.click($cmEditor);
     await userEvent.keyboard('{Shift>}{;}{/Shift}w{Enter}');
-  });
-}
-
-export function getStaleBall(problem: ProblemInfo) {
-  const $problemStaleBall = screen.queryByTestId(`stale-ball-${problem.number}`);
-
-  return $problemStaleBall;
-}
-
-export function clearEditorState() {
-  const { result } = renderHook(() => useModifyEditor());
-
-  act(() => {
-    result.current.updateEditorState(result.current.createEditorState(''));
-  });
-}
-
-export function resetProblemStale(problem: ProblemInfo) {
-  const { result } = renderHook(() => ({ ...useLanguage(), ...useModifyEditor() }));
-
-  act(() => {
-    const { language, syncEditorValue } = result.current;
-
-    syncEditorValue(problem, language);
-  });
-}
-
-export function clearProblemEditorValue(problem: ProblemInfo) {
-  const { result } = renderHook(() => ({ ...useLanguage(), ...useModifyEditor() }));
-
-  act(() => {
-    const { language, updateEditorValue } = result.current;
-
-    updateEditorValue(problem, language, null);
-  });
-}
-
-export function changeVimEditorMode() {
-  const { result } = renderHook(() => useModifyEditor());
-
-  act(() => {
-    result.current.updateEditorMode('vim');
   });
 }
 
@@ -130,6 +100,45 @@ export async function clickExecuteCodeButton() {
   });
 }
 
+/**
+ * state
+ */
+export function clearEditorState() {
+  const { result } = renderHook(() => useModifyEditor());
+
+  act(() => {
+    result.current.updateEditorState(result.current.createEditorState(''));
+  });
+}
+
+export function resetProblemStale(problem: ProblemInfo) {
+  const { result } = renderHook(() => ({ ...useLanguage(), ...useModifyEditor() }));
+
+  act(() => {
+    const { language, syncEditorValue } = result.current;
+
+    syncEditorValue(problem, language);
+  });
+}
+
+export function clearProblemEditorValue(problem: ProblemInfo) {
+  const { result } = renderHook(() => ({ ...useLanguage(), ...useModifyEditor() }));
+
+  act(() => {
+    const { language, updateEditorValue } = result.current;
+
+    updateEditorValue(problem, language, null);
+  });
+}
+
+export function changeVimEditorMode() {
+  const { result } = renderHook(() => useModifyEditor());
+
+  act(() => {
+    result.current.updateEditorMode('vim');
+  });
+}
+
 export async function changeProblemData(problem: ProblemInfo, data: string) {
   const { result } = renderHook(() => ({ ...useModifyEditor(), ...useLanguage() }));
 
@@ -148,4 +157,12 @@ export function deleteEditorValue(problem: ProblemInfo) {
 
     removeEditorValue(problem, language);
   });
+}
+
+export function getEditorCode(problem: ProblemInfo) {
+  const { result } = renderHook(() => ({ ...useLanguage(), ...useModifyEditor() }));
+
+  const { language, getEditorValue } = result.current;
+
+  return getEditorValue(problem, language);
 }

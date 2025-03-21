@@ -22,6 +22,7 @@ import {
   pressKeySWithControl,
   deleteEditorValue,
   typeEditor,
+  getEditorCode,
 } from '../testUtil';
 
 import { problemA, problemAData, problemB, problemBData, webview, clientChannelToListener } from '../mocking';
@@ -128,6 +129,10 @@ describe('App', () => {
     describe('내용 수정 이후', () => {
       beforeEach(async () => {
         await typeEditor('마지막변경내용');
+      });
+
+      it('내용 수정 시, 값이 올바르게 동기화되어야 한다.', () => {
+        expect(getEditorCode(problemA)).toBe(`마지막변경내용${problemAData}`);
       });
 
       it('내용 수정 시, 편집 상태의 UI로 업데이트 되어야 한다.', async () => {
