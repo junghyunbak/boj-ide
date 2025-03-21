@@ -14,11 +14,12 @@ const electronHandler = {
     sendMessage<Channel extends ElectronChannels>(channel: Channel, message: ChannelToMessage[Channel][Send]): void {
       ipcRenderer.send(channel, message);
     },
-    on<Channel extends ClientChannels, ListenerRecevieValue = ChannelToMessage[Channel][Receive]>(
+    on<Channel extends ClientChannels>(
       channel: Channel,
-      listener: (message: ListenerRecevieValue) => void,
+      listener: (message: ChannelToMessage[Channel][Receive]) => void,
     ) {
-      const subscription = (_event: Electron.IpcRendererEvent, message: ListenerRecevieValue) => listener(message);
+      const subscription = (_event: Electron.IpcRendererEvent, message: ChannelToMessage[Channel][Receive]) =>
+        listener(message);
 
       ipcRenderer.on(channel, subscription);
 

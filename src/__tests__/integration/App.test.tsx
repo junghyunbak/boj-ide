@@ -11,7 +11,11 @@ const mockProblem = createMockProblem({
   number: '1000',
 });
 
-beforeEach(() => {
+type ClientChannelToListener = { [channel in ClientChannels]?: (message: ChannelToMessage[channel][Receive]) => void };
+
+const clientChannelToListener: ClientChannelToListener = {};
+
+beforeAll(() => {
   /**
    * get Client Rects 모킹
    */
@@ -67,10 +71,13 @@ beforeEach(() => {
   /**
    * ipc 모듈 모킹
    */
+
   window.electron = {
     ipcRenderer: {
       once(channel, func) {},
       on(channel, listener) {
+        clientChannelToListener[channel] = listener;
+
         return () => {};
       },
       sendMessage(channel, message) {},
@@ -103,41 +110,77 @@ beforeEach(() => {
 });
 
 describe('App', () => {
-  it('문제가 초기화되면 에디터가 활성화 되어야 한다.', async () => {
-    const { container } = render(<App />);
+  describe('문제 초기화 이전', () => {
+    it('웹 뷰를 통해 문제 페이지로 이동하면 에디터가 활성화 되어야 한다.', () => {});
 
-    const $tabEl = screen.getByText('1000번: 테스트 문제');
+    it('탭 클릭을 통해 문제 페이지로 이동하면 에디터가 활성화 되어야 한다.', async () => {
+      render(<App />);
 
-    await act(async () => {
-      await userEvent.click($tabEl);
+      const $tabElement = screen.getByText(`${mockProblem.number}번: ${mockProblem.name}`);
+
+      await act(async () => {
+        await userEvent.click($tabElement);
+      });
+
+      expect(screen.getByText('에디터로딩완료')).toBeInTheDocument();
     });
-
-    expect(screen.getByText('에디터로딩완료')).toBeInTheDocument();
   });
 
-  it('에디터의 내용을 변경할 경우, 내용이 변경되고 편집됨을 알리는 UI가 렌더링 되어야한다.', async () => {
-    const { container } = render(<App />);
+  describe('문제 초기화 이후', () => {
+    beforeEach(async () => {
+      render(<App />);
 
-    const $tabEl = screen.getByText('1000번: 테스트 문제');
+      const $tabElement = screen.getByText(`${mockProblem.number}번: ${mockProblem.name}`);
 
-    await act(async () => {
-      await userEvent.click($tabEl);
+      await act(async () => {
+        await userEvent.click($tabElement);
+      });
     });
 
-    const $cmEditor = screen.getByTestId('cm-editor');
+    describe('내용 수정 이전', () => {
+      it('에디터에 키보드로 값을 입력하면, 올바르게 수정되어야 한다.', async () => {
+        const $cmEditor = screen.getByTestId('cm-editor');
 
-    await act(async () => {
-      await userEvent.type($cmEditor, '박정현');
+        await act(async () => {
+          await userEvent.type($cmEditor, '내용추가');
+        });
+
+        expect(screen.getByText('내용추가에디터로딩완료')).toBeInTheDocument();
+      });
     });
 
-    const $staleBall = screen.getByTestId('stale-ball');
-    const $saveCodeButton = screen.getByTestId<HTMLButtonElement>('save-code-button');
+    describe('내용 수정 이후', () => {
+      beforeEach(async () => {
+        const $cmEditor = screen.getByTestId('cm-editor');
 
-    expect(screen.getByText('박정현에디터로딩완료')).toBeInTheDocument();
-    expect($saveCodeButton.disabled).toBe(false);
-    expect($staleBall).toBeInTheDocument();
+        await act(async () => {
+          await userEvent.type($cmEditor, '내용추가');
+        });
+      });
+
+      it('내용이 수정되었을 경우, 코드가 오래된 상태임을 나타내는 UI가 렌더링 되어야한다.', async () => {
+        const $staleBall = screen.getByTestId('stale-ball');
+        const $saveCodeButton = screen.getByTestId<HTMLButtonElement>('save-code-button');
+
+        expect($saveCodeButton.disabled).toBe(false);
+        expect($staleBall).toBeInTheDocument();
+      });
+
+      it('F5 단축키로 사용으로 인해 코드가 실행되었을 경우, 코드가 최신 상태임을 나타내는 UI가 렌더링 되어야 한다.', async () => {
+        const listener = clientChannelToListener['judge-request'];
+
+        act(() => {
+          if (typeof listener === 'function') {
+            listener(undefined);
+          }
+        });
+
+        const $saveCodeButton = screen.getByTestId<HTMLButtonElement>('save-code-button');
+        const $staleBall = screen.queryByTestId('stale-ball');
+
+        expect($saveCodeButton.disabled).toBe(true);
+        expect($staleBall).not.toBeInTheDocument();
+      });
+    });
   });
-
-  // TEST: 수정 후 문제전환
-  // TEST: 수정 없이 문제전환
 });
