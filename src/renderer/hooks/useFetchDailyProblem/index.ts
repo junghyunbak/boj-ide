@@ -25,8 +25,6 @@ export function useFetchDailyProblem() {
 
         return parseData;
       } catch (e) {
-        console.error(e);
-
         return null;
       }
     },

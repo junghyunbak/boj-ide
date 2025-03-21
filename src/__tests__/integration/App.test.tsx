@@ -4,6 +4,7 @@ import { useModifyTab, useModifyWebview } from '@/renderer/hooks';
 import { createMockProblem } from '@/renderer/mock';
 import { render, screen, renderHook } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import axios from 'axios';
 import '@testing-library/jest-dom';
 
 const mockProblem = createMockProblem({
@@ -15,7 +16,16 @@ type ClientChannelToListener = { [channel in ClientChannels]?: (message: Channel
 
 const clientChannelToListener: ClientChannelToListener = {};
 
+jest.mock('axios');
+
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
 beforeAll(() => {
+  /**
+   * api mocking
+   */
+  mockedAxios.get.mockResolvedValue({ data: {} });
+
   /**
    * get Client Rects 모킹
    */
