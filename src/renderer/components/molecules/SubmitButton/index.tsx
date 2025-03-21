@@ -37,7 +37,12 @@ export function SubmitButton() {
 
   return (
     <>
-      <ActionButton onClick={handleSubmitButtonClick} disabled={!problem} ref={tourRef}>
+      <ActionButton
+        onClick={handleSubmitButtonClick}
+        disabled={!problem}
+        ref={tourRef}
+        data-testid="submit-code-button"
+      >
         제출
       </ActionButton>
 

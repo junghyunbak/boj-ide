@@ -57,7 +57,9 @@ export function ConfirmModal() {
             gap: 0.5rem;
           `}
         >
-          <ActionButton onClick={handleOkButtonClick}>예</ActionButton>
+          <ActionButton onClick={handleOkButtonClick} data-testid="confirm-ok-button">
+            예
+          </ActionButton>
           <ActionButton onClick={handleNoButtonClick} variant="cancel">
             아니오
           </ActionButton>

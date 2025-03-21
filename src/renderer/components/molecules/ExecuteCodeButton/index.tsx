@@ -34,7 +34,12 @@ export function ExecuteCodeButton() {
 
   return (
     <>
-      <ActionButton onClick={handleExecuteButtonClick} disabled={!problem || isJudging} ref={tourRef}>
+      <ActionButton
+        onClick={handleExecuteButtonClick}
+        disabled={!problem || isJudging}
+        ref={tourRef}
+        data-testid="execute-code-button"
+      >
         코드 실행
       </ActionButton>
 

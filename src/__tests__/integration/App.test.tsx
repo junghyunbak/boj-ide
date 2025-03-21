@@ -166,20 +166,89 @@ describe('App', () => {
         expect($staleBall).toBeInTheDocument();
       });
 
-      it('F5 단축키로 사용으로 인해 코드가 실행되었을 경우, 코드가 최신 상태임을 나타내는 UI가 렌더링 되어야 한다.', async () => {
-        const listener = clientChannelToListener['judge-request'];
+      describe('의도적인 코드 저장', () => {
+        describe('코드 저장 버튼 클릭', () => {
+          it('코드가 최신 상태임을 알리는 UI가 렌더링 되어야 한다.', async () => {
+            const $saveCodeButton = screen.getByTestId<HTMLButtonElement>('save-code-button');
 
-        act(() => {
-          if (typeof listener === 'function') {
-            listener(undefined);
-          }
+            expect($saveCodeButton.disabled).toBe(false);
+
+            await act(async () => {
+              await userEvent.click($saveCodeButton);
+            });
+
+            const $staleBall = screen.queryByTestId('stale-ball');
+
+            expect($saveCodeButton.disabled).toBe(true);
+            expect($staleBall).not.toBeInTheDocument();
+          });
+
+          it('코드가 올바르게 저장되어야 한다.', () => {});
+        });
+      });
+
+      describe('의도적이지 않은 코드 저장', () => {
+        describe('코드 제출 버튼 클릭', () => {
+          it('코드가 최신 상태임을 알리는 UI가 렌더링 되어야 한다.', async () => {
+            const $submitCodeButton = screen.getByTestId<HTMLButtonElement>('submit-code-button');
+
+            await act(async () => {
+              await userEvent.click($submitCodeButton);
+            });
+
+            const $confirmOkButton = screen.getByTestId<HTMLButtonElement>('confirm-ok-button');
+
+            await act(async () => {
+              await userEvent.click($confirmOkButton);
+            });
+
+            const $saveCodeButton = screen.getByTestId<HTMLButtonElement>('save-code-button');
+            const $staleBall = screen.queryByTestId('stale-ball');
+
+            expect($saveCodeButton.disabled).toBe(true);
+            expect($staleBall).not.toBeInTheDocument();
+          });
+
+          it('코드가 올바르게 저장되어야 한다.', async () => {});
         });
 
-        const $saveCodeButton = screen.getByTestId<HTMLButtonElement>('save-code-button');
-        const $staleBall = screen.queryByTestId('stale-ball');
+        describe('코드 실행 버튼 클릭', () => {
+          it('코드가 최신 상태임을 알리는 UI가 렌더링 되어야 한다.', async () => {
+            const $executeCodeButton = screen.getByTestId<HTMLButtonElement>('execute-code-button');
 
-        expect($saveCodeButton.disabled).toBe(true);
-        expect($staleBall).not.toBeInTheDocument();
+            await act(async () => {
+              await userEvent.click($executeCodeButton);
+            });
+
+            const $saveCodeButton = screen.getByTestId<HTMLButtonElement>('save-code-button');
+            const $staleBall = screen.queryByTestId('stale-ball');
+
+            expect($saveCodeButton.disabled).toBe(true);
+            expect($staleBall).not.toBeInTheDocument();
+          });
+
+          it('코드가 올바르게 저장되어야 한다.', () => {});
+        });
+
+        describe('F5 단축키로 코드 실행', () => {
+          it('코드가 최신 상태임을 나타내는 UI가 렌더링 되어야 한다.', async () => {
+            const listener = clientChannelToListener['judge-request'];
+
+            act(() => {
+              if (typeof listener === 'function') {
+                listener(undefined);
+              }
+            });
+
+            const $saveCodeButton = screen.getByTestId<HTMLButtonElement>('save-code-button');
+            const $staleBall = screen.queryByTestId('stale-ball');
+
+            expect($saveCodeButton.disabled).toBe(true);
+            expect($staleBall).not.toBeInTheDocument();
+          });
+
+          it('코드가 올바르게 저장되어야 한다.', async () => {});
+        });
       });
     });
   });
