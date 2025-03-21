@@ -1,14 +1,6 @@
 import { useCallback, useRef } from 'react';
 
-import {
-  useEditor,
-  useJudge,
-  useModifyEditor,
-  useModifyJudge,
-  useModifyStale,
-  useProblem,
-  useTestcase,
-} from '@/renderer/hooks';
+import { useJudge, useLanguage, useModifyEditor, useModifyJudge, useProblem, useTestcase } from '@/renderer/hooks';
 
 import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
 
@@ -19,7 +11,7 @@ export function ExecuteCodeButton() {
 
   const { problem } = useProblem();
   const { isJudging, judgeId } = useJudge();
-  const { editorLanguage } = useEditor();
+  const { language } = useLanguage();
   const { allTestcase } = useTestcase();
 
   const { startJudge } = useModifyJudge();
@@ -27,10 +19,10 @@ export function ExecuteCodeButton() {
 
   const handleExecuteButtonClick = useCallback(() => {
     (async () => {
-      await saveCode(problem, editorLanguage);
-      startJudge(problem, editorLanguage, allTestcase, judgeId);
+      await saveCode(problem, language);
+      startJudge(problem, language, allTestcase, judgeId);
     })();
-  }, [saveCode, startJudge, allTestcase, judgeId, problem, editorLanguage]);
+  }, [saveCode, startJudge, allTestcase, judgeId, problem, language]);
 
   return (
     <>

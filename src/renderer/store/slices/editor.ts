@@ -6,7 +6,6 @@ type EditorSlice = {
   /**
    * editor 상태
    */
-
   editorState: EditorState | undefined;
   updateEditorState(editorState: EditorState | undefined): void;
 
@@ -35,9 +34,6 @@ type EditorSlice = {
   mode: EditorMode;
   setMode: (mode: EditorMode) => void;
 
-  lang: Language;
-  setLang: (lang: Language) => void;
-
   fontSize: number;
   setFontSize: (fontSize: number) => void;
 };
@@ -53,11 +49,6 @@ export const createEditorSlice: StateCreator<EditorSlice> = (set, get): EditorSl
   mode: 'normal',
   setMode(mode) {
     set(() => ({ mode }));
-  },
-
-  lang: 'node.js',
-  setLang(lang) {
-    set(() => ({ lang }));
   },
 
   isSetting: false,

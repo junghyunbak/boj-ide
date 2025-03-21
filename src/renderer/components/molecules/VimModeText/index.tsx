@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import { useEditor, useProblem, useStale, useVim } from '@/renderer/hooks';
+import { useEditor, useLanguage, useProblem, useStale, useVim } from '@/renderer/hooks';
 
 import { languageToExt } from '@/renderer/utils';
 
@@ -11,9 +11,10 @@ import { languageToExt } from '@/renderer/utils';
  */
 export function VimModeText() {
   const { problem } = useProblem();
-  const { editorMode, editorLanguage } = useEditor();
+  const { language } = useLanguage();
+  const { editorMode } = useEditor();
   const { vimMode } = useVim();
-  const { isStale } = useStale(problem, editorLanguage);
+  const { isStale } = useStale(problem, language);
 
   if (!problem || !vimMode || editorMode === 'normal') {
     return null;
@@ -34,7 +35,7 @@ export function VimModeText() {
           font-size: 0.875rem;
         `}
       >
-        {isStale ? `-- ${vimMode.toUpperCase()} --` : `"${problem.number}.${languageToExt(editorLanguage)}" written`}
+        {isStale ? `-- ${vimMode.toUpperCase()} --` : `"${problem.number}.${languageToExt(language)}" written`}
       </p>
     </div>
   );

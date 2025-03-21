@@ -9,11 +9,13 @@ import { useEditor } from '../useEditor';
 import { useCmExtensions } from './useCmExtensions';
 import { useSetting } from '../useSetting';
 import { useModifyStale } from '../useModifyStale';
+import { useLanguage } from '../useLanguage';
 
 export function useSetupEditor() {
   const { problem } = useProblem();
+  const { language } = useLanguage();
   const { isSetting } = useSetting();
-  const { editorRef, editorState, editorLanguage, editorView } = useEditor();
+  const { editorRef, editorState, editorView } = useEditor();
   const { extensions } = useCmExtensions();
 
   const { updateEditorState, updateEditorView, getEditorValue, setEditorValue, createEditorState } = useModifyEditor();
@@ -80,8 +82,10 @@ export function useSetupEditor() {
     }
 
     (async () => {
+      const { number } = problem;
+
       const response = await window.electron.ipcRenderer.invoke('load-code', {
-        data: { number: problem.number, language: editorLanguage },
+        data: { number, language },
       });
 
       if (!response) {
@@ -92,25 +96,17 @@ export function useSetupEditor() {
         data: { code },
       } = response;
 
-      const latestCode = getEditorValue(problem, editorLanguage);
+      const latestCode = getEditorValue(problem, language);
 
       if (typeof latestCode === 'string') {
         updateEditorState(createEditorState(latestCode));
 
-        updateProblemToStale(problem, editorLanguage, latestCode !== code);
+        updateProblemToStale(problem, language, latestCode !== code);
       } else {
-        setEditorValue(problem, editorLanguage, code);
+        setEditorValue(problem, language, code);
 
         updateEditorState(createEditorState(code));
       }
     })();
-  }, [
-    problem,
-    editorLanguage,
-    getEditorValue,
-    updateProblemToStale,
-    createEditorState,
-    updateEditorState,
-    setEditorValue,
-  ]);
+  }, [problem, language, getEditorValue, updateProblemToStale, createEditorState, updateEditorState, setEditorValue]);
 }

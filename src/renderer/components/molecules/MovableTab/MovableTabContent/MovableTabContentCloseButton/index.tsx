@@ -5,7 +5,7 @@ import { css } from '@emotion/react';
 import { XButton } from '@/renderer/components/atoms/buttons/XButton';
 import { StaleBall } from '@/renderer/components/atoms/StaleBall';
 
-import { useEditor, useStale } from '@/renderer/hooks';
+import { useLanguage, useStale } from '@/renderer/hooks';
 
 import { useMovableTabContext } from '../../MovableTabContext';
 
@@ -18,12 +18,11 @@ export function MovableTabContentCloseButton({
   problem = null,
   onClick = () => {},
 }: MovableTabContentCloseButtonProps) {
-  const { isSelect, isHover } = useMovableTabContext();
-
   const [isCloseButtonHover, setIsCloseButtonHover] = useState(false);
 
-  const { editorLanguage } = useEditor();
-  const { isStale } = useStale(problem, editorLanguage);
+  const { language } = useLanguage();
+  const { isStale } = useStale(problem, language);
+  const { isSelect, isHover } = useMovableTabContext();
 
   const handleMouseEnter = useCallback(() => {
     setIsCloseButtonHover(true);

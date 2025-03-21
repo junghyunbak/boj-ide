@@ -38,10 +38,12 @@ import { useModifyEditor } from '../useModifyEditor';
 import { useEditor } from '../useEditor';
 import { useProblem } from '../useProblem';
 import { useModifyStale } from '../useModifyStale';
+import { useLanguage } from '../useLanguage';
 
 export function useCmExtensions() {
   const { problem } = useProblem();
-  const { editorMode, editorFontSize, editorIndentSpace, editorLanguage } = useEditor();
+  const { language } = useLanguage();
+  const { editorMode, editorFontSize, editorIndentSpace } = useEditor();
   const emotionTheme = useTheme();
 
   const { saveCode, setEditorValue } = useModifyEditor();
@@ -52,13 +54,13 @@ export function useCmExtensions() {
   const codeExtensions = useMemo<Extension[]>(() => {
     return [
       editorMode === 'vim' && vim(),
-      editorLanguage === 'C++14' && cpp(),
-      editorLanguage === 'C++17' && cpp(),
-      editorLanguage === 'Java11' && java(),
-      editorLanguage === 'node.js' && javascript(),
-      editorLanguage === 'Python3' && python(),
+      language === 'C++14' && cpp(),
+      language === 'C++17' && cpp(),
+      language === 'Java11' && java(),
+      language === 'node.js' && javascript(),
+      language === 'Python3' && python(),
     ].filter((value) => typeof value === 'object');
-  }, [editorLanguage, editorMode]);
+  }, [language, editorMode]);
 
   const themeExtensions = useMemo<Extension[]>(() => {
     const spec: ExtractParams<typeof EditorView.theme>[0] = {
@@ -185,7 +187,7 @@ export function useCmExtensions() {
         {
           key: 'Ctrl-s',
           run: () => {
-            saveCode(problem, editorLanguage);
+            saveCode(problem, language);
 
             return false;
           },
@@ -193,14 +195,14 @@ export function useCmExtensions() {
         {
           key: 'Meta-s',
           run: () => {
-            saveCode(problem, editorLanguage);
+            saveCode(problem, language);
 
             return false;
           },
         },
       ]),
     ],
-    [editorLanguage, indentString, problem, saveCode],
+    [language, indentString, problem, saveCode],
   );
 
   const updateExtension = useMemo<Extension>(
@@ -209,11 +211,11 @@ export function useCmExtensions() {
         if (update.docChanged) {
           const code = update.state.doc.toString();
 
-          setEditorValue(problem, editorLanguage, code);
-          updateProblemToStale(problem, editorLanguage, true);
+          setEditorValue(problem, language, code);
+          updateProblemToStale(problem, language, true);
         }
       }),
-    [setEditorValue, updateProblemToStale, problem, editorLanguage],
+    [setEditorValue, updateProblemToStale, problem, language],
   );
 
   const basicExtensions = useMemo<Extension[]>(

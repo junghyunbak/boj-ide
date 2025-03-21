@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
 
-import { useModifyEditor, useModifyConfirmModal, useProblem, useEditor } from '@/renderer/hooks';
+import { useModifyEditor, useModifyConfirmModal, useProblem, useLanguage } from '@/renderer/hooks';
 
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 
@@ -10,7 +10,7 @@ export function SubmitButton() {
   const tourRef = useRef<HTMLButtonElement>(null);
 
   const { problem } = useProblem();
-  const { editorLanguage } = useEditor();
+  const { language } = useLanguage();
 
   const { fireConfirmModal } = useModifyConfirmModal();
   const { getEditorValue, saveCode } = useModifyEditor();
@@ -21,17 +21,17 @@ export function SubmitButton() {
     }
 
     fireConfirmModal('제출하시겠습니까?', async () => {
-      await saveCode(problem, editorLanguage);
+      await saveCode(problem, language);
 
       window.electron.ipcRenderer.sendMessage('submit-code', {
         data: {
-          code: getEditorValue(problem, editorLanguage) || '',
-          language: editorLanguage,
+          code: getEditorValue(problem, language) || '',
+          language,
           number: problem.number,
         },
       });
     });
-  }, [fireConfirmModal, getEditorValue, saveCode, problem, editorLanguage]);
+  }, [fireConfirmModal, getEditorValue, saveCode, problem, language]);
 
   return (
     <>

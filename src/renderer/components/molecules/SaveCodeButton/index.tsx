@@ -1,18 +1,20 @@
-import { useEditor, useModifyEditor, useProblem, useStale } from '@/renderer/hooks';
+import { useCallback } from 'react';
+
+import { useLanguage, useModifyEditor, useProblem, useStale } from '@/renderer/hooks';
 
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
-import { useCallback } from 'react';
 
 export function SaveCodeButton() {
   const { problem } = useProblem();
-  const { editorLanguage } = useEditor();
-  const { isStale } = useStale(problem, editorLanguage);
+  const { language } = useLanguage();
+
+  const { isStale } = useStale(problem, language);
 
   const { saveCode } = useModifyEditor();
 
   const handleSaveCodeButtonClick = useCallback(async () => {
-    await saveCode(problem, editorLanguage);
-  }, [saveCode, problem, editorLanguage]);
+    await saveCode(problem, language);
+  }, [saveCode, problem, language]);
 
   return (
     <ActionButton

@@ -15,13 +15,15 @@ import { useProblem } from '../useProblem';
 import { useJudge } from '../useJudge';
 import { useModifyJudge } from '../useModifyJudge';
 import { useTestcase } from '../useTestcase';
+import { useLanguage } from '../useLanguage';
 
 export function useEventEditor() {
   const curFocusRef = useRef<Element | null>(null);
   const lastFocusRef = useRef<Element | null>(null);
 
   const { problem } = useProblem();
-  const { editorView, editorLanguage } = useEditor();
+  const { language } = useLanguage();
+  const { editorView } = useEditor();
   const { isJudging, judgeId } = useJudge();
   const { allTestcase } = useTestcase();
 
@@ -35,11 +37,11 @@ export function useEventEditor() {
   useEventIpc(
     async () => {
       if (!isJudging) {
-        await saveCode(problem, editorLanguage);
-        startJudge(problem, editorLanguage, allTestcase, judgeId);
+        await saveCode(problem, language);
+        startJudge(problem, language, allTestcase, judgeId);
       }
     },
-    [allTestcase, editorLanguage, isJudging, judgeId, problem, saveCode, startJudge],
+    [allTestcase, language, isJudging, judgeId, problem, saveCode, startJudge],
     'judge-request',
   );
 
@@ -48,11 +50,11 @@ export function useEventEditor() {
    */
   useEffect(() => {
     const handleVimWriteCommand = async () => {
-      await saveCode(problem, editorLanguage);
+      await saveCode(problem, language);
     };
 
     Vim.defineEx('write', 'w', handleVimWriteCommand);
-  }, [saveCode, getEditorValue, problem, editorLanguage]);
+  }, [saveCode, getEditorValue, problem, language]);
 
   /**
    * vim 모드 상태 전역 상태 동기화

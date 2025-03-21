@@ -1,12 +1,11 @@
-import { useStore } from '@/renderer/store';
 import { useRef } from 'react';
+
+import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
 export function useEditor() {
   const [editorState] = useStore(useShallow((s) => [s.editorState]));
   const [editorView] = useStore(useShallow((s) => [s.editorView]));
-
-  const [editorLanguage] = useStore(useShallow((s) => [s.lang]));
 
   const [editorMode] = useStore(useShallow((s) => [s.mode]));
   const [editorIndentSpace] = useStore(useShallow((s) => [s.indentSpace]));
@@ -21,7 +20,6 @@ export function useEditor() {
   return {
     editorFontSize,
     editorIndentSpace,
-    editorLanguage,
     editorMode,
     editorRef,
     editorState,

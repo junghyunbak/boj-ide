@@ -14,8 +14,6 @@ export function useModifyEditor() {
   const [updateEditorState] = useStore(useShallow((s) => [s.updateEditorState]));
   const [updateEditorView] = useStore(useShallow((s) => [s.updateEditorView]));
 
-  const [setEditorLanguage] = useStore(useShallow((s) => [s.setLang]));
-
   const [setEditorMode] = useStore(useShallow((s) => [s.setMode]));
   const [setEditorFontSize] = useStore(useShallow((s) => [s.setFontSize]));
   const [setEditorIndentSpace] = useStore(useShallow((s) => [s.setIndentSpace]));
@@ -30,13 +28,6 @@ export function useModifyEditor() {
 
     return newEditorState;
   }, []);
-
-  const updateEditorLanguage = useCallback(
-    (language: Language) => {
-      setEditorLanguage(language);
-    },
-    [setEditorLanguage],
-  );
 
   const updateEditorMode = useCallback(
     (mode: EditorMode) => {
@@ -108,8 +99,6 @@ export function useModifyEditor() {
   return {
     updateEditorState,
     updateEditorView,
-
-    updateEditorLanguage,
 
     updateEditorFontSize,
     updateEditorIndentSpace,

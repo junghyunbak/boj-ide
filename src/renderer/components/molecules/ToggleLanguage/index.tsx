@@ -4,21 +4,20 @@ import { css } from '@emotion/react';
 
 import { LANGAUGES } from '@/renderer/constants';
 
-import { useEditor, useEventClickOutOfModal, useModifyEditor } from '@/renderer/hooks';
+import { useEventClickOutOfModal, useLanguage, useModifyLanguage } from '@/renderer/hooks';
 
 import { NonModal } from '@/renderer/components/atoms/modal/NonModal';
 import { SelectButton } from '@/renderer/components/atoms/buttons/SelectButton';
 import { ListButton } from '@/renderer/components/atoms/buttons/ListButton';
 
 export function ToggleLanguage() {
-  const { editorLanguage } = useEditor();
-
-  const { updateEditorLanguage } = useModifyEditor();
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const buttonRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+
+  const { language } = useLanguage();
+  const { updateLanguage } = useModifyLanguage();
 
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
@@ -33,11 +32,11 @@ export function ToggleLanguage() {
   const handleOptionClick = useCallback(
     (langugae: Language) => {
       return () => {
-        updateEditorLanguage(langugae);
+        updateLanguage(langugae);
         closeModal();
       };
     },
-    [closeModal, updateEditorLanguage],
+    [closeModal, updateLanguage],
   );
 
   return (
@@ -47,7 +46,7 @@ export function ToggleLanguage() {
       `}
     >
       <SelectButton ref={buttonRef} isActive={isModalOpen} onClick={handleSelectClick}>
-        {editorLanguage}
+        {language}
       </SelectButton>
 
       <NonModal ref={modalRef} isOpen={isModalOpen} inset="100% 0 auto auto">

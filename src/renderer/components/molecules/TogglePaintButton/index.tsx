@@ -1,11 +1,13 @@
-import { PaintButton } from '@/renderer/components/atoms/buttons/PaintButton';
 import { useCallback } from 'react';
-import { useEditor, useLayout, useModifyLayout, useProblem } from '@/renderer/hooks';
+
+import { PaintButton } from '@/renderer/components/atoms/buttons/PaintButton';
+
+import { useLanguage, useLayout, useModifyLayout, useProblem } from '@/renderer/hooks';
 
 export function TogglePaintButton() {
-  const { isPaintOpen } = useLayout();
   const { problem } = useProblem();
-  const { editorLanguage } = useEditor();
+  const { language } = useLanguage();
+  const { isPaintOpen } = useLayout();
 
   const { updateIsPaintOpen } = useModifyLayout();
 
@@ -13,9 +15,9 @@ export function TogglePaintButton() {
     updateIsPaintOpen(!isPaintOpen);
 
     window.electron.ipcRenderer.sendMessage('log-toggle-paint', {
-      data: { number: problem?.number || 'non-Problem', language: editorLanguage },
+      data: { number: problem?.number || 'non-Problem', language },
     });
-  }, [editorLanguage, isPaintOpen, problem?.number, updateIsPaintOpen]);
+  }, [language, isPaintOpen, problem, updateIsPaintOpen]);
 
   return <PaintButton onClick={handleTogglePaintButtonClick} />;
 }

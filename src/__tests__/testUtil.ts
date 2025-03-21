@@ -1,7 +1,7 @@
 import { act } from 'react';
 import { renderHook, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useEditor, useModifyEditor, useModifyStale } from '@/renderer/hooks';
+import { useLanguage, useModifyEditor, useModifyStale } from '@/renderer/hooks';
 
 export function isSaveButtonDisabled(): boolean {
   const $saveCodeButton = screen.getByTestId<HTMLButtonElement>('save-code-button');
@@ -49,22 +49,22 @@ export function clearEditorState() {
 }
 
 export function resetProblemStale(problem: ProblemInfo) {
-  const { result } = renderHook(() => ({ ...useEditor(), ...useModifyStale() }));
+  const { result } = renderHook(() => ({ ...useLanguage(), ...useModifyStale() }));
 
   act(() => {
-    const { editorLanguage, updateProblemToStale } = result.current;
+    const { language, updateProblemToStale } = result.current;
 
-    updateProblemToStale(problem, editorLanguage, false);
+    updateProblemToStale(problem, language, false);
   });
 }
 
 export function clearProblemEditorValue(problem: ProblemInfo) {
-  const { result } = renderHook(() => ({ ...useEditor(), ...useModifyEditor() }));
+  const { result } = renderHook(() => ({ ...useLanguage(), ...useModifyEditor() }));
 
   act(() => {
-    const { editorLanguage, setEditorValue } = result.current;
+    const { language, setEditorValue } = result.current;
 
-    setEditorValue(problem, editorLanguage, null);
+    setEditorValue(problem, language, null);
   });
 }
 
@@ -129,11 +129,11 @@ export async function clickExecuteCodeButton() {
 }
 
 export async function changeProblemData(problem: ProblemInfo, data: string) {
-  const { result } = renderHook(() => ({ ...useModifyEditor(), ...useEditor() }));
+  const { result } = renderHook(() => ({ ...useModifyEditor(), ...useLanguage() }));
 
   act(() => {
-    const { editorLanguage, setEditorValue } = result.current;
+    const { language, setEditorValue } = result.current;
 
-    setEditorValue(problem, editorLanguage, data);
+    setEditorValue(problem, language, data);
   });
 }

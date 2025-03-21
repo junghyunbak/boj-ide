@@ -19,6 +19,7 @@ export * from './useHistories';
 export * from './useLayout';
 export * from './useVim';
 export * from './useStale';
+export * from './useLanguage';
 
 /**
  * setup
@@ -60,6 +61,7 @@ export * from './useModifyLayout';
 export * from './useModifyDrag';
 export * from './useModifyVim';
 export * from './useModifyStale';
+export * from './useModifyLanguage';
 
 /**
  * event

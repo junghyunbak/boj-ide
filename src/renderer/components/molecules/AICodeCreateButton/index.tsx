@@ -6,7 +6,14 @@ import aiCreateImageSrc from '@/renderer/assets/gifs/ai-create.gif';
 
 import { type UseCompletionOptions } from '@ai-sdk/react';
 
-import { useFetchAICode, useModifyAlertModal, useModifyConfirmModal, useProblem, useEditor } from '@/renderer/hooks';
+import {
+  useFetchAICode,
+  useModifyAlertModal,
+  useModifyConfirmModal,
+  useProblem,
+  useEditor,
+  useLanguage,
+} from '@/renderer/hooks';
 
 import { AI_ERROR_MESSAGE, AI_EXECUTE_QUESTION_MESSAGE } from '@/renderer/constants';
 
@@ -17,7 +24,8 @@ export function AICodeCreateButton() {
   const tourRef = useRef<HTMLButtonElement>(null);
 
   const { problem } = useProblem();
-  const { editorLanguage, editorIndentSpace, editorView } = useEditor();
+  const { language } = useLanguage();
+  const { editorIndentSpace, editorView } = useEditor();
 
   const { fireAlertModal } = useModifyAlertModal();
   const { fireConfirmModal } = useModifyConfirmModal();
@@ -77,7 +85,7 @@ export function AICodeCreateButton() {
       window.electron.ipcRenderer.sendMessage('log-execute-ai-create', {
         data: {
           number: problem.number,
-          language: editorLanguage,
+          language,
         },
       });
 
@@ -85,12 +93,12 @@ export function AICodeCreateButton() {
         body: {
           inputs: problem.testCase.inputs,
           inputDesc: problem.inputDesc,
-          language: editorLanguage,
           indentSpace: editorIndentSpace,
+          language,
         },
       });
     });
-  }, [complete, editorIndentSpace, editorLanguage, fireConfirmModal, problem]);
+  }, [complete, editorIndentSpace, language, fireConfirmModal, problem]);
 
   return (
     <>
