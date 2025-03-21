@@ -1,26 +1,59 @@
 import App from '@/renderer/App';
 import { act } from 'react';
-import { useModifyEditor, useModifyTab, useModifyWebview } from '@/renderer/hooks';
+import { useModifyTab, useModifyWebview } from '@/renderer/hooks';
 import { createMockProblem } from '@/renderer/mock';
 import { render, screen, renderHook } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
 import '@testing-library/jest-dom';
 
-const mockProblem = createMockProblem({
-  name: '테스트 문제',
-  number: '1000',
-});
+/**
+ * 테스트에 사용 될 문제 mocking
+ */
+type ProblemNumber = '1000' | '2002';
 
+const mockProblems: Record<ProblemNumber, { problem: ProblemInfo; data: string }> = {
+  1000: {
+    problem: createMockProblem({
+      name: '테스트 문제',
+      number: '1000',
+    }),
+    data: '에디터로딩완료',
+  },
+  2002: {
+    problem: createMockProblem({
+      name: '테스트 문제2',
+      number: '2002',
+    }),
+    data: '테스트',
+  },
+};
+
+const defaultMockProblem = mockProblems['1000'];
+
+const PROBLEM_NUMBERS: ProblemNumber[] = ['1000', '2002'];
+
+function isValidProblemNumber(problemNumber: any): problemNumber is ProblemNumber {
+  return PROBLEM_NUMBERS.includes(problemNumber);
+}
+
+/**
+ * ipc on 이벤트 등록 mocking
+ */
 type ClientChannelToListener = {
   [channel in ClientChannels]?: (message: ChannelToMessage[channel][Receive]) => void | Promise<void>;
 };
 
 const clientChannelToListener: ClientChannelToListener = {};
 
+/**
+ * api mocking
+ */
 jest.mock('axios');
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+mockedAxios.get.mockResolvedValue({ data: {} });
 
 beforeAll(() => {
   /**
@@ -34,11 +67,6 @@ beforeAll(() => {
   Range.prototype.getClientRects = () => domRectList;
 
   window.HTMLElement.prototype.scrollIntoView = jest.fn();
-
-  /**
-   * api mocking
-   */
-  mockedAxios.get.mockResolvedValue({ data: {} });
 
   /**
    * portal 동작을 위한 dom 추가
@@ -63,24 +91,14 @@ beforeAll(() => {
   window.getComputedStyle = (elt) => getComputedStyle(elt);
 
   /**
-   * webview 함수 모킹
+   * webview 메서드 mocking
    */
   const webview = document.createElement('webview');
 
   webview.loadURL = async () => {};
 
   /**
-   * 테스트를 위한 상태 초기화
-   */
-  const { result } = renderHook(() => ({ ...useModifyWebview(), ...useModifyTab() }));
-
-  act(() => {
-    result.current.addProblemTab(mockProblem);
-    result.current.updateWebview(webview);
-  });
-
-  /**
-   * ipc 모듈 모킹
+   * ipc 모듈 mocking
    */
   window.electron = {
     ipcRenderer: {
@@ -97,8 +115,27 @@ beforeAll(() => {
             return { data: { isSaved: true } };
           case 'save-default-code':
             return { data: { isSaved: true } };
-          case 'load-code':
-            return { data: { code: '에디터로딩완료' } };
+          case 'load-code': {
+            const code = (() => {
+              if (typeof message !== 'object') {
+                return '';
+              }
+
+              if (!('data' in message) || !('number' in message.data)) {
+                return '';
+              }
+
+              const problemNumber = message.data.number;
+
+              if (!isValidProblemNumber(problemNumber)) {
+                return '';
+              }
+
+              return mockProblems[problemNumber].data;
+            })();
+
+            return { data: { code } };
+          }
           case 'load-files':
             return { data: { problemNumbers: [] } };
           case 'clipboard-copy-image':
@@ -117,6 +154,17 @@ beforeAll(() => {
       },
     },
   };
+
+  /**
+   * 테스트를 위한 상태 초기화
+   */
+  const { result } = renderHook(() => ({ ...useModifyWebview(), ...useModifyTab() }));
+
+  act(() => {
+    result.current.addProblemTab(mockProblems['1000'].problem);
+    result.current.addProblemTab(mockProblems['2002'].problem);
+    result.current.updateWebview(webview);
+  });
 });
 
 describe('App', () => {
@@ -128,13 +176,15 @@ describe('App', () => {
     it('탭 클릭을 통해 문제 페이지로 이동하면 에디터가 활성화 되어야 한다.', async () => {
       render(<App />);
 
-      const $tabElement = screen.getByText(`${mockProblem.number}번: ${mockProblem.name}`);
+      const $tabElement = screen.getByText(
+        `${defaultMockProblem.problem.number}번: ${defaultMockProblem.problem.name}`,
+      );
 
       await act(async () => {
         await userEvent.click($tabElement);
       });
 
-      expect(screen.getByText('에디터로딩완료')).toBeInTheDocument();
+      expect(screen.getByText(defaultMockProblem.data)).toBeInTheDocument();
     });
   });
 
@@ -142,7 +192,9 @@ describe('App', () => {
     beforeEach(async () => {
       render(<App />);
 
-      const $tabElement = screen.getByText(`${mockProblem.number}번: ${mockProblem.name}`);
+      const $tabElement = screen.getByText(
+        `${defaultMockProblem.problem.number}번: ${defaultMockProblem.problem.name}`,
+      );
 
       await act(async () => {
         await userEvent.click($tabElement);
@@ -159,6 +211,18 @@ describe('App', () => {
 
         expect(screen.getByText('내용추가에디터로딩완료')).toBeInTheDocument();
       });
+
+      it('다른 문제로 전환되면, 바뀐 문제의 데이터를 올바르게 가져와야 한다.', async () => {
+        const nextMockProblem = mockProblems['2002'];
+
+        const $tabElement = screen.getByText(`${nextMockProblem.problem.number}번: ${nextMockProblem.problem.name}`);
+
+        await act(async () => {
+          await userEvent.click($tabElement);
+        });
+
+        expect(screen.getByText(nextMockProblem.data)).toBeInTheDocument();
+      });
     });
 
     describe('내용 수정 이후', () => {
@@ -171,10 +235,26 @@ describe('App', () => {
       });
 
       it('내용이 수정되었을 경우, 코드가 오래된 상태임을 나타내는 UI가 렌더링 되어야한다.', async () => {
-        const $staleBall = screen.getByTestId('stale-ball');
         const $saveCodeButton = screen.getByTestId<HTMLButtonElement>('save-code-button');
+        const $staleBall = screen.queryByTestId(`stale-ball-${defaultMockProblem.problem.number}`);
 
         expect($saveCodeButton.disabled).toBe(false);
+        expect($staleBall).toBeInTheDocument();
+      });
+
+      it('내용 수정 중 다른 문제로 전환시, 저장 버튼은 비활성화되고 이전 문제의 편집됨 상태 UI는 변경되지 않아야 한다.', async () => {
+        const nextMockProblem = mockProblems['2002'];
+
+        const $tabElement = screen.getByText(`${nextMockProblem.problem.number}번: ${nextMockProblem.problem.name}`);
+
+        await act(async () => {
+          await userEvent.click($tabElement);
+        });
+
+        const $saveCodeButton = screen.getByTestId<HTMLButtonElement>('save-code-button');
+        const $staleBall = screen.queryByTestId(`stale-ball-${defaultMockProblem.problem.number}`);
+
+        expect($saveCodeButton.disabled).toBe(true);
         expect($staleBall).toBeInTheDocument();
       });
 
@@ -211,10 +291,10 @@ describe('App', () => {
           });
 
           const $saveCodeButton = screen.getByTestId<HTMLButtonElement>('save-code-button');
-          const $staleBall = screen.queryByTestId('stale-ball');
+          const $staleBall = screen.queryByTestId(`stale-ball-${defaultMockProblem.problem.number}`);
 
-          expect($staleBall).not.toBeInTheDocument();
           expect($saveCodeButton.disabled).toBe(true);
+          expect($staleBall).not.toBeInTheDocument();
         });
 
         it('control + s 단축키 사용시, 코드가 최신 상태임을 알리는 UI가 렌더링 되어야 한다.', async () => {
@@ -223,7 +303,7 @@ describe('App', () => {
           });
 
           const $saveCodeButton = screen.getByTestId<HTMLButtonElement>('save-code-button');
-          const $staleBall = screen.queryByTestId('stale-ball');
+          const $staleBall = screen.queryByTestId(`stale-ball-${defaultMockProblem.problem.number}`);
 
           expect($saveCodeButton.disabled).toBe(true);
           expect($staleBall).not.toBeInTheDocument();
@@ -238,7 +318,7 @@ describe('App', () => {
             await userEvent.click($saveCodeButton);
           });
 
-          const $staleBall = screen.queryByTestId('stale-ball');
+          const $staleBall = screen.queryByTestId(`stale-ball-${defaultMockProblem.problem.number}`);
 
           expect($saveCodeButton.disabled).toBe(true);
           expect($staleBall).not.toBeInTheDocument();
@@ -260,7 +340,7 @@ describe('App', () => {
           });
 
           const $saveCodeButton = screen.getByTestId<HTMLButtonElement>('save-code-button');
-          const $staleBall = screen.queryByTestId('stale-ball');
+          const $staleBall = screen.queryByTestId(`stale-ball-${defaultMockProblem.problem.number}`);
 
           expect($saveCodeButton.disabled).toBe(true);
           expect($staleBall).not.toBeInTheDocument();
@@ -280,7 +360,7 @@ describe('App', () => {
           });
 
           const $saveCodeButton = screen.getByTestId<HTMLButtonElement>('save-code-button');
-          const $staleBall = screen.queryByTestId('stale-ball');
+          const $staleBall = screen.queryByTestId(`stale-ball-${defaultMockProblem.problem.number}`);
 
           expect($saveCodeButton.disabled).toBe(true);
           expect($staleBall).not.toBeInTheDocument();
@@ -294,7 +374,7 @@ describe('App', () => {
           });
 
           const $saveCodeButton = screen.getByTestId<HTMLButtonElement>('save-code-button');
-          const $staleBall = screen.queryByTestId('stale-ball');
+          const $staleBall = screen.queryByTestId(`stale-ball-${defaultMockProblem.problem.number}`);
 
           expect($saveCodeButton.disabled).toBe(true);
           expect($staleBall).not.toBeInTheDocument();
@@ -314,7 +394,7 @@ describe('App', () => {
           });
 
           const $saveCodeButton = screen.getByTestId<HTMLButtonElement>('save-code-button');
-          const $staleBall = screen.queryByTestId('stale-ball');
+          const $staleBall = screen.queryByTestId(`stale-ball-${defaultMockProblem.problem.number}`);
 
           expect($saveCodeButton.disabled).toBe(true);
           expect($staleBall).not.toBeInTheDocument();

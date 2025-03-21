@@ -53,7 +53,7 @@ export function MovableTabContentCloseButton({
         return <XButton onClick={handleCloseButtonClick} />;
       }
 
-      return <StaleBall />;
+      return <StaleBall data-testid={`stale-ball-${problem.number}`} />;
     }
 
     if (isHover) {
