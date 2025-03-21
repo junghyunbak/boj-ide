@@ -1,5 +1,7 @@
 import { useCallback } from 'react';
 
+import { EditorState } from '@codemirror/state';
+
 import { languageToExt } from '@/renderer/utils';
 
 import { useStore } from '@/renderer/store';
@@ -20,6 +22,14 @@ export function useModifyEditor() {
 
   const { updateProblemToStale } = useModifyStale();
   const { fireAlertModal } = useModifyAlertModal();
+
+  const createEditorState = useCallback((initialCode: string) => {
+    const newEditorState = EditorState.create({
+      doc: initialCode,
+    });
+
+    return newEditorState;
+  }, []);
 
   const updateEditorLanguage = useCallback(
     (language: Language) => {
@@ -110,5 +120,7 @@ export function useModifyEditor() {
 
     saveCode,
     saveDefaultCode,
+
+    createEditorState,
   };
 }

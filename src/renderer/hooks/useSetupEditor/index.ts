@@ -1,6 +1,6 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 
-import { EditorState, StateEffect } from '@codemirror/state';
+import { StateEffect } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 
 import { useModifyEditor } from '../useModifyEditor';
@@ -16,21 +16,8 @@ export function useSetupEditor() {
   const { editorRef, editorState, editorLanguage, editorView } = useEditor();
   const { extensions } = useCmExtensions();
 
-  const { updateEditorState, updateEditorView, getEditorValue, setEditorValue } = useModifyEditor();
+  const { updateEditorState, updateEditorView, getEditorValue, setEditorValue, createEditorState } = useModifyEditor();
   const { updateProblemToStale } = useModifyStale();
-
-  // TODO: Modify 훅으로 이동
-  const createEditorState = useCallback(
-    (initialCode: string) => {
-      const newEditorState = EditorState.create({
-        doc: initialCode,
-        extensions,
-      });
-
-      return newEditorState;
-    },
-    [extensions],
-  );
 
   /**
    * codemirror 상태 초기화 및 재생성
@@ -73,6 +60,15 @@ export function useSetupEditor() {
   }, [editorRef, editorState, updateEditorView]);
 
   /**
+   * 설정 창이 닫히면 자등으로 뷰에 포커스
+   */
+  useEffect(() => {
+    if (!isSetting && editorView) {
+      editorView.focus();
+    }
+  }, [isSetting, editorView]);
+
+  /**
    * 문제, 언어 변경 시
    *
    * - 기존 코드 저장
@@ -98,19 +94,14 @@ export function useSetupEditor() {
 
       const latestCode = getEditorValue(problem, editorLanguage);
 
-      // TEST: 작성중이던 코드가 존재하면 이를 사용한다.
-      // TEST: 작성중이던 코드가 존재하면 불러온 코드와 다를 경우에만 코드를 stale한 상태로 변경한다.
-      // TEST: 작성중이던 코드가 존재하지 않으면 불러온 데이터를 사용한다.
-      // TEST: 작성중이던 코드가 존재하지 않으면 fresh한 상태로 업데이트 한다.
-      // TEST: 불러온 데이터로 문제 번호/언어 별 코드를 변경시켜야 한다.
-
       if (typeof latestCode === 'string') {
         updateEditorState(createEditorState(latestCode));
+
         updateProblemToStale(problem, editorLanguage, latestCode !== code);
       } else {
-        updateEditorState(createEditorState(code));
-        updateProblemToStale(problem, editorLanguage, false);
         setEditorValue(problem, editorLanguage, code);
+
+        updateEditorState(createEditorState(code));
       }
     })();
   }, [
@@ -122,13 +113,4 @@ export function useSetupEditor() {
     updateEditorState,
     setEditorValue,
   ]);
-
-  /**
-   * 설정 창이 닫히면 자등으로 뷰에 포커스
-   */
-  useEffect(() => {
-    if (!isSetting && editorView) {
-      editorView.focus();
-    }
-  }, [isSetting, editorView]);
 }
