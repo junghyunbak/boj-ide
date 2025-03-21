@@ -8,7 +8,6 @@ import { useProblem } from '../useProblem';
 import { useEditor } from '../useEditor';
 import { useCmExtensions } from './useCmExtensions';
 import { useSetting } from '../useSetting';
-import { useModifyStale } from '../useModifyStale';
 import { useLanguage } from '../useLanguage';
 
 export function useSetupEditor() {
@@ -18,8 +17,8 @@ export function useSetupEditor() {
   const { editorRef, editorState, editorView } = useEditor();
   const { extensions } = useCmExtensions();
 
-  const { updateEditorState, updateEditorView, getEditorValue, setEditorValue, createEditorState } = useModifyEditor();
-  const { updateProblemToStale } = useModifyStale();
+  const { updateEditorState, updateEditorView, getEditorValue, createEditorState, syncEditorValue, updateEditorValue } =
+    useModifyEditor();
 
   /**
    * codemirror 상태 초기화 및 재생성
@@ -100,13 +99,12 @@ export function useSetupEditor() {
 
       if (typeof latestCode === 'string') {
         updateEditorState(createEditorState(latestCode));
-
-        updateProblemToStale(problem, language, latestCode !== code);
       } else {
-        setEditorValue(problem, language, code);
+        updateEditorValue(problem, language, code);
+        syncEditorValue(problem, language);
 
         updateEditorState(createEditorState(code));
       }
     })();
-  }, [problem, language, getEditorValue, updateProblemToStale, createEditorState, updateEditorState, setEditorValue]);
+  }, [problem, language, getEditorValue, createEditorState, updateEditorState, syncEditorValue, updateEditorValue]);
 }

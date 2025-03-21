@@ -17,7 +17,7 @@ import { SplitLayout } from '@/renderer/components/molecules/SplitLayout';
 import { NonModal } from '@/renderer/components/atoms/modal/NonModal';
 import { ThreeLineHorizontalResizer } from '@/renderer/components/atoms/lines/ThreeLineHorizontalResizer';
 
-import { ProblemHistoriItem } from './ProblemHistoryItem';
+import { ProblemHistoryItem } from './ProblemHistoryItem';
 import {
   ProblemHistoryButton,
   ProblemHistoryButtonIcon,
@@ -100,7 +100,7 @@ export function ProblemHistory() {
                     {histories
                       .filter((history) => `${history.number}번: ${history.name}`.includes(historyFilterValue))
                       .map((history) => {
-                        return <ProblemHistoriItem key={history.number} problem={history} />;
+                        return <ProblemHistoryItem key={history.number} problem={history} />;
                       })}
                   </ProblemHistoryModalList>
                 )}

@@ -2,63 +2,61 @@ import { type EditorState } from '@codemirror/state';
 import { type EditorView } from '@codemirror/view';
 import { type StateCreator } from 'zustand';
 
+type EditorValue = Partial<Record<string, { [lang in Language]?: { prev: string | null; cur: string | null } }>>;
+
 type EditorSlice = {
-  /**
-   * editor 상태
-   */
   editorState: EditorState | undefined;
   updateEditorState(editorState: EditorState | undefined): void;
 
   editorView: EditorView | undefined;
   updateEditorView(editorView: EditorView | undefined): void;
 
-  indentSpace: IndentSpace;
-  setIndentSpace: (count: IndentSpace) => void;
-
-  /**
-   * editor 값
-   */
-  editorValue: Map<string | undefined, string | null>;
+  editorValue: EditorValue;
+  setEditorValue(fn: (editorValue: EditorValue) => EditorValue): void;
 
   editorRef: React.RefObject<HTMLDivElement>;
+
+  mode: EditorMode;
+  updateEditorMode(mode: EditorMode): void;
+
+  fontSize: number;
+  updateEditorFontSize(fontSize: number): void;
+
+  indentSpace: IndentSpace;
+  updateIndentSpace(indentSpace: IndentSpace): void;
 
   /**
    * 적절하지 않은 slice에 존재하는 상태들
    */
   isSetting: boolean;
   setIsSetting: (isSetting: boolean) => void;
-
-  /**
-   * persist 요소
-   */
-  mode: EditorMode;
-  setMode: (mode: EditorMode) => void;
-
-  fontSize: number;
-  setFontSize: (fontSize: number) => void;
 };
 
 export const createEditorSlice: StateCreator<EditorSlice> = (set, get): EditorSlice => ({
-  editorValue: new Map(),
+  editorValue: {},
+  setEditorValue(fn) {
+    set((s) => ({ editorValue: fn(s.editorValue) }));
+  },
 
   fontSize: 14,
-  setFontSize(fontSize) {
+  updateEditorFontSize(fontSize) {
     set(() => ({ fontSize }));
   },
 
   mode: 'normal',
-  setMode(mode) {
+  updateEditorMode(mode) {
     set(() => ({ mode }));
+  },
+
+  indentSpace: 2,
+
+  updateIndentSpace(indentSpace) {
+    set(() => ({ indentSpace }));
   },
 
   isSetting: false,
   setIsSetting(isSetting) {
     set(() => ({ isSetting }));
-  },
-
-  indentSpace: 2,
-  setIndentSpace(count) {
-    set(() => ({ indentSpace: count }));
   },
 
   editorRef: { current: null },

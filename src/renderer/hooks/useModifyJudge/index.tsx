@@ -14,7 +14,7 @@ export function useModifyJudge() {
   const { getEditorValue } = useModifyEditor();
 
   const startJudge = useCallback(
-    (problem: Problem, editorLanguage: Language, testcases: TC[], judgeId: string) => {
+    (problem: Problem, language: Language, testcases: TC[], judgeId: string) => {
       if (!problem) {
         return;
       }
@@ -24,11 +24,15 @@ export function useModifyJudge() {
 
       setJudgeResults(() => Array(testcases.length).fill(undefined));
 
+      const code = getEditorValue(problem, language) || '';
+
+      const { number } = problem;
+
       window.electron.ipcRenderer.sendMessage('judge-start', {
         data: {
-          code: getEditorValue(problem, editorLanguage) || '',
-          language: editorLanguage,
-          number: problem.number,
+          code,
+          language,
+          number,
           judgeId,
           testCase: {
             inputs,

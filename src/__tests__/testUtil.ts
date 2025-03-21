@@ -1,7 +1,9 @@
 import { act } from 'react';
+
 import { renderHook, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useLanguage, useModifyEditor, useModifyStale } from '@/renderer/hooks';
+
+import { useLanguage, useModifyEditor } from '@/renderer/hooks';
 
 export function isSaveButtonDisabled(): boolean {
   const $saveCodeButton = screen.getByTestId<HTMLButtonElement>('save-code-button');
@@ -49,12 +51,12 @@ export function clearEditorState() {
 }
 
 export function resetProblemStale(problem: ProblemInfo) {
-  const { result } = renderHook(() => ({ ...useLanguage(), ...useModifyStale() }));
+  const { result } = renderHook(() => ({ ...useLanguage(), ...useModifyEditor() }));
 
   act(() => {
-    const { language, updateProblemToStale } = result.current;
+    const { language, syncEditorValue } = result.current;
 
-    updateProblemToStale(problem, language, false);
+    syncEditorValue(problem, language);
   });
 }
 
@@ -62,9 +64,9 @@ export function clearProblemEditorValue(problem: ProblemInfo) {
   const { result } = renderHook(() => ({ ...useLanguage(), ...useModifyEditor() }));
 
   act(() => {
-    const { language, setEditorValue } = result.current;
+    const { language, updateEditorValue } = result.current;
 
-    setEditorValue(problem, language, null);
+    updateEditorValue(problem, language, null);
   });
 }
 
@@ -132,8 +134,18 @@ export async function changeProblemData(problem: ProblemInfo, data: string) {
   const { result } = renderHook(() => ({ ...useModifyEditor(), ...useLanguage() }));
 
   act(() => {
-    const { language, setEditorValue } = result.current;
+    const { language, updateEditorValue } = result.current;
 
-    setEditorValue(problem, language, data);
+    updateEditorValue(problem, language, data);
+  });
+}
+
+export function deleteEditorValue(problem: ProblemInfo) {
+  const { result } = renderHook(() => ({ ...useModifyEditor(), ...useLanguage() }));
+
+  act(() => {
+    const { removeEditorValue, language } = result.current;
+
+    removeEditorValue(problem, language);
   });
 }

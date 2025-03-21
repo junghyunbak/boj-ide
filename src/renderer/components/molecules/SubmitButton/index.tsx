@@ -23,9 +23,11 @@ export function SubmitButton() {
     fireConfirmModal('제출하시겠습니까?', async () => {
       await saveCode(problem, language);
 
+      const code = getEditorValue(problem, language) || '';
+
       window.electron.ipcRenderer.sendMessage('submit-code', {
         data: {
-          code: getEditorValue(problem, language) || '',
+          code,
           language,
           number: problem.number,
         },

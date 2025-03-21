@@ -60,7 +60,6 @@ export * from './useModifyHistories';
 export * from './useModifyLayout';
 export * from './useModifyDrag';
 export * from './useModifyVim';
-export * from './useModifyStale';
 export * from './useModifyLanguage';
 
 /**

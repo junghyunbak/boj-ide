@@ -37,7 +37,6 @@ import { createTheme } from '@uiw/codemirror-themes';
 import { useModifyEditor } from '../useModifyEditor';
 import { useEditor } from '../useEditor';
 import { useProblem } from '../useProblem';
-import { useModifyStale } from '../useModifyStale';
 import { useLanguage } from '../useLanguage';
 
 export function useCmExtensions() {
@@ -46,8 +45,7 @@ export function useCmExtensions() {
   const { editorMode, editorFontSize, editorIndentSpace } = useEditor();
   const emotionTheme = useTheme();
 
-  const { saveCode, setEditorValue } = useModifyEditor();
-  const { updateProblemToStale } = useModifyStale();
+  const { saveCode, updateEditorValue } = useModifyEditor();
 
   const indentString = useMemo(() => ' '.repeat(editorIndentSpace), [editorIndentSpace]);
 
@@ -211,11 +209,14 @@ export function useCmExtensions() {
         if (update.docChanged) {
           const code = update.state.doc.toString();
 
-          setEditorValue(problem, language, code);
-          updateProblemToStale(problem, language, true);
+          if (!problem) {
+            return;
+          }
+
+          updateEditorValue(problem, language, code);
         }
       }),
-    [setEditorValue, updateProblemToStale, problem, language],
+    [updateEditorValue, problem, language],
   );
 
   const basicExtensions = useMemo<Extension[]>(

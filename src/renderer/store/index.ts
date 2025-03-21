@@ -15,7 +15,6 @@ import { createHistorySlice } from './slices/history';
 import { createThemeSlice } from './slices/theme';
 import { createVimSlice } from './slices/vim';
 import { createDragSlice } from './slices/drag';
-import { createStaleSlice } from './slices/stale';
 import { createLanguageSlice } from './slices/language';
 
 import { createPaintSlice } from './slices/paint';
@@ -32,14 +31,12 @@ export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createHistorySlice> &
   ReturnType<typeof createDragSlice> &
   ReturnType<typeof createVimSlice> &
-  ReturnType<typeof createStaleSlice> &
   ReturnType<typeof createLanguageSlice>;
 
 export const useStore = create<StoreState>()(
   persist(
     (...a) => ({
       ...createLanguageSlice(...a),
-      ...createStaleSlice(...a),
       ...createBojViewSlice(...a),
       ...createEditorSlice(...a),
       ...createJudgeSlice(...a),
@@ -68,6 +65,8 @@ export const useStore = create<StoreState>()(
           lang,
           mode,
           fontSize,
+          editorValue,
+          indentSpace,
 
           /**
            * layout
@@ -135,6 +134,8 @@ export const useStore = create<StoreState>()(
           histories,
           historyModalHeight,
           startUrl,
+          editorValue,
+          indentSpace,
         };
       },
     },

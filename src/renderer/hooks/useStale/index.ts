@@ -1,10 +1,28 @@
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
-export function useStale(problem: Problem, editorLanguage: Language) {
-  const [problemToStale] = useStore(useShallow((s) => [s.problemToStale]));
+export function useStale(problem: Problem, language: Language) {
+  const [editorValue] = useStore(useShallow((s) => [s.editorValue]));
 
-  const isStale = problemToStale.get(`${problem?.number}|${editorLanguage}`);
+  const isStale = (() => {
+    if (!problem) {
+      return false;
+    }
 
-  return { problemToStale, isStale };
+    const languageToValue = editorValue[problem.number];
+
+    if (!languageToValue) {
+      return false;
+    }
+
+    const value = languageToValue[language];
+
+    if (!value) {
+      return false;
+    }
+
+    return value.cur !== value.prev;
+  })();
+
+  return { isStale };
 }

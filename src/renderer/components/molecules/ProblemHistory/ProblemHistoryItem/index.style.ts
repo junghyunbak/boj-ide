@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const ProblemHistoryItem = styled.li`
+export const ProblemHistoryItemLayout = styled.li`
   display: flex;
   align-items: center;
   justify-content: space-between;

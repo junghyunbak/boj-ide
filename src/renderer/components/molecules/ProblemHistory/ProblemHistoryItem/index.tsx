@@ -8,7 +8,7 @@ import { StaleBall } from '@/renderer/components/atoms/StaleBall';
 import { useFetchProblem, useModifyWebview, useModifyHistories, useStale, useLanguage } from '@/renderer/hooks';
 
 import {
-  ProblemHistoryItem,
+  ProblemHistoryItemLayout,
   ProblemHistoryItemContentBox,
   ProblemHistoryItemContentIconImage,
   ProblemHistoryItemContentParagraph,
@@ -20,7 +20,7 @@ interface ProblemHistoriItemProps {
 }
 
 // TODO: isFocus 상태 생성 후, 포커스 시 X버튼 보이도록 변경
-export const ProblemHistoriItem = memo(({ problem }: ProblemHistoriItemProps) => {
+export const ProblemHistoryItem = memo(({ problem }: ProblemHistoriItemProps) => {
   const [isHover, setIsHover] = useState(false);
 
   const { tierBase64, title } = useFetchProblem(problem.number);
@@ -65,7 +65,7 @@ export const ProblemHistoriItem = memo(({ problem }: ProblemHistoriItemProps) =>
   })();
 
   return (
-    <ProblemHistoryItem
+    <ProblemHistoryItemLayout
       className="history-item"
       tabIndex={-1}
       onClick={handleItemClick}
@@ -78,6 +78,6 @@ export const ProblemHistoriItem = memo(({ problem }: ProblemHistoriItemProps) =>
       </ProblemHistoryItemContentBox>
 
       <ProblmHistoryItemCloseButtonBox>{Content}</ProblmHistoryItemCloseButtonBox>
-    </ProblemHistoryItem>
+    </ProblemHistoryItemLayout>
   );
 });

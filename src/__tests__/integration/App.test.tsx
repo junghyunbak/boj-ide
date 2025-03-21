@@ -20,7 +20,7 @@ import {
   getStaleBall,
   isSaveButtonDisabled,
   pressKeySWithControl,
-  resetProblemStale,
+  deleteEditorValue,
   typeEditor,
 } from '../testUtil';
 
@@ -67,8 +67,8 @@ beforeEach(() => {
 
   clearEditorState();
 
-  resetProblemStale(problemA);
-  resetProblemStale(problemB);
+  deleteEditorValue(problemA);
+  deleteEditorValue(problemB);
 });
 
 describe('App', () => {
@@ -162,17 +162,6 @@ describe('App', () => {
           expect(getStaleBall(problemB)).toBeInTheDocument();
           expect(isSaveButtonDisabled()).toBe(false);
           expect(screen.getByText('수정이력')).toBeInTheDocument();
-        });
-
-        it('수정 이력이 존재하지만 저장된 코드와 동일할 경우 최신 UI로 업데이트한다.', async () => {
-          changeProblemData(problemB, problemBData);
-
-          await clickProblemTab(problemB);
-
-          expect(getStaleBall(problemA)).toBeInTheDocument();
-          expect(getStaleBall(problemB)).not.toBeInTheDocument();
-          expect(isSaveButtonDisabled()).toBe(true);
-          expect(screen.getByText(problemBData)).toBeInTheDocument();
         });
       });
 
