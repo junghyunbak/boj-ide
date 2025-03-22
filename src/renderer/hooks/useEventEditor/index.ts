@@ -54,7 +54,7 @@ export function useEventEditor() {
     };
 
     Vim.defineEx('write', 'w', handleVimWriteCommand);
-  }, [saveCode, getEditorValue, problem, language]);
+  }, [saveCode, problem, language]);
 
   /**
    * vim 모드 상태 전역 상태 동기화

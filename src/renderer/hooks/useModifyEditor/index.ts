@@ -136,15 +136,12 @@ export function useModifyEditor() {
         return;
       }
 
-      const code = getEditorValue(problem, language);
-
-      if (code === null) {
-        return;
-      }
+      const code = getEditorValue(problem, language) || '';
+      const { number } = problem;
 
       const result = await window.electron.ipcRenderer.invoke('save-code', {
         data: {
-          number: problem.number,
+          number,
           language,
           code,
         },
