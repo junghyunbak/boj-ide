@@ -106,7 +106,7 @@ export function AICodeCreateButton() {
         {`AI 입력 생성${isLoading ? ' 중...' : ''}`}
       </ActionButton>
 
-      <TourOverlay tourRef={tourRef} title="인공지능 표준 입력 생성" myTourStep={3} guideLoc="bottomRight">
+      <TourOverlay tourRef={tourRef} title="인공지능 표준 입력 생성" myTourStep={3} guideLoc="leftTop">
         <img
           src={aiCreateImageSrc}
           width="300px"
