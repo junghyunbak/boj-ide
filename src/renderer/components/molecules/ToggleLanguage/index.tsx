@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 
 import { LANGAUGES } from '@/renderer/constants';
 
-import { useEventClickOutOfModal, useLanguage, useModifyLanguage } from '@/renderer/hooks';
+import { useEventClickOutOfModal, useEventWindow, useLanguage, useModifyLanguage } from '@/renderer/hooks';
 
 import { NonModal } from '@/renderer/components/atoms/modal/NonModal';
 import { SelectButton } from '@/renderer/components/atoms/buttons/SelectButton';
@@ -25,19 +25,24 @@ export function ToggleLanguage() {
 
   useEventClickOutOfModal(buttonRef, modalRef, closeModal);
 
-  const handleSelectClick = useCallback(() => {
-    setIsModalOpen(!isModalOpen);
-  }, [isModalOpen]);
-
-  const handleOptionClick = useCallback(
-    (langugae: Language) => {
-      return () => {
-        updateLanguage(langugae);
-        closeModal();
-      };
+  useEventWindow(
+    (e) => {
+      if (e.key === 'Escape') {
+        setIsModalOpen(false);
+      }
     },
-    [closeModal, updateLanguage],
+    [],
+    'keydown',
   );
+
+  const handleSelectClick = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  const handleOptionClick = (langugae: Language) => () => {
+    updateLanguage(langugae);
+    closeModal();
+  };
 
   return (
     <div

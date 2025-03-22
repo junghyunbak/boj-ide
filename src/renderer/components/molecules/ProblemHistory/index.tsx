@@ -51,20 +51,17 @@ export function ProblemHistory() {
   useEventHistories();
   useEventClickOutOfModal(historyButtonRef, historyModalRef, closeHistoryModal);
 
-  const handleHistoryFilterValueChange = useCallback<React.ChangeEventHandler<HTMLInputElement>>(
-    (e) => {
-      updateHistoryFilterValue(e.target.value);
-    },
-    [updateHistoryFilterValue],
-  );
+  const handleHistoryFilterValueChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    updateHistoryFilterValue(e.target.value);
+  };
 
-  const handleHistoryBarClick = useCallback(() => {
+  const handleHistoryBarClick = () => {
     if (isHistoryModalOpen) {
       closeHistoryModal();
     } else {
       openHistoryModal();
     }
-  }, [openHistoryModal, closeHistoryModal, isHistoryModalOpen]);
+  };
 
   const verticalResizerPxOption = useMemo(() => ({ min: HISTORY_MODAL_MIN_HEIGHT, max: HISTORY_MODAL_MAX_HEIGHT }), []);
 

@@ -5,7 +5,6 @@ import { useConfirmModal, useModifyConfirmModal } from '@/renderer/hooks';
 import { Modal } from '@/renderer/components/atoms/modal/Modal';
 import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 import { useEventConfirmModal } from '@/renderer/hooks/useEventConfirmModal';
-import { useCallback } from 'react';
 
 export function ConfirmModal() {
   const { confirmCallback, confirmMessage, isConfirmModalOpen } = useConfirmModal();
@@ -14,17 +13,17 @@ export function ConfirmModal() {
 
   useEventConfirmModal();
 
-  const handleOkButtonClick = useCallback(() => {
+  const handleOkButtonClick = () => {
     if (confirmCallback instanceof Function) {
       confirmCallback();
     }
 
     cancelConfirmModal();
-  }, [cancelConfirmModal, confirmCallback]);
+  };
 
-  const handleNoButtonClick = useCallback(() => {
+  const handleNoButtonClick = () => {
     cancelConfirmModal();
-  }, [cancelConfirmModal]);
+  };
 
   return (
     <Modal isOpen={isConfirmModalOpen} onCloseButtonClick={handleNoButtonClick}>

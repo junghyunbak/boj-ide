@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import { useTheme, useEventClickOutOfModal, useModifyTheme } from '@/renderer/hooks';
+import { useTheme, useEventClickOutOfModal, useModifyTheme, useEventWindow } from '@/renderer/hooks';
 
 import { SelectButton } from '@/renderer/components/atoms/buttons/SelectButton';
 import { NonModal } from '@/renderer/components/atoms/modal/NonModal';
@@ -30,19 +30,26 @@ export function ThemeButton() {
 
   useEventClickOutOfModal(buttonRef, modalRef, closeModal);
 
-  const handleSelectButtonClick = useCallback(() => {
-    setIsModalOpen(!isModalOpen);
-  }, [setIsModalOpen, isModalOpen]);
-
-  const handleThemeButtonClick = useCallback(
-    (newTheme: Themes) => {
-      return () => {
-        updateTheme(newTheme);
+  useEventWindow(
+    (e) => {
+      if (e.key === 'Escape') {
         closeModal();
-      };
+      }
     },
-    [closeModal, updateTheme],
+    [closeModal],
+    'keydown',
   );
+
+  const handleSelectButtonClick = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  const handleThemeButtonClick = (newTheme: Themes) => {
+    return () => {
+      updateTheme(newTheme);
+      closeModal();
+    };
+  };
 
   return (
     <div

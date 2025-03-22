@@ -2,7 +2,13 @@ import { useCallback, useRef, useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import { useModifyDailyProblems, useDailyProblem, useModifyTab, useEventClickOutOfModal } from '@/renderer/hooks';
+import {
+  useModifyDailyProblems,
+  useDailyProblem,
+  useModifyTab,
+  useEventClickOutOfModal,
+  useEventWindow,
+} from '@/renderer/hooks';
 
 import { ReactComponent as ThreeDots } from '@/renderer/assets/svgs/three-dots.svg';
 
@@ -24,25 +30,31 @@ export function TabOptions() {
     setIsModalOpen(false);
   }, []);
 
-  const toggleModal = useCallback(() => {
-    setIsModalOpen(!isModalOpen);
-  }, [isModalOpen]);
-
   useEventClickOutOfModal(buttonRef, modalRef, closeModal);
 
-  const handleButtonClick = useCallback(() => {
-    toggleModal();
-  }, [toggleModal]);
+  useEventWindow(
+    (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    },
+    [closeModal],
+    'keydown',
+  );
 
-  const handleAllTabCloseButtonClick = useCallback(() => {
+  const handleButtonClick = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  const handleAllTabCloseButtonClick = () => {
     clearTab();
     closeModal();
-  }, [clearTab, closeModal]);
+  };
 
-  const handleDailyProblemActiveToggleButtonClick = useCallback(() => {
+  const handleDailyProblemActiveToggleButtonClick = () => {
     toggleActiveDailyProblem();
     closeModal();
-  }, [closeModal, toggleActiveDailyProblem]);
+  };
 
   return (
     <div
