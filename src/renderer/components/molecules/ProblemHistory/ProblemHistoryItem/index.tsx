@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useState } from 'react';
 
 import { placeholderLogo } from '@/renderer/assets/base64Images';
 
@@ -23,34 +23,31 @@ interface ProblemHistoriItemProps {
 export const ProblemHistoryItem = memo(({ problem }: ProblemHistoriItemProps) => {
   const [isHover, setIsHover] = useState(false);
 
-  const { tierBase64, title } = useFetchProblem(problem.number);
   const { language } = useLanguage();
   const { isStale } = useStale(problem, language);
+  const { tierBase64, title } = useFetchProblem(problem.number);
 
   const { gotoProblem } = useModifyWebview();
   const { closeHistoryModal, removeHistoryWithProblemNumber } = useModifyHistories();
 
-  const handleItemClick = useCallback(() => {
+  const handleItemClick = () => {
     gotoProblem(problem);
     closeHistoryModal();
-  }, [gotoProblem, problem, closeHistoryModal]);
+  };
 
-  const handleDeleteButtonClick = useCallback<React.MouseEventHandler<HTMLButtonElement>>(
-    (e) => {
-      e.stopPropagation();
+  const handleDeleteButtonClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.stopPropagation();
 
-      removeHistoryWithProblemNumber(problem);
-    },
-    [removeHistoryWithProblemNumber, problem],
-  );
+    removeHistoryWithProblemNumber(problem);
+  };
 
-  const handleMouseEnter = useCallback(() => {
+  const handleMouseEnter = () => {
     setIsHover(true);
-  }, []);
+  };
 
-  const handleMouseLeave = useCallback(() => {
+  const handleMouseLeave = () => {
     setIsHover(false);
-  }, []);
+  };
 
   const Content = (() => {
     if (isHover) {
