@@ -39,7 +39,9 @@ export const ProblemHistoryButtonIcon = styled(History)`
   color: ${({ theme }) => theme.colors.fg};
 `;
 
-export const ProblemHistoryButtonParagraph = styled.p``;
+export const ProblemHistoryButtonParagraph = styled.p`
+  white-space: nowrap;
+`;
 
 export const ProblemHistoryModalLayout = styled.div`
   width: 100%;
