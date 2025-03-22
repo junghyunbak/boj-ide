@@ -138,7 +138,7 @@ export function useModifyEditor() {
 
       const code = getEditorValue(problem, language);
 
-      if (!code) {
+      if (code === null) {
         return;
       }
 

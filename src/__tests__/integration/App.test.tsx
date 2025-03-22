@@ -1,6 +1,7 @@
 import { act } from 'react';
 import { render, screen, renderHook } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import userEvent from '@testing-library/user-event';
 import axios from 'axios';
 
 import App from '@/renderer/App';
@@ -129,6 +130,20 @@ describe('App', () => {
     describe('내용 수정 이후', () => {
       beforeEach(async () => {
         await typeEditor('마지막변경내용');
+      });
+
+      it('에디터의 내용을 공백으로 변경한 후 저장하더라도, 최신 UI로 업데이트 되어야한다.', async () => {
+        const $cmEditor = screen.getByTestId('cm-editor');
+
+        await act(async () => {
+          await userEvent.click($cmEditor);
+          await userEvent.keyboard('{Delete>20/}');
+        });
+
+        await clickSaveCodeButton();
+
+        expect(isSaveButtonDisabled()).toBe(true);
+        expect(getStaleBall(problemA)).not.toBeInTheDocument();
       });
 
       it('내용 수정 시, 값이 올바르게 동기화되어야 한다.', () => {
