@@ -136,8 +136,9 @@ export function useModifyEditor() {
         return;
       }
 
-      const code = getEditorValue(problem, language) || '';
       const { number } = problem;
+
+      const code = getEditorValue(problem, language) || '';
 
       const result = await window.electron.ipcRenderer.invoke('save-code', {
         data: {
@@ -160,11 +161,7 @@ export function useModifyEditor() {
         return;
       }
 
-      const code = getEditorValue(problem, language);
-
-      if (!code) {
-        return;
-      }
+      const code = getEditorValue(problem, language) || '';
 
       const result = await window.electron.ipcRenderer.invoke('save-default-code', {
         data: { language, code },

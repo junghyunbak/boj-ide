@@ -24,6 +24,7 @@ import {
   deleteEditorValue,
   typeEditor,
   getEditorCode,
+  getEditor,
 } from '../testUtil';
 
 import { problemA, problemAData, problemB, problemBData, webview, clientChannelToListener } from '../mocking';
@@ -132,11 +133,9 @@ describe('App', () => {
         await typeEditor('마지막변경내용');
       });
 
-      it('에디터의 내용을 공백으로 변경한 후 저장하더라도, 최신 UI로 업데이트 되어야한다.', async () => {
-        const $cmEditor = screen.getByTestId('cm-editor');
-
+      it('에디터의 내용이 공백이더라도, 올바르게 저장되어야 한다.', async () => {
         await act(async () => {
-          await userEvent.click($cmEditor);
+          await userEvent.click(getEditor());
           await userEvent.keyboard('{Delete>20/}');
         });
 

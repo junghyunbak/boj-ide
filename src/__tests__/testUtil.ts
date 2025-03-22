@@ -20,6 +20,12 @@ export function getStaleBall(problem: ProblemInfo) {
   return $problemStaleBall;
 }
 
+export function getEditor() {
+  const $cmEditor = screen.getByTestId('cm-editor');
+
+  return $cmEditor;
+}
+
 /**
  * user event
  */
@@ -32,18 +38,14 @@ export async function clickProblemTab(problem: ProblemInfo) {
 }
 
 export async function typeEditor(data: string) {
-  const $cmEditor = screen.getByTestId('cm-editor');
-
   await act(async () => {
-    await userEvent.type($cmEditor, data);
+    await userEvent.type(getEditor(), data);
   });
 }
 
 export async function typeVimWriteCommand() {
-  const $cmEditor = screen.getByTestId('cm-editor');
-
   await act(async () => {
-    await userEvent.click($cmEditor);
+    await userEvent.click(getEditor());
     await userEvent.keyboard('{Shift>}{;}{/Shift}w{Enter}');
   });
 }
