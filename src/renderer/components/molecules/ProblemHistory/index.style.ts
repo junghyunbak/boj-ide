@@ -51,8 +51,6 @@ export const ProblemHistoryModalLayout = styled.div`
   align-items: center;
   gap: 4px;
 
-  padding: 4px 4px 0 4px;
-
   user-select: none;
 `;
 
@@ -62,6 +60,8 @@ export const ProblemHistoryModalInputBox = styled.div`
   align-items: center;
 
   width: 100%;
+
+  padding: 4px 4px 0 4px;
 `;
 
 export const ProblemHistoryModalInput = styled.input`
@@ -81,6 +81,8 @@ export const ProblemHistoryModalInput = styled.input`
 export const ProblemHistoryModalListBox = styled.div`
   width: 100%;
   height: 100%;
+
+  padding: 0 4px;
 
   overflow-y: auto;
 `;
