@@ -119,6 +119,9 @@
       "release/app/dist",
       ".erb/dll"
     ],
+    "testMatch": [
+      "**/*.test.(ts|tsx)"
+    ],
     "transform": {
       "\\.(ts|tsx|js|jsx)$": "ts-jest"
     }
