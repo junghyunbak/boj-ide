@@ -65,7 +65,6 @@ export const useStore = create<StoreState>()(
           lang,
           mode,
           fontSize,
-          editorValue,
           indentSpace,
 
           /**
@@ -134,7 +133,6 @@ export const useStore = create<StoreState>()(
           histories,
           historyModalHeight,
           startUrl,
-          editorValue,
           indentSpace,
         };
       },
