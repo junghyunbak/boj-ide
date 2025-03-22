@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 import { css } from '@emotion/react';
 
@@ -24,27 +24,24 @@ export function MovableTabContentCloseButton({
   const { isStale } = useStale(problem, language);
   const { isSelect, isHover } = useMovableTabContext();
 
-  const handleMouseEnter = useCallback(() => {
+  const handleMouseEnter = () => {
     setIsCloseButtonHover(true);
-  }, []);
+  };
 
-  const handleMouseLeave = useCallback(() => {
+  const handleMouseLeave = () => {
     setIsCloseButtonHover(false);
-  }, []);
+  };
+
+  const handleCloseButtonClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+    /**
+     * 버블링을 차단하지 않으면 닫기 동작 뿐만 아니라, 탭 클릭 동작도 발생하기 때문에 중요한 코드
+     */
+    e.stopPropagation();
+
+    onClick();
+  };
 
   const isStaleBallShow = problem && isStale;
-
-  const handleCloseButtonClick = useCallback<React.MouseEventHandler<HTMLButtonElement>>(
-    (e) => {
-      /**
-       * 버블링을 차단하지 않으면 닫기 동작 뿐만 아니라, 탭 클릭 동작도 발생하기 때문에 중요한 코드
-       */
-      e.stopPropagation();
-
-      onClick();
-    },
-    [onClick],
-  );
 
   const Content = (() => {
     if (isStaleBallShow) {
