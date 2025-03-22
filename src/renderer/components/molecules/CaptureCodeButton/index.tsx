@@ -2,21 +2,20 @@ import { useCallback } from 'react';
 
 import { useTheme, css } from '@emotion/react';
 
-import { useEditor, useModifyAlertModal, usePaint } from '@/renderer/hooks';
+import { useModifyAlertModal, usePaint } from '@/renderer/hooks';
 
 import { fabric } from 'fabric';
 
 import { ReactComponent as Copy } from '@/renderer/assets/svgs/copy.svg';
 
 export function CaptureCodeButton() {
-  const { editorView } = useEditor();
   const { canvas } = usePaint();
   const { fireAlertModal } = useModifyAlertModal();
 
   const emotionTheme = useTheme();
 
   const handleCreateImageButtonClick = useCallback(async () => {
-    if (!editorView || !canvas) {
+    if (!canvas) {
       return;
     }
 
@@ -67,7 +66,7 @@ export function CaptureCodeButton() {
     if (result && result.data.isSaved) {
       fireAlertModal('안내', '이미지가 클립보드에 복사되었습니다.');
     }
-  }, [editorView, canvas, emotionTheme, fireAlertModal]);
+  }, [canvas, emotionTheme, fireAlertModal]);
 
   return (
     <div
