@@ -1,7 +1,8 @@
 module.exports = {
   extends: 'erb',
-  plugins: ['@typescript-eslint'],
+  plugins: ['@typescript-eslint', 'custom'],
   rules: {
+    'custom/no-hooks-except-useCallback-in-useModify': 'error',
     // A temporary hack related to IDE not resolving correct package.json
     'react/react-in-jsx-scope': 'off',
     'react/jsx-filename-extension': 'off',
