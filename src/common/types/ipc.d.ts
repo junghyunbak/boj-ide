@@ -39,6 +39,7 @@ type ChannelToMessage = {
   'reload-webview': [];
   'app-update-info': [MessageTemplate<{ bytesPerSecond?: number; percent?: number; isDownloaded: boolean }>];
   'close-tab': [];
+  'check-saved': [];
 };
 
 type ElectronChannels = keyof Pick<
@@ -70,4 +71,5 @@ type ClientChannels = keyof Pick<
   | 'reload-webview'
   | 'app-update-info'
   | 'close-tab'
+  | 'check-saved'
 >;

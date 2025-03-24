@@ -113,12 +113,22 @@ const createWindow = async () => {
     }
   });
 
+  let forceQuit: boolean = false;
+
   ipc.on('quit-app', () => {
+    forceQuit = true;
+
     app.quit();
   });
 
-  mainWindow.on('closed', () => {
-    app.quit();
+  mainWindow.on('close', (e) => {
+    if (!forceQuit) {
+      e.preventDefault();
+
+      if (mainWindow) {
+        ipc.send(mainWindow.webContents, 'check-saved', undefined);
+      }
+    }
   });
 
   mainWindow.webContents.setWindowOpenHandler((edata) => {
