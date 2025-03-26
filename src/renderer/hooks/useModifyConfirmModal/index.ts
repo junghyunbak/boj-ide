@@ -19,6 +19,7 @@ export function useModifyConfirmModal() {
   const cancelConfirmModal = () => {
     setConfirmCallback(null);
     setConfirmMessage(null);
+    setCancelCallback(null);
   };
 
   return {
