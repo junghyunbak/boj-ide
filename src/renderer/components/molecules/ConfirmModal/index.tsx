@@ -7,7 +7,7 @@ import { ActionButton } from '@/renderer/components/atoms/buttons/ActionButton';
 import { useEventConfirmModal } from '@/renderer/hooks/useEventConfirmModal';
 
 export function ConfirmModal() {
-  const { confirmCallback, confirmMessage, isConfirmModalOpen } = useConfirmModal();
+  const { confirmCallback, cancelCallback, confirmMessage, isConfirmModalOpen } = useConfirmModal();
 
   const { cancelConfirmModal } = useModifyConfirmModal();
 
@@ -22,6 +22,10 @@ export function ConfirmModal() {
   };
 
   const handleNoButtonClick = () => {
+    if (cancelCallback instanceof Function) {
+      cancelCallback();
+    }
+
     cancelConfirmModal();
   };
 

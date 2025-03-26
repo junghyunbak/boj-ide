@@ -7,6 +7,9 @@ type ModalSlice = {
   confirmCallback: (() => void) | null;
   setConfirmCallback: (cb: (() => void) | null) => void;
 
+  cancelCallback: (() => void) | null;
+  setCancelCallback: (cb: (() => void) | null) => void;
+
   alertTitle: string | null;
   setAlertTitle: (title: string | null) => void;
 
@@ -23,6 +26,11 @@ export const createModalSlice: StateCreator<ModalSlice> = (set): ModalSlice => (
   confirmCallback: null,
   setConfirmCallback(cb) {
     set(() => ({ confirmCallback: cb }));
+  },
+
+  cancelCallback: null,
+  setCancelCallback(cb) {
+    set(() => ({ cancelCallback: cb }));
   },
 
   alertTitle: null,

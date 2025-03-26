@@ -9,11 +9,15 @@ import { useModifyAlertModal } from '../useModifyAlertModal';
 import { useEventIpc } from '../useEventIpc';
 import { useModifyWebview } from '../useModifyWebview';
 import { useModifyConfirmModal } from '../useModifyConfirmModal';
+import { useModifyHistories } from '../useModifyHistories';
+import { useModifyEditor } from '../useModifyEditor';
 
 export function useEventApp() {
   const { fireAlertModal } = useModifyAlertModal();
   const { fireConfirmModal } = useModifyConfirmModal();
   const { gotoUrl } = useModifyWebview();
+  const { openHistoryModal } = useModifyHistories();
+  const { getEditingFileIsExist } = useModifyEditor();
 
   const [setBaekjoonhubExtensionId] = useStore(useShallow((s) => [s.setBaekjoonhubExtensionId]));
 
@@ -43,29 +47,23 @@ export function useEventApp() {
 
   useEventIpc(
     () => {
-      const isStaleDataExist = (() => {
-        const { editorValue } = useStore.getState();
-
-        return Object.entries(editorValue).some(([problemNumber, languages]) => {
-          if (!languages) {
-            return false;
-          }
-
-          return Object.entries(languages).some(([language, value]) => {
-            return value.cur !== value.prev;
-          });
-        });
-      })();
+      const isStaleDataExist = getEditingFileIsExist();
 
       if (isStaleDataExist) {
-        fireConfirmModal('저장되지 않은 파일이 존재합니다.\n종료하시겠습니까?', () => {
-          window.electron.ipcRenderer.sendMessage('quit-app', undefined);
-        });
+        fireConfirmModal(
+          '저장되지 않은 파일이 존재합니다.\n종료하시겠습니까?',
+          () => {
+            window.electron.ipcRenderer.sendMessage('quit-app', undefined);
+          },
+          () => {
+            openHistoryModal();
+          },
+        );
       } else {
         window.electron.ipcRenderer.sendMessage('quit-app', undefined);
       }
     },
-    [fireConfirmModal],
+    [fireConfirmModal, openHistoryModal, getEditingFileIsExist],
     'check-saved',
   );
 

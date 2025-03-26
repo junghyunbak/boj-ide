@@ -20,6 +20,16 @@ export function useModifyEditor() {
 
   const { fireAlertModal } = useModifyAlertModal();
 
+  const getEditingFileIsExist = useCallback(() => {
+    const { editorValue } = useStore.getState();
+
+    return Object.entries(editorValue).some(([problemNumber, languages]) =>
+      Object.entries(languages || {}).some(([language, value]) => {
+        return value.cur !== value.prev;
+      }),
+    );
+  }, []);
+
   const removeEditorValue = useCallback(
     (problem: Problem, language: Language) => {
       if (!problem) {
@@ -191,5 +201,7 @@ export function useModifyEditor() {
     saveDefaultCode,
 
     createEditorState,
+
+    getEditingFileIsExist,
   };
 }
