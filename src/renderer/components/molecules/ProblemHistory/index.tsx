@@ -19,7 +19,7 @@ import {
   useModifyHistories,
   useModifyLanguage,
   useModifyLayout,
-  useModifyProblem,
+  useModifyWebview,
   useSetupHistories,
 } from '@/renderer/hooks';
 
@@ -171,8 +171,16 @@ function EditingProblemItem({ problemNumber, languages }: { problemNumber: strin
   const { tierBase64, title } = useFetchProblem(problemNumber);
 
   const { updateLanguage } = useModifyLanguage();
-  const { updateProblem } = useModifyProblem();
+  const { gotoProblem } = useModifyWebview();
   const { closeHistoryModal } = useModifyHistories();
+
+  const handleClickEditingProblem = (language: Language) => () => {
+    const problem: ProblemInfo = { name: '', number: problemNumber, testCase: { inputs: [], outputs: [] } };
+
+    gotoProblem(problem);
+    updateLanguage(language);
+    closeHistoryModal();
+  };
 
   return (
     <div
@@ -240,13 +248,7 @@ function EditingProblemItem({ problemNumber, languages }: { problemNumber: strin
                   background-color: ${theme.colors.hover};
                 }
               `}
-              onClick={() => {
-                const problem: ProblemInfo = { name: '', number: problemNumber, testCase: { inputs: [], outputs: [] } };
-
-                updateProblem(problem);
-                updateLanguage(language);
-                closeHistoryModal();
-              }}
+              onClick={handleClickEditingProblem(language)}
             >
               <div
                 css={css`
