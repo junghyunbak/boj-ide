@@ -19,6 +19,7 @@ import {
 import { PRELOAD_PATH, USER_DATA_PATH } from '@/main/constants';
 
 import { MenuBuilder, Boj, Code, Judge, SentryService, AppUpdater, Logger, Clipboard } from '@/main/modules';
+import { size } from '@/common/constants';
 
 SentryService.init();
 
@@ -61,6 +62,10 @@ const createWindow = async () => {
     resizable: true,
     icon: getAssetPath('icon.png'),
     titleBarStyle: 'hidden',
+    titleBarOverlay: {
+      color: 'rgba(0, 0, 0, 0)',
+      height: size.TITLE_BAR_HEIGHT,
+    },
     webPreferences: {
       webviewTag: true,
       preload: PRELOAD_PATH,
@@ -115,6 +120,16 @@ const createWindow = async () => {
   });
 
   let forceQuit: boolean = false;
+
+  ipc.on('toggle-theme', (e, { data: { theme } }) => {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      if (theme === 'dark') {
+        mainWindow.setTitleBarOverlay({ symbolColor: '#B2C0CC' });
+      } else {
+        mainWindow.setTitleBarOverlay({ symbolColor: '#333' });
+      }
+    }
+  });
 
   ipc.on('quit-app', () => {
     forceQuit = true;

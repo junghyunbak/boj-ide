@@ -44,6 +44,7 @@ const problemDefaultData: Partial<Record<z.infer<typeof languageSchema>, string>
 
 beforeAll(() => {
   window.electron = {
+    platform: 'win32',
     ipcRenderer: {
       on(channel, listener) {
         return () => {};

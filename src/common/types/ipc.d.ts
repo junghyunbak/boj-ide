@@ -25,6 +25,7 @@ type ChannelToMessage = {
   'log-toggle-paint': [MessageTemplate<MyOmit<CodeInfo, 'code'>>];
   'quit-app': [];
   'clipboard-copy-image': [MessageTemplate<{ dataUrl: string }>, MessageTemplate<SaveResult>];
+  'toggle-theme': [MessageTemplate<{ theme: 'light' | 'dark' }>];
 
   /**
    * client
@@ -57,6 +58,7 @@ type ElectronChannels = keyof Pick<
   | 'log-toggle-paint'
   | 'quit-app'
   | 'clipboard-copy-image'
+  | 'toggle-theme'
 >;
 
 type ClientChannels = keyof Pick<

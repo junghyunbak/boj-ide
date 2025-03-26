@@ -4,6 +4,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 import { IpcErrorHandler } from './error';
 
 const electronHandler = {
+  platform: process.platform,
   ipcRenderer: {
     invoke<Channel extends ElectronChannels>(
       channel: Channel,
@@ -38,6 +39,7 @@ contextBridge.exposeInMainWorld('electron', electronHandler);
 declare global {
   interface Window {
     electron: {
+      platform: NodeJS.Platform;
       ipcRenderer: (typeof electronHandler)['ipcRenderer'];
     };
   }

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { css } from '@emotion/react';
 
@@ -40,12 +40,22 @@ export function ThemeButton() {
     'keydown',
   );
 
+  useEffect(() => {
+    window.electron.ipcRenderer.sendMessage('toggle-theme', {
+      data: { theme: theme === 'baekjoon' ? 'light' : 'dark' },
+    });
+  }, [theme]);
+
   const handleSelectButtonClick = () => {
     setIsModalOpen(!isModalOpen);
   };
 
   const handleThemeButtonClick = (newTheme: Themes) => {
     return () => {
+      window.electron.ipcRenderer.sendMessage('toggle-theme', {
+        data: { theme: newTheme === 'baekjoon' ? 'light' : 'dark' },
+      });
+
       updateTheme(newTheme);
       closeModal();
     };

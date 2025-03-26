@@ -36,6 +36,7 @@ type ClientChannelToListener = {
 export const clientChannelToListener: ClientChannelToListener = {};
 
 window.electron = {
+  platform: 'win32',
   ipcRenderer: {
     once(channel, func) {},
     on(channel, listener) {
