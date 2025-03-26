@@ -1,6 +1,25 @@
 import { css, type Theme } from '@emotion/react';
 
-export const createWebviewStyle = (theme: Theme) => {
+export const scrollbarStyle = (theme: Theme) => css`
+  *::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: ${theme.colors.scrollbar};
+  }
+
+  *::-webkit-scrollbar-track {
+    background: ${theme.colors.bg};
+  }
+
+  *::-webkit-scrollbar-corner {
+    background: ${theme.colors.bg};
+  }
+`;
+
+export const createWebviewInlineStyle = (theme: Theme) => {
   return css`
     /* background */
     html,
@@ -93,21 +112,6 @@ export const createWebviewStyle = (theme: Theme) => {
     }
 
     /* scrollbar */
-    *::-webkit-scrollbar {
-      width: 7px;
-      height: 7px;
-    }
-
-    *::-webkit-scrollbar-thumb {
-      background: ${theme.colors.scrollbar};
-    }
-
-    *::-webkit-scrollbar-track {
-      background: ${theme.colors.bg};
-    }
-
-    *::-webkit-scrollbar-corner {
-      background: ${theme.colors.bg};
-    }
+    ${scrollbarStyle(theme)}
   `.styles;
 };

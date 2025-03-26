@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { type Theme } from '@emotion/react';
 
-import { createWebviewStyle } from '@/renderer/styles';
+import { createWebviewInlineStyle, scrollbarStyle } from '@/renderer/styles';
 
 import { isBojProblemUrl } from '@/renderer/utils';
 
@@ -48,13 +48,18 @@ export function useModifyWebview() {
       webview.removeInsertedCSS(insertCSSKey);
     }
 
-    if (theme === 'programmers' && isBojProblemUrl(webview.getURL())) {
-      const cssKey = await webview.insertCSS(createWebviewStyle(emotionTheme));
-
-      // BUG: 곧바로 대입 시 비동기처리 되지 않는 이슈 존재
-      // 더 나은 구조로 변경 필요
-      useStore.getState().insertCSSKey = cssKey;
+    if (!isBojProblemUrl(webview.getURL())) {
+      return;
     }
+
+    // BUG: `cssKey` 변수 없이 곧바로 대입 시 비동기처리 되지 않는 이슈 존재
+    // 더 나은 구조로 변경 필요
+    const cssKey =
+      theme === 'baekjoon'
+        ? await webview.insertCSS(scrollbarStyle(emotionTheme).styles)
+        : await webview.insertCSS(createWebviewInlineStyle(emotionTheme));
+
+    useStore.getState().insertCSSKey = cssKey;
   }, []);
 
   const updateWebviewUrl = useCallback(
