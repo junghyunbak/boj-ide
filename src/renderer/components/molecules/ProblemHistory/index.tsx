@@ -178,7 +178,7 @@ function EditingProblemItem({ problemNumber, languages }: { problemNumber: strin
   const { addProblemTab } = useModifyTab();
 
   const handleClickEditingProblem = (language: Language) => () => {
-    const problem: ProblemInfo = { name: '', number: problemNumber, testCase: { inputs: [], outputs: [] } };
+    const problem: ProblemInfo = { name: title, number: problemNumber, testCase: { inputs: [], outputs: [] } };
 
     gotoProblem(problem);
     addProblemTab(problem);
