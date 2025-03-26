@@ -122,7 +122,7 @@ const createWindow = async () => {
   let forceQuit: boolean = false;
 
   ipc.on('toggle-theme', (e, { data: { theme } }) => {
-    if (mainWindow && !mainWindow.isDestroyed()) {
+    if (mainWindow && !mainWindow.isDestroyed() && 'setTitleBarOverlay' in mainWindow) {
       if (theme === 'dark') {
         mainWindow.setTitleBarOverlay({ symbolColor: '#B2C0CC' });
       } else {
