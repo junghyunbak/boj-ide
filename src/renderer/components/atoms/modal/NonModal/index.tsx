@@ -17,8 +17,6 @@ export const NonModal = forwardRef<HTMLDivElement, NonModalProps>(
       <div
         ref={ref}
         css={(theme) => css`
-          display: ${isOpen ? 'block' : 'none'};
-
           position: absolute;
           z-index: ${zIndex.overlay.nonModal};
 
@@ -39,7 +37,7 @@ export const NonModal = forwardRef<HTMLDivElement, NonModalProps>(
           inset,
         }}
       >
-        {children}
+        {isOpen && children}
       </div>
     );
   },
