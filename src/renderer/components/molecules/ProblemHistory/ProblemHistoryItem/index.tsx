@@ -32,7 +32,7 @@ export const ProblemHistoryItem = memo(({ problem }: ProblemHistoriItemProps) =>
 
   const { language } = useLanguage();
   const { isStale } = useStale(problem, language);
-  const { tierBase64, title } = useFetchProblem(problem.number);
+  const { tierBase64 } = useFetchProblem(problem.number);
 
   const { gotoProblem } = useModifyWebview();
   const { closeHistoryModal, removeHistoryWithProblemNumber } = useModifyHistories();
@@ -80,7 +80,7 @@ export const ProblemHistoryItem = memo(({ problem }: ProblemHistoriItemProps) =>
     >
       <ProblemHistoryItemContentBox>
         <ProblemHistoryItemContentIconImage src={tierBase64 || placeholderLogo} />
-        <ProblemHistoryItemContentParagraph>{`${problem.number}번: ${title}`}</ProblemHistoryItemContentParagraph>
+        <ProblemHistoryItemContentParagraph>{`${problem.number}번: ${problem.name}`}</ProblemHistoryItemContentParagraph>
       </ProblemHistoryItemContentBox>
 
       <ProblmHistoryItemCloseButtonBox>{Content}</ProblmHistoryItemCloseButtonBox>
