@@ -18,7 +18,6 @@ export const NonModal = forwardRef<HTMLDivElement, NonModalProps>(
         ref={ref}
         css={(theme) => css`
           display: ${isOpen ? 'block' : 'none'};
-          margin: 2px 0 0;
 
           position: absolute;
           z-index: ${zIndex.overlay.nonModal};

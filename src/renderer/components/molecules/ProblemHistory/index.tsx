@@ -72,7 +72,7 @@ export function ProblemHistory() {
         <ProblemHistoryButtonParagraph>방문 기록</ProblemHistoryButtonParagraph>
       </ProblemHistoryButton>
 
-      <NonModal isOpen={isHistoryModalOpen} inset="-8px auto auto auto" ref={historyModalRef} border="round">
+      <NonModal isOpen={isHistoryModalOpen} inset="0 auto auto auto" ref={historyModalRef} border="round">
         <ProblemHistoryModalLayout>
           <ProblemHistoryModalInputBox>
             <ProblemHistoryModalInput

@@ -106,7 +106,7 @@ export function TabOptions() {
           <ThreeDots />
         </button>
 
-        <NonModal ref={modalRef} isOpen={isModalOpen} inset="100% 0 auto auto">
+        <NonModal ref={modalRef} isOpen={isModalOpen} inset="calc(100% + 2px) 0 auto auto">
           <div
             css={css`
               padding: 0.25rem 0;
