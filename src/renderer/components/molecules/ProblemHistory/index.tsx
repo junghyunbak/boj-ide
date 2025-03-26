@@ -19,6 +19,7 @@ import {
   useModifyHistories,
   useModifyLanguage,
   useModifyLayout,
+  useModifyTab,
   useModifyWebview,
   useSetupHistories,
 } from '@/renderer/hooks';
@@ -29,6 +30,10 @@ import { SplitLayout } from '@/renderer/components/molecules/SplitLayout';
 
 import { NonModal } from '@/renderer/components/atoms/modal/NonModal';
 import { ThreeLineHorizontalResizer } from '@/renderer/components/atoms/lines/ThreeLineHorizontalResizer';
+
+import { placeholderLogo } from '@/renderer/assets/base64Images';
+
+import { languageToExt } from '@/renderer/utils';
 
 import { ProblemHistoryItem } from './ProblemHistoryItem';
 import {
@@ -43,8 +48,6 @@ import {
   ProblemHistoryModalListBox,
   ProblemHistoryModalPlaceholder,
 } from './index.style';
-import { placeholderLogo } from '@/renderer/assets/base64Images';
-import { languageToExt } from '@/renderer/utils';
 
 export function ProblemHistory() {
   const {
@@ -172,11 +175,13 @@ function EditingProblemItem({ problemNumber, languages }: { problemNumber: strin
   const { updateLanguage } = useModifyLanguage();
   const { gotoProblem } = useModifyWebview();
   const { closeHistoryModal } = useModifyHistories();
+  const { addProblemTab } = useModifyTab();
 
   const handleClickEditingProblem = (language: Language) => () => {
     const problem: ProblemInfo = { name: '', number: problemNumber, testCase: { inputs: [], outputs: [] } };
 
     gotoProblem(problem);
+    addProblemTab(problem);
     updateLanguage(language);
     closeHistoryModal();
   };

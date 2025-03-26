@@ -5,7 +5,14 @@ import { placeholderLogo } from '@/renderer/assets/base64Images';
 import { XButton } from '@/renderer/components/atoms/buttons/XButton';
 import { StaleBall } from '@/renderer/components/atoms/StaleBall';
 
-import { useFetchProblem, useModifyWebview, useModifyHistories, useStale, useLanguage } from '@/renderer/hooks';
+import {
+  useFetchProblem,
+  useModifyWebview,
+  useModifyHistories,
+  useStale,
+  useLanguage,
+  useModifyTab,
+} from '@/renderer/hooks';
 
 import {
   ProblemHistoryItemLayout,
@@ -29,9 +36,11 @@ export const ProblemHistoryItem = memo(({ problem }: ProblemHistoriItemProps) =>
 
   const { gotoProblem } = useModifyWebview();
   const { closeHistoryModal, removeHistoryWithProblemNumber } = useModifyHistories();
+  const { addProblemTab } = useModifyTab();
 
   const handleItemClick = () => {
     gotoProblem(problem);
+    addProblemTab(problem);
     closeHistoryModal();
   };
 
