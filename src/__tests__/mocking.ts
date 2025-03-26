@@ -6,6 +6,7 @@ import { createMockProblem } from '@/renderer/mock';
 export const webview = document.createElement('webview');
 
 webview.loadURL = async () => {};
+webview.getURL = () => '';
 
 /**
  * problem mocking
@@ -30,20 +31,30 @@ export const problemBData = '문제B데이터';
  * ipc event mocking
  */
 type ClientChannelToListener = {
-  [channel in ClientChannels]?: (message: ChannelToMessage[channel][Receive]) => void | Promise<void>;
+  [channel in ClientChannels]?: ((message: ChannelToMessage[channel][Receive]) => void | Promise<void>)[];
 };
 
 export const clientChannelToListener: ClientChannelToListener = {};
+
+export const electronChannelToIsReceived: { [channel in ElectronChannels]?: boolean } = {};
 
 window.electron = {
   platform: 'win32',
   ipcRenderer: {
     once(channel, func) {},
     on(channel, listener) {
-      clientChannelToListener[channel] = listener;
+      if (!clientChannelToListener[channel]) {
+        clientChannelToListener[channel] = [];
+      }
+
+      // BUG: 종속성이 바뀌어 콜백함수가 갱신되지만 쌓이는 구조를 지니고 있어 문제가 될 수 있다.
+      clientChannelToListener[channel].push(listener);
+
       return () => {};
     },
-    sendMessage(channel, message) {},
+    sendMessage(channel, message) {
+      electronChannelToIsReceived[channel] = true;
+    },
     async invoke(channel, message) {
       switch (channel) {
         case 'save-code':

@@ -48,6 +48,7 @@ export function ConfirmModal() {
           css={css`
             font-family: open-sans;
           `}
+          data-testid="confirm-modal-text"
         >
           {confirmMessage}
         </pre>
@@ -63,7 +64,7 @@ export function ConfirmModal() {
           <ActionButton onClick={handleOkButtonClick} data-testid="confirm-ok-button">
             예
           </ActionButton>
-          <ActionButton onClick={handleNoButtonClick} variant="cancel">
+          <ActionButton onClick={handleNoButtonClick} data-testid="confirm-cancel-button" variant="cancel">
             아니오
           </ActionButton>
         </div>

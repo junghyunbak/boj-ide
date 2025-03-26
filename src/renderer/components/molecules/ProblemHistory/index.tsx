@@ -149,6 +149,7 @@ function EditingProblems() {
         padding-bottom: 4px;
         margin-bottom: 4px;
       `}
+      data-testid="editing-problems"
     >
       {Object.entries(editorValue).map(([problemNumber, languages]) => {
         const staleLanguages = Object.entries(languages || {})
@@ -159,9 +160,7 @@ function EditingProblems() {
           return null;
         }
 
-        console.log(staleLanguages);
-
-        return <EditingProblemItem problemNumber={problemNumber} languages={staleLanguages} />;
+        return <EditingProblemItem key={problemNumber} problemNumber={problemNumber} languages={staleLanguages} />;
       })}
     </div>
   );
@@ -232,6 +231,7 @@ function EditingProblemItem({ problemNumber, languages }: { problemNumber: strin
 
           return (
             <li
+              key={language}
               css={(theme) => css`
                 padding: 2px 4px;
 

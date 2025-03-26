@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 /**
  * ai/react 패키지 내부 브라우저 종속 TransformStream 사용으로 인한 polyfill
  */
@@ -9,3 +11,12 @@ import 'web-streams-polyfill/polyfill';
 import 'geometry-polyfill';
 
 const readable = new ReadableStream();
+
+/**
+ * axios
+ */
+jest.mock('axios');
+
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+mockedAxios.get.mockResolvedValue({ data: {} });

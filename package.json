@@ -109,7 +109,7 @@
     },
     "setupFiles": [
       "./.erb/scripts/check-build-exists.ts",
-      "./jest.setup.js"
+      "./jest.setup.ts"
     ],
     "testEnvironment": "jsdom",
     "testEnvironmentOptions": {

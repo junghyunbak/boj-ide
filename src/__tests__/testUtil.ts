@@ -26,11 +26,29 @@ export function getEditor() {
   return $cmEditor;
 }
 
+export function getProblemTab(problem: ProblemInfo) {
+  const $problemTab = screen.getByText(`${problem.number}번: ${problem.name}`);
+
+  return $problemTab;
+}
+
+export function getConfirmModalText() {
+  const $confirmModalText = screen.getByTestId('confirm-modal-text');
+
+  return $confirmModalText;
+}
+
+export function getEditingProblems() {
+  const $editingProblems = screen.queryByTestId('editing-problems');
+
+  return $editingProblems;
+}
+
 /**
  * user event
  */
 export async function clickProblemTab(problem: ProblemInfo) {
-  const $problemTab = screen.getByText(`${problem.number}번: ${problem.name}`);
+  const $problemTab = getProblemTab(problem);
 
   await act(async () => {
     await userEvent.click($problemTab);
@@ -86,6 +104,14 @@ export async function clickConfirmOkButton() {
   });
 }
 
+export async function clickConfirmCancelButton() {
+  const $confirmCancelButton = screen.getByTestId<HTMLButtonElement>('confirm-cancel-button');
+
+  await act(async () => {
+    await userEvent.click($confirmCancelButton);
+  });
+}
+
 export async function clickSubmitCodeButton() {
   const $submitCodeButton = screen.getByTestId<HTMLButtonElement>('submit-code-button');
 
@@ -123,13 +149,14 @@ export function resetProblemStale(problem: ProblemInfo) {
   });
 }
 
-export function clearProblemEditorValue(problem: ProblemInfo) {
+export function clearProblemEditorValue(problem: ProblemInfo, language: Language) {
   const { result } = renderHook(() => ({ ...useLanguage(), ...useModifyEditor() }));
 
   act(() => {
-    const { language, updateEditorValue } = result.current;
+    const { updateEditorValue, syncEditorValue } = result.current;
 
     updateEditorValue(problem, language, null);
+    syncEditorValue(problem, language);
   });
 }
 
