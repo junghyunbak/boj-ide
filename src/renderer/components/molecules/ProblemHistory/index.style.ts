@@ -10,6 +10,8 @@ export const ProblemHistoryLayout = styled.div`
 
   display: flex;
   justify-content: center;
+
+  -webkit-app-region: no-drag;
 `;
 
 export const ProblemHistoryButton = styled.button`

@@ -60,6 +60,7 @@ const createWindow = async () => {
     height: 768,
     resizable: true,
     icon: getAssetPath('icon.png'),
+    titleBarStyle: 'hidden',
     webPreferences: {
       webviewTag: true,
       preload: PRELOAD_PATH,

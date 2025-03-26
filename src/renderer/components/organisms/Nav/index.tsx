@@ -37,8 +37,6 @@ export function Nav() {
           <SubmitButton />
         </div>
       </div>
-
-      <ProblemHistory />
     </div>
   );
 }

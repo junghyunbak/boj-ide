@@ -2,18 +2,22 @@ import { css } from '@emotion/react';
 
 import { zIndex } from '@/renderer/styles';
 
-import { Nav } from '@/renderer/components/organisms/Nav';
+import { RowLine } from '@/renderer/components/atoms/lines/RowLIne';
+
 import { AlertModal } from '@/renderer/components/molecules/AlertModal';
 import { ConfirmModal } from '@/renderer/components/molecules/ConfirmModal';
 import { BojView } from '@/renderer/components/molecules/BojView';
-import { Footer } from '@/renderer/components/organisms/Footer';
-import { Tabs } from '@/renderer/components/organisms/Tabs';
-import { Editor } from '@/renderer/components/templates/Editor';
-import { RowLine } from '@/renderer/components/atoms/lines/RowLIne';
-import { Output } from '@/renderer/components/templates/Output';
 import { TabAfterImage } from '@/renderer/components/molecules/TabAfterImage';
 import { EditorPaint } from '@/renderer/components/molecules/EditorPaint';
 import { SplitLayout } from '@/renderer/components/molecules/SplitLayout';
+
+import { Nav } from '@/renderer/components/organisms/Nav';
+import { Footer } from '@/renderer/components/organisms/Footer';
+import { Tabs } from '@/renderer/components/organisms/Tabs';
+import { TitleBar } from '@/renderer/components/organisms/TitleBar';
+
+import { Editor } from '@/renderer/components/templates/Editor';
+import { Output } from '@/renderer/components/templates/Output';
 
 import { useLayout, useModifyDrag, useModifyLayout } from '@/renderer/hooks';
 
@@ -34,6 +38,8 @@ export function MainPage() {
         flex-direction: column;
       `}
     >
+      <TitleBar />
+
       <Tabs />
       <Nav />
       <RowLine />
@@ -91,6 +97,7 @@ export function MainPage() {
           </SplitLayout.Right>
         </SplitLayout>
       </div>
+
       <Footer />
 
       <AlertModal />

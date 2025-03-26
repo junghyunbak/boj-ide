@@ -50,7 +50,6 @@ export function Tabs() {
       <div
         css={css`
           width: 100%;
-          padding-top: 0.3rem;
 
           display: flex;
           justify-content: space-between;
