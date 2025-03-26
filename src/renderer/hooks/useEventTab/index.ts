@@ -21,21 +21,19 @@ export function useEventTab() {
 
       const isStaleDataExist = getEditingFileIsExist();
 
-      if (isStaleDataExist) {
-        fireConfirmModal(
-          '저장되지 않은 파일이 존재합니다.\n종료하시겠습니까?',
-          () => {
-            window.electron.ipcRenderer.sendMessage('quit-app', undefined);
-          },
-          () => {
+      fireConfirmModal(
+        `${isStaleDataExist ? '저장되지 않은 파일이 존재합니다.\n' : ''}종료하시겠습니까?`,
+        () => {
+          window.electron.ipcRenderer.sendMessage('quit-app', undefined);
+        },
+        () => {
+          if (isStaleDataExist) {
             openHistoryModal();
-          },
-        );
-      } else {
-        window.electron.ipcRenderer.sendMessage('quit-app', undefined);
-      }
+          }
+        },
+      );
     },
-    [problemTabCount, fireConfirmModal, openHistoryModal, getEditingFileIsExist],
+    [problem, problemTabCount, getEditingFileIsExist, fireConfirmModal, openHistoryModal],
     'close-tab',
   );
 }
