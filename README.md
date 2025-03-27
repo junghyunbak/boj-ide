@@ -59,6 +59,14 @@
 
 기능은 우측 메뉴에서 비활성화할 수 있습니다.
 
+### 8. 랜덤 문제 생성
+
+![Mar-27-2025 13-41-46](https://github.com/user-attachments/assets/b7feae03-0dbe-4c30-ac41-58f480920a9d)
+
+원하는 난이도 구간의 문제를 랜덤으로 생성합니다.
+
+백준 ID를 추가로 입력하여 이미 풀이한 문제를 제외할 수 있습니다.
+
 ## 유의 사항
 
 * 앱을 사용하려면 전용 [컴파일러/인터프리터](https://boj-ide.gitbook.io/boj-ide-docs/note/cli)가 미리 설치되어 있어야 합니다.
