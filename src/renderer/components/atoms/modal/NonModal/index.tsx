@@ -13,6 +13,10 @@ interface NonModalProps {
 
 export const NonModal = forwardRef<HTMLDivElement, NonModalProps>(
   ({ children, isOpen, inset, border = 'flat' }, ref) => {
+    if (!isOpen) {
+      return null;
+    }
+
     return (
       <div
         ref={ref}
@@ -37,7 +41,7 @@ export const NonModal = forwardRef<HTMLDivElement, NonModalProps>(
           inset,
         }}
       >
-        {isOpen && children}
+        {children}
       </div>
     );
   },

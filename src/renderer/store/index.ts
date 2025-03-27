@@ -16,6 +16,7 @@ import { createThemeSlice } from './slices/theme';
 import { createVimSlice } from './slices/vim';
 import { createDragSlice } from './slices/drag';
 import { createLanguageSlice } from './slices/language';
+import { createRandomSlice } from './slices/random';
 
 import { createPaintSlice } from './slices/paint';
 
@@ -31,11 +32,13 @@ export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createHistorySlice> &
   ReturnType<typeof createDragSlice> &
   ReturnType<typeof createVimSlice> &
-  ReturnType<typeof createLanguageSlice>;
+  ReturnType<typeof createLanguageSlice> &
+  ReturnType<typeof createRandomSlice>;
 
 export const useStore = create<StoreState>()(
   persist(
     (...a) => ({
+      ...createRandomSlice(...a),
       ...createLanguageSlice(...a),
       ...createBojViewSlice(...a),
       ...createEditorSlice(...a),
@@ -112,6 +115,12 @@ export const useStore = create<StoreState>()(
            * webview
            */
           startUrl,
+
+          /**
+           * random
+           */
+          baekjoonId,
+          tierValues,
         } = s;
 
         return {
@@ -134,6 +143,8 @@ export const useStore = create<StoreState>()(
           historyModalHeight,
           startUrl,
           indentSpace,
+          baekjoonId,
+          tierValues,
         };
       },
     },

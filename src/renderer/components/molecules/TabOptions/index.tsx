@@ -14,6 +14,7 @@ import { ReactComponent as ThreeDots } from '@/renderer/assets/svgs/three-dots.s
 
 import { NonModal } from '@/renderer/components/atoms/modal/NonModal';
 import { ListButton } from '@/renderer/components/atoms/buttons/ListButton';
+import { RandomProblemCreator } from '../RandomProblemCreator';
 
 export function TabOptions() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -70,8 +71,11 @@ export function TabOptions() {
           align-items: center;
           height: fit-content;
           position: relative;
+          gap: 0.5rem;
         `}
       >
+        <RandomProblemCreator />
+
         <button
           ref={buttonRef}
           type="button"

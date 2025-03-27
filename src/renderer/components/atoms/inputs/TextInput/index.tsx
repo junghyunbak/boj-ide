@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 
 interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-export function TextInput({ value, onChange }: TextInputProps) {
+export function TextInput({ value, onChange, placeholder }: TextInputProps) {
   return (
     <input
       type="text"
@@ -16,7 +16,7 @@ export function TextInput({ value, onChange }: TextInputProps) {
         padding: 0.5rem;
         outline: none;
       `}
-      placeholder="문제 번호"
+      placeholder={placeholder || '문제 번호'}
     />
   );
 }
