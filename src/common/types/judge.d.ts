@@ -3,8 +3,9 @@ type Language = 'node.js' | 'C++14' | 'C++17' | 'Java11' | 'Python3';
 type JudgeInfo = {
   cli: Cli;
   ext: Partial<Record<NodeJS.Platform, string>>;
+  program?: Executer;
   compile?: (fileName?: string) => Partial<Record<NodeJS.Platform, `${Cli} ${string}`>>;
-  execute: (fileName?: string) => Partial<Record<NodeJS.Platform, string>>;
+  executeArgs: (fileName?: string) => Partial<Record<NodeJS.Platform, string[]>>;
 };
 
 type JudgeResult = {

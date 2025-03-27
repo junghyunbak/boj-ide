@@ -9,9 +9,9 @@ export const langToJudgeInfo: Record<Language, JudgeInfo> = {
       win32: `g++ ${fileName}.cpp -o ${fileName} -std=gnu++17 -O2 -Wall -lm -static`,
       darwin: `g++ ${fileName}.cc -o ${fileName} -std=c++17`,
     }),
-    execute: (fileName) => ({
-      win32: `${fileName}.exe`,
-      darwin: `./${fileName}`,
+    executeArgs: () => ({
+      win32: [],
+      darwin: [],
     }),
   },
   'C++14': {
@@ -24,9 +24,9 @@ export const langToJudgeInfo: Record<Language, JudgeInfo> = {
       win32: `g++ ${fileName}.cpp -o ${fileName} -std=gnu++14 -O2 -Wall -lm -static`,
       darwin: `g++ ${fileName}.cc -o ${fileName} -std=c++14`,
     }),
-    execute: (fileName) => ({
-      win32: `${fileName}.exe`,
-      darwin: `./${fileName}`,
+    executeArgs: () => ({
+      win32: [],
+      darwin: [],
     }),
   },
   Java11: {
@@ -35,13 +35,14 @@ export const langToJudgeInfo: Record<Language, JudgeInfo> = {
       win32: 'java',
       darwin: 'java',
     },
+    program: 'java',
     compile: () => ({
       win32: 'javac --release 11 -J-Xms1024m -J-Xmx1920m -J-Xss512m -encoding UTF-8 Main.java',
       darwin: 'javac --release 11 -J-Xms1024m -J-Xmx1920m -J-Xss512m -encoding UTF-8 Main.java',
     }),
-    execute: () => ({
-      win32: 'java -Xms1024m -Xmx1920m -Xss512m -Dfile.encoding=UTF-8 -XX:+UseSerialGC Main',
-      darwin: 'java -Xms1024m -Xmx1920m -Xss512m -Dfile.encoding=UTF-8 -XX:+UseSerialGC Main',
+    executeArgs: () => ({
+      win32: ['-Xms1024m', '-Xmx1920m', '-Xss512m', '-Dfile.encoding=UTF-8', '-XX:+UseSerialGC', 'Main'],
+      darwin: ['-Xms1024m', '-Xmx1920m', '-Xss512m', '-Dfile.encoding=UTF-8', '-XX:+UseSerialGC', 'Main'],
     }),
   },
   'node.js': {
@@ -50,9 +51,10 @@ export const langToJudgeInfo: Record<Language, JudgeInfo> = {
       darwin: 'js',
     },
     cli: 'node',
-    execute: (fileName) => ({
-      win32: `node ${fileName}.js`,
-      darwin: `node ${fileName}.js`,
+    program: 'node',
+    executeArgs: (fileName) => ({
+      win32: [`${fileName}.js`],
+      darwin: [`${fileName}.js`],
     }),
   },
   Python3: {
@@ -61,9 +63,10 @@ export const langToJudgeInfo: Record<Language, JudgeInfo> = {
       darwin: 'py',
     },
     cli: 'python3',
-    execute: (fileName) => ({
-      win32: `python3 -W ignore ${fileName}.py`,
-      darwin: `python3 -W ignore ${fileName}.py`,
+    program: 'python3',
+    executeArgs: (fileName) => ({
+      win32: ['-W', 'ignore', `${fileName}.py`],
+      darwin: ['-W', 'ignore', `${fileName}.py`],
     }),
   },
 };

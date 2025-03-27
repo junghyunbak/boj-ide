@@ -23,8 +23,8 @@ class CustomSpawn {
     this.env = { ...process.env, ...shellEnv };
   }
 
-  async(cmd: string, options: SpawnOptionsWithoutStdio) {
-    return spawn(cmd, { ...options, env: this.env });
+  async(cmd: string, args: string[], options: SpawnOptionsWithoutStdio) {
+    return spawn(cmd, args, { ...options, env: this.env });
   }
 
   sync(cmd: string, options: SpawnSyncOptions) {

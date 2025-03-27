@@ -76,14 +76,28 @@ export class Judge {
     return cmd;
   }
 
-  private getExecuteCmd(data: MyOmit<CodeInfo, 'code'>) {
-    const executeCmd = langToJudgeInfo[data.language].execute(data.number)[process.platform];
+  private getExecuteCmdArgs(data: MyOmit<CodeInfo, 'code'>) {
+    const executeCmd = langToJudgeInfo[data.language].executeArgs(data.number)[process.platform];
 
     if (!executeCmd) {
       throw new Error('지원하지 않는 플랫폼입니다.');
     }
 
     return executeCmd;
+  }
+
+  private getExecuteProgram(data: MyOmit<CodeInfo, 'code'>) {
+    if (data.language === 'C++14' || data.language === 'C++17') {
+      return process.platform === 'win32' ? `${data.number}.exe` : `./${data.number}`;
+    }
+
+    const { program } = langToJudgeInfo[data.language];
+
+    if (!program) {
+      throw new Error('지원하지 않는 언어입니다.');
+    }
+
+    return program;
   }
 
   private async compile({ language, code, number }: CodeInfo): Promise<ErrorMessage | null> {
@@ -102,7 +116,7 @@ export class Judge {
     const stderr = await new Promise<string>((resolve) => {
       let error = '';
 
-      const ps = customSpawn.async(compileCmd, { cwd: this.basePath, shell: true });
+      const ps = customSpawn.async(compileCmd, [], { cwd: this.basePath, shell: true });
 
       ps.stderr.on('data', (buf) => {
         error += buf.toString();
@@ -116,10 +130,10 @@ export class Judge {
     return stderr;
   }
 
-  private execute(cmd: string, input: string) {
+  private execute(program: string, args: string[], input: string) {
     return new Promise<{ stdout: string; stderr: string; signal: NodeJS.Signals | null; elapsed: number }>(
       (resolve, reject) => {
-        const process = customSpawn.async(cmd, { shell: true, stdio: ['pipe', 'pipe', 'pipe'], cwd: this.basePath });
+        const process = customSpawn.async(program, args, { stdio: ['pipe', 'pipe', 'pipe'], cwd: this.basePath });
 
         let stdoutBuffer = Buffer.alloc(0);
         let stderrBuffer = Buffer.alloc(0);
@@ -228,12 +242,13 @@ export class Judge {
         }
 
         // 3. 채점 시작
-        const executeCmd = this.getExecuteCmd({ language, number });
+        const program = this.getExecuteProgram({ language, number });
+        const args = this.getExecuteCmdArgs({ language, number });
 
         await Promise.all(
           inputs.map((input, index) =>
             (async () => {
-              const { stderr, stdout, signal, elapsed } = await this.execute(executeCmd, input);
+              const { stderr, stdout, signal, elapsed } = await this.execute(program, args, input);
 
               const result = ((): JudgeResult['result'] => {
                 if (signal === 'SIGKILL') {
