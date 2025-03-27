@@ -13,9 +13,12 @@ import { useShallow } from 'zustand/shallow';
 import { ReactComponent as Badge } from '@/renderer/assets/svgs/solvedac-badge.svg';
 import { ReactComponent as Dice } from '@/renderer/assets/svgs/dice.svg';
 
+import randomPickImageSrc from '@/renderer/assets/gifs/random-pick.gif';
+
 import { NonModal } from '../../atoms/modal/NonModal';
 import { TextInput } from '../../atoms/inputs/TextInput';
 import { ActionButton } from '../../atoms/buttons/ActionButton';
+import { TourOverlay } from '../TourOverlay';
 
 function tierToColor(tier: number) {
   if (tier === 0) {
@@ -259,6 +262,24 @@ export function RandomProblemCreator() {
           <ActionButton onClick={handleCreateRandomProblemButtonClick}>랜덤 문제 생성</ActionButton>
         </div>
       </NonModal>
+
+      <TourOverlay tourRef={buttonRef} title="랜덤 문제 생성" guideLoc="bottomRight" myTourStep={4}>
+        <img
+          src={randomPickImageSrc}
+          width="300px"
+          /**
+           * height값이 없으면 위치가 잘못 계산될 수 있음.
+           */
+          height="150px"
+          css={css`
+            object-fit: contain;
+          `}
+        />
+        <br />
+        <p>슬라이더를 통해 난이도를 설정한 후 버튼을 누르면, 랜덤으로 문제가 생성됩니다.</p>
+        <br />
+        <p>백준 ID를 추가로 입력하여 이미 풀이한 문제를 제외할 수 있습니다.</p>
+      </TourOverlay>
     </div>
   );
 }

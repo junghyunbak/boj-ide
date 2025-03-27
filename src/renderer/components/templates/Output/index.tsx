@@ -30,7 +30,7 @@ export function Output() {
       >
         <OutputContent />
 
-        <TourOverlay title="테스트 결과 및 디버깅" myTourStep={5} guideLoc="leftTop" tourRef={tourRef}>
+        <TourOverlay title="테스트 결과 및 디버깅" myTourStep={6} guideLoc="leftTop" tourRef={tourRef}>
           <p>테스트 결과가 표시되는 테이블과, 테스트케이스를 추가할 수 있는 생성기가 존재합니다.</p>
           <br />
           <ul>

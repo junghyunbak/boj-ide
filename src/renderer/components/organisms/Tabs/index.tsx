@@ -103,7 +103,7 @@ export function Tabs() {
         <TabOptions />
       </div>
 
-      <TourOverlay title="탭" tourRef={tourRef} guideLoc="bottom" myTourStep={6}>
+      <TourOverlay title="탭" tourRef={tourRef} guideLoc="bottom" myTourStep={7}>
         <p>문제 페이지로 이동할 때 마다 탭이 생성됩니다.</p>
         <br />
         <ul>
