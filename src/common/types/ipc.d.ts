@@ -26,6 +26,10 @@ type ChannelToMessage = {
   'quit-app': [];
   'clipboard-copy-image': [MessageTemplate<{ dataUrl: string }>, MessageTemplate<SaveResult>];
   'toggle-theme': [MessageTemplate<{ theme: 'light' | 'dark' }>];
+  'create-random-problem': [
+    MessageTemplate<{ baekjoonId: string; tierRange: number[] }>,
+    MessageTemplate<{ problemNumber: string; title: string }>,
+  ];
 
   /**
    * client
@@ -59,6 +63,7 @@ type ElectronChannels = keyof Pick<
   | 'quit-app'
   | 'clipboard-copy-image'
   | 'toggle-theme'
+  | 'create-random-problem'
 >;
 
 type ClientChannels = keyof Pick<

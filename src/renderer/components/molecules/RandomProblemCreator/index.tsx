@@ -1,9 +1,11 @@
+/* eslint-disable yoda */
+/* eslint-disable no-else-return */
 import { useCallback, useRef, useState } from 'react';
 import { Range } from 'react-range';
 
 import { css, useTheme } from '@emotion/react';
 
-import { useEventClickOutOfModal, useEventWindow } from '@/renderer/hooks';
+import { useEventClickOutOfModal, useEventWindow, useModifyWebview } from '@/renderer/hooks';
 
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
@@ -28,16 +30,14 @@ function tierToColor(tier: number) {
     return '#2ae2a4';
   } else if (21 <= tier && tier <= 25) {
     return '#00b4fc';
-  } else if (26 <= tier && tier <= 30) {
-    return '#ff0062';
   } else {
-    return '#abacff';
+    return '#ff0062';
   }
 }
 
 const STEP = 1;
 const MIN_TIER = 1;
-const MAX_TIER = 31;
+const MAX_TIER = 30;
 
 export function RandomProblemCreator() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,6 +49,8 @@ export function RandomProblemCreator() {
 
   const [tierValues, setTierValues] = useStore(useShallow((s) => [s.tierValues, s.setTierValues]));
   const [baekjoonId, setBaekjoonId] = useStore(useShallow((s) => [s.baekjoonId, s.setBaekjoonId]));
+
+  const { gotoProblem } = useModifyWebview();
 
   useEventWindow(
     (e) => {
@@ -65,6 +67,31 @@ export function RandomProblemCreator() {
   }, []);
 
   useEventClickOutOfModal(buttonRef, modalRef, closeModal);
+
+  const handleCreateRandomProblemButtonClick = async () => {
+    closeModal();
+
+    const response = await window.electron.ipcRenderer.invoke('create-random-problem', {
+      data: { tierRange: tierValues, baekjoonId },
+    });
+
+    if (response) {
+      const {
+        data: { problemNumber, title },
+      } = response;
+
+      const nextProblem: ProblemInfo = {
+        number: problemNumber,
+        name: title,
+        testCase: {
+          inputs: [],
+          outputs: [],
+        },
+      };
+
+      gotoProblem(nextProblem);
+    }
+  };
 
   return (
     <div
@@ -229,7 +256,7 @@ export function RandomProblemCreator() {
             />
           </div>
 
-          <ActionButton>랜덤 문제 생성</ActionButton>
+          <ActionButton onClick={handleCreateRandomProblemButtonClick}>랜덤 문제 생성</ActionButton>
         </div>
       </NonModal>
     </div>

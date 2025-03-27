@@ -18,7 +18,7 @@ import {
 
 import { PRELOAD_PATH, USER_DATA_PATH } from '@/main/constants';
 
-import { MenuBuilder, Boj, Code, Judge, SentryService, AppUpdater, Logger, Clipboard } from '@/main/modules';
+import { MenuBuilder, Boj, Code, Judge, SentryService, AppUpdater, Logger, Clipboard, SolvedAPI } from '@/main/modules';
 import { size } from '@/common/constants';
 
 SentryService.init();
@@ -80,6 +80,7 @@ const createWindow = async () => {
   new Logger().build();
   new MenuBuilder(mainWindow).buildMenu();
   new Clipboard(mainWindow).build();
+  new SolvedAPI(mainWindow).build();
 
   if (isProd) {
     new AppUpdater(mainWindow).build();

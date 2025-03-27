@@ -6,3 +6,4 @@ export * from './code';
 export * from './autoUpdater';
 export * from './logger';
 export * from './clipboard';
+export * from './solved';
