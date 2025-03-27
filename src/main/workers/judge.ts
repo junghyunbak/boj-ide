@@ -32,7 +32,7 @@ function execute({
     cwd: basePath,
     input,
     shell: true,
-    timeout: 6000,
+    timeout: 10000,
     maxBuffer: MAX_BUFFER_SIZE,
   });
 
