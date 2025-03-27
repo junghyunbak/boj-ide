@@ -144,7 +144,7 @@ export function RandomProblemCreator() {
           <TextInput
             value={baekjoonId}
             onChange={(e) => setBaekjoonId(e.target.value)}
-            placeholder="유저 `jeong5728`이 풀지 않은 문제 검색"
+            placeholder="예 - jeong5728 (유저가 풀이한 문제 제외)"
           />
 
           <div
