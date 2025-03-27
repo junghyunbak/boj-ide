@@ -17,6 +17,7 @@ type ChannelToMessage = {
   'save-code': [MessageTemplate<CodeInfo>, MessageTemplate<SaveResult>];
   'save-default-code': [MessageTemplate<MyOmit<CodeInfo, 'number'>>, MessageTemplate<SaveResult>];
   'judge-start': [MessageTemplate<CodeInfo & Pick<ProblemInfo, 'testCase'> & { judgeId: string }>];
+  'stop-judge': [];
   'submit-code': [MessageTemplate<CodeInfo>];
   'open-source-code-folder': [];
   'open-deep-link': [];
@@ -64,6 +65,7 @@ type ElectronChannels = keyof Pick<
   | 'clipboard-copy-image'
   | 'toggle-theme'
   | 'create-random-problem'
+  | 'stop-judge'
 >;
 
 type ClientChannels = keyof Pick<

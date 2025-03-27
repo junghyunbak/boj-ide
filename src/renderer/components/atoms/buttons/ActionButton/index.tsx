@@ -5,7 +5,7 @@ import { css, useTheme } from '@emotion/react';
 import Color from 'color';
 
 interface ActionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'cancel';
+  variant?: 'primary' | 'cancel' | 'interupt';
 }
 
 export const ActionButton = forwardRef<HTMLButtonElement, ActionButtonProps>(({ variant, ...props }, ref) => {
@@ -13,6 +13,8 @@ export const ActionButton = forwardRef<HTMLButtonElement, ActionButtonProps>(({ 
 
   const bgColor = (() => {
     switch (variant) {
+      case 'interupt':
+        return '#d9534f';
       case 'cancel':
         return '#95a5a6';
       case 'primary':

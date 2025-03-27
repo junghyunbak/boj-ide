@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 
 import { ExecuteCodeButton } from '@/renderer/components/molecules/ExecuteCodeButton';
 import { ExecuteResultText } from '@/renderer/components/molecules/ExecuteResultText';
+import { StopJudgeButton } from '@/renderer/components/molecules/StopJudgeButton';
 
 export function OutputHeader() {
   return (
@@ -16,10 +17,15 @@ export function OutputHeader() {
       <div
         css={css`
           display: flex;
+          align-items: center;
           gap: 0.5rem;
         `}
       >
-        <p>실행 결과</p>
+        <div>
+          <p>실행 결과</p>
+        </div>
+
+        <StopJudgeButton />
         <ExecuteResultText />
       </div>
       <ExecuteCodeButton />

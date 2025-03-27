@@ -35,6 +35,8 @@ export function Text({
         return theme.common.colors.judge.judging;
       case '컴파일 에러':
         return theme.common.colors.judge.compileError;
+      case '실행 중단':
+        return theme.common.colors.judge.stop;
       case '기본':
       default:
         return theme.colors.fg;

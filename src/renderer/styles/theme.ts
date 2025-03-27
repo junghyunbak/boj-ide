@@ -15,6 +15,7 @@ export const judgeColors = {
   over: '#fa7268',
   compileError: '#0f4c81',
   judging: '#e67e22',
+  stop: '#d32f2f',
 };
 
 declare module '@emotion/react' {

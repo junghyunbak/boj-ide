@@ -3,13 +3,14 @@ import { app, BrowserWindow } from 'electron';
 
 import fs from 'fs';
 import path from 'path';
-import { Worker } from 'worker_threads';
 
-import { customSpawn, normalizeOutput, ipc, checkCli } from '@/main/utils';
+import { customSpawn, normalizeOutput, ipc, checkCli, removeAnsiText } from '@/main/utils';
 
-import { MAX_LINE_LENGTH, langToJudgeInfo } from '@/main/constants';
+import { MAX_BUFFER_SIZE, MAX_LINE_LENGTH, langToJudgeInfo } from '@/main/constants';
 
 import { sentryLogging } from '@/main/error';
+
+import { ChildProcessWithoutNullStreams } from 'child_process';
 
 import { Code } from './code';
 
@@ -21,6 +22,8 @@ export class Judge {
   private mainWindow: BrowserWindow;
 
   private codeModule: Code;
+
+  private judgeProcesses: ChildProcessWithoutNullStreams[] = [];
 
   constructor(mainWindow: BrowserWindow) {
     this.basePath = app.getPath('userData');
@@ -113,7 +116,80 @@ export class Judge {
     return stderr;
   }
 
+  private execute(cmd: string, input: string) {
+    return new Promise<{ stdout: string; stderr: string; signal: NodeJS.Signals | null; elapsed: number }>(
+      (resolve, reject) => {
+        const process = customSpawn.async(cmd, { shell: true, stdio: ['pipe', 'pipe', 'pipe'], cwd: this.basePath });
+
+        let stdoutBuffer = Buffer.alloc(0);
+        let stderrBuffer = Buffer.alloc(0);
+
+        this.judgeProcesses.push(process);
+
+        process.stdin.write(input);
+        process.stdin.end();
+
+        const start = Date.now();
+
+        const timeoutId = setTimeout(() => {
+          process.kill('SIGTERM');
+        }, 10000);
+
+        process.stdout.on('data', (data) => {
+          stdoutBuffer = Buffer.concat([stdoutBuffer, data]);
+
+          if (stdoutBuffer.length > MAX_BUFFER_SIZE) {
+            process.kill('SIGTERM');
+          }
+        });
+
+        process.stderr.on('data', (data) => {
+          stderrBuffer = Buffer.concat([stderrBuffer, data]);
+
+          if (stderrBuffer.length > MAX_BUFFER_SIZE) {
+            process.kill('SIGTERM');
+          }
+        });
+
+        process.on('close', (code, signal) => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+
+          resolve({
+            stdout: removeAnsiText(stdoutBuffer.toString()),
+            stderr: removeAnsiText(stderrBuffer.toString()),
+            signal,
+            elapsed: Date.now() - start,
+          });
+        });
+
+        process.on('error', (err) => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+
+          resolve({
+            stdout: removeAnsiText(stdoutBuffer.toString()),
+            stderr: removeAnsiText(stderrBuffer.toString()),
+            signal: 'SIGTERM',
+            elapsed: Date.now() - start,
+          });
+        });
+      },
+    );
+  }
+
   build() {
+    ipc.on('stop-judge', async () => {
+      // BUG: 컴파일 중 stop-judge 요청 시 아무일도 발생하지 않음.
+      this.judgeProcesses = this.judgeProcesses.filter((process) => !(process.killed || process.exitCode === 0));
+
+      this.judgeProcesses.forEach((process) => {
+        process.kill('SIGKILL');
+      });
+    });
+
     ipc.on(
       'judge-start',
       async (
@@ -154,22 +230,16 @@ export class Judge {
         // 3. 채점 시작
         const executeCmd = this.getExecuteCmd({ language, number });
 
-        for (let index = 0; index < inputs.length; index += 1) {
-          (() => {
-            const worker = new Worker(path.join(__dirname, 'worker'));
-
-            worker.on('exit', () => {
-              worker.terminate();
-            });
-
-            worker.on('error', () => {
-              worker.terminate();
-            });
-
-            worker.once('message', (data) => {
-              const { stderr, stdout, signal, elapsed } = data;
+        await Promise.all(
+          inputs.map((input, index) =>
+            (async () => {
+              const { stderr, stdout, signal, elapsed } = await this.execute(executeCmd, input);
 
               const result = ((): JudgeResult['result'] => {
+                if (signal === 'SIGKILL') {
+                  return '실행 중단';
+                }
+
                 if (stderr.length !== 0) {
                   return '런타임 에러';
                 }
@@ -198,18 +268,9 @@ export class Judge {
               ipc.send(this.mainWindow.webContents, 'judge-result', {
                 data: { index, stderr, stdout: output, elapsed, result, id: judgeId },
               });
-
-              worker.terminate();
-            });
-
-            // TODO: 타입 안정성 작업 필요
-            worker.postMessage({
-              executeCmd,
-              input: inputs[index],
-              basePath: this.basePath,
-            });
-          })();
-        }
+            })(),
+          ),
+        );
       },
     );
   }
