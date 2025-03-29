@@ -66,11 +66,4 @@ export function useEventApp() {
     [fireConfirmModal, openHistoryModal, getEditingFileIsExist],
     'check-saved',
   );
-
-  /**
-   * deep link에 의해 앱이 실행되었는지 체크
-   */
-  useEffect(() => {
-    window.electron.ipcRenderer.sendMessage('open-deep-link', undefined);
-  }, []);
 }

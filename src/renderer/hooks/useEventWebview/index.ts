@@ -112,6 +112,23 @@ export function useEventWebview() {
     updateStartUrl,
   ]);
 
+  /**
+   * deep link를 통해 열렸는지 여부 확인
+   */
+  useEffect(() => {
+    if (!webview) {
+      return;
+    }
+
+    window.electron.ipcRenderer.sendMessage('open-deep-link', undefined);
+  }, [webview]);
+
+  /**
+   * 웹 뷰 히스토리 관련 상태 업데이트
+   *
+   * - 뒤로 가기
+   * - 앞으로 가기
+   */
   useEffect(() => {
     if (!webview) {
       return () => {};
