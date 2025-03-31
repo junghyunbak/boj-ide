@@ -75,7 +75,7 @@ export function useModifyPaint() {
   );
 
   const backupPaint = useCallback(
-    (problem: Problem = useStore.getState().problem) => {
+    (problem: Problem) => {
       const { canvas } = useFabricStore.getState();
 
       if (!canvas) {

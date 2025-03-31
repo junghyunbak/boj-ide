@@ -1,6 +1,11 @@
-import { useCallback } from 'react';
-
-import { usePaint, useModifyPaint, useEventPaint, useSetupPaint, useEventSyncLayout } from '@/renderer/hooks';
+import {
+  usePaint,
+  useModifyPaint,
+  useEventPaint,
+  useSetupPaint,
+  useEventSyncLayout,
+  useProblem,
+} from '@/renderer/hooks';
 
 import { EditorPaintController } from '@/renderer/components/molecules/EditorPaintController';
 
@@ -8,6 +13,7 @@ import { PaintLayout } from './index.style';
 import { CaptureCodeButton } from '../CaptureCodeButton';
 
 export function EditorPaint() {
+  const { problem } = useProblem();
   const { isExpand, paintRef, canvasRef } = usePaint();
 
   const { backupPaint, updatePaintLayout } = useModifyPaint();
@@ -17,13 +23,13 @@ export function EditorPaint() {
   useEventPaint();
   useEventSyncLayout(updatePaintLayout, paintRef);
 
-  const handlePaintBlur = useCallback(() => {
-    backupPaint();
-  }, [backupPaint]);
+  const handlePaintBlur = () => {
+    backupPaint(problem);
+  };
 
   return (
-    <PaintLayout ref={paintRef} isExpand={isExpand} tabIndex={0}>
-      <canvas ref={canvasRef} onBlur={handlePaintBlur} />
+    <PaintLayout ref={paintRef} isExpand={isExpand} tabIndex={0} onBlur={handlePaintBlur}>
+      <canvas ref={canvasRef} />
 
       <EditorPaintController />
       <CaptureCodeButton />
