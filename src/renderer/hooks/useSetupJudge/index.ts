@@ -3,24 +3,18 @@ import { useEffect } from 'react';
 import { useModifyJudge } from '../useModifyJudge';
 import { useProblem } from '../useProblem';
 import { useTestcase } from '../useTestcase';
+import { useLanguage } from '../useLanguage';
 
 export function useSetupJudge() {
   const { customTestcases } = useTestcase();
   const { problem } = useProblem();
+  const { language } = useLanguage();
 
   const { resetJudge, updateJudgeIdentifier } = useModifyJudge();
 
-  /**
-   * - problem
-   * - custom testcase
-   *
-   * 가 변경되면
-   *
-   * - 채점 결과 초기화
-   * - 채점 식별자 업데이트
-   */
   useEffect(() => {
+    window.electron.ipcRenderer.sendMessage('stop-judge', undefined);
     updateJudgeIdentifier();
     resetJudge();
-  }, [problem, customTestcases, updateJudgeIdentifier, resetJudge]);
+  }, [problem, customTestcases, language, updateJudgeIdentifier, resetJudge]);
 }
