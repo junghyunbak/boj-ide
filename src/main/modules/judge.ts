@@ -6,7 +6,8 @@ import path from 'path';
 
 import { customSpawn, normalizeOutput, ipc, checkCli, removeAnsiText } from '@/main/utils';
 
-import { MAX_BUFFER_SIZE, MAX_LINE_LENGTH, langToJudgeInfo } from '@/main/constants';
+import { MAX_BUFFER_SIZE, MAX_LINE_LENGTH } from '@/main/constants';
+import { langToJudgeInfo } from '@/common/constants';
 
 import { sentryLogging } from '@/main/error';
 

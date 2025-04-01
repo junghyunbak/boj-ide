@@ -3,13 +3,8 @@ import { app, BrowserWindow, WebContents } from 'electron';
 import fs from 'fs';
 import path from 'path';
 
-import {
-  JS_INPUT_TEMPLATE,
-  CPP_INPUT_TEMPLATE,
-  PY_INPUT_TEMPLATE,
-  JAVA_CODE_TEMPLATE,
-  langToJudgeInfo,
-} from '@/main/constants';
+import { JS_INPUT_TEMPLATE, CPP_INPUT_TEMPLATE, PY_INPUT_TEMPLATE, JAVA_CODE_TEMPLATE } from '@/main/constants';
+import { langToJudgeInfo } from '@/common/constants';
 
 import { ipc } from '@/main/utils';
 

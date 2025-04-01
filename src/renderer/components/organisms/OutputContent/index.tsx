@@ -39,11 +39,11 @@ export function OutputContent() {
       <ExecuteResultTable>
         <ExecuteResultThead>
           <ExecuteResultTheadRow>
-            <ExecuteResultHead style={{ width: '25%' }}>예제</ExecuteResultHead>
-            <ExecuteResultHead style={{ width: '25%' }}>결과</ExecuteResultHead>
-            <ExecuteResultHead style={{ width: '17.3%' }}>시간</ExecuteResultHead>
-            <ExecuteResultHead style={{ width: '17.3%' }}>상세</ExecuteResultHead>
-            <ExecuteResultHead style={{ width: '17.3%' }}>삭제</ExecuteResultHead>
+            <ExecuteResultHead style={{ width: '30%' }}>예제</ExecuteResultHead>
+            <ExecuteResultHead style={{ width: '20%' }}>결과</ExecuteResultHead>
+            <ExecuteResultHead style={{ width: '20%' }}>시간</ExecuteResultHead>
+            <ExecuteResultHead style={{ width: '15%' }}>상세</ExecuteResultHead>
+            <ExecuteResultHead style={{ width: '15%' }}>삭제</ExecuteResultHead>
           </ExecuteResultTheadRow>
         </ExecuteResultThead>
         <ExecuteResultTbody>

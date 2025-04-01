@@ -33,6 +33,7 @@ export function VimModeText() {
       <p
         css={css`
           font-size: 0.875rem;
+          white-space: nowrap;
         `}
       >
         {isStale ? `-- ${vimMode.toUpperCase()} --` : `"${problem.number}.${languageToExt(language)}" written`}

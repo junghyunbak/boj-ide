@@ -36,6 +36,7 @@ export function TransparentButton({ children, onClick, size = 'normal' }: Transp
         padding: ${padding};
         color: ${theme.colors.fg};
         font-size: ${fontSize};
+        white-space: nowrap;
         cursor: pointer;
 
         &:hover {

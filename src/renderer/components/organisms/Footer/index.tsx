@@ -7,6 +7,7 @@ import { VimModeText } from '@/renderer/components/molecules/VimModeText';
 import { AppUpdaterInfo } from '@/renderer/components/molecules/AppUpdaterInfo';
 import { TourButton } from '@/renderer/components/molecules/TourButton';
 import { GithubButton } from '@/renderer/components/molecules/GithubButton';
+import { JudgeInfoButton } from '@/renderer/components/molecules/JudgeInfoButton';
 
 export function Footer() {
   return (
@@ -35,6 +36,7 @@ export function Footer() {
         >
           <StorageButton />
           <TourButton />
+          <JudgeInfoButton />
           <VimModeText />
         </div>
 
