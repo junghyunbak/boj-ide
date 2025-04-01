@@ -13,22 +13,17 @@ import { PaintLayout } from './index.style';
 import { CaptureCodeButton } from '../CaptureCodeButton';
 
 export function EditorPaint() {
-  const { problem } = useProblem();
   const { isExpand, paintRef, canvasRef } = usePaint();
 
-  const { backupPaint, updatePaintLayout } = useModifyPaint();
+  const { updatePaintLayout } = useModifyPaint();
 
   useSetupPaint();
 
   useEventPaint();
   useEventSyncLayout(updatePaintLayout, paintRef);
 
-  const handlePaintBlur = () => {
-    backupPaint(problem);
-  };
-
   return (
-    <PaintLayout ref={paintRef} isExpand={isExpand} tabIndex={0} onBlur={handlePaintBlur}>
+    <PaintLayout ref={paintRef} isExpand={isExpand} tabIndex={0}>
       <canvas ref={canvasRef} />
 
       <EditorPaintController />
