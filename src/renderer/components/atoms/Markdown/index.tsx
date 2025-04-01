@@ -60,7 +60,10 @@ export function Markdown({ children }: MarkdownProps) {
                     border: 1px solid ${theme.colors.border} !important;
                     padding: 2px 4px;
                     border-radius: 4px;
-                    font-family: hack;
+
+                    code {
+                      font-family: hack;
+                    }
                   }
                 `}
               />
