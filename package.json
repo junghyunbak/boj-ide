@@ -105,6 +105,10 @@
       "react-markdown": "<rootDir>/.erb/mocks/ReactMarkdownMock.tsx",
       "remark-gfm": "<rootDir>/.erb/mocks/emptyMock.js",
       "rehype-raw": "<rootDir>/.erb/mocks/emptyMock.js",
+      "shiki/dist/core-unwasm.mjs": "<rootDir>/.erb/mocks/shiki.js",
+      "shiki/dist/themes.mjs": "<rootDir>/.erb/mocks/shiki.js",
+      "shiki/dist/langs.mjs": "<rootDir>/.erb/mocks/shiki.js",
+      "shiki/dist/engine-javascript.mjs": "<rootDir>/.erb/mocks/shiki.js",
       "^@/(.*)": "<rootDir>/src/$1"
     },
     "setupFiles": [

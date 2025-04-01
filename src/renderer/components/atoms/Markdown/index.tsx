@@ -10,7 +10,7 @@ import rehypeRaw from 'rehype-raw';
 import { createHighlighterCore } from 'shiki/dist/core-unwasm.mjs';
 import { bundledThemes } from 'shiki/dist/themes.mjs';
 import { bundledLanguages } from 'shiki/dist/langs.mjs';
-import { createJavaScriptRegexEngine } from 'shiki';
+import { createJavaScriptRegexEngine } from 'shiki/dist/engine-javascript.mjs';
 
 interface MarkdownProps {
   children: string;
@@ -22,6 +22,13 @@ export function Markdown({ children }: MarkdownProps) {
 
   useEffect(() => {
     (async () => {
+      /**
+       * jest 테스트를 위한 방어코드
+       */
+      if (!createJavaScriptRegexEngine) {
+        return;
+      }
+
       setHighlighter(
         await createHighlighterCore({
           engine: createJavaScriptRegexEngine(),
