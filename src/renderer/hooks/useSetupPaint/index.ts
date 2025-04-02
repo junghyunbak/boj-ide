@@ -10,7 +10,7 @@ import { useEventElement } from '../useEventElement';
 
 export function useSetupPaint() {
   const { problem } = useProblem();
-  const { canvas, canvasRef, mode, brushWidth, brushColor, problemToFabricJSON, paintRef } = usePaint();
+  const { canvas, canvasRef, canvasMode, brushWidth, brushColor, problemToFabricJSON, paintRef } = usePaint();
 
   const { changeHandMode, changeSelectMode, changePenMode, backupPaint, updateCanvas } = useModifyPaint();
 
@@ -22,7 +22,7 @@ export function useSetupPaint() {
    * 이 변경될 때 마다 fabric 상태 업데이트
    */
   useEffect(() => {
-    switch (mode) {
+    switch (canvasMode) {
       case 'select':
         changeSelectMode();
         break;
@@ -35,7 +35,7 @@ export function useSetupPaint() {
         break;
     }
   }, [
-    mode,
+    canvasMode,
     brushWidth,
     brushColor,
     changeSelectMode,

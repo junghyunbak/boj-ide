@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import { useFabricStore } from '@/renderer/store';
+import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
 import { fabric } from 'fabric';
@@ -10,7 +10,7 @@ import { useModifyPaint } from '../useModifyPaint';
 import { useEventElement } from '../useEventElement';
 
 export function useEventPaint() {
-  const [setMode] = useFabricStore(useShallow((s) => [s.setMode]));
+  const [setCanvasMode] = useStore(useShallow((s) => [s.setCanvasMode]));
 
   const prevMode = useRef<FabricCanvasMode>('pen');
   const isPressed = useRef(false);
@@ -114,7 +114,7 @@ export function useEventPaint() {
       }
 
       if (e.key === ' ') {
-        setMode((prev) => {
+        setCanvasMode((prev) => {
           prevMode.current = prev;
           return 'hand';
         });
@@ -122,7 +122,7 @@ export function useEventPaint() {
 
       isPressed.current = true;
     },
-    [isPressed, setMode],
+    [isPressed, setCanvasMode],
     'keydown',
     paintRef.current,
   );
@@ -132,10 +132,10 @@ export function useEventPaint() {
       isPressed.current = false;
 
       if (e.key === ' ') {
-        setMode(prevMode.current);
+        setCanvasMode(prevMode.current);
       }
     },
-    [isPressed, setMode],
+    [isPressed, setCanvasMode],
     'keyup',
     paintRef.current,
   );
@@ -160,7 +160,7 @@ export function useEventPaint() {
     };
 
     const handleMouseMove = (event: fabric.IEvent<MouseEvent>) => {
-      const { isHand } = useFabricStore.getState();
+      const { isHand } = useStore.getState();
 
       if (!panning || !isHand) {
         return;
@@ -176,7 +176,7 @@ export function useEventPaint() {
     };
 
     const handleWheelScroll = (opt: fabric.IEvent<WheelEvent>) => {
-      const { isCtrlKeyPressed } = useFabricStore.getState();
+      const { isCtrlKeyPressed } = useStore.getState();
       const { deltaY, deltaX } = opt.e;
 
       let zoom = canvas.getZoom();

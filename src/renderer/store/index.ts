@@ -17,8 +17,9 @@ import { createVimSlice } from './slices/vim';
 import { createDragSlice } from './slices/drag';
 import { createLanguageSlice } from './slices/language';
 import { createRandomSlice } from './slices/random';
-
 import { createPaintSlice } from './slices/paint';
+
+import { createFabricSlice } from './slices/fabric';
 
 export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createJudgeSlice> &
@@ -33,6 +34,7 @@ export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createDragSlice> &
   ReturnType<typeof createVimSlice> &
   ReturnType<typeof createLanguageSlice> &
+  ReturnType<typeof createPaintSlice> &
   ReturnType<typeof createRandomSlice>;
 
 export const useStore = create<StoreState>()(
@@ -52,6 +54,7 @@ export const useStore = create<StoreState>()(
       ...createHistorySlice(...a),
       ...createDragSlice(...a),
       ...createVimSlice(...a),
+      ...createPaintSlice(...a),
     }),
     {
       name: 'zustandStore',
@@ -95,6 +98,9 @@ export const useStore = create<StoreState>()(
            * paint
            */
           isPaintOpen,
+          brushColor,
+          brushWidth,
+          canvasMode,
 
           /**
            * theme
@@ -145,6 +151,9 @@ export const useStore = create<StoreState>()(
           indentSpace,
           baekjoonId,
           tierValues,
+          canvasMode,
+          brushColor,
+          brushWidth,
         };
       },
     },
@@ -154,26 +163,16 @@ export const useStore = create<StoreState>()(
 /**
  * fabric canvas store
  */
-type FabricStoreState = ReturnType<typeof createPaintSlice>;
+type FabricStoreState = ReturnType<typeof createFabricSlice>;
 
 export const useFabricStore = create<FabricStoreState>()(
   persist(
     (...a) => ({
-      ...createPaintSlice(...a),
+      ...createFabricSlice(...a),
     }),
     {
       name: 'zustand-fabric-persist-store-indexed-db',
       storage: createJSONStorage(() => idbStorage),
-      partialize(s) {
-        const { problemToFabricJSON, brushColor, brushWidth, mode } = s;
-
-        return {
-          mode,
-          brushColor,
-          brushWidth,
-          problemToFabricJSON,
-        };
-      },
     },
   ),
 );

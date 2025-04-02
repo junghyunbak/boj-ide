@@ -1,7 +1,5 @@
 import { type StateCreator } from 'zustand';
 
-type ProblemToFabricJSON = Partial<Record<string, ReturnType<fabric.StaticCanvas['toJSON']>>>;
-
 type PaintSlice = {
   paintRef: React.RefObject<HTMLDivElement>;
   canvasRef: React.RefObject<HTMLCanvasElement>;
@@ -9,17 +7,14 @@ type PaintSlice = {
   canvas: fabric.Canvas | null;
   setCanvas: (canvas: fabric.Canvas) => void;
 
-  mode: FabricCanvasMode;
-  setMode: (mode: FabricCanvasMode | ((prev: FabricCanvasMode) => FabricCanvasMode)) => void;
+  canvasMode: FabricCanvasMode;
+  setCanvasMode: (mode: FabricCanvasMode | ((prev: FabricCanvasMode) => FabricCanvasMode)) => void;
 
   brushWidth: BrushWidth;
   setBrushWidth: (width: BrushWidth) => void;
 
   brushColor: BrushColor;
   setBrushColor: (color: BrushColor) => void;
-
-  problemToFabricJSON: ProblemToFabricJSON;
-  setProblemToFabricJSON: (fn: (prev: ProblemToFabricJSON) => ProblemToFabricJSON) => void;
 
   isHand: boolean;
   setIsHand: (isHand: boolean) => void;
@@ -40,22 +35,17 @@ export const createPaintSlice: StateCreator<PaintSlice> = (set, get): PaintSlice
   paintRef: { current: null },
   canvasRef: { current: null },
 
-  problemToFabricJSON: {},
-  setProblemToFabricJSON(fn) {
-    set((s) => ({ problemToFabricJSON: fn(s.problemToFabricJSON) }));
-  },
-
   canvas: null,
   setCanvas: (canvas: fabric.Canvas) => {
     set((s) => ({ canvas }));
   },
 
-  mode: 'pen',
-  setMode: (mode) => {
+  canvasMode: 'pen',
+  setCanvasMode: (mode) => {
     if (typeof mode === 'function') {
-      set((s) => ({ mode: mode(s.mode) }));
+      set((s) => ({ canvasMode: mode(s.canvasMode) }));
     } else {
-      set((s) => ({ mode }));
+      set((s) => ({ canvasMode: mode }));
     }
   },
 

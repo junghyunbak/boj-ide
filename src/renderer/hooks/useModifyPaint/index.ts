@@ -1,20 +1,19 @@
 import { useCallback } from 'react';
 
-import { useFabricStore, useStore } from '@/renderer/store';
+import { useStore, useFabricStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
 import { fabric } from 'fabric';
 
 export function useModifyPaint() {
-  const [setCanvas] = useFabricStore(useShallow((s) => [s.setCanvas]));
+  const [setCanvas] = useStore(useShallow((s) => [s.setCanvas]));
+  const [setMode] = useStore(useShallow((s) => [s.setCanvasMode]));
+  const [setBrushWidth] = useStore(useShallow((s) => [s.setBrushWidth]));
+  const [setBrushColor] = useStore(useShallow((s) => [s.setBrushColor]));
 
-  const [setMode] = useFabricStore(useShallow((s) => [s.setMode]));
-  const [setBrushWidth] = useFabricStore(useShallow((s) => [s.setBrushWidth]));
-  const [setBrushColor] = useFabricStore(useShallow((s) => [s.setBrushColor]));
-
-  const [setIsExpand] = useFabricStore(useShallow((s) => [s.setIsExpand]));
-  const [setIsHand] = useFabricStore(useShallow((s) => [s.setIsHand]));
-  const [setIsCtrlKeyPressed] = useFabricStore(useShallow((s) => [s.setIsCtrlKeyPressed]));
+  const [setIsExpand] = useStore(useShallow((s) => [s.setIsExpand]));
+  const [setIsHand] = useStore(useShallow((s) => [s.setIsHand]));
+  const [setIsCtrlKeyPressed] = useStore(useShallow((s) => [s.setIsCtrlKeyPressed]));
 
   const [setProblemToFabricJSON] = useFabricStore(useShallow((s) => [s.setProblemToFabricJSON]));
 
@@ -26,7 +25,7 @@ export function useModifyPaint() {
   );
 
   const updatePaintLayout = useCallback((width: number, height: number) => {
-    const { canvas } = useFabricStore.getState();
+    const { canvas } = useStore.getState();
 
     if (canvas) {
       try {
@@ -76,7 +75,7 @@ export function useModifyPaint() {
 
   const backupPaint = useCallback(
     (problem: Problem) => {
-      const { canvas } = useFabricStore.getState();
+      const { canvas } = useStore.getState();
 
       if (!canvas) {
         return;
@@ -96,7 +95,7 @@ export function useModifyPaint() {
   );
 
   const changeSelectMode = useCallback(() => {
-    const { canvas } = useFabricStore.getState();
+    const { canvas } = useStore.getState();
 
     if (canvas) {
       canvas.isDrawingMode = false;
@@ -107,7 +106,7 @@ export function useModifyPaint() {
   }, [setIsHand]);
 
   const changeHandMode = useCallback(() => {
-    const { canvas } = useFabricStore.getState();
+    const { canvas } = useStore.getState();
 
     if (canvas) {
       canvas.isDrawingMode = false;
@@ -119,7 +118,7 @@ export function useModifyPaint() {
 
   const changePenMode = useCallback(
     (opt?: { brushWidth?: BrushWidth; brushColor?: BrushColor }) => {
-      const { canvas } = useFabricStore.getState();
+      const { canvas } = useStore.getState();
 
       const brushWidth: BrushWidth = opt?.brushWidth || 4;
       const brushColor: BrushColor = opt?.brushColor || 'black';
@@ -136,7 +135,7 @@ export function useModifyPaint() {
   );
 
   const activeAllFabricSelection = useCallback(() => {
-    const { canvas } = useFabricStore.getState();
+    const { canvas } = useStore.getState();
 
     if (canvas) {
       const selection = new fabric.ActiveSelection(canvas.getObjects(), { canvas });
@@ -146,7 +145,7 @@ export function useModifyPaint() {
   }, []);
 
   const unactiveAllFabricSelection = useCallback(() => {
-    const { canvas } = useFabricStore.getState();
+    const { canvas } = useStore.getState();
 
     if (canvas) {
       canvas.discardActiveObject();
@@ -155,7 +154,7 @@ export function useModifyPaint() {
   }, []);
 
   const removeFabricActiveObject = useCallback(() => {
-    const { canvas } = useFabricStore.getState();
+    const { canvas } = useStore.getState();
 
     if (canvas) {
       canvas.remove(...canvas.getActiveObjects());
@@ -164,7 +163,7 @@ export function useModifyPaint() {
   }, []);
 
   const undo = useCallback(() => {
-    const { canvas } = useFabricStore.getState();
+    const { canvas } = useStore.getState();
 
     if (canvas && 'undo' in canvas && canvas.undo instanceof Function) {
       canvas.undo();
@@ -172,7 +171,7 @@ export function useModifyPaint() {
   }, []);
 
   const redo = useCallback(() => {
-    const { canvas } = useFabricStore.getState();
+    const { canvas } = useStore.getState();
 
     if (canvas && 'redo' in canvas && canvas.redo instanceof Function) {
       canvas.redo();

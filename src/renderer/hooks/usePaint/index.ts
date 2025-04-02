@@ -1,18 +1,18 @@
 import { useMemo } from 'react';
 
-import { useFabricStore } from '@/renderer/store';
+import { useFabricStore, useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
 
 export function usePaint() {
-  const [isExpand] = useFabricStore(useShallow((s) => [s.isExpand]));
+  const [isExpand] = useStore(useShallow((s) => [s.isExpand]));
 
-  const [paintRef] = useFabricStore(useShallow((s) => [s.paintRef]));
-  const [canvasRef] = useFabricStore(useShallow((s) => [s.canvasRef]));
+  const [paintRef] = useStore(useShallow((s) => [s.paintRef]));
+  const [canvasRef] = useStore(useShallow((s) => [s.canvasRef]));
 
-  const [canvas] = useFabricStore(useShallow((s) => [s.canvas]));
-  const [mode] = useFabricStore(useShallow((s) => [s.mode]));
-  const [brushWidth] = useFabricStore(useShallow((s) => [s.brushWidth]));
-  const [brushColor] = useFabricStore(useShallow((s) => [s.brushColor]));
+  const [canvas] = useStore(useShallow((s) => [s.canvas]));
+  const [canvasMode] = useStore(useShallow((s) => [s.canvasMode]));
+  const [brushWidth] = useStore(useShallow((s) => [s.brushWidth]));
+  const [brushColor] = useStore(useShallow((s) => [s.brushColor]));
 
   const [problemToFabricJSON] = useFabricStore(useShallow((s) => [s.problemToFabricJSON]));
 
@@ -24,11 +24,11 @@ export function usePaint() {
     canvasRef,
     canvas,
 
-    isExpand,
-
-    mode,
+    canvasMode,
     brushWidth,
     brushColor,
+
+    isExpand,
 
     problemToFabricJSON,
 

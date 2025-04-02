@@ -1,11 +1,4 @@
-import {
-  usePaint,
-  useModifyPaint,
-  useEventPaint,
-  useSetupPaint,
-  useEventSyncLayout,
-  useProblem,
-} from '@/renderer/hooks';
+import { usePaint, useModifyPaint, useEventPaint, useSetupPaint, useEventSyncLayout } from '@/renderer/hooks';
 
 import { EditorPaintController } from '@/renderer/components/molecules/EditorPaintController';
 

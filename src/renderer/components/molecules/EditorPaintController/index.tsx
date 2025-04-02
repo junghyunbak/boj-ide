@@ -20,7 +20,7 @@ import {
 } from './index.style';
 
 export function EditorPaintController() {
-  const { isExpand, paintRef, brushColor, brushWidth, mode, BRUSH_WIDTHS, BRUSH_COLORS } = usePaint();
+  const { isExpand, paintRef, brushColor, brushWidth, canvasMode, BRUSH_WIDTHS, BRUSH_COLORS } = usePaint();
   const { updatePaintMode, updateBrushColor, updateBrushWidth, updateIsExpand } = useModifyPaint();
 
   const handleFabricCanvasModeButtonClick = useCallback(
@@ -73,21 +73,21 @@ export function EditorPaintController() {
           <PaintFabricControllerButton
             onClick={handleFabricCanvasModeButtonClick('pen')}
             onMouseDown={handleButtonMouseDown}
-            disabled={mode === 'pen'}
+            disabled={canvasMode === 'pen'}
           >
             <Pencil width="1.5rem" />
           </PaintFabricControllerButton>
           <PaintFabricControllerButton
             onClick={handleFabricCanvasModeButtonClick('hand')}
             onMouseDown={handleButtonMouseDown}
-            disabled={mode === 'hand'}
+            disabled={canvasMode === 'hand'}
           >
             <Hand width="1.5rem" />
           </PaintFabricControllerButton>
           <PaintFabricControllerButton
             onClick={handleFabricCanvasModeButtonClick('select')}
             onMouseDown={handleButtonMouseDown}
-            disabled={mode === 'select'}
+            disabled={canvasMode === 'select'}
           >
             <Mouse width="1.5rem" />
           </PaintFabricControllerButton>
