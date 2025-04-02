@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax */
 import App from '@/renderer/App';
 
 import { act } from 'react';

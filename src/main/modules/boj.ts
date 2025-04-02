@@ -150,7 +150,6 @@ export class Boj {
         }
       })();
 
-      // eslint-disable-next-line no-restricted-syntax
       for (const $langEl of langElList) {
         const langName = await page.evaluate(($el) => $el.textContent, $langEl);
 
@@ -185,7 +184,6 @@ export class Boj {
       } else {
         const lines = code.split('\n');
 
-        // eslint-disable-next-line no-restricted-syntax
         for (const line of lines) {
           await page.keyboard.down('Shift');
           await page.keyboard.press('Home');

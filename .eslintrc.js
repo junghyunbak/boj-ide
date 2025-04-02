@@ -30,6 +30,7 @@ module.exports = {
     'no-use-before-define': 'off',
     'prettier/prettier': 'off',
     'class-methods-use-this': 'off',
+    'no-restricted-syntax': 'off',
     camelcase: 'off',
 
     /**
