@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
@@ -8,12 +8,14 @@ import { fabric } from 'fabric';
 import { usePaint } from '../usePaint';
 import { useModifyPaint } from '../useModifyPaint';
 import { useEventElement } from '../useEventElement';
+import { useEventFabricMouse, useEventFabricWheel } from '../useEventFabric';
 
 export function useEventPaint() {
   const [setCanvasMode] = useStore(useShallow((s) => [s.setCanvasMode]));
 
   const prevMode = useRef<FabricCanvasMode>('pen');
   const isPressed = useRef(false);
+  const isPanning = useRef(false);
 
   const { paintRef, canvas } = usePaint();
 
@@ -148,36 +150,40 @@ export function useEventPaint() {
    *
    * 이벤트 등록
    */
-  useEffect(() => {
-    if (!canvas) {
-      return function cleanup() {};
-    }
+  useEventFabricMouse(
+    () => {
+      isPanning.current = true;
+    },
+    [],
+    canvas,
+    'mouse:down',
+  );
 
-    let panning = false;
-
-    const handleMouseDown = () => {
-      panning = true;
-    };
-
-    const handleMouseMove = (event: fabric.IEvent<MouseEvent>) => {
+  useEventFabricMouse(
+    (event) => {
       const { isHand } = useStore.getState();
 
-      if (!panning || !isHand) {
+      if (!isPanning.current || !isHand || !canvas) {
         return;
       }
 
       const delta = new fabric.Point(event.e.movementX, event.e.movementY);
 
       canvas.relativePan(delta);
-    };
+    },
+    [canvas],
+    canvas,
+    'mouse:move',
+  );
 
-    const handleMouseUp = () => {
-      panning = false;
-    };
+  useEventFabricWheel(
+    (event) => {
+      if (!canvas) {
+        return;
+      }
 
-    const handleWheelScroll = (opt: fabric.IEvent<WheelEvent>) => {
       const { isCtrlKeyPressed } = useStore.getState();
-      const { deltaY, deltaX } = opt.e;
+      const { deltaY, deltaX } = event.e;
 
       let zoom = canvas.getZoom();
 
@@ -192,25 +198,24 @@ export function useEventPaint() {
       }
 
       if (isCtrlKeyPressed) {
-        canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+        canvas.zoomToPoint({ x: event.e.offsetX, y: event.e.offsetY }, zoom);
       } else {
-        canvas.relativePan(new fabric.Point(opt.e.movementX - deltaX, opt.e.movementY - deltaY));
+        canvas.relativePan(new fabric.Point(event.e.movementX - deltaX, event.e.movementY - deltaY));
       }
 
-      opt.e.preventDefault();
-      opt.e.stopPropagation();
-    };
+      event.e.preventDefault();
+      event.e.stopPropagation();
+    },
+    [canvas],
+    canvas,
+  );
 
-    canvas.on('mouse:down', handleMouseDown);
-    canvas.on('mouse:move', handleMouseMove);
-    canvas.on('mouse:up', handleMouseUp);
-    canvas.on('mouse:wheel', handleWheelScroll);
-
-    return () => {
-      canvas.off('mouse:down', handleMouseDown);
-      canvas.off('mouse:up', handleMouseUp);
-      canvas.off('mouse:move', handleMouseMove as (event: fabric.IEvent) => void);
-      canvas.off('mouse:wheel', handleWheelScroll as (event: fabric.IEvent) => void);
-    };
-  }, [canvas]);
+  useEventFabricMouse(
+    () => {
+      isPanning.current = false;
+    },
+    [],
+    canvas,
+    'mouse:up',
+  );
 }

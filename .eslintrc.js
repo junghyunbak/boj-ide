@@ -12,7 +12,7 @@ module.exports = {
     'react-hooks/exhaustive-deps': [
       'error',
       {
-        additionalHooks: '(useEventIpc|useEventWindow|useEventElement)',
+        additionalHooks: '(useEventIpc|useEventWindow|useEventElement|useEventFabricMouse|useEventFabricWheel)',
       },
     ],
     'import/no-extraneous-dependencies': 'off',
