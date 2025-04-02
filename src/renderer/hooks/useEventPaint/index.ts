@@ -27,6 +27,7 @@ export function useEventPaint() {
     undo,
     updatePaintMode,
     updateIsCtrlKeyPressed,
+    addImageToCanvas,
   } = useModifyPaint();
 
   /**
@@ -49,21 +50,6 @@ export function useEventPaint() {
         return;
       }
 
-      const addImageToCanvas = (imageSrc: string, event: DragEvent) => {
-        fabric.Image.fromURL(imageSrc, (img) => {
-          img.scale(0.5);
-          img.set({
-            left: event.offsetX,
-            top: event.offsetY,
-            hasControls: true,
-            hasBorders: true,
-          });
-
-          canvas.add(img);
-          canvas.renderAll();
-        });
-      };
-
       const file = e.dataTransfer.files[0];
 
       if (file && file.type.startsWith('image/')) {
@@ -73,7 +59,7 @@ export function useEventPaint() {
           const { target } = readerEvent;
 
           if (target && typeof target.result === 'string') {
-            addImageToCanvas(target.result, e);
+            addImageToCanvas(canvas, target.result, e.offsetX, e.offsetY);
           }
         };
 
@@ -83,10 +69,10 @@ export function useEventPaint() {
       const imageUrl = e.dataTransfer.getData('text/uri-list') || e.dataTransfer.getData('text/plain');
 
       if (imageUrl) {
-        addImageToCanvas(imageUrl, e);
+        addImageToCanvas(canvas, imageUrl, e.offsetX, e.offsetY);
       }
     },
-    [canvas],
+    [canvas, addImageToCanvas],
     'drop',
     paintRef.current,
   );
@@ -121,6 +107,41 @@ export function useEventPaint() {
         case 'v':
         case 'ㅍ':
           updatePaintMode('select');
+
+          if (isCtrlKeyDown) {
+            (async () => {
+              const clipboardItems = await navigator.clipboard.read();
+
+              const [clipboardItem] = clipboardItems;
+
+              if (!clipboardItem) {
+                return;
+              }
+
+              const { types } = clipboardItem;
+
+              const [type] = types;
+
+              if (!type) {
+                return;
+              }
+
+              if (!type.startsWith('image/')) {
+                return;
+              }
+
+              if (!canvas) {
+                return;
+              }
+
+              const blob = await clipboardItem.getType(type);
+              const url = URL.createObjectURL(blob);
+
+              const { top, left } = canvas.getCenter();
+
+              addImageToCanvas(canvas, url, left, top);
+            })();
+          }
           break;
         case 'p':
         case 'ㅔ':
@@ -147,13 +168,15 @@ export function useEventPaint() {
       }
     },
     [
-      activeAllFabricSelection,
-      redo,
-      removeFabricActiveObject,
       updateIsCtrlKeyPressed,
       unactiveAllFabricSelection,
-      undo,
+      removeFabricActiveObject,
       updatePaintMode,
+      canvas,
+      addImageToCanvas,
+      activeAllFabricSelection,
+      redo,
+      undo,
     ],
     'keydown',
     paintRef.current,

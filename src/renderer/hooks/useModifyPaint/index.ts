@@ -178,6 +178,21 @@ export function useModifyPaint() {
     }
   }, []);
 
+  const addImageToCanvas = useCallback((canvas: fabric.Canvas, imageSrc: string, x: number, y: number) => {
+    fabric.Image.fromURL(imageSrc, (img) => {
+      img.scale(0.5);
+      img.set({
+        left: x,
+        top: y,
+        hasControls: true,
+        hasBorders: true,
+      });
+
+      canvas.add(img);
+      canvas.renderAll();
+    });
+  }, []);
+
   return {
     backupPaint,
 
@@ -198,5 +213,7 @@ export function useModifyPaint() {
     removeFabricActiveObject,
     undo,
     redo,
+
+    addImageToCanvas,
   };
 }
