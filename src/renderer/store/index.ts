@@ -98,6 +98,7 @@ export const useStore = create<StoreState>()(
            * paint
            */
           isPaintOpen,
+          isExpand,
           brushColor,
           brushWidth,
           canvasMode,
@@ -154,6 +155,7 @@ export const useStore = create<StoreState>()(
           canvasMode,
           brushColor,
           brushWidth,
+          isExpand,
         };
       },
     },
