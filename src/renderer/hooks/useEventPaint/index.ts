@@ -30,6 +30,68 @@ export function useEventPaint() {
   } = useModifyPaint();
 
   /**
+   * 이미지 drag & drop 이벤트
+   */
+  useEventElement(
+    (e) => {
+      e.preventDefault();
+    },
+    [],
+    'dragover',
+    paintRef.current,
+  );
+
+  useEventElement(
+    (e) => {
+      e.preventDefault();
+
+      if (!e.dataTransfer || !canvas) {
+        return;
+      }
+
+      const addImageToCanvas = (imageSrc: string, event: DragEvent) => {
+        fabric.Image.fromURL(imageSrc, (img) => {
+          img.scale(0.5);
+          img.set({
+            left: event.offsetX,
+            top: event.offsetY,
+            hasControls: true,
+            hasBorders: true,
+          });
+
+          canvas.add(img);
+          canvas.renderAll();
+        });
+      };
+
+      const file = e.dataTransfer.files[0];
+
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+
+        reader.onload = (readerEvent) => {
+          const { target } = readerEvent;
+
+          if (target && typeof target.result === 'string') {
+            addImageToCanvas(target.result, e);
+          }
+        };
+
+        reader.readAsDataURL(file);
+      }
+
+      const imageUrl = e.dataTransfer.getData('text/uri-list') || e.dataTransfer.getData('text/plain');
+
+      if (imageUrl) {
+        addImageToCanvas(imageUrl, e);
+      }
+    },
+    [canvas],
+    'drop',
+    paintRef.current,
+  );
+
+  /**
    * 그림판 단축키 이벤트 등록
    */
   useEventElement(
