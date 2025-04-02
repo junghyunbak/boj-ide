@@ -5,7 +5,7 @@ type PaintSlice = {
   canvasRef: React.RefObject<HTMLCanvasElement>;
 
   canvas: fabric.Canvas | null;
-  setCanvas: (canvas: fabric.Canvas) => void;
+  setCanvas: (canvas: fabric.Canvas | null) => void;
 
   canvasMode: FabricCanvasMode;
   setCanvasMode: (mode: FabricCanvasMode | ((prev: FabricCanvasMode) => FabricCanvasMode)) => void;
@@ -36,7 +36,7 @@ export const createPaintSlice: StateCreator<PaintSlice> = (set, get): PaintSlice
   canvasRef: { current: null },
 
   canvas: null,
-  setCanvas: (canvas: fabric.Canvas) => {
+  setCanvas: (canvas: fabric.Canvas | null) => {
     set((s) => ({ canvas }));
   },
 

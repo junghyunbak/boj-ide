@@ -59,6 +59,7 @@ export function useSetupPaint() {
 
     return function cleanup() {
       newCanvas.dispose();
+      updateCanvas(null);
     };
   }, [problem, canvasRef, updateCanvas]);
 

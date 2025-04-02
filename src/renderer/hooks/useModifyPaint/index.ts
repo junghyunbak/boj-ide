@@ -18,7 +18,7 @@ export function useModifyPaint() {
   const [setProblemToFabricJSON] = useFabricStore(useShallow((s) => [s.setProblemToFabricJSON]));
 
   const updateCanvas = useCallback(
-    (canvas: fabric.Canvas) => {
+    (canvas: fabric.Canvas | null) => {
       setCanvas(canvas);
     },
     [setCanvas],
