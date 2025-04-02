@@ -48,16 +48,24 @@ export function CaptureCodeButton() {
 
     const mainCanvas = new fabric.Canvas('mainCanvas', { backgroundColor: emotionTheme.colors.bg, width, height });
 
-    canvasObjects.forEach((obj) =>
-      obj.clone((cloneObj: fabric.Object) => {
-        mainCanvas.add(
-          cloneObj.set({
-            left: (cloneObj.left ?? -Infinity) - mil + paddingX,
-            top: (cloneObj.top ?? -Infinity) - mit + paddingY,
-          }),
-        );
-      }),
-    );
+    const addObjectToMainCanvas = (obj: fabric.Object) => {
+      return new Promise((resolve) => {
+        obj.clone((cloneObj: fabric.Object) => {
+          mainCanvas.add(
+            cloneObj.set({
+              left: (cloneObj.left ?? -Infinity) - mil + paddingX,
+              top: (cloneObj.top ?? -Infinity) - mit + paddingY,
+            }),
+          );
+
+          resolve(true);
+        });
+      });
+    };
+
+    for (const obj of canvasObjects) {
+      await addObjectToMainCanvas(obj);
+    }
 
     const result = await window.electron.ipcRenderer.invoke('clipboard-copy-image', {
       data: { dataUrl: mainCanvas.toDataURL({ format: 'png' }) },
