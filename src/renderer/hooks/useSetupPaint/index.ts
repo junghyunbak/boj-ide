@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import { fabric } from 'fabric';
 import 'fabric-history';
 
+import { useStore } from '@/renderer/store';
+
 import { useProblem } from '../useProblem';
 import { usePaint } from '../usePaint';
 import { useModifyPaint } from '../useModifyPaint';
@@ -60,40 +62,39 @@ export function useSetupPaint() {
     };
   }, [problem, canvasRef, updateCanvas]);
 
-  /**
-   * 새롭게 생성 된 캔버스에 기존 데이터를 로딩한다.
-   *
-   * problemToFabricJSON를 상태로 불러와 의존성에 추가 한 이유는
-   * indexedDB를 저장소로 사용하고 있기 때문에, 비동기로 데이터가 로드되었을 때 이를 감지하고 초기화하기 위함.
-   *
-   * 단, 그림판 데이터 백업 시에도 problemToFabricJSON 상태가 업데이트 되는데,
-   * 이 경우에는 캔버스를 초기화하지 않도록 canvas.isEmpty()로 캔버스의 초기화 여부를 판단함.
-   */
   useEffect(() => {
-    if (canvas && canvas.isEmpty()) {
-      try {
-        const fabricJSON = problemToFabricJSON[problem?.number || ''];
-
-        canvas.loadFromJSON(fabricJSON, () => {});
-
-        const [obj] = canvas.getObjects();
-
-        if (obj) {
-          const { x, y } = obj.getCenterPoint();
-
-          canvas.absolutePan(new fabric.Point(x - canvas.getWidth() / 2, y - canvas.getHeight() / 2));
-        }
-      } catch (e) {
-        /**
-         * // BUG: Cannot read properties of null (reading 'clearRect')
-         *
-         * dispose된 canvas를 사용할 때 해당 에러 발생. React 생명주기와 관련
-         *
-         * https://github.com/fabricjs/fabric.js/discussions/10036
-         */
-      }
+    if (
+      !canvas ||
+      /**
+       * fabric 데이터가 indexed db로 백업되기 때문에, 비동기로 상태가 업데이트 됨.
+       *
+       * => 초기 데이터 로드를 위해서는 상태로 사용해서 의존성에 추가해야 함.
+       * => 상태로 사용하기 때문에 데이터 백업 시에도 의존성이 변경되므로 캔버스 데이터가 비어있을 때에만 실행되도록 처리.
+       */
+      !canvas.isEmpty()
+    ) {
+      return;
     }
-  }, [canvas, problem, problemToFabricJSON]);
+
+    /**
+     * problem 객체를 의존성 배열로 이용하게 되면 dispose된 fabric canvas를 사용하게 되어
+     * 에러가 발생하므로, 스토어에서 직접 참조해야 함.
+     *
+     * problem 객체 변경 -> canvas 객체 변경 -> 현재 useEffect 순이므로
+     * 스토어에서 직접 problem값을 가져오더라도 최신 problem임이 보장됨.
+     */
+    const fabricJSON = problemToFabricJSON[useStore.getState().problem?.number || ''];
+
+    canvas.loadFromJSON(fabricJSON, () => {});
+
+    const [obj] = canvas.getObjects();
+
+    if (obj) {
+      const { x, y } = obj.getCenterPoint();
+
+      canvas.absolutePan(new fabric.Point(x - canvas.getWidth() / 2, y - canvas.getHeight() / 2));
+    }
+  }, [problemToFabricJSON, canvas]);
 
   /**
    * 그림판 백업 이벤트
