@@ -10,6 +10,26 @@ import { useModifyPaint } from '../useModifyPaint';
 import { useEventElement } from '../useEventElement';
 import { useEventFabricMouse, useEventFabricWheel } from '../useEventFabric';
 
+function blobToBase64(blob: Blob) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = (readerEvent) => {
+      const { target } = readerEvent;
+
+      if (target && typeof target.result === 'string') {
+        resolve(target.result);
+      } else {
+        reject();
+      }
+    };
+
+    reader.onerror = reject;
+
+    reader.readAsDataURL(blob);
+  });
+}
+
 export function useEventPaint() {
   const [setCanvasMode] = useStore(useShallow((s) => [s.setCanvasMode]));
 
@@ -46,31 +66,36 @@ export function useEventPaint() {
     (e) => {
       e.preventDefault();
 
-      if (!e.dataTransfer || !canvas) {
-        return;
-      }
-
-      const file = e.dataTransfer.files[0];
-
-      if (file && file.type.startsWith('image/')) {
-        const reader = new FileReader();
-
-        reader.onload = (readerEvent) => {
-          const { target } = readerEvent;
-
-          if (target && typeof target.result === 'string') {
-            addImageToCanvas(canvas, target.result, e.offsetX, e.offsetY);
+      (async () => {
+        try {
+          if (!e.dataTransfer || !canvas) {
+            return;
           }
-        };
 
-        reader.readAsDataURL(file);
-      }
+          /**
+           * 파일 drop
+           */
+          const file = e.dataTransfer.files[0];
 
-      const imageUrl = e.dataTransfer.getData('text/uri-list') || e.dataTransfer.getData('text/plain');
+          if (file && file.type.startsWith('image/')) {
+            const base64 = await blobToBase64(file);
 
-      if (imageUrl) {
-        addImageToCanvas(canvas, imageUrl, e.offsetX, e.offsetY);
-      }
+            addImageToCanvas(canvas, base64, e.offsetX, e.offsetY);
+          }
+
+          /**
+           * url drop
+           */
+          const imageUrl = e.dataTransfer.getData('text/uri-list') || e.dataTransfer.getData('text/plain');
+
+          if (imageUrl) {
+            // TODO: 캔버스에 영구 저장되도록 구현
+            addImageToCanvas(canvas, imageUrl, e.offsetX, e.offsetY);
+          }
+        } catch (err) {
+          console.error('이미지 로드 실패', err);
+        }
+      })();
     },
     [canvas, addImageToCanvas],
     'drop',
@@ -112,19 +137,15 @@ export function useEventPaint() {
             (async () => {
               const clipboardItems = await navigator.clipboard.read();
 
-              const [clipboardItem] = clipboardItems;
-
-              if (!clipboardItem) {
+              if (!clipboardItems.length) {
                 return;
               }
+
+              const [clipboardItem] = clipboardItems;
 
               const { types } = clipboardItem;
 
               const [type] = types;
-
-              if (!type) {
-                return;
-              }
 
               if (!type.startsWith('image/')) {
                 return;
@@ -135,11 +156,10 @@ export function useEventPaint() {
               }
 
               const blob = await clipboardItem.getType(type);
-              const url = URL.createObjectURL(blob);
-
+              const base64 = await blobToBase64(blob);
               const { x, y } = canvas.getVpCenter();
 
-              addImageToCanvas(canvas, url, x, y);
+              addImageToCanvas(canvas, base64, x, y);
             })();
           }
           break;
