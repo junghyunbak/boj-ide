@@ -137,9 +137,9 @@ export function useEventPaint() {
               const blob = await clipboardItem.getType(type);
               const url = URL.createObjectURL(blob);
 
-              const { top, left } = canvas.getCenter();
+              const { x, y } = canvas.getVpCenter();
 
-              addImageToCanvas(canvas, url, left, top);
+              addImageToCanvas(canvas, url, x, y);
             })();
           }
           break;
