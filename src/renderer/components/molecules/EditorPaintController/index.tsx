@@ -5,6 +5,7 @@ import { css } from '@emotion/react';
 import { ReactComponent as Mouse } from '@/renderer/assets/svgs/mouse.svg';
 import { ReactComponent as Hand } from '@/renderer/assets/svgs/hand.svg';
 import { ReactComponent as Pencil } from '@/renderer/assets/svgs/pencil.svg';
+import { ReactComponent as Undo } from '@/renderer/assets/svgs/undo.svg';
 
 import { ReactComponent as Expand } from '@/renderer/assets/svgs/expand.svg';
 import { ReactComponent as Shrink } from '@/renderer/assets/svgs/shrink.svg';
@@ -21,7 +22,7 @@ import {
 
 export function EditorPaintController() {
   const { isExpand, paintRef, brushColor, brushWidth, canvasMode, BRUSH_WIDTHS, BRUSH_COLORS } = usePaint();
-  const { updatePaintMode, updateBrushColor, updateBrushWidth, updateIsExpand } = useModifyPaint();
+  const { updatePaintMode, updateBrushColor, updateBrushWidth, updateIsExpand, undo, redo } = useModifyPaint();
 
   const handleFabricCanvasModeButtonClick = useCallback(
     (newMode: FabricCanvasMode) => {
@@ -140,6 +141,42 @@ export function EditorPaintController() {
               />
             </PaintFabricControllerButton>
           ))}
+        </PaintFabricControllerButtonGroupBox>
+
+        <PaintFabricControllerButtonGroupBox>
+          <PaintFabricControllerButton onClick={undo}>
+            <div
+              css={css`
+                width: 1.5rem;
+                aspect-ratio: 1/1;
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              `}
+            >
+              <Undo />
+            </div>
+          </PaintFabricControllerButton>
+
+          <PaintFabricControllerButton onClick={redo}>
+            <div
+              css={css`
+                width: 1.5rem;
+                aspect-ratio: 1/1;
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              `}
+            >
+              <Undo
+                css={css`
+                  transform: scaleX(-1);
+                `}
+              />
+            </div>
+          </PaintFabricControllerButton>
         </PaintFabricControllerButtonGroupBox>
       </PaintFabricControllerBox>
 
