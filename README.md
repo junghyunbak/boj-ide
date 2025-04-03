@@ -70,7 +70,7 @@
 ## 유의 사항
 
 * 앱을 사용하려면 전용 [컴파일러/인터프리터](https://boj-ide.gitbook.io/boj-ide-docs/note/cli)가 미리 설치되어 있어야 합니다.
-* 코드 실행 시간은 정확하지 않을 수 있습니다.
+* Mac C++의 경우 바이너리 파일 실행 시, 라이브러리를 [동적으로 링크](https://boj-ide.gitbook.io/boj-ide-docs/note/language#c)하기 때문에 코드 실행 시간이 느리게 측정됩니다.
 * 사용자의 모든 데이터는 서버가 아닌 pc내에 저장됩니다.
 * windows(.exe)의 경우 서명이 되어있지 않아 보안 설정에 의해 차단될 수 있습니다.<img src="https://github.com/user-attachments/assets/842c6fd3-9c1e-4dc2-8df3-0c4408164205"/><img src="https://github.com/user-attachments/assets/b8382fb1-47fa-4f9f-bcd7-e05c7fe5b12b"/>
 
