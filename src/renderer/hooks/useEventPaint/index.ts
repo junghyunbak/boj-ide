@@ -145,6 +145,9 @@ export function useEventPaint() {
         case 'ㅍ':
           updatePaintMode('select');
 
+          /**
+           * 현재는 클립보드에 존재하는 '이미지 타입'의 '가장 최근 요소'만 붙여넣기 할 수 있도록 구현
+           */
           if (isCtrlKeyDown) {
             (async () => {
               const clipboardItems = await navigator.clipboard.read();
@@ -157,13 +160,9 @@ export function useEventPaint() {
 
               const { types } = clipboardItem;
 
-              const [type] = types;
+              const [type] = types.filter((_type) => _type.startsWith('image/'));
 
-              if (!type.startsWith('image/')) {
-                return;
-              }
-
-              if (!canvas) {
+              if (!canvas || !type) {
                 return;
               }
 
