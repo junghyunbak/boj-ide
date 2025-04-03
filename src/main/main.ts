@@ -69,7 +69,6 @@ const createWindow = async () => {
     webPreferences: {
       webviewTag: true,
       preload: PRELOAD_PATH,
-      webSecurity: false,
     },
   });
 

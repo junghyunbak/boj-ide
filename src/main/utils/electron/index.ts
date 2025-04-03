@@ -39,4 +39,20 @@ export const setWebRequest = () => {
 
     callback({ cancel: false, requestHeaders: details.requestHeaders });
   });
+
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    const headers = details.responseHeaders;
+
+    if (headers) {
+      Object.keys(headers).forEach((key) => {
+        if (key.toLowerCase() === 'access-control-allow-origin') {
+          delete headers[key];
+        }
+      });
+
+      headers['Access-Control-Allow-Origin'] = ['*'];
+    }
+
+    callback({ responseHeaders: headers });
+  });
 };

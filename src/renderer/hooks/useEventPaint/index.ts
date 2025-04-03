@@ -10,9 +10,8 @@ import { useModifyPaint } from '../useModifyPaint';
 import { useEventElement } from '../useEventElement';
 import { useEventFabricMouse, useEventFabricWheel } from '../useEventFabric';
 
-// BUG: redirect 되는 이미지 URL 불러오지 못하는 이슈 존재
 async function fetchImageAsBase64(imageUrl: string): Promise<Blob> {
-  const response = await fetch(imageUrl, { redirect: 'follow' });
+  const response = await fetch(imageUrl);
 
   const blob = await response.blob();
 
