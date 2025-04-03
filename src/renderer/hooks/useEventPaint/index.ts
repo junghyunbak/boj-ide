@@ -9,6 +9,7 @@ import { usePaint } from '../usePaint';
 import { useModifyPaint } from '../useModifyPaint';
 import { useEventElement } from '../useEventElement';
 import { useEventFabricMouse, useEventFabricWheel } from '../useEventFabric';
+import { useProblem } from '../useProblem';
 
 async function fetchImageAsBase64(imageUrl: string): Promise<Blob> {
   const response = await fetch(imageUrl);
@@ -45,6 +46,7 @@ export function useEventPaint() {
   const isPressed = useRef(false);
   const isPanning = useRef(false);
 
+  const { problem } = useProblem();
   const { paintRef, canvas } = usePaint();
 
   const {
@@ -56,6 +58,7 @@ export function useEventPaint() {
     updatePaintMode,
     updateIsCtrlKeyPressed,
     addImageToCanvas,
+    backupPaint,
   } = useModifyPaint();
 
   /**
@@ -331,5 +334,32 @@ export function useEventPaint() {
     [],
     canvas,
     'mouse:up',
+  );
+
+  /**
+   * 그림판 백업 이벤트
+   *
+   * fabric 객체가 추가되기 전에 백업이 발생되는 이슈가 있어, setTimeout을 이용해 백업 작업을 다음 이벤트 루프로 넘김
+   */
+  useEventElement(
+    () => {
+      setTimeout(() => {
+        backupPaint(problem);
+      }, 0);
+    },
+    [backupPaint, problem],
+    'keyup',
+    paintRef.current,
+  );
+
+  useEventElement(
+    () => {
+      setTimeout(() => {
+        backupPaint(problem);
+      }, 0);
+    },
+    [backupPaint, problem],
+    'mouseup',
+    paintRef.current,
   );
 }

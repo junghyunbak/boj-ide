@@ -8,13 +8,12 @@ import { useStore } from '@/renderer/store';
 import { useProblem } from '../useProblem';
 import { usePaint } from '../usePaint';
 import { useModifyPaint } from '../useModifyPaint';
-import { useEventElement } from '../useEventElement';
 
 export function useSetupPaint() {
   const { problem } = useProblem();
-  const { canvas, canvasRef, canvasMode, brushWidth, brushColor, problemToFabricJSON, paintRef } = usePaint();
+  const { canvas, canvasRef, canvasMode, brushWidth, brushColor, problemToFabricJSON } = usePaint();
 
-  const { changeHandMode, changeSelectMode, changePenMode, backupPaint, updateCanvas } = useModifyPaint();
+  const { changeHandMode, changeSelectMode, changePenMode, updateCanvas } = useModifyPaint();
 
   /**
    * - 모드 (select, hand, pen)
@@ -105,31 +104,4 @@ export function useSetupPaint() {
       }
     }, 0);
   }, [problemToFabricJSON, canvas]);
-
-  /**
-   * 그림판 백업 이벤트
-   *
-   * fabric 객체가 추가되기 전에 백업이 발생되는 이슈가 있어, setTimeout을 이용해 백업 작업을 다음 이벤트 루프로 넘김
-   */
-  useEventElement(
-    () => {
-      setTimeout(() => {
-        backupPaint(problem);
-      }, 0);
-    },
-    [backupPaint, problem],
-    'keyup',
-    paintRef.current,
-  );
-
-  useEventElement(
-    () => {
-      setTimeout(() => {
-        backupPaint(problem);
-      }, 0);
-    },
-    [backupPaint, problem],
-    'mouseup',
-    paintRef.current,
-  );
 }
