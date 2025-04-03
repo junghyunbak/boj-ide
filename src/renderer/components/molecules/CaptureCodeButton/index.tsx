@@ -32,12 +32,19 @@ export function CaptureCodeButton() {
     let mab = -Infinity;
 
     canvasObjects.forEach((obj) => {
-      const { top, left, height, width } = obj;
+      const { top, left, height, width, scaleX, scaleY } = obj;
 
-      mil = Math.min(mil, left ?? Infinity);
-      mit = Math.min(mit, top ?? Infinity);
-      mar = Math.max(mar, (left ?? -Infinity) + (width ?? -Infinity));
-      mab = Math.max(mab, (top ?? -Infinity) + (height ?? -Infinity));
+      if (!top || !left || !width || !height || !scaleX || !scaleY) {
+        return;
+      }
+
+      const realWidth = width * scaleX;
+      const realHeight = height * scaleY;
+
+      mil = Math.min(mil, left);
+      mit = Math.min(mit, top);
+      mar = Math.max(mar, left + realWidth);
+      mab = Math.max(mab, top + realHeight);
     });
 
     const paddingX = (mar - mil) * 0.1;

@@ -10,6 +10,15 @@ import { useModifyPaint } from '../useModifyPaint';
 import { useEventElement } from '../useEventElement';
 import { useEventFabricMouse, useEventFabricWheel } from '../useEventFabric';
 
+// BUG: redirect 되는 이미지 URL 불러오지 못하는 이슈 존재
+async function fetchImageAsBase64(imageUrl: string): Promise<Blob> {
+  const response = await fetch(imageUrl, { redirect: 'follow' });
+
+  const blob = await response.blob();
+
+  return blob;
+}
+
 function blobToBase64(blob: Blob) {
   return new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
@@ -88,10 +97,11 @@ export function useEventPaint() {
            */
           const imageUrl = e.dataTransfer.getData('text/uri-list') || e.dataTransfer.getData('text/plain');
 
-          if (imageUrl) {
-            // TODO: 캔버스에 영구 저장되도록 구현
-            addImageToCanvas(canvas, imageUrl, e.offsetX, e.offsetY);
-          }
+          const blob = await fetchImageAsBase64(imageUrl);
+
+          const base64 = await blobToBase64(blob);
+
+          addImageToCanvas(canvas, base64, e.offsetX, e.offsetY);
         } catch (err) {
           console.error('이미지 로드 실패', err);
         }
