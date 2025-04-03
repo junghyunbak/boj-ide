@@ -1,5 +1,4 @@
 import { type StateCreator } from 'zustand';
-import defaultFabricData from './defaultFabricData.json';
 
 type ProblemToFabricJSON = Partial<Record<string, ReturnType<fabric.StaticCanvas['toJSON']>>>;
 
@@ -9,10 +8,7 @@ type FabricSlice = {
 };
 
 export const createFabricSlice: StateCreator<FabricSlice> = (set, get): FabricSlice => ({
-  problemToFabricJSON: {
-    // @ts-ignore
-    '1000': defaultFabricData,
-  },
+  problemToFabricJSON: {},
   setProblemToFabricJSON(fn) {
     set((s) => ({ problemToFabricJSON: fn(s.problemToFabricJSON) }));
   },
