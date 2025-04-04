@@ -4,8 +4,8 @@ import { css } from '@emotion/react';
 
 import { useProblem, useSetting } from '@/renderer/hooks';
 
+import { Editor } from '@/renderer/components/molecules/Editor';
 import { EditorSettings } from '@/renderer/components/molecules/EditorSettings';
-import { EditorCodemirror } from '@/renderer/components/molecules/EditorCodemirror';
 import { EditorPlaceholder } from '@/renderer/components/molecules/EditorPlaceholder';
 
 import { TourOverlay } from '@/renderer/components/molecules/TourOverlay';
@@ -25,7 +25,7 @@ export function EditorContent() {
         position: relative;
       `}
     >
-      {problem ? <EditorCodemirror /> : <EditorPlaceholder />}
+      {problem ? <Editor /> : <EditorPlaceholder />}
 
       {isSetting && (
         <div

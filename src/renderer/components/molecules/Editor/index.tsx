@@ -2,7 +2,7 @@ import { useEditor, useEventEditor, useSetupEditor } from '@/renderer/hooks';
 
 import { EditorLayout } from './index.style';
 
-export function EditorCodemirror() {
+export function Editor() {
   const { editorRef } = useEditor();
 
   useSetupEditor();

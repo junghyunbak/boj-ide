@@ -9,7 +9,7 @@ import { useModifyPaint, usePaint } from '@/renderer/hooks';
 
 import { PaintControllerBox, PaintFabricControllerButton, PaintFabricControllerButtonGroupBox } from './index.style';
 
-export function EditorPaintController() {
+export function PaintController() {
   const { paintRef, brushColor, brushWidth, canvasMode, BRUSH_WIDTHS, BRUSH_COLORS } = usePaint();
 
   const { updatePaintMode, updateBrushColor, updateBrushWidth, undo, redo } = useModifyPaint();

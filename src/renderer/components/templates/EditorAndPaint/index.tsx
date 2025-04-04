@@ -7,8 +7,8 @@ import { RowLine } from '@/renderer/components/atoms/lines/RowLIne';
 import { EditorHeader } from '@/renderer/components/organisms/EditorHeader';
 import { EditorContent } from '@/renderer/components/organisms/EditorContent';
 
-import { EditorPaint } from '@/renderer/components/molecules/EditorPaint';
-import { EditorPaintController } from '@/renderer/components/molecules/EditorPaintController';
+import { Paint } from '@/renderer/components/molecules/Paint';
+import { PaintController } from '@/renderer/components/molecules/PaintController';
 import { CaptureCodeButton } from '@/renderer/components/molecules/CaptureCodeButton';
 import { SplitLayout } from '@/renderer/components/molecules/SplitLayout';
 import { PaintExpandButton } from '@/renderer/components/molecules/PaintExpandButton';
@@ -48,8 +48,8 @@ export function EditorAndPaint() {
                   `}
             `}
           >
-            <EditorPaintController />
-            <EditorPaint />
+            <PaintController />
+            <Paint />
 
             <div
               css={css`

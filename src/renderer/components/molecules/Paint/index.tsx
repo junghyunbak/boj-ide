@@ -4,7 +4,7 @@ import { zIndex } from '@/renderer/styles';
 
 import { usePaint, useModifyPaint, useEventPaint, useSetupPaint, useEventSyncLayout } from '@/renderer/hooks';
 
-export function EditorPaint() {
+export function Paint() {
   const { paintRef, canvasRef } = usePaint();
 
   const { updatePaintLayout } = useModifyPaint();

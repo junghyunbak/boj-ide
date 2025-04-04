@@ -7,7 +7,8 @@ export const PaintControllerBox = styled.div`
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  gap: 1rem;
+  row-gap: 1rem;
+  flex-shrink: 0;
 
   background-color: ${(props) => props.theme.colors.code};
 
