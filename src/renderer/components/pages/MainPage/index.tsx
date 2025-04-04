@@ -9,6 +9,7 @@ import { ConfirmModal } from '@/renderer/components/molecules/ConfirmModal';
 import { BojView } from '@/renderer/components/molecules/BojView';
 import { TabAfterImage } from '@/renderer/components/molecules/TabAfterImage';
 import { SplitLayout } from '@/renderer/components/molecules/SplitLayout';
+import { Toast } from '@/renderer/components/molecules/Toast';
 
 import { Nav } from '@/renderer/components/organisms/Nav';
 import { Footer } from '@/renderer/components/organisms/Footer';
@@ -83,6 +84,7 @@ export function MainPage() {
 
       <Footer />
 
+      <Toast />
       <AlertModal />
       <ConfirmModal />
       <TabAfterImage />

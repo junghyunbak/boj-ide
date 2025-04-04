@@ -18,6 +18,7 @@ import { createDragSlice } from './slices/drag';
 import { createLanguageSlice } from './slices/language';
 import { createRandomSlice } from './slices/random';
 import { createPaintSlice } from './slices/paint';
+import { createToastSlice } from './slices/toast';
 
 import { createFabricSlice } from './slices/fabric';
 
@@ -35,11 +36,13 @@ export type StoreState = ReturnType<typeof createEditorSlice> &
   ReturnType<typeof createVimSlice> &
   ReturnType<typeof createLanguageSlice> &
   ReturnType<typeof createPaintSlice> &
-  ReturnType<typeof createRandomSlice>;
+  ReturnType<typeof createRandomSlice> &
+  ReturnType<typeof createToastSlice>;
 
 export const useStore = create<StoreState>()(
   persist(
     (...a) => ({
+      ...createToastSlice(...a),
       ...createRandomSlice(...a),
       ...createLanguageSlice(...a),
       ...createBojViewSlice(...a),

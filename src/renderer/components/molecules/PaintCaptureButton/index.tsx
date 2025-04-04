@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { useTheme, css } from '@emotion/react';
 
-import { useModifyAlertModal, usePaint } from '@/renderer/hooks';
+import { useModifyAlertModal, useModifyToast, usePaint } from '@/renderer/hooks';
 
 import { fabric } from 'fabric';
 
@@ -13,6 +13,7 @@ const WATERMARK_PADDING = 4;
 
 export function PaintCaptureButton() {
   const { canvas, paintRef } = usePaint();
+  const { fireToast } = useModifyToast();
   const { fireAlertModal } = useModifyAlertModal();
 
   const emotionTheme = useTheme();
@@ -110,9 +111,9 @@ export function PaintCaptureButton() {
     });
 
     if (result && result.data.isSaved) {
-      fireAlertModal('안내', '이미지가 클립보드에 복사되었습니다.');
+      fireToast('클립보드 복사 완료 ✅');
     }
-  }, [canvas, emotionTheme, fireAlertModal]);
+  }, [canvas, emotionTheme, fireAlertModal, fireToast]);
 
   const handleButtonMouseDown: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     /**
