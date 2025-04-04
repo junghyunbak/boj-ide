@@ -9,7 +9,7 @@ import { EditorContent } from '@/renderer/components/organisms/EditorContent';
 
 import { Paint } from '@/renderer/components/molecules/Paint';
 import { PaintController } from '@/renderer/components/molecules/PaintController';
-import { CaptureCodeButton } from '@/renderer/components/molecules/CaptureCodeButton';
+import { PaintCaptureButton } from '@/renderer/components/molecules/PaintCaptureButton';
 import { SplitLayout } from '@/renderer/components/molecules/SplitLayout';
 import { PaintExpandButton } from '@/renderer/components/molecules/PaintExpandButton';
 
@@ -59,7 +59,7 @@ export function EditorAndPaint() {
                 padding: 0.5rem;
               `}
             >
-              <CaptureCodeButton />
+              <PaintCaptureButton />
             </div>
 
             <div

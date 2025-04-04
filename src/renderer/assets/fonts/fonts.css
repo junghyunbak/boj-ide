@@ -25,3 +25,9 @@
   font-weight: 700;
   src: url('./OpenSans-Bold.ttf');
 }
+
+@font-face {
+  font-family: helvetica-neue;
+  font-weight: 500;
+  src: url('./HelveticaNeueMedium.otf');
+}

@@ -11,7 +11,7 @@ import { ReactComponent as Copy } from '@/renderer/assets/svgs/copy.svg';
 const MIN_PADDING = 25;
 const WATERMARK_PADDING = 4;
 
-export function CaptureCodeButton() {
+export function PaintCaptureButton() {
   const { canvas, paintRef } = usePaint();
   const { fireAlertModal } = useModifyAlertModal();
 
@@ -92,7 +92,7 @@ export function CaptureCodeButton() {
 
     const waterMarkText = new fabric.Text('BOJ IDE', {
       fontSize: 12,
-      fontFamily: 'hack',
+      fontFamily: 'helvetica-neue',
       fill: emotionTheme.colors.border,
     });
 
