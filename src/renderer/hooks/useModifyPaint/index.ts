@@ -11,7 +11,6 @@ export function useModifyPaint() {
   const [setBrushWidth] = useStore(useShallow((s) => [s.setBrushWidth]));
   const [setBrushColor] = useStore(useShallow((s) => [s.setBrushColor]));
 
-  const [setIsExpand] = useStore(useShallow((s) => [s.setIsExpand]));
   const [setIsHand] = useStore(useShallow((s) => [s.setIsHand]));
   const [setIsCtrlKeyPressed] = useStore(useShallow((s) => [s.setIsCtrlKeyPressed]));
 
@@ -64,13 +63,6 @@ export function useModifyPaint() {
       setBrushColor(color);
     },
     [setBrushColor],
-  );
-
-  const updateIsExpand = useCallback(
-    (isExpand: boolean) => {
-      setIsExpand(isExpand);
-    },
-    [setIsExpand],
   );
 
   const backupPaint = useCallback(
@@ -174,7 +166,6 @@ export function useModifyPaint() {
     updateIsCtrlKeyPressed,
     updateBrushColor,
     updateBrushWidth,
-    updateIsExpand,
 
     changeHandMode,
     changePenMode,

@@ -8,10 +8,12 @@ import { useStore } from '@/renderer/store';
 import { useProblem } from '../useProblem';
 import { usePaint } from '../usePaint';
 import { useModifyPaint } from '../useModifyPaint';
+import { useIdb } from '../useIdb';
 
 export function useSetupPaint() {
   const { problem } = useProblem();
-  const { canvas, canvasRef, canvasMode, brushWidth, brushColor, problemToFabricJSON } = usePaint();
+  const { problemToFabricJSON } = useIdb();
+  const { canvas, canvasRef, canvasMode, brushWidth, brushColor } = usePaint();
 
   const { changeHandMode, changeSelectMode, changePenMode, updateCanvas } = useModifyPaint();
 
@@ -87,15 +89,15 @@ export function useSetupPaint() {
 
     setTimeout(() => {
       try {
-        canvas.loadFromJSON(fabricJSON, () => {});
+        canvas.loadFromJSON(fabricJSON, () => {
+          const [obj] = canvas.getObjects();
 
-        const [obj] = canvas.getObjects();
+          if (obj) {
+            const { x, y } = obj.getCenterPoint();
 
-        if (obj) {
-          const { x, y } = obj.getCenterPoint();
-
-          canvas.absolutePan(new fabric.Point(x - canvas.getWidth() / 2, y - canvas.getHeight() / 2));
-        }
+            canvas.absolutePan(new fabric.Point(x - canvas.getWidth() / 2, y - canvas.getHeight() / 2));
+          }
+        });
       } catch (e) {
         /**
          * loadFromJSON 중 canvas 객체가 변경 될 경우 에러가 발생하는 것을 대비

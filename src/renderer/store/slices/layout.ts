@@ -24,6 +24,9 @@ type LayoutSlice = {
 
   isPaintOpen: boolean;
   setIsPaintOpen: (isOpen: boolean) => void;
+
+  isPaintExpand: boolean;
+  setIsPaintExpand: (isExpand: boolean) => void;
 };
 
 export const createLayoutSlice: StateCreator<LayoutSlice> = (set): LayoutSlice => ({
@@ -54,5 +57,10 @@ export const createLayoutSlice: StateCreator<LayoutSlice> = (set): LayoutSlice =
   isPaintOpen: false,
   setIsPaintOpen(isOpen) {
     set(() => ({ isPaintOpen: isOpen }));
+  },
+
+  isPaintExpand: false,
+  setIsPaintExpand: (isExpand: boolean) => {
+    set(() => ({ isPaintExpand: isExpand }));
   },
 });

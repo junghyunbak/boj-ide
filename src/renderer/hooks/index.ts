@@ -20,6 +20,7 @@ export * from './useLayout';
 export * from './useVim';
 export * from './useStale';
 export * from './useLanguage';
+export * from './useIdb';
 
 /**
  * setup

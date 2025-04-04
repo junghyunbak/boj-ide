@@ -21,17 +21,9 @@ type PaintSlice = {
 
   isCtrlKeyPressed: boolean;
   setIsCtrlKeyPressed: (isCtrlKeyPressed: boolean) => void;
-
-  isExpand: boolean;
-  setIsExpand: (isExpand: boolean) => void;
 };
 
 export const createPaintSlice: StateCreator<PaintSlice> = (set, get): PaintSlice => ({
-  isExpand: false,
-  setIsExpand: (isExpand: boolean) => {
-    set(() => ({ isExpand }));
-  },
-
   paintRef: { current: null },
   canvasRef: { current: null },
 
