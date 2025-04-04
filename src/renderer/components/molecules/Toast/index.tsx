@@ -1,5 +1,7 @@
 import { css } from '@emotion/react';
 
+import { zIndex } from '@/renderer/styles';
+
 import { useToast } from '@/renderer/hooks';
 import { useEventToast } from '@/renderer/hooks/useEventToast';
 
@@ -19,6 +21,8 @@ export function Toast() {
         inset: 0;
 
         pointer-events: none;
+
+        z-index: ${zIndex.overlay.toast};
 
         display: flex;
         justify-content: center;
