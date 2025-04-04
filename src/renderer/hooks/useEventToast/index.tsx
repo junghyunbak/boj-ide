@@ -11,12 +11,16 @@ export function useEventToast() {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    if (!toastContext) {
+      return;
+    }
+
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }
 
     timerRef.current = setTimeout(() => {
       closeToast();
-    }, 2000);
+    }, toastContext.time);
   }, [toastContext, closeToast]);
 }

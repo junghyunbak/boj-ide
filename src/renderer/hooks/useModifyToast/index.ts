@@ -6,10 +6,19 @@ export function useModifyToast() {
   const [setToastContext] = useStore(useShallow((s) => [s.setToastContext]));
 
   const fireToast = useCallback(
-    (message: string, bottom: CSSProperties['bottom'] = '20dvh') => {
+    ({
+      message,
+      bottom = '20dvh',
+      time = 1500,
+    }: {
+      message: string;
+      bottom?: CSSProperties['bottom'];
+      time?: number;
+    }) => {
       setToastContext({
         message,
         bottom,
+        time,
       });
     },
     [setToastContext],

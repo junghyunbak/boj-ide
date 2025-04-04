@@ -4,6 +4,7 @@ import { type StateCreator } from 'zustand';
 type ToastContext = {
   message: string;
   bottom: CSSProperties['bottom'];
+  time: number;
 } | null;
 
 type ToastSlice = {

@@ -111,7 +111,7 @@ export function PaintCaptureButton() {
     });
 
     if (result && result.data.isSaved) {
-      fireToast('클립보드 복사 완료 ✅');
+      fireToast({ message: '클립보드 복사 완료 ✅', time: 2000 });
     }
   }, [canvas, emotionTheme, fireAlertModal, fireToast]);
 
