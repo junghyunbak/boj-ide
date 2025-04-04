@@ -12,7 +12,7 @@ const MIN_PADDING = 25;
 const WATERMARK_PADDING = 4;
 
 export function CaptureCodeButton() {
-  const { canvas } = usePaint();
+  const { canvas, paintRef } = usePaint();
   const { fireAlertModal } = useModifyAlertModal();
 
   const emotionTheme = useTheme();
@@ -114,35 +114,36 @@ export function CaptureCodeButton() {
     }
   }, [canvas, emotionTheme, fireAlertModal]);
 
+  const handleButtonMouseDown: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+    /**
+     * 버튼 클릭으로 인한 fabric canvas의 focus blur를 방지
+     */
+    e.preventDefault();
+
+    paintRef.current?.focus();
+  };
+
   return (
-    <div
+    <button
       css={css`
-        position: absolute;
-        right: 0;
-        bottom: 0;
+        background: none;
+        border: none;
         padding: 0.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
       `}
+      type="button"
+      onClick={handleCreateImageButtonClick}
+      onMouseDown={handleButtonMouseDown}
     >
-      <button
-        css={css`
-          background: none;
-          border: none;
-          padding: 0.5rem;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          cursor: pointer;
+      <Copy
+        css={(theme) => css`
+          color: ${theme.colors.fg};
+          width: 1rem;
         `}
-        type="button"
-        onClick={handleCreateImageButtonClick}
-      >
-        <Copy
-          css={(theme) => css`
-            color: ${theme.colors.fg};
-            width: 1rem;
-          `}
-        />
-      </button>
-    </div>
+      />
+    </button>
   );
 }

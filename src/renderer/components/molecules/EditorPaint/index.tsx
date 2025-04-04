@@ -24,6 +24,8 @@ export function EditorPaint() {
         outline: none;
         overflow: hidden;
 
+        position: relative;
+
         &:focus {
           &::before {
             content: '';

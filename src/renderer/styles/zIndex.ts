@@ -8,7 +8,6 @@ export const resizer = {
 export const paint = {
   expanded: 103,
   default: 99,
-  fabricController: 2,
   focusLine: 1,
 };
 

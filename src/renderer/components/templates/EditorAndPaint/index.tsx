@@ -11,6 +11,7 @@ import { EditorPaint } from '@/renderer/components/molecules/EditorPaint';
 import { EditorPaintController } from '@/renderer/components/molecules/EditorPaintController';
 import { CaptureCodeButton } from '@/renderer/components/molecules/CaptureCodeButton';
 import { SplitLayout } from '@/renderer/components/molecules/SplitLayout';
+import { PaintExpandButton } from '@/renderer/components/molecules/PaintExpandButton';
 
 import { useLayout, useModifyLayout } from '@/renderer/hooks';
 
@@ -32,6 +33,10 @@ export function EditorAndPaint() {
               width: 100%;
               height: 100%;
 
+              display: flex;
+
+              overflow: hidden;
+
               ${isPaintExpand
                 ? css`
                     position: absolute;
@@ -43,10 +48,30 @@ export function EditorAndPaint() {
                   `}
             `}
           >
+            <EditorPaintController />
             <EditorPaint />
 
-            <EditorPaintController />
-            <CaptureCodeButton />
+            <div
+              css={css`
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                padding: 0.5rem;
+              `}
+            >
+              <CaptureCodeButton />
+            </div>
+
+            <div
+              css={css`
+                position: absolute;
+                right: 0;
+                top: 0;
+                padding: 0.5rem;
+              `}
+            >
+              <PaintExpandButton />
+            </div>
           </div>
         </SplitLayout.Left>
       )}
