@@ -134,34 +134,6 @@ export function useModifyPaint() {
     [setIsHand],
   );
 
-  const activeAllFabricSelection = useCallback(() => {
-    const { canvas } = useStore.getState();
-
-    if (canvas) {
-      const selection = new fabric.ActiveSelection(canvas.getObjects(), { canvas });
-      canvas.setActiveObject(selection);
-      canvas.renderAll();
-    }
-  }, []);
-
-  const unactiveAllFabricSelection = useCallback(() => {
-    const { canvas } = useStore.getState();
-
-    if (canvas) {
-      canvas.discardActiveObject();
-      canvas.renderAll();
-    }
-  }, []);
-
-  const removeFabricActiveObject = useCallback(() => {
-    const { canvas } = useStore.getState();
-
-    if (canvas) {
-      canvas.remove(...canvas.getActiveObjects());
-      canvas.discardActiveObject();
-    }
-  }, []);
-
   const undo = useCallback(() => {
     const { canvas } = useStore.getState();
 
@@ -208,9 +180,6 @@ export function useModifyPaint() {
     changePenMode,
     changeSelectMode,
 
-    activeAllFabricSelection,
-    unactiveAllFabricSelection,
-    removeFabricActiveObject,
     undo,
     redo,
 

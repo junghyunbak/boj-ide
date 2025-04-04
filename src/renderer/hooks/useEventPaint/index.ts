@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useStore } from '@/renderer/store';
 import { useShallow } from 'zustand/shallow';
@@ -10,6 +10,94 @@ import { useModifyPaint } from '../useModifyPaint';
 import { useEventElement } from '../useEventElement';
 import { useEventFabricMouse, useEventFabricWheel } from '../useEventFabric';
 import { useProblem } from '../useProblem';
+
+class Copier {
+  private canvas: fabric.Canvas;
+
+  private copyObjects: fabric.Object[];
+
+  constructor(canvas: fabric.Canvas) {
+    this.canvas = canvas;
+    this.copyObjects = [];
+  }
+
+  active(objs: fabric.Object[]) {
+    this.unactiveAll();
+
+    const selection = new fabric.ActiveSelection(objs, { canvas: this.canvas });
+
+    this.canvas.setActiveObject(selection);
+    this.canvas.renderAll();
+  }
+
+  activeAll() {
+    this.active(this.canvas.getObjects());
+  }
+
+  unactiveAll() {
+    this.canvas.discardActiveObject();
+
+    this.canvas.renderAll();
+  }
+
+  remove(objs: fabric.Object[]) {
+    this.canvas.remove(...objs);
+  }
+
+  removeActiveObjs() {
+    this.remove(this.canvas.getActiveObjects());
+  }
+
+  copy() {
+    this.copyObjects = this.canvas.getActiveObjects();
+  }
+
+  cut() {
+    this.copy();
+    this.removeActiveObjs();
+
+    this.canvas.discardActiveObject();
+  }
+
+  cloneObj(obj: fabric.Object, selection: fabric.Object | null) {
+    return new Promise<fabric.Object>((resolve) => {
+      obj.clone((clonedObj: fabric.Object) => {
+        const objLeft = obj.left || 0;
+        const objTop = obj.top || 0;
+
+        const selectionLeft = selection?.left || 0;
+        const selectionTop = selection?.top || 0;
+
+        const selectionWidth = selection?.width || 0;
+        const selectionHeight = selection?.height || 0;
+
+        clonedObj.set({
+          left: selectionLeft === objLeft ? objLeft - selectionWidth / 2 : selectionLeft + objLeft,
+          top: selectionTop === objTop ? objTop - selectionHeight / 2 : selectionTop + objTop,
+        });
+
+        resolve(clonedObj);
+      });
+    });
+  }
+
+  async paste() {
+    const clonedObjs: fabric.Object[] = [];
+
+    for (const copyObj of this.copyObjects) {
+      const activeObj = this.canvas.getActiveObject();
+
+      const clonedObj = await this.cloneObj(copyObj, activeObj);
+
+      this.canvas.add(clonedObj);
+      clonedObjs.push(clonedObj);
+    }
+
+    this.copyObjects = clonedObjs;
+
+    this.active(clonedObjs);
+  }
+}
 
 async function fetchImageAsBase64(imageUrl: string): Promise<Blob> {
   const response = await fetch(imageUrl);
@@ -46,20 +134,12 @@ export function useEventPaint() {
   const isPressed = useRef(false);
   const isPanning = useRef(false);
 
+  const [copier, setCopier] = useState<Copier | null>(null);
+
   const { problem } = useProblem();
   const { paintRef, canvas } = usePaint();
 
-  const {
-    unactiveAllFabricSelection,
-    removeFabricActiveObject,
-    activeAllFabricSelection,
-    redo,
-    undo,
-    updatePaintMode,
-    updateIsCtrlKeyPressed,
-    addImageToCanvas,
-    backupPaint,
-  } = useModifyPaint();
+  const { redo, undo, updatePaintMode, updateIsCtrlKeyPressed, addImageToCanvas, backupPaint } = useModifyPaint();
 
   /**
    * 이미지 drag & drop 이벤트
@@ -117,6 +197,12 @@ export function useEventPaint() {
   /**
    * 그림판 단축키 이벤트 등록
    */
+  useEffect(() => {
+    if (canvas) {
+      setCopier(new Copier(canvas));
+    }
+  }, [canvas]);
+
   useEventElement(
     (e) => {
       e.preventDefault();
@@ -131,61 +217,64 @@ export function useEventPaint() {
       }
 
       switch (key.toLowerCase()) {
-        case 'escape':
-          unactiveAllFabricSelection();
+        case 'escape': {
+          copier?.unactiveAll();
+
           break;
-        case 'delete':
-          removeFabricActiveObject();
+        }
+        case 'delete': {
+          copier?.removeActiveObjs();
+
           break;
+        }
         case 'm':
-        case 'ㅡ':
+        case 'ㅡ': {
           updatePaintMode('hand');
+
           break;
+        }
+        case 'c':
+        case 'ㅊ': {
+          if (isCtrlKeyDown) {
+            copier?.copy();
+          }
+
+          break;
+        }
+        case 'x':
+        case 'ㅌ': {
+          if (isCtrlKeyDown) {
+            copier?.cut();
+          }
+
+          break;
+        }
         case 'v':
-        case 'ㅍ':
+        case 'ㅍ': {
+          if (isCtrlKeyDown) {
+            copier?.paste();
+          }
+
           updatePaintMode('select');
 
-          /**
-           * 현재는 클립보드에 존재하는 '이미지 타입'의 '가장 최근 요소'만 붙여넣기 할 수 있도록 구현
-           */
-          if (isCtrlKeyDown) {
-            (async () => {
-              const clipboardItems = await navigator.clipboard.read();
-
-              if (!clipboardItems.length) {
-                return;
-              }
-
-              const [clipboardItem] = clipboardItems;
-
-              const { types } = clipboardItem;
-
-              const [type] = types.filter((_type) => _type.startsWith('image/'));
-
-              if (!canvas || !type) {
-                return;
-              }
-
-              const blob = await clipboardItem.getType(type);
-              const base64 = await blobToBase64(blob);
-              const { x, y } = canvas.getVpCenter();
-
-              addImageToCanvas(canvas, base64, x, y);
-            })();
-          }
           break;
+        }
         case 'p':
-        case 'ㅔ':
+        case 'ㅔ': {
           updatePaintMode('pen');
+
           break;
+        }
         case 'a':
-        case 'ㅁ':
+        case 'ㅁ': {
           if (isCtrlKeyDown) {
-            activeAllFabricSelection();
+            copier?.activeAll();
           }
+
           break;
+        }
         case 'z':
-        case 'ㅋ':
+        case 'ㅋ': {
           if (isCtrlKeyDown) {
             if (isShiftKeyDown) {
               redo();
@@ -193,22 +282,14 @@ export function useEventPaint() {
               undo();
             }
           }
+
           break;
+        }
         default:
           break;
       }
     },
-    [
-      updateIsCtrlKeyPressed,
-      unactiveAllFabricSelection,
-      removeFabricActiveObject,
-      updatePaintMode,
-      canvas,
-      addImageToCanvas,
-      activeAllFabricSelection,
-      redo,
-      undo,
-    ],
+    [copier, updateIsCtrlKeyPressed, updatePaintMode, redo, undo],
     'keydown',
     paintRef.current,
   );
