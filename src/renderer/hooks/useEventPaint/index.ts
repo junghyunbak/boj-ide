@@ -128,8 +128,6 @@ function blobToBase64(blob: Blob) {
 }
 
 export function useEventPaint() {
-  const [setCanvasMode] = useStore(useShallow((s) => [s.setCanvasMode]));
-
   const prevMode = useRef<FabricCanvasMode>('pen');
   const isPressed = useRef(false);
   const isPanning = useRef(false);
@@ -139,7 +137,8 @@ export function useEventPaint() {
   const { problem } = useProblem();
   const { paintRef, canvas } = usePaint();
 
-  const { redo, undo, updatePaintMode, updateIsCtrlKeyPressed, addImageToCanvas, backupPaint } = useModifyPaint();
+  const { redo, undo, updatePaintMode, updateIsCtrlKeyPressed, addImageToCanvas, backupPaint, setCanvasMode } =
+    useModifyPaint();
 
   /**
    * 이미지 drag & drop 이벤트
@@ -154,40 +153,40 @@ export function useEventPaint() {
   );
 
   useEventElement(
-    (e) => {
+    async (e) => {
       e.preventDefault();
 
-      (async () => {
-        try {
-          if (!e.dataTransfer || !canvas) {
-            return;
-          }
+      if (!e.dataTransfer || !canvas) {
+        return;
+      }
 
-          /**
-           * 파일 drop
-           */
-          const file = e.dataTransfer.files[0];
+      const { x, y } = canvas.getVpCenter();
 
-          if (file && file.type.startsWith('image/')) {
-            const base64 = await blobToBase64(file);
+      try {
+        /**
+         * 파일 drop
+         */
+        const file = e.dataTransfer.files[0];
 
-            addImageToCanvas(canvas, base64, e.offsetX, e.offsetY);
-          }
+        if (file && file.type.startsWith('image/')) {
+          const base64 = await blobToBase64(file);
 
-          /**
-           * url drop
-           */
-          const imageUrl = e.dataTransfer.getData('text/uri-list') || e.dataTransfer.getData('text/plain');
-
-          const blob = await fetchImageAsBase64(imageUrl);
-
-          const base64 = await blobToBase64(blob);
-
-          addImageToCanvas(canvas, base64, e.offsetX, e.offsetY);
-        } catch (err) {
-          console.error('이미지 로드 실패', err);
+          addImageToCanvas(canvas, base64, x, y);
         }
-      })();
+
+        /**
+         * url drop
+         */
+        const imageUrl = e.dataTransfer.getData('text/uri-list') || e.dataTransfer.getData('text/plain');
+
+        const blob = await fetchImageAsBase64(imageUrl);
+
+        const base64 = await blobToBase64(blob);
+
+        addImageToCanvas(canvas, base64, x, y);
+      } catch (err) {
+        console.error('이미지 로드 실패', err);
+      }
     },
     [canvas, addImageToCanvas],
     'drop',

@@ -7,7 +7,7 @@ import { fabric } from 'fabric';
 
 export function useModifyPaint() {
   const [setCanvas] = useStore(useShallow((s) => [s.setCanvas]));
-  const [setMode] = useStore(useShallow((s) => [s.setCanvasMode]));
+  const [setCanvasMode] = useStore(useShallow((s) => [s.setCanvasMode]));
   const [setBrushWidth] = useStore(useShallow((s) => [s.setBrushWidth]));
   const [setBrushColor] = useStore(useShallow((s) => [s.setBrushColor]));
 
@@ -39,9 +39,9 @@ export function useModifyPaint() {
 
   const updatePaintMode = useCallback(
     (mode: FabricCanvasMode) => {
-      setMode(mode);
+      setCanvasMode(mode);
     },
-    [setMode],
+    [setCanvasMode],
   );
 
   const updateIsCtrlKeyPressed = useCallback(
@@ -159,6 +159,8 @@ export function useModifyPaint() {
 
   return {
     backupPaint,
+
+    setCanvasMode,
 
     updateCanvas,
     updatePaintLayout,
