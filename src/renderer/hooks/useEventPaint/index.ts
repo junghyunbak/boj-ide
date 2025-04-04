@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { useStore } from '@/renderer/store';
-import { useShallow } from 'zustand/shallow';
 
 import { fabric } from 'fabric';
+
+import { blobToBase64, fetchImageAsBase64 } from '@/renderer/utils';
 
 import { usePaint } from '../usePaint';
 import { useModifyPaint } from '../useModifyPaint';
@@ -97,34 +98,6 @@ class Copier {
 
     this.active(clonedObjs);
   }
-}
-
-async function fetchImageAsBase64(imageUrl: string): Promise<Blob> {
-  const response = await fetch(imageUrl);
-
-  const blob = await response.blob();
-
-  return blob;
-}
-
-function blobToBase64(blob: Blob) {
-  return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onload = (readerEvent) => {
-      const { target } = readerEvent;
-
-      if (target && typeof target.result === 'string') {
-        resolve(target.result);
-      } else {
-        reject();
-      }
-    };
-
-    reader.onerror = reject;
-
-    reader.readAsDataURL(blob);
-  });
 }
 
 export function useEventPaint() {

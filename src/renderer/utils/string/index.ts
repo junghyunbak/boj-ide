@@ -1,6 +1,26 @@
 import { BOJ_DOMAIN } from '@/common/constants';
 import { type Themes } from '@/renderer/store/slices/theme';
 
+export function blobToBase64(blob: Blob) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = (readerEvent) => {
+      const { target } = readerEvent;
+
+      if (target && typeof target.result === 'string') {
+        resolve(target.result);
+      } else {
+        reject();
+      }
+    };
+
+    reader.onerror = reject;
+
+    reader.readAsDataURL(blob);
+  });
+}
+
 export const languageToExt = (language: Language) => {
   switch (language) {
     case 'node.js':
