@@ -94,7 +94,7 @@ export function PaintCaptureButton() {
     const waterMarkText = new fabric.Text('BOJ IDE', {
       fontSize: 12,
       fontFamily: 'helvetica-neue',
-      fill: emotionTheme.colors.border,
+      fill: emotionTheme.colors.disabledFg,
     });
 
     waterMarkText.left = mil - paddingX + WATERMARK_PADDING;
