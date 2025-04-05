@@ -37,16 +37,12 @@ class Copier {
 
   unactiveAll() {
     this.canvas.discardActiveObject();
-
     this.canvas.renderAll();
   }
 
-  remove(objs: fabric.Object[]) {
-    this.canvas.remove(...objs);
-  }
-
   removeActiveObjs() {
-    this.remove(this.canvas.getActiveObjects());
+    this.canvas.remove(...this.canvas.getActiveObjects());
+    this.canvas.discardActiveObject();
   }
 
   copy() {
@@ -56,8 +52,6 @@ class Copier {
   cut() {
     this.copy();
     this.removeActiveObjs();
-
-    this.canvas.discardActiveObject();
   }
 
   cloneObj(obj: fabric.Object, selection: fabric.Object | null) {
