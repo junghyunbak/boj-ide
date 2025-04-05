@@ -151,11 +151,13 @@ export function useEventPaint() {
         const base64 = await blobToBase64(blob);
 
         addImageToCanvas(canvas, base64, x, y);
+
+        updatePaintMode('select');
       } catch (err) {
         console.error('이미지 로드 실패', err);
       }
     },
-    [canvas, addImageToCanvas],
+    [canvas, addImageToCanvas, updatePaintMode],
     'drop',
     paintRef.current,
   );

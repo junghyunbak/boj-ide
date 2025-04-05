@@ -144,10 +144,15 @@ export function useModifyPaint() {
 
   const addImageToCanvas = useCallback((canvas: fabric.Canvas, imageSrc: string, x: number, y: number) => {
     fabric.Image.fromURL(imageSrc, (img) => {
-      img.scale(0.5);
+      const { width, height } = img;
+
+      if (!width || !height) {
+        return;
+      }
+
       img.set({
-        left: x,
-        top: y,
+        left: x - width / 2,
+        top: y - height / 2,
         hasControls: true,
         hasBorders: true,
       });
