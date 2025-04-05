@@ -5,14 +5,15 @@ import { ReactComponent as Hand } from '@/renderer/assets/svgs/hand.svg';
 import { ReactComponent as Pencil } from '@/renderer/assets/svgs/pencil.svg';
 import { ReactComponent as Undo } from '@/renderer/assets/svgs/undo.svg';
 
-import { useModifyPaint, usePaint } from '@/renderer/hooks';
+import { useModifyPaint, usePaint, useProblem } from '@/renderer/hooks';
 
 import { PaintControllerBox, PaintFabricControllerButton, PaintFabricControllerButtonGroupBox } from './index.style';
 
 export function PaintController() {
+  const { problem } = useProblem();
   const { paintRef, brushColor, brushWidth, canvasMode, BRUSH_WIDTHS, BRUSH_COLORS } = usePaint();
 
-  const { updatePaintMode, updateBrushColor, updateBrushWidth, undo, redo } = useModifyPaint();
+  const { updatePaintMode, updateBrushColor, updateBrushWidth, undo, redo, backupPaint } = useModifyPaint();
 
   const handleFabricCanvasModeButtonClick = (newMode: FabricCanvasMode) => () => {
     updatePaintMode(newMode);
@@ -35,6 +36,16 @@ export function PaintController() {
     e.preventDefault();
 
     paintRef.current?.focus();
+  };
+
+  const handleUndoButtonClick = () => {
+    undo();
+    backupPaint(problem);
+  };
+
+  const handleRedoButtonClick = () => {
+    redo();
+    backupPaint(problem);
   };
 
   return (
@@ -113,7 +124,7 @@ export function PaintController() {
       </PaintFabricControllerButtonGroupBox>
 
       <PaintFabricControllerButtonGroupBox>
-        <PaintFabricControllerButton onClick={undo}>
+        <PaintFabricControllerButton onClick={handleUndoButtonClick}>
           <div
             css={css`
               width: 1.5rem;
@@ -128,7 +139,7 @@ export function PaintController() {
           </div>
         </PaintFabricControllerButton>
 
-        <PaintFabricControllerButton onClick={redo}>
+        <PaintFabricControllerButton onClick={handleRedoButtonClick}>
           <div
             css={css`
               width: 1.5rem;
