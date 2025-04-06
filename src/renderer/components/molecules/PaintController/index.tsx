@@ -54,21 +54,21 @@ export function PaintController() {
         <PaintFabricControllerButton
           onClick={handleFabricCanvasModeButtonClick('pen')}
           onMouseDown={handleButtonMouseDown}
-          disabled={canvasMode === 'pen'}
+          isSelect={canvasMode === 'pen'}
         >
           <Pencil width="1.5rem" />
         </PaintFabricControllerButton>
         <PaintFabricControllerButton
           onClick={handleFabricCanvasModeButtonClick('hand')}
           onMouseDown={handleButtonMouseDown}
-          disabled={canvasMode === 'hand'}
+          isSelect={canvasMode === 'hand'}
         >
           <Hand width="1.5rem" />
         </PaintFabricControllerButton>
         <PaintFabricControllerButton
           onClick={handleFabricCanvasModeButtonClick('select')}
           onMouseDown={handleButtonMouseDown}
-          disabled={canvasMode === 'select'}
+          isSelect={canvasMode === 'select'}
         >
           <Mouse width="1.5rem" />
         </PaintFabricControllerButton>
@@ -80,7 +80,7 @@ export function PaintController() {
             key={index}
             onClick={handleBrushWidthButtonClick(width)}
             onMouseDown={handleButtonMouseDown}
-            disabled={brushWidth === width}
+            isSelect={brushWidth === width}
           >
             <div
               css={css`
@@ -110,7 +110,7 @@ export function PaintController() {
             key={index}
             onClick={handlBrushColorButtonClick(color)}
             onMouseDown={handleButtonMouseDown}
-            disabled={brushColor === color}
+            isSelect={brushColor === color}
           >
             <div
               css={css`

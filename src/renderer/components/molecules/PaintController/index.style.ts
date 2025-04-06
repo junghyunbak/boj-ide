@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
 export const PaintControllerBox = styled.div`
@@ -20,7 +21,7 @@ export const PaintFabricControllerButtonGroupBox = styled.div`
   flex-direction: column;
 `;
 
-export const PaintFabricControllerButton = styled.button`
+export const PaintFabricControllerButton = styled.button<{ isSelect?: boolean }>`
   border: 0;
 
   display: flex;
@@ -34,7 +35,10 @@ export const PaintFabricControllerButton = styled.button`
 
   cursor: pointer;
 
-  &:disabled {
-    background-color: ${(props) => props.theme.colors.border};
-  }
+  ${({ isSelect, theme }) =>
+    isSelect
+      ? css`
+          background-color: ${theme.colors.border};
+        `
+      : css``}
 `;
