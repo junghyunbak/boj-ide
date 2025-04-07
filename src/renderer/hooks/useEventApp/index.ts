@@ -53,14 +53,14 @@ export function useEventApp() {
         fireConfirmModal(
           '저장되지 않은 파일이 존재합니다.\n종료하시겠습니까?',
           () => {
-            window.electron.ipcRenderer.sendMessage('quit-app', undefined);
+            window.electron.ipcRenderer.sendMessage('quit-app', { data: undefined });
           },
           () => {
             openHistoryModal();
           },
         );
       } else {
-        window.electron.ipcRenderer.sendMessage('quit-app', undefined);
+        window.electron.ipcRenderer.sendMessage('quit-app', { data: undefined });
       }
     },
     [fireConfirmModal, openHistoryModal, getEditingFileIsExist],

@@ -5,7 +5,7 @@ import { IpcErrorHandler } from '@/main/error';
 export class Ipc {
   on<Channel extends ElectronChannels>(
     channel: Channel,
-    listener: (e: Electron.IpcMainEvent, message: ChannelToMessage[Channel][Send]) => void,
+    listener: (e: Electron.IpcMainEvent, message: MessageTemplate<ChannelToMessage[Channel][Send]>) => void,
   ): void {
     ipcMain.on(channel, IpcErrorHandler(channel, listener, this.send));
   }
@@ -14,8 +14,8 @@ export class Ipc {
     channel: Channel,
     listener: (
       e: Electron.IpcMainInvokeEvent,
-      message: ChannelToMessage[Channel][Send],
-    ) => Promise<ChannelToMessage[Channel][Receive]>,
+      message: MessageTemplate<ChannelToMessage[Channel][Send]>,
+    ) => Promise<MessageTemplate<ChannelToMessage[Channel][Receive]>>,
   ): void {
     ipcMain.handle(channel, IpcErrorHandler(channel, listener, this.send));
   }
@@ -23,7 +23,7 @@ export class Ipc {
   send<Channel extends ClientChannels>(
     webContents: Electron.WebContents,
     channel: Channel,
-    message: ChannelToMessage[Channel][Send],
+    message: MessageTemplate<ChannelToMessage[Channel][Send]>,
   ): void {
     webContents.send(channel, message);
   }

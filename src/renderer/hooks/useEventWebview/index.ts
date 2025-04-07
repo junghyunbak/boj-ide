@@ -120,7 +120,7 @@ export function useEventWebview() {
       return;
     }
 
-    window.electron.ipcRenderer.sendMessage('open-deep-link', undefined);
+    window.electron.ipcRenderer.sendMessage('open-deep-link', { data: undefined });
   }, [webview]);
 
   /**

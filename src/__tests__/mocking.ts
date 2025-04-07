@@ -31,7 +31,9 @@ export const problemBData = '문제B데이터';
  * ipc event mocking
  */
 type ClientChannelToListener = {
-  [channel in ClientChannels]?: ((message: ChannelToMessage[channel][Receive]) => void | Promise<void>)[];
+  [channel in ClientChannels]?: ((
+    message: MessageTemplate<ChannelToMessage[channel][Receive]>,
+  ) => void | Promise<void>)[];
 };
 
 export const clientChannelToListener: ClientChannelToListener = {};
@@ -67,7 +69,7 @@ window.electron = {
               return '';
             }
 
-            if (!('data' in message) || !('number' in message.data)) {
+            if (!('data' in message) || !(typeof message.data === 'object') || !('number' in message.data)) {
               return '';
             }
 
@@ -97,7 +99,7 @@ window.electron = {
         case 'open-deep-link':
         case 'judge-start':
         default:
-          return undefined;
+          return { data: undefined };
       }
     },
   },

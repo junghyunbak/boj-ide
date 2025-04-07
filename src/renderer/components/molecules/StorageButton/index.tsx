@@ -2,7 +2,7 @@ import { TransparentButton } from '@/renderer/components/atoms/buttons/Transpare
 
 export function StorageButton() {
   const handleStorageButtonClick = () => {
-    window.electron.ipcRenderer.sendMessage('open-source-code-folder', undefined);
+    window.electron.ipcRenderer.sendMessage('open-source-code-folder', { data: undefined });
   };
 
   return (

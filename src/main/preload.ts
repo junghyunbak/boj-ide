@@ -8,19 +8,24 @@ const electronHandler = {
   ipcRenderer: {
     invoke<Channel extends ElectronChannels>(
       channel: Channel,
-      message: ChannelToMessage[Channel][Send],
+      message: MessageTemplate<ChannelToMessage[Channel][Send]>,
     ): ReturnType<ReturnType<typeof IpcErrorHandler<Channel, Electron.IpcMainInvokeEvent>>> {
       return ipcRenderer.invoke(channel, message);
     },
-    sendMessage<Channel extends ElectronChannels>(channel: Channel, message: ChannelToMessage[Channel][Send]): void {
+    sendMessage<Channel extends ElectronChannels>(
+      channel: Channel,
+      message: MessageTemplate<ChannelToMessage[Channel][Send]>,
+    ): void {
       ipcRenderer.send(channel, message);
     },
     on<Channel extends ClientChannels>(
       channel: Channel,
-      listener: (message: ChannelToMessage[Channel][Receive]) => void | Promise<void>,
+      listener: (message: MessageTemplate<ChannelToMessage[Channel][Receive]>) => void | Promise<void>,
     ) {
-      const subscription = (_event: Electron.IpcRendererEvent, message: ChannelToMessage[Channel][Receive]) =>
-        listener(message);
+      const subscription = (
+        _event: Electron.IpcRendererEvent,
+        message: MessageTemplate<ChannelToMessage[Channel][Receive]>,
+      ) => listener(message);
 
       ipcRenderer.on(channel, subscription);
 

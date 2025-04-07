@@ -143,7 +143,7 @@ const createWindow = async () => {
       e.preventDefault();
 
       if (mainWindow) {
-        ipc.send(mainWindow.webContents, 'check-saved', undefined);
+        ipc.send(mainWindow.webContents, 'check-saved', { data: undefined });
       }
     }
   });
@@ -167,19 +167,19 @@ app.on('window-all-closed', () => {
 app.on('browser-window-focus', () => {
   const handleCommandOrControlR = () => {
     if (mainWindow) {
-      ipc.send(mainWindow.webContents, 'ctrl-or-cmd-r-pressed', undefined);
+      ipc.send(mainWindow.webContents, 'ctrl-or-cmd-r-pressed', { data: undefined });
     }
   };
 
   globalShortcut.register('F5', () => {
     if (mainWindow) {
-      ipc.send(mainWindow.webContents, 'judge-request', undefined);
+      ipc.send(mainWindow.webContents, 'judge-request', { data: undefined });
     }
   });
 
   globalShortcut.register('CommandOrControl+W', () => {
     if (mainWindow && mainWindow.isFocused()) {
-      ipc.send(mainWindow.webContents, 'close-tab', undefined);
+      ipc.send(mainWindow.webContents, 'close-tab', { data: undefined });
     }
 
     const focusPopupWindowIdx = popupWindows.findIndex(
@@ -214,7 +214,7 @@ app.on('web-contents-created', (e, contents) => {
     popupWindow.webContents.on('destroyed', () => {
       if (contents.getURL().startsWith('chrome-extension://')) {
         if (mainWindow) {
-          ipc.send(mainWindow.webContents, 'reload-webview', undefined);
+          ipc.send(mainWindow.webContents, 'reload-webview', { data: undefined });
 
           sentryLogging('[로그] 익스텐션 팝업 창을 닫았습니다.');
         }

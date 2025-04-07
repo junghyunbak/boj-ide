@@ -61,7 +61,7 @@ beforeAll(() => {
 
               return { data: { isSaved: true } };
             } catch (e) {
-              return undefined;
+              return { data: undefined };
             }
           }
           case 'save-code': {
@@ -72,12 +72,12 @@ beforeAll(() => {
 
               return { data: { isSaved: true } };
             } catch (e) {
-              return undefined;
+              return { data: undefined };
             }
           }
 
           default:
-            return undefined;
+            return { data: undefined };
         }
       },
     },

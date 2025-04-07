@@ -24,7 +24,7 @@ export function useEventTab() {
       fireConfirmModal(
         `${isStaleDataExist ? '저장되지 않은 파일이 존재합니다.\n' : ''}종료하시겠습니까?`,
         () => {
-          window.electron.ipcRenderer.sendMessage('quit-app', undefined);
+          window.electron.ipcRenderer.sendMessage('quit-app', { data: undefined });
         },
         () => {
           if (isStaleDataExist) {

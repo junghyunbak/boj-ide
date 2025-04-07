@@ -11,7 +11,7 @@ export function StopJudgeButton() {
   return (
     <ActionButton
       onClick={() => {
-        window.electron.ipcRenderer.sendMessage('stop-judge', undefined);
+        window.electron.ipcRenderer.sendMessage('stop-judge', { data: undefined });
       }}
       variant="interupt"
     >

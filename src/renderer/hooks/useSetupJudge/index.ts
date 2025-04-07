@@ -13,7 +13,7 @@ export function useSetupJudge() {
   const { resetJudge, updateJudgeIdentifier } = useModifyJudge();
 
   useEffect(() => {
-    window.electron.ipcRenderer.sendMessage('stop-judge', undefined);
+    window.electron.ipcRenderer.sendMessage('stop-judge', { data: undefined });
     updateJudgeIdentifier();
     resetJudge();
   }, [problem, customTestcases, language, updateJudgeIdentifier, resetJudge]);

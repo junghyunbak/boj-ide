@@ -86,7 +86,7 @@ describe('닫기 동작 테스트', () => {
       await act(async () => {
         if (listeners) {
           for (const listener of listeners) {
-            await listener(undefined);
+            await listener({ data: undefined });
           }
         }
       });
@@ -102,7 +102,7 @@ describe('닫기 동작 테스트', () => {
       await act(async () => {
         if (listeners) {
           for (const listener of listeners) {
-            await listener(undefined);
+            await listener({ data: undefined });
           }
         }
       });
@@ -127,7 +127,7 @@ describe('닫기 동작 테스트', () => {
       await act(async () => {
         if (listeners) {
           for (const listener of listeners) {
-            await listener(undefined);
+            await listener({ data: undefined });
           }
         }
       });
@@ -148,7 +148,7 @@ describe('닫기 동작 테스트', () => {
       await act(async () => {
         if (listeners) {
           for (const listener of listeners) {
-            await listener(undefined);
+            await listener({ data: undefined });
           }
         }
       });
@@ -170,7 +170,7 @@ describe('닫기 동작 테스트', () => {
       await act(async () => {
         if (listeners) {
           for (const listener of listeners) {
-            await listener(undefined);
+            await listener({ data: undefined });
           }
         }
       });
@@ -201,7 +201,7 @@ describe('종료 모달 테스트', () => {
       await act(async () => {
         if (listeners) {
           for (const listener of listeners) {
-            await listener(undefined);
+            await listener({ data: undefined });
           }
         }
       });
@@ -219,7 +219,7 @@ describe('종료 모달 테스트', () => {
       await act(async () => {
         if (listeners) {
           for (const listener of listeners) {
-            await listener(undefined);
+            await listener({ data: undefined });
           }
         }
       });
@@ -239,7 +239,7 @@ describe('종료 모달 테스트', () => {
       await act(async () => {
         if (listeners) {
           for (const listener of listeners) {
-            await listener(undefined);
+            await listener({ data: undefined });
           }
         }
       });

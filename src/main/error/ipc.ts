@@ -20,14 +20,14 @@ export function IpcErrorHandler<
   channel: Channel,
   listener: (
     e: Event,
-    message: ChannelToMessage[Channel][Send],
-  ) => Event extends Electron.IpcMainEvent ? void : Promise<ChannelToMessage[Channel][Receive]>,
+    message: MessageTemplate<ChannelToMessage[Channel][Send]>,
+  ) => Event extends Electron.IpcMainEvent ? void : Promise<MessageTemplate<ChannelToMessage[Channel][Receive]>>,
   send: Ipc['send'],
 ) {
   return async (
     e: Event,
-    message: ChannelToMessage[Channel][Send],
-  ): Promise<ChannelToMessage[Channel][Receive] | null> => {
+    message: MessageTemplate<ChannelToMessage[Channel][Send]>,
+  ): Promise<MessageTemplate<ChannelToMessage[Channel][Receive]> | null> => {
     try {
       const result = listener(e, message);
 
@@ -38,7 +38,7 @@ export function IpcErrorHandler<
       return null;
     } catch (err) {
       if (err instanceof Error) {
-        send(e.sender, 'judge-reset', undefined);
+        send(e.sender, 'judge-reset', { data: undefined });
         send(e.sender, 'occur-error', { data: { message: err.message } });
 
         if (err instanceof IpcError && err.errorType === 'personal') {

@@ -213,7 +213,7 @@ describe('저장 상태 테스트', () => {
 
           if (listeners) {
             for (const listener of listeners) {
-              await listener(undefined);
+              await listener({ data: undefined });
             }
           }
         });

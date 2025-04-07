@@ -12,38 +12,35 @@ type ChannelToMessage = {
   /**
    * electron
    */
-  'load-code': [MessageTemplate<MyOmit<CodeInfo, 'code'>>, MessageTemplate<Pick<CodeInfo, 'code'>>];
-  'load-files': [undefined, MessageTemplate<{ problemNumbers: number[] }>];
-  'save-code': [MessageTemplate<CodeInfo>, MessageTemplate<SaveResult>];
-  'save-default-code': [MessageTemplate<MyOmit<CodeInfo, 'number'>>, MessageTemplate<SaveResult>];
-  'judge-start': [MessageTemplate<CodeInfo & Pick<ProblemInfo, 'testCase'> & { judgeId: string }>];
+  'load-code': [MyOmit<CodeInfo, 'code'>, Pick<CodeInfo, 'code'>];
+  'load-files': [undefined, { problemNumbers: number[] }];
+  'save-code': [CodeInfo, SaveResult];
+  'save-default-code': [MyOmit<CodeInfo, 'number'>, SaveResult];
+  'judge-start': [CodeInfo & Pick<ProblemInfo, 'testCase'> & { judgeId: string }];
   'stop-judge': [];
-  'submit-code': [MessageTemplate<CodeInfo>];
+  'submit-code': [CodeInfo];
   'open-source-code-folder': [];
   'open-deep-link': [];
-  'log-add-testcase': [MessageTemplate<MyOmit<CodeInfo, 'code'>>];
-  'log-execute-ai-create': [MessageTemplate<MyOmit<CodeInfo, 'code'>>];
-  'log-toggle-paint': [MessageTemplate<MyOmit<CodeInfo, 'code'>>];
+  'log-add-testcase': [MyOmit<CodeInfo, 'code'>];
+  'log-execute-ai-create': [MyOmit<CodeInfo, 'code'>];
+  'log-toggle-paint': [MyOmit<CodeInfo, 'code'>];
   'quit-app': [];
-  'clipboard-copy-image': [MessageTemplate<{ dataUrl: string }>, MessageTemplate<SaveResult>];
-  'toggle-theme': [MessageTemplate<{ theme: 'light' | 'dark' }>];
-  'create-random-problem': [
-    MessageTemplate<{ baekjoonId: string; tierRange: number[] }>,
-    MessageTemplate<{ problemNumber: string; title: string }>,
-  ];
+  'clipboard-copy-image': [{ dataUrl: string }, SaveResult];
+  'toggle-theme': [{ theme: 'light' | 'dark' }];
+  'create-random-problem': [{ baekjoonId: string; tierRange: number[] }, { problemNumber: string; title: string }];
 
   /**
    * client
    */
-  'judge-result': [MessageTemplate<JudgeResult>];
+  'judge-result': [JudgeResult];
   'judge-reset': [];
   'judge-request': [];
-  'occur-error': [MessageTemplate<{ message: string }>];
-  'open-problem': [MessageTemplate<{ problemNumber: number }>];
+  'occur-error': [{ message: string }];
+  'open-problem': [{ problemNumber: number }];
   'ctrl-or-cmd-r-pressed': [];
-  'set-baekjoonhub-id': [MessageTemplate<{ extensionId: string }>];
+  'set-baekjoonhub-id': [{ extensionId: string }];
   'reload-webview': [];
-  'app-update-info': [MessageTemplate<{ bytesPerSecond?: number; percent?: number; isDownloaded: boolean }>];
+  'app-update-info': [{ bytesPerSecond?: number; percent?: number; isDownloaded: boolean }];
   'close-tab': [];
   'check-saved': [];
 };

@@ -2,12 +2,12 @@
 import { useEffect } from 'react';
 
 export function useEventIpc<T extends ClientChannels>(
-  func: (message: ChannelToMessage[T][0]) => void,
+  func: (message: MessageTemplate<ChannelToMessage[T][Send]>) => void,
   deps: unknown[],
   channel: T,
 ) {
   useEffect(() => {
-    const cleanup = window.electron.ipcRenderer.on(channel, func);
+    const cleanup = window.electron.ipcRenderer.on<T>(channel, func);
 
     return cleanup;
   }, [...deps]);
