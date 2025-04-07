@@ -1,9 +1,11 @@
 import { DefaultError, useQuery } from '@tanstack/react-query';
 
-export function useFetchSolvedSearch(query: string): {
-  searchProblemResults: SolvedAC.API.SearchResponse['items'];
-} {
-  const { data: searchProblemResults, isError } = useQuery<
+export function useFetchSolvedSearch(query: string) {
+  const {
+    data: searchProblemResults,
+    isError,
+    isFetching,
+  } = useQuery<
     SolvedAC.API.SearchResponse['items'],
     DefaultError,
     SolvedAC.API.SearchResponse['items'],
@@ -24,9 +26,5 @@ export function useFetchSolvedSearch(query: string): {
     staleTime: Infinity,
   });
 
-  if (isError) {
-    return { searchProblemResults: [] };
-  }
-
-  return { searchProblemResults: searchProblemResults || [] };
+  return { searchProblemResults: isError ? [] : searchProblemResults || [], isFetching };
 }
