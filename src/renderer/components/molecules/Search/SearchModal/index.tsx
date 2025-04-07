@@ -45,6 +45,7 @@ export function SearchModal() {
         css={css`
           width: 100%;
           min-width: 508px;
+          max-width: 600px;
           height: 100%;
 
           display: flex;
