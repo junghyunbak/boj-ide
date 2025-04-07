@@ -9,7 +9,6 @@ import { fabric } from 'fabric';
 import { ReactComponent as Copy } from '@/renderer/assets/svgs/copy.svg';
 
 const MIN_PADDING = 25;
-const WATERMARK_PADDING = 4;
 
 export function PaintCaptureButton() {
   const { canvas, paintRef } = usePaint();
@@ -91,8 +90,11 @@ export function PaintCaptureButton() {
       });
     };
 
+    const WATERMARK_PADDING = paddingY * 0.1;
+
     const waterMarkText = new fabric.Text('BOJ IDE', {
-      fontSize: 12,
+      fontSize: paddingY - WATERMARK_PADDING * 2,
+      lineHeight: 1,
       fontFamily: 'helvetica-neue',
       fill: emotionTheme.colors.disabledFg,
     });
