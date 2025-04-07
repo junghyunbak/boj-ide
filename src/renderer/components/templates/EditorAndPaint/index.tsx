@@ -55,7 +55,7 @@ export function EditorAndPaint() {
               css={css`
                 position: absolute;
                 right: 0;
-                bottom: 0;
+                top: 0;
                 padding: 0.5rem;
               `}
             >
@@ -66,7 +66,7 @@ export function EditorAndPaint() {
               css={css`
                 position: absolute;
                 right: 0;
-                top: 0;
+                bottom: 0;
                 padding: 0.5rem;
               `}
             >
