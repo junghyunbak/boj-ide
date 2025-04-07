@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 
 import { size } from '@/common/constants';
 
-import { ProblemHistory } from '@/renderer/components/molecules/ProblemHistory';
+import { Search } from '@/renderer/components/molecules/Search';
 
 export function TitleBar() {
   return (
@@ -21,7 +21,13 @@ export function TitleBar() {
         -webkit-app-region: drag;
       `}
     >
-      <ProblemHistory />
+      <div
+        css={css`
+          -webkit-app-region: no-drag;
+        `}
+      >
+        <Search />
+      </div>
     </div>
   );
 }

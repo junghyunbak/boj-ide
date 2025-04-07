@@ -3,7 +3,6 @@ import { css } from '@emotion/react';
 import { SubmitButton } from '@/renderer/components/molecules/SubmitButton';
 import { WebviewController } from '@/renderer/components/molecules/WebviewController';
 import { ThemeButton } from '@/renderer/components/molecules/ThemeButton';
-import { ProblemHistory } from '@/renderer/components/molecules/ProblemHistory';
 
 export function Nav() {
   return (

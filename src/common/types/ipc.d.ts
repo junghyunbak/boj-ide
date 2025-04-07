@@ -27,7 +27,11 @@ type ChannelToMessage = {
   'quit-app': [];
   'clipboard-copy-image': [{ dataUrl: string }, SaveResult];
   'toggle-theme': [{ theme: 'light' | 'dark' }];
-  'create-random-problem': [{ baekjoonId: string; tierRange: number[] }, { problemNumber: string; title: string }];
+  'create-random-problem': [
+    { baekjoonId: string; tierRange: number[] },
+    SolvedAC.API.SearchResponse['items'][number] | null,
+  ];
+  'search-problem': [{ query: string }, SolvedAC.API.SearchResponse['items']];
 
   /**
    * client
@@ -63,6 +67,7 @@ type ElectronChannels = keyof Pick<
   | 'toggle-theme'
   | 'create-random-problem'
   | 'stop-judge'
+  | 'search-problem'
 >;
 
 type ClientChannels = keyof Pick<

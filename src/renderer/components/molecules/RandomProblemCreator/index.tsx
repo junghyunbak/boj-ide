@@ -78,14 +78,14 @@ export function RandomProblemCreator() {
       data: { tierRange: tierValues, baekjoonId },
     });
 
-    if (response) {
+    if (response && response.data) {
       const {
-        data: { problemNumber, title },
+        data: { problemId, titleKo },
       } = response;
 
       const nextProblem: ProblemInfo = {
-        number: problemNumber,
-        name: title,
+        number: problemId.toString(),
+        name: titleKo,
         testCase: {
           inputs: [],
           outputs: [],

@@ -4,14 +4,6 @@ import { ipc } from '@/main/utils';
 
 import { sentryLogging } from '@/main/error';
 
-type SolvedACSearchResponse = {
-  count: number;
-  items: {
-    problemId: number;
-    titleKo: string;
-  }[];
-};
-
 export class SolvedAPI {
   private mainWindow: BrowserWindow;
 
@@ -20,6 +12,22 @@ export class SolvedAPI {
   }
 
   build() {
+    ipc.handle('search-problem', async (e, { data: { query } }) => {
+      sentryLogging('[로그] 사용자가 검색 기능을 사용하였습니다.');
+
+      const url = `https://solved.ac/api/v3/search/problem?direction=asc&sort=id&query=${query}`;
+
+      const options = {
+        method: 'GET',
+        headers: { 'x-solvedac-language': '', Accept: 'application/json' },
+      };
+
+      const response = await fetch(url, options);
+      const data = (await response.json()) as SolvedAC.API.SearchResponse;
+
+      return { data: data.items };
+    });
+
     ipc.handle('create-random-problem', async (e, { data: { baekjoonId, tierRange } }) => {
       sentryLogging('[로그] 사용자가 랜덤 문제를 생성하였습니다.');
 
@@ -37,11 +45,15 @@ export class SolvedAPI {
       };
 
       const response = await fetch(url, options);
-      const data = (await response.json()) as SolvedACSearchResponse;
+      const data = (await response.json()) as SolvedAC.API.SearchResponse;
 
-      const item = data.items[0];
+      if (data.count === 0) {
+        return { data: null };
+      }
 
-      return { data: { problemNumber: item.problemId.toString(), title: item.titleKo } };
+      const [item] = data.items;
+
+      return { data: item };
     });
   }
 }
