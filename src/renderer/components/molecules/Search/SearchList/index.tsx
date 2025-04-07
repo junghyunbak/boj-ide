@@ -16,7 +16,7 @@ export function SearchList({ listType, children }: SearchListProps) {
 
         position: relative;
 
-        &:not(:first-child) {
+        &:not(:first-of-type) {
           border-top: 1px solid ${theme.colors.primaryfg};
           padding-top: 4px;
           margin-top: 4px;

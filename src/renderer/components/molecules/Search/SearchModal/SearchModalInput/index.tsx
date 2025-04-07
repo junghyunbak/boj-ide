@@ -26,7 +26,7 @@ export function SearchModalInput() {
         ref={historyModalInputRef}
         value={historyFilterValue}
         onChange={handleHistoryFilterValueChange}
-        placeholder="solved.ac 쿼리 / 히스토리 검색"
+        placeholder="solved.ac 검색 / 최근 항목 필터"
         css={(theme) => css`
           width: 100%;
 

@@ -41,6 +41,7 @@ export * from './useSetupHistories';
 export * from './useFetchProblem';
 export * from './useFetchDailyProblem';
 export * from './useFetchAICode';
+export * from './useFetchSolvedSearch';
 
 /**
  * modify
