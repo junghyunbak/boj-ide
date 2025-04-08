@@ -96,6 +96,7 @@ export function PaintCaptureButton() {
       fontSize: paddingY - WATERMARK_PADDING * 2,
       lineHeight: 1,
       fontFamily: 'helvetica-neue',
+      fontWeight: 500,
       fill: emotionTheme.colors.disabledFg,
     });
 
