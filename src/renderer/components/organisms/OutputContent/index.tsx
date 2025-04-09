@@ -39,7 +39,7 @@ export function OutputContent() {
         gap: 1rem;
       `}
     >
-      <Tooltip id="clang-warning" content="동적 링킹 시간이 포함된 결과입니다." />
+      <Tooltip id="mac-clang-warning" content="실행 시간에 라이브러리 링크 시간이 포함됨" />
 
       <ExecuteResultTable>
         <ExecuteResultThead>
@@ -50,7 +50,7 @@ export function OutputContent() {
               시간
               {window.electron.platform === 'darwin' && (language === 'C++14' || language === 'C++17') && (
                 <span
-                  data-tooltip-id="clang-warning"
+                  data-tooltip-id="mac-clang-warning"
                   css={css`
                     margin-left: 0.25rem;
                   `}
