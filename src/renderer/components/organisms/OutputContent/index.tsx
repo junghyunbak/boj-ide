@@ -1,9 +1,11 @@
 import { css } from '@emotion/react';
 
-import { useJudge, useEventJudge, useTestcase, useSetupJudge } from '@/renderer/hooks';
+import { useJudge, useEventJudge, useTestcase, useSetupJudge, useLanguage } from '@/renderer/hooks';
 
 import { TestCaseMaker } from '@/renderer/components/molecules/TestCaseMaker';
 import { Testcase } from '@/renderer/components/molecules/Testcase';
+
+import { Tooltip } from 'react-tooltip';
 
 import {
   ExecuteResultTable,
@@ -15,6 +17,7 @@ import {
 
 export function OutputContent() {
   const { judgeResults } = useJudge();
+  const { language } = useLanguage();
   const { allTestcase, tcKeyMap } = useTestcase();
 
   useSetupJudge();
@@ -36,12 +39,26 @@ export function OutputContent() {
         gap: 1rem;
       `}
     >
+      <Tooltip id="clang-warning" content="동적 링킹 시간이 포함된 결과입니다." />
+
       <ExecuteResultTable>
         <ExecuteResultThead>
           <ExecuteResultTheadRow>
             <ExecuteResultHead style={{ width: '30%' }}>예제</ExecuteResultHead>
             <ExecuteResultHead style={{ width: '20%' }}>결과</ExecuteResultHead>
-            <ExecuteResultHead style={{ width: '20%' }}>시간</ExecuteResultHead>
+            <ExecuteResultHead style={{ width: '20%' }}>
+              시간
+              {window.electron.platform === 'darwin' && (language === 'C++14' || language === 'C++17') && (
+                <span
+                  data-tooltip-id="clang-warning"
+                  css={css`
+                    margin-left: 0.25rem;
+                  `}
+                >
+                  ⚠️
+                </span>
+              )}
+            </ExecuteResultHead>
             <ExecuteResultHead style={{ width: '15%' }}>상세</ExecuteResultHead>
             <ExecuteResultHead style={{ width: '15%' }}>삭제</ExecuteResultHead>
           </ExecuteResultTheadRow>
