@@ -23,6 +23,20 @@ class CustomSpawn {
     this.env = { ...process.env, ...shellEnv };
   }
 
+  getEnvPath() {
+    const envPath = (() => {
+      for (const [key, value] of Object.entries(this.env)) {
+        if (key.toLowerCase() === 'path') {
+          return value;
+        }
+      }
+
+      return null;
+    })();
+
+    return envPath;
+  }
+
   async(cmd: string, args: string[], options: SpawnOptionsWithoutStdio) {
     return spawn(cmd, args, { ...options, env: this.env });
   }

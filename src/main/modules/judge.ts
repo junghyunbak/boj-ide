@@ -51,11 +51,13 @@ export class Judge {
 
   private isCliExist(language: Language) {
     if (!checkCli(langToJudgeInfo[language].cli)) {
+      console.log('[사용자 환경변수]', customSpawn.getEnvPath());
+
       throw new Error(
         [
           `${this.getCliType(language)} \`${langToJudgeInfo[language].cli}\` 가 설치되어있지 않습니다.`,
           `<img src="https://github.com/user-attachments/assets/bf775ca3-db48-4112-95b7-4e2bc876755c" style="width: 500px"/>`,
-          `프로그램 설치 후 환경변수 설정을 통해 \`--version\` 명령어로 버전을 확인할 수 있어야 합니다.<br/><br/>`,
+          `프로그램 설치 후 환경변수 설정을 통해 터미널 전역에서 \`--version\` 명령어로 버전을 확인할 수 있어야 합니다.<br/><br/>`,
           `[참고 Q&A] ["Python3을 분명 설치했음에도 이를 인식하지 못합니다."](https://boj-ide.gitbook.io/boj-ide-docs/qa/cli)`,
         ].join('\n\n'),
       );
