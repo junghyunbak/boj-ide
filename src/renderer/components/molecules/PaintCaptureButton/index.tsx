@@ -97,7 +97,7 @@ export function PaintCaptureButton() {
       lineHeight: 1,
       fontFamily: 'helvetica-neue',
       fontWeight: 500,
-      fill: emotionTheme.colors.disabledFg,
+      fill: `${emotionTheme.colors.disabledFg}66`,
     });
 
     waterMarkText.left = mil - paddingX + WATERMARK_PADDING;
