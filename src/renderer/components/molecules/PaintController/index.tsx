@@ -7,6 +7,10 @@ import { ReactComponent as Undo } from '@/renderer/assets/svgs/undo.svg';
 
 import { useModifyPaint, usePaint, useProblem } from '@/renderer/hooks';
 
+import { TooltipContentWithShortcuts } from '@/renderer/components/atoms/TooltipContentWithShortcuts';
+
+import { Tooltip } from 'react-tooltip';
+
 import { PaintControllerBox, PaintFabricControllerButton, PaintFabricControllerButtonGroupBox } from './index.style';
 
 export function PaintController() {
@@ -49,115 +53,136 @@ export function PaintController() {
   };
 
   return (
-    <PaintControllerBox>
-      <PaintFabricControllerButtonGroupBox>
-        <PaintFabricControllerButton
-          onClick={handleFabricCanvasModeButtonClick('pen')}
-          onMouseDown={handleButtonMouseDown}
-          isSelect={canvasMode === 'pen'}
-        >
-          <Pencil width="1.5rem" />
-        </PaintFabricControllerButton>
-        <PaintFabricControllerButton
-          onClick={handleFabricCanvasModeButtonClick('hand')}
-          onMouseDown={handleButtonMouseDown}
-          isSelect={canvasMode === 'hand'}
-        >
-          <Hand width="1.5rem" />
-        </PaintFabricControllerButton>
-        <PaintFabricControllerButton
-          onClick={handleFabricCanvasModeButtonClick('select')}
-          onMouseDown={handleButtonMouseDown}
-          isSelect={canvasMode === 'select'}
-        >
-          <Mouse width="1.5rem" />
-        </PaintFabricControllerButton>
-      </PaintFabricControllerButtonGroupBox>
+    <>
+      <div
+        css={css`
+          z-index: 1;
+        `}
+      >
+        <Tooltip id="paint-pen-mode" place="right" delayShow={500}>
+          <TooltipContentWithShortcuts title="그리기" shortCuts={['P']} />
+        </Tooltip>
+        <Tooltip id="paint-hand-mode" place="right" delayShow={500}>
+          <TooltipContentWithShortcuts title="화면 이동" shortCuts={['M', 'Space']} />
+        </Tooltip>
+        <Tooltip id="paint-move-mode" place="right" delayShow={500}>
+          <TooltipContentWithShortcuts title="요소 선택" shortCuts={['V']} />
+        </Tooltip>
+      </div>
 
-      <PaintFabricControllerButtonGroupBox>
-        {BRUSH_WIDTHS.map((width, index) => (
+      <PaintControllerBox>
+        <PaintFabricControllerButtonGroupBox>
           <PaintFabricControllerButton
-            key={index}
-            onClick={handleBrushWidthButtonClick(width)}
+            onClick={handleFabricCanvasModeButtonClick('pen')}
             onMouseDown={handleButtonMouseDown}
-            isSelect={brushWidth === width}
+            isSelect={canvasMode === 'pen'}
+            data-tooltip-id="paint-pen-mode"
           >
+            <Pencil width="1.5rem" />
+          </PaintFabricControllerButton>
+          <PaintFabricControllerButton
+            onClick={handleFabricCanvasModeButtonClick('hand')}
+            onMouseDown={handleButtonMouseDown}
+            isSelect={canvasMode === 'hand'}
+            data-tooltip-id="paint-hand-mode"
+          >
+            <Hand width="1.5rem" />
+          </PaintFabricControllerButton>
+          <PaintFabricControllerButton
+            onClick={handleFabricCanvasModeButtonClick('select')}
+            onMouseDown={handleButtonMouseDown}
+            isSelect={canvasMode === 'select'}
+            data-tooltip-id="paint-move-mode"
+          >
+            <Mouse width="1.5rem" />
+          </PaintFabricControllerButton>
+        </PaintFabricControllerButtonGroupBox>
+
+        <PaintFabricControllerButtonGroupBox>
+          {BRUSH_WIDTHS.map((width, index) => (
+            <PaintFabricControllerButton
+              key={index}
+              onClick={handleBrushWidthButtonClick(width)}
+              onMouseDown={handleButtonMouseDown}
+              isSelect={brushWidth === width}
+            >
+              <div
+                css={css`
+                  width: 1.5rem;
+                  aspect-ratio: 1/1;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                `}
+              >
+                <div
+                  css={(theme) => css`
+                    width: 100%;
+                    height: ${width}px;
+                    background-color: ${theme.colors.fg};
+                    border-radius: 3px;
+                  `}
+                />
+              </div>
+            </PaintFabricControllerButton>
+          ))}
+        </PaintFabricControllerButtonGroupBox>
+
+        <PaintFabricControllerButtonGroupBox>
+          {BRUSH_COLORS.map((color, index) => (
+            <PaintFabricControllerButton
+              key={index}
+              onClick={handlBrushColorButtonClick(color)}
+              onMouseDown={handleButtonMouseDown}
+              isSelect={brushColor === color}
+            >
+              <div
+                css={css`
+                  width: 1.5rem;
+                  aspect-ratio: 1/1;
+                  background-color: ${color};
+                `}
+              />
+            </PaintFabricControllerButton>
+          ))}
+        </PaintFabricControllerButtonGroupBox>
+
+        <PaintFabricControllerButtonGroupBox>
+          <PaintFabricControllerButton onClick={handleUndoButtonClick}>
             <div
               css={css`
                 width: 1.5rem;
                 aspect-ratio: 1/1;
+
                 display: flex;
                 justify-content: center;
                 align-items: center;
               `}
             >
-              <div
-                css={(theme) => css`
-                  width: 100%;
-                  height: ${width}px;
-                  background-color: ${theme.colors.fg};
-                  border-radius: 3px;
-                `}
-              />
+              <Undo />
             </div>
           </PaintFabricControllerButton>
-        ))}
-      </PaintFabricControllerButtonGroupBox>
 
-      <PaintFabricControllerButtonGroupBox>
-        {BRUSH_COLORS.map((color, index) => (
-          <PaintFabricControllerButton
-            key={index}
-            onClick={handlBrushColorButtonClick(color)}
-            onMouseDown={handleButtonMouseDown}
-            isSelect={brushColor === color}
-          >
+          <PaintFabricControllerButton onClick={handleRedoButtonClick}>
             <div
               css={css`
                 width: 1.5rem;
                 aspect-ratio: 1/1;
-                background-color: ${color};
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
               `}
-            />
+            >
+              <Undo
+                css={css`
+                  transform: scaleX(-1);
+                `}
+              />
+            </div>
           </PaintFabricControllerButton>
-        ))}
-      </PaintFabricControllerButtonGroupBox>
-
-      <PaintFabricControllerButtonGroupBox>
-        <PaintFabricControllerButton onClick={handleUndoButtonClick}>
-          <div
-            css={css`
-              width: 1.5rem;
-              aspect-ratio: 1/1;
-
-              display: flex;
-              justify-content: center;
-              align-items: center;
-            `}
-          >
-            <Undo />
-          </div>
-        </PaintFabricControllerButton>
-
-        <PaintFabricControllerButton onClick={handleRedoButtonClick}>
-          <div
-            css={css`
-              width: 1.5rem;
-              aspect-ratio: 1/1;
-
-              display: flex;
-              justify-content: center;
-              align-items: center;
-            `}
-          >
-            <Undo
-              css={css`
-                transform: scaleX(-1);
-              `}
-            />
-          </div>
-        </PaintFabricControllerButton>
-      </PaintFabricControllerButtonGroupBox>
-    </PaintControllerBox>
+        </PaintFabricControllerButtonGroupBox>
+      </PaintControllerBox>
+    </>
   );
 }
