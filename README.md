@@ -1,7 +1,7 @@
 ```md
 📢 채점 환경 설정에 어려움을 겪으시고 계시다면 jeong5728@gmail.com 메일로 편하게 연락주세요.
 
-❗ Mac 사용자의 경우 .dmg 로 설치한 파일을 응용 프로그램에서 꺼낼 경우 자동 업데이트가 되지 않습니다.
+❗ Mac 사용자의 경우 .dmg 로 설치한 파일을 응용 프로그램 폴더에서 꺼낼 경우 자동 업데이트가 되지 않습니다.
 ```
 
 ## 소개
@@ -12,7 +12,7 @@
 
 ## 다운로드
 
-|<a href="https://github.com/junghyunbak/boj-ide/releases/download/1.19.30/BOJ-IDE-1.19.30.dmg"><img width="70px" src="https://github.com/user-attachments/assets/b3d81a17-25cd-4862-8a4b-baacb233a3ea"/></a>|<a href="https://github.com/junghyunbak/boj-ide/releases/download/1.19.30/BOJ-IDE-setup-1.19.30.exe"><img width="70px" src="https://github.com/user-attachments/assets/31a67d43-efe4-43ba-88f1-d9288a067139"/></a>|
+|<a href="https://github.com/junghyunbak/boj-ide/releases/download/1.19.31/BOJ-IDE-1.19.31.dmg"><img width="70px" src="https://github.com/user-attachments/assets/b3d81a17-25cd-4862-8a4b-baacb233a3ea"/></a>|<a href="https://github.com/junghyunbak/boj-ide/releases/download/1.19.31/BOJ-IDE-setup-1.19.31.exe"><img width="70px" src="https://github.com/user-attachments/assets/31a67d43-efe4-43ba-88f1-d9288a067139"/></a>|
 |-|-|
 
 ## 기능
