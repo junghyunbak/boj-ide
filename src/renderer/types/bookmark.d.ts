@@ -3,4 +3,5 @@ type BookmarkInfo = {
   title: string;
   path?: string;
   logoImgBase64?: string;
+  custom?: boolean;
 };

@@ -1,6 +1,8 @@
 import { useCallback, useMemo } from 'react';
 
-import { useModifyWebview, useProblem, useWebview } from '@/renderer/hooks';
+import { useModifyTab, useModifyWebview, useProblem, useWebview } from '@/renderer/hooks';
+
+import normalizeUrl, { type Options } from 'normalize-url';
 
 import { MovableTab } from '../MovableTab';
 
@@ -14,8 +16,28 @@ export function TabBookmark({ tab, index }: TabBookmarkProps) {
   const { problem } = useProblem();
 
   const { gotoUrl } = useModifyWebview();
+  const { removeTab } = useModifyTab();
 
-  const isSelect = useMemo(() => !problem && webviewUrl.startsWith(tab.url), [problem, webviewUrl, tab]);
+  const isSelect = useMemo(() => {
+    if (problem) {
+      return false;
+    }
+
+    const normalizeUrlOptions: Options = {
+      stripWWW: false,
+      removeQueryParameters: true,
+      stripHash: true,
+      removeTrailingSlash: true,
+    };
+
+    return (
+      normalizeUrl(webviewUrl, normalizeUrlOptions) === normalizeUrl(tab.url + (tab.path || ''), normalizeUrlOptions)
+    );
+  }, [problem, webviewUrl, tab]);
+
+  const handleTabCloseButtonClick = () => {
+    removeTab(index, isSelect);
+  };
 
   const handleBookmarkItemClick = useCallback(() => {
     gotoUrl(`${tab.url}${tab.path || ''}`);
@@ -35,6 +57,9 @@ export function TabBookmark({ tab, index }: TabBookmarkProps) {
         <MovableTab.MovableTabContent.MovableTabContentDetail>
           {tab.title}
         </MovableTab.MovableTabContent.MovableTabContentDetail>
+        {tab.custom && (
+          <MovableTab.MovableTabContent.MovableTabContentCloseButton onClick={handleTabCloseButtonClick} />
+        )}
       </MovableTab.MovableTabContent>
 
       <MovableTab.MovableTabRightLine />
