@@ -1,6 +1,6 @@
 {
   "name": "boj-ide",
-  "version": "1.19.31",
+  "version": "1.20.31-beta",
   "description": "BOJ IDE",
   "keywords": [
     "electron",
@@ -165,6 +165,7 @@
     "fabric-history": "^1.7.0",
     "github-markdown-css": "^5.8.1",
     "idb-keyval": "^6.2.1",
+    "normalize-url": "^8.0.1",
     "overlayscrollbars-react": "^0.5.6",
     "puppeteer-core": "^23.6.0",
     "puppeteer-in-electron": "^3.0.5",
