@@ -17,7 +17,7 @@ import {
   crosshairCursor,
 } from '@codemirror/view';
 import { bracketMatching, indentOnInput, indentUnit } from '@codemirror/language';
-import { defaultKeymap, indentMore, history, historyKeymap } from '@codemirror/commands';
+import { defaultKeymap, indentMore, history, historyKeymap, indentLess } from '@codemirror/commands';
 import {
   acceptCompletion,
   autocompletion,
@@ -156,6 +156,10 @@ export function useCmExtensions() {
       ),
       indentUnit.of(indentString),
       keymap.of([
+        {
+          key: 'Shift-Tab',
+          run: indentLess,
+        },
         {
           key: 'Tab',
           run: acceptCompletion,
