@@ -20,7 +20,9 @@ class CustomSpawn {
             }, {})
         : {};
 
-    this.env = { ...process.env, ...shellEnv };
+    const mergedPath = [process.env.PATH, shellEnv.PATH].filter(Boolean).join(':');
+
+    this.env = { ...process.env, ...shellEnv, PATH: mergedPath };
   }
 
   getEnvPath() {

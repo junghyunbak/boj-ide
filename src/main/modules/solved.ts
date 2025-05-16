@@ -13,8 +13,6 @@ export class SolvedAPI {
 
   build() {
     ipc.handle('search-problem', async (e, { data: { query } }) => {
-      sentryLogging('[로그] 사용자가 검색 기능을 사용하였습니다.', { tags: { query } });
-
       const url = `https://solved.ac/api/v3/search/problem?direction=asc&sort=id&query=${query}`;
 
       const options = {
