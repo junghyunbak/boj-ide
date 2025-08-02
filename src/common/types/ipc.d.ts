@@ -32,6 +32,7 @@ type ChannelToMessage = {
     SolvedAC.API.SearchResponse['items'][number] | null,
   ];
   'search-problem': [{ query: string }, SolvedAC.API.SearchResponse['items']];
+  'get-solved-tier': [{ problemId: string }, { level: number; title: string; tierBase64: string }];
 
   /**
    * client
@@ -68,6 +69,7 @@ type ElectronChannels = keyof Pick<
   | 'create-random-problem'
   | 'stop-judge'
   | 'search-problem'
+  | 'get-solved-tier'
 >;
 
 type ClientChannels = keyof Pick<
