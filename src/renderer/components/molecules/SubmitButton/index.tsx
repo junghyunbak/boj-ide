@@ -20,7 +20,7 @@ export function SubmitButton() {
       return;
     }
 
-    fireConfirmModal('제출하시겠습니까?', async () => {
+    fireConfirmModal('제출하시겠습니까?\n\n(제출 시 브라우저가 열리며, 자동으로 클립보드에 코드가 복사됩니다.)', async () => {
       await saveCode(problem, language);
 
       const code = getEditorValue(problem, language) || '';
