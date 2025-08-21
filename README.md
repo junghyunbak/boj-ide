@@ -14,7 +14,7 @@
 
 ## 다운로드
 
-|<a href="https://github.com/junghyunbak/boj-ide/releases/download/1.19.33/BOJ-IDE-1.19.33.dmg"><img width="70px" src="https://github.com/user-attachments/assets/b3d81a17-25cd-4862-8a4b-baacb233a3ea"/></a>|<a href="https://github.com/junghyunbak/boj-ide/releases/download/1.19.33/BOJ-IDE-setup-1.19.33.exe"><img width="70px" src="https://github.com/user-attachments/assets/31a67d43-efe4-43ba-88f1-d9288a067139"/></a>|
+|<a href="https://github.com/junghyunbak/boj-ide/releases/download/1.19.35/BOJ-IDE-1.19.35.dmg"><img width="70px" src="https://github.com/user-attachments/assets/b3d81a17-25cd-4862-8a4b-baacb233a3ea"/></a>|<a href="https://github.com/junghyunbak/boj-ide/releases/download/1.19.35/BOJ-IDE-setup-1.19.35.exe"><img width="70px" src="https://github.com/user-attachments/assets/31a67d43-efe4-43ba-88f1-d9288a067139"/></a>|
 |-|-|
 
 ## 기능
