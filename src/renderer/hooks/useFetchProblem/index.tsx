@@ -1,22 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { placeholderLogo } from '@/renderer/assets/base64Images';
+import { FETCH_DOMAIN } from '@/common/constants';
+
+import axios from 'axios';
 
 export function useFetchProblem(problemNumber: string): { tierBase64: string | null; title: string } {
   const { data: solvedProblem, isError } = useQuery({
     queryKey: ['solved.ac', problemNumber],
     queryFn: async () => {
-      const data = await window.electron.ipcRenderer.invoke('get-solved-tier', { data: { problemId: problemNumber } });
+      const { data } = await axios.get<{ level: number; title: string; tierBase64: string }>(
+        `${FETCH_DOMAIN}/api/solved?problemId=${problemNumber}`,
+      );
 
-      if (!data) {
-        return {
-          level: 0,
-          title: '',
-          tierBase64: placeholderLogo,
-        };
-      }
-
-      return data.data;
+      return data;
     },
   });
 
