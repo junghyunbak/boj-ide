@@ -33,11 +33,11 @@ export function getProblemInfo(bojProblemHtml: string, url: string): ProblemInfo
     return null;
   }
 
-  const inputs = Array.from(doc.querySelectorAll<HTMLPreElement>('[id|="sample-input"]')).map((pre) =>
-    pre.innerHTML.trim(),
+  const inputs = Array.from(doc.querySelectorAll<HTMLPreElement>('[id|="sample-input"]')).map(
+    (pre) => pre.textContent || '',
   );
-  const outputs = Array.from(doc.querySelectorAll<HTMLPreElement>('[id|="sample-output"]')).map((pre) =>
-    pre.innerHTML.trim(),
+  const outputs = Array.from(doc.querySelectorAll<HTMLPreElement>('[id|="sample-output"]')).map(
+    (pre) => pre.textContent || '',
   );
 
   const problemInfo: ProblemInfo = {
